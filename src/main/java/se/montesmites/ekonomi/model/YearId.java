@@ -3,12 +3,13 @@ package se.montesmites.ekonomi.model;
 import java.util.Objects;
 
 public class YearId {
+
     private final String id;
-    
+
     public YearId(String id) {
         this.id = id;
     }
-    
+
     public String getId() {
         return id;
     }

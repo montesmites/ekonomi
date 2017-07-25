@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Year {
+
     private final YearId yearid;
     private final String year;
     private final LocalDate from;

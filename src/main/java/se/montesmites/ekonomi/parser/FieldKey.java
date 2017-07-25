@@ -12,11 +12,11 @@ class FieldKey<T> {
         this.id = id;
         this.datatype = datatype;
     }
-    
+
     DataType<T> getDatatype() {
         return this.datatype;
     }
-    
+
     public T asInstanceOf(Object value) {
         return (T) value;
     }
