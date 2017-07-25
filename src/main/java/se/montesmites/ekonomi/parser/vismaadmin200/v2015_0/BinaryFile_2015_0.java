@@ -1,7 +1,5 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
@@ -31,7 +29,7 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
         @Override
         public String getFileName() {
-            return "BOKFAAR.DBF";
+            return BinaryFile_2015_0_Definition.YEARS.getFileName();
         }
 
         @Override
