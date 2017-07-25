@@ -16,7 +16,7 @@ import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 
 public class YearDataTest {
 
-    private final static String PATH_TO_BINARY_FILES = "/se/montesmites/ekonomi/parser/files/";
+    private final static String PATH_TO_BINARY_FILES = "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
 
     @Rule
     public TemporaryFolder tempfolder = new TemporaryFolder();
