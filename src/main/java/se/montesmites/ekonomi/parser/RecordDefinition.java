@@ -6,9 +6,9 @@ import java.util.List;
 class RecordDefinition {
     private final int firstBytePosition;
     private final int length;
-    private final List<FieldDefinition> fields;
+    private final List<Field> fields;
 
-    public RecordDefinition(int firstBytePosition, int length, FieldDefinition... fields) {
+    public RecordDefinition(int firstBytePosition, int length, Field... fields) {
         this.firstBytePosition = firstBytePosition;
         this.length = length;
         this.fields = Arrays.asList(fields);
@@ -22,7 +22,7 @@ class RecordDefinition {
         return length;
     }
 
-    public List<FieldDefinition> getFields() {
+    public List<Field> getFields() {
         return fields;
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
-import static se.montesmites.ekonomi.parser.FieldDefinition.*;
+import static se.montesmites.ekonomi.parser.Field.*;
 
 abstract class BinaryFile_2015_0<T> {
 

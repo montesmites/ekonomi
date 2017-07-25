@@ -3,16 +3,16 @@ package se.montesmites.ekonomi.parser;
 import java.time.LocalDate;
 import static se.montesmites.ekonomi.parser.FieldKey.*;
 
-abstract class FieldDefinition<T> {
+abstract class Field<T> {
 
-    public final static class StringField extends FieldDefinition<String> {
+    public final static class StringField extends Field<String> {
 
         public StringField(String id, int start, int length) {
             super(new StringKey(id), start, length);
         }
     }
 
-    public final static class DateField extends FieldDefinition<LocalDate> {
+    public final static class DateField extends Field<LocalDate> {
 
         public DateField(String id, int start, int length) {
             super(new DateKey(id), start, length);
@@ -23,7 +23,7 @@ abstract class FieldDefinition<T> {
     protected final int start;
     protected final int length;
 
-    private FieldDefinition(FieldKey<T> key, int start, int length) {
+    private Field(FieldKey<T> key, int start, int length) {
         this.key = key;
         this.start = start;
         this.length = length;
