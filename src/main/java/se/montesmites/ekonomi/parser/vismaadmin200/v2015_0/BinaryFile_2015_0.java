@@ -38,9 +38,7 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
             return new RecordDefinition(
                     BinaryFile_2015_0_Definition.YEARS.getStart(),
                     BinaryFile_2015_0_Definition.YEARS.getLength(),
-                    Arrays.asList(STATUS,
-                            YEARID,
-                            YEAR, FROM, TO));
+                    BinaryFile_2015_0_Definition.YEARS.getFields());
         }
 
         @Override
