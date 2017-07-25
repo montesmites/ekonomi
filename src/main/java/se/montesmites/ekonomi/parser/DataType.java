@@ -8,7 +8,8 @@ import java.util.Optional;
 
 interface DataType<T> {
 
-    public final static class ByteArrayType implements DataType<byte[]> {
+    @SuppressWarnings("Convert2Lambda")
+    public final static DataType<byte[]> BYTE_ARRAY = new DataType<byte[]>() {
 
         @Override
         public Optional<byte[]> read(byte[] bytes, int start, int length) {
@@ -19,15 +20,15 @@ interface DataType<T> {
                 return Optional.empty();
             }
         }
-    }
+    };
 
-    public final static class StringType implements DataType<String> {
+    public final static DataType<String> STRING = new DataType<String>() {
 
         private final static String ENCODING = "Cp1252";
 
         @Override
         public Optional<String> read(byte[] bytes, int start, int length) {
-            return new ByteArrayType().read(bytes, start, length).map(
+            return BYTE_ARRAY.read(bytes, start, length).map(
                     this::asString);
         }
 
@@ -38,19 +39,19 @@ interface DataType<T> {
                 throw new RuntimeException(e);
             }
         }
-    }
+    };
 
-    public final static class DateType implements DataType<LocalDate> {
+    public final static DataType<LocalDate> DATE = new DataType<LocalDate>() {
 
-        private final static DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(
+        private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(
                 "yyyyMMdd");
 
         @Override
         public Optional<LocalDate> read(byte[] bytes, int start, int length) {
-            return new StringType().read(bytes, start, length).map(
+            return STRING.read(bytes, start, length).map(
                     s -> LocalDate.parse(s.trim(), DATE_FORMAT));
         }
-    }
+    };
 
     public Optional<T> read(byte[] bytes, int start, int length);
 }

@@ -8,21 +8,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.parser.DataType.DateType;
-import se.montesmites.ekonomi.parser.DataType.StringType;
 
 abstract class BinaryFile_2015_0<T> {
 
     public final static BinaryFile_2015_0 YEARS = new BinaryFile_2015_0<Year>() {
         private final Field<String> STATUS = Field.define("status",
-                new StringType(), 0, 1);
+                DataType.STRING, 0, 1);
         private final Field<String> YEARID = Field.define("yearid",
-                new StringType(), 1, 1);
-        private final Field<String> YEAR = Field.define("year", new StringType(),
+                DataType.STRING, 1, 1);
+        private final Field<String> YEAR = Field.define("year", DataType.STRING,
                 2, 4);
         private final Field<LocalDate> FROM = Field.define("from",
-                new DateType(), 2, 8);
-        private final Field<LocalDate> TO = Field.define("to", new DateType(),
+                DataType.DATE, 2, 8);
+        private final Field<LocalDate> TO = Field.define("to", DataType.DATE,
                 10, 8);
 
         @Override
