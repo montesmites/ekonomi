@@ -11,10 +11,10 @@ import se.montesmites.ekonomi.parser.vismaadmin200.Field;
 import se.montesmites.ekonomi.parser.vismaadmin200.Record;
 import se.montesmites.ekonomi.parser.vismaadmin200.RecordDefinition;
 
-abstract class BinaryFile_2015_0_Definition<T> implements BinaryFile_VismaAdmin200<T> {
+abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
-    public final static BinaryFile_2015_0_Definition<Year> YEARS
-            = new BinaryFile_2015_0_Definition<Year>("BOKFAAR.DBF", 513, 89) {
+    public final static BinaryFile_2015_0<Year> YEARS
+            = new BinaryFile_2015_0<Year>("BOKFAAR.DBF", 513, 89) {
         private final Field<String> STATUS = Field.define("status",
                 DataType.STRING, 0, 1);
         private final Field<String> YEARID = Field.define("yearid",
@@ -45,7 +45,7 @@ abstract class BinaryFile_2015_0_Definition<T> implements BinaryFile_VismaAdmin2
     private final int start;
     private final int length;
 
-    private BinaryFile_2015_0_Definition(String fileName, int start, int length) {
+    private BinaryFile_2015_0(String fileName, int start, int length) {
         this.fileName = fileName;
         this.start = start;
         this.length = length;

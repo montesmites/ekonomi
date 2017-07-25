@@ -24,13 +24,13 @@ public class YearDataTest {
     @Test
     public void testContainsYears() throws Exception {
         final InputStream source = asStream(
-                PATH_TO_BINARY_FILES + BinaryFile_2015_0_Definition.YEARS.getFileName());
+                PATH_TO_BINARY_FILES + BinaryFile_2015_0.YEARS.getFileName());
         final File target = tempfolder.newFile(
-                BinaryFile_2015_0_Definition.YEARS.getFileName());
+                BinaryFile_2015_0.YEARS.getFileName());
         Files.copy(source, target.toPath(),
                 new CopyOption[]{StandardCopyOption.REPLACE_EXISTING});
         Parser p = new Parser(tempfolder.getRoot().toPath());
-        List<Year> years = p.parse(BinaryFile_2015_0_Definition.YEARS);
+        List<Year> years = p.parse(BinaryFile_2015_0.YEARS);
         assertEquals(4, years.size());
     }
 
