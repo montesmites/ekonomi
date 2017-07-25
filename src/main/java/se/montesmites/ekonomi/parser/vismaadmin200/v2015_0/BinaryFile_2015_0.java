@@ -2,7 +2,6 @@ package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import se.montesmites.ekonomi.model.Year;
