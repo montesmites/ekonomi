@@ -23,11 +23,17 @@ abstract class FieldKey<T> {
     }
 
     private final String id;
+    private final DataType<T> datatype;
 
     private FieldKey(String id, DataType<T> datatype) {
         this.id = id;
+        this.datatype = datatype;
     }
-
+    
+    DataType<T> getDatatype() {
+        return this.datatype;
+    }
+    
     public T asInstanceOf(Object value) {
         return (T) value;
     }
