@@ -8,13 +8,17 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
@@ -37,6 +41,25 @@ public class ParserTest {
                 year("F", "2015", "2015-01-01", "2015-12-31"));
         Set<Year> act = set(p.parse(BinaryFile_2015_0.YEARS));
         assertEquals(exp, act);
+    }
+
+    @Test
+    public void parseAccounts() throws Exception {
+        copyTestFile(BinaryFile_2015_0.ACCOUNTS);
+        Parser p = new Parser(tempfolder.getRoot().toPath());
+        final Map<String, Long> expCount = new HashMap<String, Long>() {
+            {
+                put("C", (long) 525);
+                put("D", (long) 526);
+                put("E", (long) 536);
+                put("F", (long) 590);
+            }
+        };
+        final Map<String, Long> actCount = p.parse(BinaryFile_2015_0.ACCOUNTS).stream().collect(
+                Collectors.groupingBy(
+                        (Account account) -> account.getAccountId().getYearId().getId(),
+                        Collectors.counting()));
+        assertEquals(expCount.entrySet(), actCount.entrySet());
     }
 
     private void copyTestFile(BinaryFile_2015_0<?> bf) throws IOException {

@@ -5,20 +5,20 @@ import java.util.Objects;
 
 public class Year {
 
-    private final YearId yearid;
+    private final YearId yearId;
     private final String year;
     private final LocalDate from;
     private final LocalDate to;
 
-    public Year(YearId yearid, String year, LocalDate from, LocalDate to) {
-        this.yearid = yearid;
+    public Year(YearId yearId, String year, LocalDate from, LocalDate to) {
+        this.yearId = yearId;
         this.year = year;
         this.from = from;
         this.to = to;
     }
 
-    public YearId getYearid() {
-        return yearid;
+    public YearId getYearId() {
+        return yearId;
     }
 
     public String getYear() {
@@ -36,7 +36,7 @@ public class Year {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.yearid);
+        hash = 67 * hash + Objects.hashCode(this.yearId);
         hash = 67 * hash + Objects.hashCode(this.year);
         hash = 67 * hash + Objects.hashCode(this.from);
         hash = 67 * hash + Objects.hashCode(this.to);
@@ -58,7 +58,7 @@ public class Year {
         if (!Objects.equals(this.year, other.year)) {
             return false;
         }
-        if (!Objects.equals(this.yearid, other.yearid)) {
+        if (!Objects.equals(this.yearId, other.yearId)) {
             return false;
         }
         if (!Objects.equals(this.from, other.from)) {
@@ -69,6 +69,6 @@ public class Year {
 
     @Override
     public String toString() {
-        return "Year{" + "yearid=" + yearid + ", year=" + year + ", from=" + from + ", to=" + to + '}';
+        return "Year{" + "yearid=" + yearId + ", year=" + year + ", from=" + from + ", to=" + to + '}';
     }
 }
