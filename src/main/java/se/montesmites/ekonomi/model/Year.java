@@ -66,4 +66,9 @@ public class Year {
         }
         return Objects.equals(this.to, other.to);
     }
+
+    @Override
+    public String toString() {
+        return "Year{" + "yearid=" + yearid + ", year=" + year + ", from=" + from + ", to=" + to + '}';
+    }
 }

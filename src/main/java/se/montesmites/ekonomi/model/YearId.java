@@ -35,4 +35,9 @@ public class YearId {
         final YearId other = (YearId) obj;
         return Objects.equals(this.id, other.id);
     }
+
+    @Override
+    public String toString() {
+        return "YearId{" + "id=" + id + '}';
+    }
 }
