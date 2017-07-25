@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.parser.BinaryFile_VismaAdmin200;
-import se.montesmites.ekonomi.parser.DataType;
-import se.montesmites.ekonomi.parser.Field;
-import se.montesmites.ekonomi.parser.Record;
-import se.montesmites.ekonomi.parser.RecordDefinition;
-import se.montesmites.ekonomi.parser.RecordReader;
+import se.montesmites.ekonomi.parser.vismaadmin200.BinaryFile_VismaAdmin200;
+import se.montesmites.ekonomi.parser.vismaadmin200.DataType;
+import se.montesmites.ekonomi.parser.vismaadmin200.Field;
+import se.montesmites.ekonomi.parser.vismaadmin200.Record;
+import se.montesmites.ekonomi.parser.vismaadmin200.RecordDefinition;
+import se.montesmites.ekonomi.parser.vismaadmin200.RecordReader;
 
 abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 

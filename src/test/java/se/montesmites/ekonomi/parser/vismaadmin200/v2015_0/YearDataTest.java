@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import se.montesmites.ekonomi.parser.Parser;
+import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 
 public class YearDataTest {
 

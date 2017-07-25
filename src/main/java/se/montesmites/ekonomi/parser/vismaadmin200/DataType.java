@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.parser;
+package se.montesmites.ekonomi.parser.vismaadmin200;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
