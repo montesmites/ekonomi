@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import se.montesmites.ekonomi.model.Year;
@@ -36,9 +37,10 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
         public RecordDefinition getRecordDefinition() {
             return new RecordDefinition(
                     BinaryFile_2015_0_Definition.YEARS.getStart(),
-                    BinaryFile_2015_0_Definition.YEARS.getLength(), STATUS,
-                    YEARID,
-                    YEAR, FROM, TO);
+                    BinaryFile_2015_0_Definition.YEARS.getLength(),
+                    Arrays.asList(STATUS,
+                            YEARID,
+                            YEAR, FROM, TO));
         }
 
         @Override

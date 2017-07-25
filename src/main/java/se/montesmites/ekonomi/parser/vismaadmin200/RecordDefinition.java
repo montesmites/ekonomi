@@ -9,10 +9,10 @@ public class RecordDefinition {
     private final int length;
     private final List<Field> fields;
 
-    public RecordDefinition(int firstBytePosition, int length, Field... fields) {
+    public RecordDefinition(int firstBytePosition, int length, List<Field> fields) {
         this.firstBytePosition = firstBytePosition;
         this.length = length;
-        this.fields = Arrays.asList(fields);
+        this.fields = fields;
     }
 
     public int getFirstBytePosition() {
