@@ -30,18 +30,18 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
                 10, 8);
 
         @Override
-        String getFileName() {
+        public String getFileName() {
             return "BOKFAAR.DBF";
         }
 
         @Override
-        RecordDefinition getRecordDefinition() {
+        public RecordDefinition getRecordDefinition() {
             return new RecordDefinition(513, 89, STATUS, YEARID,
                     YEAR, FROM, TO);
         }
 
         @Override
-        Year extract(Record rec) {
+        public Year extract(Record rec) {
             return new Year(new YearId(YEARID.extract(rec)), YEAR.extract(rec),
                     FROM.extract(rec), TO.extract(rec));
         }
@@ -49,17 +49,6 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
     private BinaryFile_2015_0() {
     }
-
-    abstract String getFileName();
-
-    abstract RecordDefinition getRecordDefinition();
-
-    boolean filter(Record record) {
-        return this.getRecordDefinition().getFields().stream().allMatch(
-                def -> def.filter(record));
-    }
-
-    abstract T extract(Record record);
 
     @Override
     public List<T> parse(Path path) {
@@ -69,13 +58,5 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
         return rr.allRecordsAsStream().filter(this::filter).map(
                 this::extract).collect(
                         Collectors.toList());
-    }
-
-    private byte[] readAllBytes(Path path) {
-        try {
-            return Files.readAllBytes(path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
