@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.parser;
+package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
 import java.io.File;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import se.montesmites.ekonomi.parser.Parser;
 
 public class YearDataTest {
 

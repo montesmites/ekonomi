@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-class Record {
+public class Record {
 
     private final Map<FieldKey<?>, Optional<?>> inner;
 

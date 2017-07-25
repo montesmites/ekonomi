@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.parser;
+package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,8 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
+import se.montesmites.ekonomi.parser.BinaryFile_VismaAdmin200;
+import se.montesmites.ekonomi.parser.DataType;
+import se.montesmites.ekonomi.parser.Field;
+import se.montesmites.ekonomi.parser.Record;
+import se.montesmites.ekonomi.parser.RecordDefinition;
+import se.montesmites.ekonomi.parser.RecordReader;
 
-abstract class BinaryFile_2015_0<T> {
+abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
     public final static BinaryFile_2015_0 YEARS = new BinaryFile_2015_0<Year>() {
         private final Field<String> STATUS = Field.define("status",
@@ -55,7 +61,8 @@ abstract class BinaryFile_2015_0<T> {
 
     abstract T extract(Record record);
 
-    List<T> parse(Path path) {
+    @Override
+    public List<T> parse(Path path) {
         Path p = path.resolve(this.getFileName());
         RecordReader rr = new RecordReader(
                 this.getRecordDefinition(), readAllBytes(p));

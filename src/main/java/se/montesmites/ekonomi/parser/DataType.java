@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
 
-interface DataType<T> {
+public interface DataType<T> {
 
     @SuppressWarnings("Convert2Lambda")
     public final static DataType<byte[]> BYTE_ARRAY = new DataType<byte[]>() {

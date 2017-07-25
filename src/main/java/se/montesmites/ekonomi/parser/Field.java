@@ -1,8 +1,8 @@
 package se.montesmites.ekonomi.parser;
 
-class Field<T> {
+public class Field<T> {
 
-    final static <T> Field<T> define(String id, DataType<T> datatype, int start, int length) {
+    public final static <T> Field<T> define(String id, DataType<T> datatype, int start, int length) {
         return new Field<>(new FieldKey<>(id, datatype), start, length);
     }
 
@@ -21,11 +21,11 @@ class Field<T> {
                 key.set(key.getDatatype().read(bytes, start, length)));
     }
 
-    boolean filter(Record record) {
+    public boolean filter(Record record) {
         return record.get(key).isPresent();
     }
 
-    T extract(Record record) {
+    public T extract(Record record) {
         return record.extract(key);
     }
 }

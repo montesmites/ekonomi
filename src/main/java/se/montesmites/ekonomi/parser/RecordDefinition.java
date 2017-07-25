@@ -3,7 +3,7 @@ package se.montesmites.ekonomi.parser;
 import java.util.Arrays;
 import java.util.List;
 
-class RecordDefinition {
+public class RecordDefinition {
 
     private final int firstBytePosition;
     private final int length;
