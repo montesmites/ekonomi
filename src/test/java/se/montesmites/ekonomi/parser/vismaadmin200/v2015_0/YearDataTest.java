@@ -5,13 +5,13 @@ import java.io.InputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.time.Year;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 
 public class YearDataTest {
@@ -24,13 +24,13 @@ public class YearDataTest {
     @Test
     public void testContainsYears() throws Exception {
         final InputStream source = asStream(
-                PATH_TO_BINARY_FILES + BinaryFile_2015_0.YEARS.getFileName());
+                PATH_TO_BINARY_FILES + BinaryFile_2015_0_Definition.YEARS.getFileName());
         final File target = tempfolder.newFile(
-                BinaryFile_2015_0.YEARS.getFileName());
+                BinaryFile_2015_0_Definition.YEARS.getFileName());
         Files.copy(source, target.toPath(),
                 new CopyOption[]{StandardCopyOption.REPLACE_EXISTING});
         Parser p = new Parser(tempfolder.getRoot().toPath());
-        List<Year> years = p.parse(BinaryFile_2015_0.YEARS);
+        List<Year> years = p.parse(BinaryFile_2015_0_Definition.YEARS);
         assertEquals(4, years.size());
     }
 

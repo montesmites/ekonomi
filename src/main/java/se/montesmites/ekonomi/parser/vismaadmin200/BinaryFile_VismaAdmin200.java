@@ -4,10 +4,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface BinaryFile_VismaAdmin200<T> {
 
-    public List<T> parse(Path path);
+    default List<T> parse(Path path) {
+        Path p = path.resolve(this.getFileName());
+        RecordReader rr = new RecordReader(
+                this.getRecordDefinition(), readAllBytes(p));
+        return rr.allRecordsAsStream().filter(this::filter).map(
+                this::modelize).collect(
+                        Collectors.toList());
+    }
+
     String getFileName();
 
     RecordDefinition getRecordDefinition();
@@ -17,7 +26,7 @@ public interface BinaryFile_VismaAdmin200<T> {
                 def -> def.filter(record));
     }
 
-    T extract(Record record);
+    public T modelize(Record record);
 
     default byte[] readAllBytes(Path path) {
         try {
