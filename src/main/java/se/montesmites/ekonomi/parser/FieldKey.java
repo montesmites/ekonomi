@@ -1,31 +1,14 @@
 package se.montesmites.ekonomi.parser;
 
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
-import static se.montesmites.ekonomi.parser.DataType.*;
 
-abstract class FieldKey<T> {
-
-    public final static class StringKey extends FieldKey<String> {
-
-        public StringKey(String id) {
-            super(id, new StringType());
-        }
-
-    }
-
-    public final static class DateKey extends FieldKey<LocalDate> {
-
-        public DateKey(String id) {
-            super(id, new DateType());
-        }
-    }
+class FieldKey<T> {
 
     private final String id;
     private final DataType<T> datatype;
 
-    private FieldKey(String id, DataType<T> datatype) {
+    FieldKey(String id, DataType<T> datatype) {
         this.id = id;
         this.datatype = datatype;
     }

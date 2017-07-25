@@ -1,22 +1,9 @@
 package se.montesmites.ekonomi.parser;
 
-import java.time.LocalDate;
-import static se.montesmites.ekonomi.parser.FieldKey.*;
+class Field<T> {
 
-abstract class Field<T> {
-
-    public final static class StringField extends Field<String> {
-
-        public StringField(String id, int start, int length) {
-            super(new StringKey(id), start, length);
-        }
-    }
-
-    public final static class DateField extends Field<LocalDate> {
-
-        public DateField(String id, int start, int length) {
-            super(new DateKey(id), start, length);
-        }
+    final static <T> Field<T> define(String id, DataType<T> datatype, int start, int length) {
+        return new Field<>(new FieldKey<>(id, datatype), start, length);
     }
 
     protected final FieldKey<T> key;
