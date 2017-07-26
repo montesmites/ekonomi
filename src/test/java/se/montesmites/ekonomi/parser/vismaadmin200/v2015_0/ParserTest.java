@@ -80,6 +80,23 @@ public class ParserTest {
                                 Collectors.counting()));
         assertEquals(expCount.entrySet(), actCount.entrySet());
     }
+    
+    @Test
+    public void parseEntries() throws Exception {
+        copyTestFile(BinaryFile_2015_0.ENTRIES);
+        final Map<String, Long> expCount = new HashMap<String, Long>() {{
+            put("C", (long) 1306);
+            put("D", (long) 1404);
+            put("E", (long) 1344);
+            put("F", (long) 218);
+        }};
+        final Map<String, Long> actCount = parse(BinaryFile_2015_0.ENTRIES)
+                .stream().collect(
+                        Collectors.groupingBy(
+                                event -> event.getEventId().getYearId().getId(),
+                                Collectors.counting()));
+        assertEquals(expCount.entrySet(), actCount.entrySet());
+    }
 
     private <T> List<T> parse(BinaryFile_VismaAdmin200<T> bf) {
         Parser p = new Parser(tempfolder.getRoot().toPath());

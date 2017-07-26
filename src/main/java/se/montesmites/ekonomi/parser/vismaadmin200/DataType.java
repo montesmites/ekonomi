@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Optional;
+import se.montesmites.ekonomi.model.Currency;
 
 public interface DataType<T> {
 
@@ -30,8 +31,8 @@ public interface DataType<T> {
 
         @Override
         public Optional<String> read(ByteChunk chunk, int start, int length) {
-            return BYTE_ARRAY.read(chunk, start, length).map(
-                    this::asString);
+            return BYTE_ARRAY.read(chunk, start, length)
+                    .map(this::asString);
         }
 
         private String asString(byte[] bytes) {
@@ -69,8 +70,25 @@ public interface DataType<T> {
     public final static DataType<Integer> INTEGER = new DataType<Integer>() {
         @Override
         public Optional<Integer> read(ByteChunk chunk, int start, int length) {
-            return STRING.read(chunk, start, length).map(
-                    s -> Integer.parseInt(s.trim()));
+            return STRING.read(chunk, start, length)
+                    .map(String::trim).map(Integer::parseInt);
+        }
+    };
+
+    @SuppressWarnings("Convert2Lambda")
+    public final static DataType<Long> LONG = new DataType<Long>() {
+        @Override
+        public Optional<Long> read(ByteChunk chunk, int start, int length) {
+            return STRING.read(chunk, start, length)
+                    .map(String::trim).map(Long::parseLong);
+        }
+    };
+
+    @SuppressWarnings("Convert2Lambda")
+    public final static DataType<Currency> CURRENCY = new DataType<Currency>() {
+        @Override
+        public Optional<Currency> read(ByteChunk chunk, int start, int length) {
+            return LONG.read(chunk, start, length).map(Currency::new);
         }
     };
 
