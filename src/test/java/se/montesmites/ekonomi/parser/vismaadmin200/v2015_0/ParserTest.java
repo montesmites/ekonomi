@@ -18,9 +18,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
+import se.montesmites.ekonomi.parser.vismaadmin200.BinaryFile_VismaAdmin200;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 
 public class ParserTest {
@@ -33,20 +33,18 @@ public class ParserTest {
     @Test
     public void parseYears() throws Exception {
         copyTestFile(BinaryFile_2015_0.YEARS);
-        Parser p = new Parser(tempfolder.getRoot().toPath());
         Set<Year> exp = set(
                 year("C", "2012", "2012-01-01", "2012-12-31"),
                 year("D", "2013", "2013-01-01", "2013-12-31"),
                 year("E", "2014", "2014-01-01", "2014-12-31"),
                 year("F", "2015", "2015-01-01", "2015-12-31"));
-        Set<Year> act = set(p.parse(BinaryFile_2015_0.YEARS));
+        Set<Year> act = set(parse(BinaryFile_2015_0.YEARS));
         assertEquals(exp, act);
     }
 
     @Test
     public void parseAccounts() throws Exception {
         copyTestFile(BinaryFile_2015_0.ACCOUNTS);
-        Parser p = new Parser(tempfolder.getRoot().toPath());
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
                 put("C", (long) 525);
@@ -55,11 +53,37 @@ public class ParserTest {
                 put("F", (long) 590);
             }
         };
-        final Map<String, Long> actCount = p.parse(BinaryFile_2015_0.ACCOUNTS).stream().collect(
-                Collectors.groupingBy(
-                        (Account account) -> account.getAccountId().getYearId().getId(),
-                        Collectors.counting()));
+        final Map<String, Long> actCount = parse(BinaryFile_2015_0.ACCOUNTS)
+                .stream().collect(
+                        Collectors.groupingBy(
+                                account -> account.getAccountId().getYearId().getId(),
+                                Collectors.counting()));
         assertEquals(expCount.entrySet(), actCount.entrySet());
+    }
+
+    @Test
+    public void parseEvents() throws Exception {
+        copyTestFile(BinaryFile_2015_0.EVENTS);
+        final Map<String, Long> expCount = new HashMap<String, Long>() {
+            {
+                put("A", (long) 1);
+                put("C", (long) 272);
+                put("D", (long) 310);
+                put("E", (long) 295);
+                put("F", (long) 62);
+            }
+        };
+        final Map<String, Long> actCount = parse(BinaryFile_2015_0.EVENTS)
+                .stream().collect(
+                        Collectors.groupingBy(
+                                event -> event.getEventId().getYearId().getId(),
+                                Collectors.counting()));
+        assertEquals(expCount.entrySet(), actCount.entrySet());
+    }
+
+    private <T> List<T> parse(BinaryFile_VismaAdmin200<T> bf) {
+        Parser p = new Parser(tempfolder.getRoot().toPath());
+        return p.parse(bf);
     }
 
     private void copyTestFile(BinaryFile_2015_0<?> bf) throws IOException {

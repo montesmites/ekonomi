@@ -7,6 +7,9 @@ import java.util.Optional;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.AccountStatus;
+import se.montesmites.ekonomi.model.Event;
+import se.montesmites.ekonomi.model.EventId;
+import se.montesmites.ekonomi.model.Series;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.parser.vismaadmin200.BinaryFile_VismaAdmin200;
@@ -89,6 +92,33 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
             final String removed = REMOVED.extract(record);
             final String closed = CLOSED.extract(record);
             return AccountStatus.parse(removed, closed);
+        }
+    };
+
+    public final static BinaryFile_2015_0<Event> EVENTS
+            = new BinaryFile_2015_0<Event>("VER.DBF", 962, 293) {
+        private final Field<String> YEARID = new Field("yearid", STRING, 0, 1);
+        private final Field<Integer> ID = new Field("id", INTEGER, 1, 7);
+        private final Field<String> SERIES = new Field("series", STRING, 222, 1);
+        private final Field<LocalDate> EDATE = new Field("date", DATE, 8, 8);
+        private final Field<LocalDate> RDATE = new Field("regdate", DATE, 16, 8);
+        private final Field<String> DESCR = new Field("descr", STRING, 32, 60);
+
+        @Override
+        List<Field<?>> getFields() {
+            return Arrays.asList(YEARID, ID, SERIES, EDATE, RDATE, DESCR);
+        }
+
+        @Override
+        public Event modelize(Record record) {
+            YearId yearid = new YearId(YEARID.extract(record));
+            Series series = new Series(SERIES.extract(record));
+            EventId eventid = new EventId(yearid, ID.extract(record), series);
+            return new Event(
+                    eventid,
+                    EDATE.extract(record),
+                    DESCR.extract(record).trim(),
+                    RDATE.extract(record));
         }
     };
 

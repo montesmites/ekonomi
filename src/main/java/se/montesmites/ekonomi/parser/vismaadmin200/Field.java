@@ -16,9 +16,9 @@ public class Field<T> {
         this.length = length;
     }
 
-    final Record populate(Record record, byte[] bytes) {
+    final Record populate(Record record, ByteChunk chunk) {
         return record.merge(
-                key.set(key.getDatatype().read(bytes, start, length)));
+                key.set(key.getDatatype().read(chunk, start, length)));
     }
 
     public boolean filter(Record record) {
