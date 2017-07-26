@@ -7,6 +7,7 @@ import java.util.Optional;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.AccountStatus;
+import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.EntryStatus;
@@ -174,6 +175,26 @@ abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
         private Optional<EntryStatus> entryStatus(Record record) {
             return EntryStatus.parse(FLAGS.extract(record));
+        }
+    };
+
+    public final static BinaryFile_2015_0<Balance> BALANCES
+            = new BinaryFile_2015_0<Balance>("REING.DBF", 322, 78) {
+        private final Field<String> YEARID = new Field("yearid", STRING, 0, 1);
+        private final Field<String> ACCOUNT = new Field("account", STRING, 9, 4);
+        private final Field<Currency> AMOUNT = new Field("mnt", CURRENCY, 14, 14);
+
+        @Override
+        List<Field<?>> getFields() {
+            return Arrays.asList(YEARID, ACCOUNT, AMOUNT);
+        }
+
+        @Override
+        public Balance modelize(Record record) {
+            YearId yearid = new YearId(YEARID.extract(record));
+            AccountId accountid = new AccountId(yearid, ACCOUNT.extract(record));
+            Currency amount = AMOUNT.extract(record);
+            return new Balance(yearid, accountid, amount);
         }
     };
 

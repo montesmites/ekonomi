@@ -71,7 +71,9 @@ public interface DataType<T> {
         @Override
         public Optional<Integer> read(ByteChunk chunk, int start, int length) {
             return STRING.read(chunk, start, length)
-                    .map(String::trim).map(Integer::parseInt);
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(Integer::parseInt);
         }
     };
 
@@ -80,7 +82,9 @@ public interface DataType<T> {
         @Override
         public Optional<Long> read(ByteChunk chunk, int start, int length) {
             return STRING.read(chunk, start, length)
-                    .map(String::trim).map(Long::parseLong);
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(Long::parseLong);
         }
     };
 

@@ -93,7 +93,24 @@ public class ParserTest {
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.ENTRIES)
                 .stream().collect(
                         Collectors.groupingBy(
-                                event -> event.getEventId().getYearId().getId(),
+                                entry -> entry.getEventId().getYearId().getId(),
+                                Collectors.counting()));
+        assertEquals(expCount.entrySet(), actCount.entrySet());
+    }
+    
+    @Test
+    public void parseBalances() throws Exception {
+        copyTestFile(BinaryFile_2015_0.BALANCES);
+        final Map<String, Long> expCount = new HashMap<String, Long>() {{
+            put("C", (long) 33);
+            put("D", (long) 34);
+            put("E", (long) 33);
+            put("F", (long) 27);
+        }};
+        final Map<String, Long> actCount = parse(BinaryFile_2015_0.BALANCES)
+                .stream().collect(
+                        Collectors.groupingBy(
+                                balance -> balance.getYearId().getId(),
                                 Collectors.counting()));
         assertEquals(expCount.entrySet(), actCount.entrySet());
     }
