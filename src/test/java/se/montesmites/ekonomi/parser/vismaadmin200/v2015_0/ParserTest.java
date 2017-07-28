@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import se.montesmites.ekonomi.model.Year;
@@ -21,19 +21,17 @@ import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class ParserTest {
 
-    @Rule
-    public TemporaryFolder tempfolder = new TemporaryFolder();
+    @ClassRule
+    public static TemporaryFolder tempfolder = new TemporaryFolder();
 
-    private ResourceToFileCopier copier;
-
-    @Before
-    public void before() {
-        this.copier = new ResourceToFileCopier();
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        ResourceToFileCopier copier = new ResourceToFileCopier();
+        copier.copyAll(tempfolder);
     }
 
     @Test
     public void parseYears() throws Exception {
-        copier.copyTestFile(BinaryFile_2015_0.YEARS, tempfolder);
         Set<Year> exp = set(
                 year("C", 2012, "2012-01-01", "2012-12-31"),
                 year("D", 2013, "2013-01-01", "2013-12-31"),
@@ -45,7 +43,6 @@ public class ParserTest {
 
     @Test
     public void parseAccounts() throws Exception {
-        copier.copyTestFile(BinaryFile_2015_0.ACCOUNTS, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
                 put("C", (long) 525);
@@ -64,7 +61,6 @@ public class ParserTest {
 
     @Test
     public void parseEvents() throws Exception {
-        copier.copyTestFile(BinaryFile_2015_0.EVENTS, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
                 put("A", (long) 1);
@@ -84,7 +80,6 @@ public class ParserTest {
 
     @Test
     public void parseEntries() throws Exception {
-        copier.copyTestFile(BinaryFile_2015_0.ENTRIES, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
                 put("C", (long) 1306);
@@ -103,7 +98,6 @@ public class ParserTest {
 
     @Test
     public void parseBalances() throws Exception {
-        copier.copyTestFile(BinaryFile_2015_0.BALANCES, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
                 put("C", (long) 33);
