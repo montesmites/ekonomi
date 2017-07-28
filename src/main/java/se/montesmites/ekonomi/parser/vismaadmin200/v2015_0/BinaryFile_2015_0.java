@@ -28,7 +28,7 @@ public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T
     public final static BinaryFile_2015_0<Year> YEARS
             = new BinaryFile_2015_0<Year>("BOKFAAR.DBF", 513, 89) {
         private final Field<String> YEARID = new Field("yearid", STRING, 1, 1);
-        private final Field<String> YEAR = new Field("year", STRING, 2, 4);
+        private final Field<Integer> YEAR = new Field("year", INTEGER, 2, 4);
         private final Field<LocalDate> FROM = new Field("from", DATE, 2, 8);
         private final Field<LocalDate> TO = new Field("to", DATE, 10, 8);
         private final Field<String> STATUS = new Field("status", STRING, 0, 1) {
@@ -47,7 +47,7 @@ public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T
         public Year modelize(Record record) {
             return new Year(
                     new YearId(YEARID.extract(record)),
-                    YEAR.extract(record),
+                    java.time.Year.of(YEAR.extract(record)),
                     FROM.extract(record),
                     TO.extract(record));
         }

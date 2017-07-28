@@ -23,22 +23,22 @@ public class ParserTest {
 
     @Rule
     public TemporaryFolder tempfolder = new TemporaryFolder();
-    
+
     private ResourceToFileCopier copier;
-    
+
     @Before
     public void before() {
         this.copier = new ResourceToFileCopier();
     }
-    
+
     @Test
     public void parseYears() throws Exception {
         copier.copyTestFile(BinaryFile_2015_0.YEARS, tempfolder);
         Set<Year> exp = set(
-                year("C", "2012", "2012-01-01", "2012-12-31"),
-                year("D", "2013", "2013-01-01", "2013-12-31"),
-                year("E", "2014", "2014-01-01", "2014-12-31"),
-                year("F", "2015", "2015-01-01", "2015-12-31"));
+                year("C", 2012, "2012-01-01", "2012-12-31"),
+                year("D", 2013, "2013-01-01", "2013-12-31"),
+                year("E", 2014, "2014-01-01", "2014-12-31"),
+                year("F", 2015, "2015-01-01", "2015-12-31"));
         Set<Year> act = set(parse(BinaryFile_2015_0.YEARS));
         assertEquals(exp, act);
     }
@@ -81,16 +81,18 @@ public class ParserTest {
                                 Collectors.counting()));
         assertEquals(expCount.entrySet(), actCount.entrySet());
     }
-    
+
     @Test
     public void parseEntries() throws Exception {
         copier.copyTestFile(BinaryFile_2015_0.ENTRIES, tempfolder);
-        final Map<String, Long> expCount = new HashMap<String, Long>() {{
-            put("C", (long) 1306);
-            put("D", (long) 1404);
-            put("E", (long) 1344);
-            put("F", (long) 218);
-        }};
+        final Map<String, Long> expCount = new HashMap<String, Long>() {
+            {
+                put("C", (long) 1306);
+                put("D", (long) 1404);
+                put("E", (long) 1344);
+                put("F", (long) 218);
+            }
+        };
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.ENTRIES)
                 .stream().collect(
                         Collectors.groupingBy(
@@ -98,16 +100,18 @@ public class ParserTest {
                                 Collectors.counting()));
         assertEquals(expCount.entrySet(), actCount.entrySet());
     }
-    
+
     @Test
     public void parseBalances() throws Exception {
         copier.copyTestFile(BinaryFile_2015_0.BALANCES, tempfolder);
-        final Map<String, Long> expCount = new HashMap<String, Long>() {{
-            put("C", (long) 33);
-            put("D", (long) 34);
-            put("E", (long) 33);
-            put("F", (long) 27);
-        }};
+        final Map<String, Long> expCount = new HashMap<String, Long>() {
+            {
+                put("C", (long) 33);
+                put("D", (long) 34);
+                put("E", (long) 33);
+                put("F", (long) 27);
+            }
+        };
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.BALANCES)
                 .stream().collect(
                         Collectors.groupingBy(
@@ -121,9 +125,9 @@ public class ParserTest {
         return p.parse(bf);
     }
 
-    private Year year(String id, String year, String from, String to) {
-        return new Year(new YearId(id), year, LocalDate.parse(from),
-                LocalDate.parse(to));
+    private Year year(String id, int year, String from, String to) {
+        return new Year(new YearId(id), java.time.Year.of(year),
+                LocalDate.parse(from), LocalDate.parse(to));
     }
 
     private <T> Set<T> set(T... arr) {

@@ -6,11 +6,11 @@ import java.util.Objects;
 public class Year {
 
     private final YearId yearId;
-    private final String year;
+    private final java.time.Year year;
     private final LocalDate from;
     private final LocalDate to;
 
-    public Year(YearId yearId, String year, LocalDate from, LocalDate to) {
+    public Year(YearId yearId, java.time.Year year, LocalDate from, LocalDate to) {
         this.yearId = yearId;
         this.year = year;
         this.from = from;
@@ -21,7 +21,7 @@ public class Year {
         return yearId;
     }
 
-    public String getYear() {
+    public java.time.Year getYear() {
         return year;
     }
 
