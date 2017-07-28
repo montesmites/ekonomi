@@ -198,6 +198,10 @@ public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T
         }
     };
 
+    public final static List<BinaryFile_2015_0<?>> values() {
+        return Arrays.asList(ACCOUNTS, BALANCES, ENTRIES, EVENTS, YEARS);
+    }
+
     private final String fileName;
     private final int start;
     private final int length;
