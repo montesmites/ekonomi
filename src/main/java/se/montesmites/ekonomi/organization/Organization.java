@@ -21,10 +21,10 @@ public class Organization {
         b.setEvents(p.parse(EVENTS));
         return b.build();
     }
-    
+
     private final Map<java.time.Year, Year> yearsByYear;
     private final Map<EventId, Event> eventsByEventId;
-    
+
     Organization(Collection<Year> years, Collection<Event> events) {
         this.yearsByYear = years.stream()
                 .collect(toMap(Year::getYear, identity()));
@@ -38,5 +38,5 @@ public class Organization {
 
     public Optional<Event> getEvent(EventId eventId) {
         return Optional.ofNullable(eventsByEventId.get(eventId));
-    }    
+    }
 }

@@ -1,11 +1,8 @@
 package se.montesmites.ekonomi.organization;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Rule;

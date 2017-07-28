@@ -10,7 +10,7 @@ public class EntryStatus {
     public static enum Status {
         ACTIVE, PASSIVE;
     }
-    
+
     public static Optional<EntryStatus> parse(String flags) {
         if (flags.length() == 4) {
             return eventify(flags);
@@ -20,7 +20,8 @@ public class EntryStatus {
     }
 
     private static Optional<EntryStatus> eventify(String flags) {
-        final EntryStatusFlags esf = EntryStatusFlags.ENTRY_STATUS_FLAGS.get(flags);
+        final EntryStatusFlags esf = EntryStatusFlags.ENTRY_STATUS_FLAGS.get(
+                flags);
         if (esf != null) {
             return Optional.of(esf.getStatus());
         } else {

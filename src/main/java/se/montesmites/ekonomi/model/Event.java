@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Event {
+
     private final EventId eventId;
     private final LocalDate date;
     private final String description;
