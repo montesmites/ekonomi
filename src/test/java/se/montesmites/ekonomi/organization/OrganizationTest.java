@@ -18,7 +18,9 @@ import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 import static java.util.Comparator.*;
 import static java.util.stream.Collectors.*;
+import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.AccountStatus;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.EntryEvent;
 import se.montesmites.ekonomi.model.EntryStatus;
@@ -72,6 +74,16 @@ public class OrganizationTest {
                 entry(eventId, "1920", -50000000),
                 entry(eventId, "1940", 50000000));
         assertEquals(expEntries, actEntries);
+    }
+    
+    @Test
+    public void readAccount_byAccountId_20121920() throws Exception {
+        YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
+        AccountId accountId = new AccountId(yearId, "1920");
+        Account account = organization.getAccount(accountId).get();
+        assertEquals(accountId, account.getAccountId());
+        assertEquals(AccountStatus.OPEN, account.getAccountStatus());
+        assertEquals("Bank, PlusGiro", account.getDescription());
     }
 
     private Entry entry(EventId eventId, String account, long amount) {
