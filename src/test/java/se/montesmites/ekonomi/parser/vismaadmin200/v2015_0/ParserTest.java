@@ -1,11 +1,5 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -22,17 +17,23 @@ import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.parser.vismaadmin200.BinaryFile_VismaAdmin200;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
+import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class ParserTest {
 
-    private final static String PATH_TO_BINARY_FILES = "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
-
     @Rule
     public TemporaryFolder tempfolder = new TemporaryFolder();
-
+    
+    private ResourceToFileCopier copier;
+    
+    @Before
+    public void before() {
+        this.copier = new ResourceToFileCopier();
+    }
+    
     @Test
     public void parseYears() throws Exception {
-        copyTestFile(BinaryFile_2015_0.YEARS);
+        copier.copyTestFile(BinaryFile_2015_0.YEARS, tempfolder);
         Set<Year> exp = set(
                 year("C", "2012", "2012-01-01", "2012-12-31"),
                 year("D", "2013", "2013-01-01", "2013-12-31"),
@@ -44,7 +45,7 @@ public class ParserTest {
 
     @Test
     public void parseAccounts() throws Exception {
-        copyTestFile(BinaryFile_2015_0.ACCOUNTS);
+        copier.copyTestFile(BinaryFile_2015_0.ACCOUNTS, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
                 put("C", (long) 525);
@@ -63,7 +64,7 @@ public class ParserTest {
 
     @Test
     public void parseEvents() throws Exception {
-        copyTestFile(BinaryFile_2015_0.EVENTS);
+        copier.copyTestFile(BinaryFile_2015_0.EVENTS, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
                 put("A", (long) 1);
@@ -83,7 +84,7 @@ public class ParserTest {
     
     @Test
     public void parseEntries() throws Exception {
-        copyTestFile(BinaryFile_2015_0.ENTRIES);
+        copier.copyTestFile(BinaryFile_2015_0.ENTRIES, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {{
             put("C", (long) 1306);
             put("D", (long) 1404);
@@ -100,7 +101,7 @@ public class ParserTest {
     
     @Test
     public void parseBalances() throws Exception {
-        copyTestFile(BinaryFile_2015_0.BALANCES);
+        copier.copyTestFile(BinaryFile_2015_0.BALANCES, tempfolder);
         final Map<String, Long> expCount = new HashMap<String, Long>() {{
             put("C", (long) 33);
             put("D", (long) 34);
@@ -118,18 +119,6 @@ public class ParserTest {
     private <T> List<T> parse(BinaryFile_VismaAdmin200<T> bf) {
         Parser p = new Parser(tempfolder.getRoot().toPath());
         return p.parse(bf);
-    }
-
-    private void copyTestFile(BinaryFile_2015_0<?> bf) throws IOException {
-        final InputStream source = asStream(
-                PATH_TO_BINARY_FILES + bf.getFileName());
-        final File target = tempfolder.newFile(bf.getFileName());
-        Files.copy(source, target.toPath(),
-                new CopyOption[]{StandardCopyOption.REPLACE_EXISTING});
-    }
-
-    private InputStream asStream(String fullPath) {
-        return getClass().getResourceAsStream(fullPath);
     }
 
     private Year year(String id, String year, String from, String to) {

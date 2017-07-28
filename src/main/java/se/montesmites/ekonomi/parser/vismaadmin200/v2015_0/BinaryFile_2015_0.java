@@ -23,7 +23,7 @@ import se.montesmites.ekonomi.parser.vismaadmin200.Field;
 import se.montesmites.ekonomi.parser.vismaadmin200.Record;
 import se.montesmites.ekonomi.parser.vismaadmin200.RecordDefinition;
 
-abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
+public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
     public final static BinaryFile_2015_0<Year> YEARS
             = new BinaryFile_2015_0<Year>("BOKFAAR.DBF", 513, 89) {
