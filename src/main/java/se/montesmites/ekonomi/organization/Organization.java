@@ -16,16 +16,17 @@ public class Organization {
 
     public static Organization fromPath(Path path) {
         Parser p = new Parser(path);
-        OrganizationBuilder b = new OrganizationBuilder();
-        b.setYears(p.parse(YEARS));
-        b.setEvents(p.parse(EVENTS));
-        return b.build();
+        return new Organization(
+                p.parse(EVENTS),
+                p.parse(YEARS));
     }
 
     private final Map<java.time.Year, Year> yearsByYear;
     private final Map<EventId, Event> eventsByEventId;
 
-    Organization(Collection<Year> years, Collection<Event> events) {
+    private Organization(
+            Collection<Event> events,
+            Collection<Year> years) {
         this.yearsByYear = years.stream()
                 .collect(toMap(Year::getYear, identity()));
         this.eventsByEventId = events.stream()
