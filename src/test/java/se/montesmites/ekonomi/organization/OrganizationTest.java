@@ -32,7 +32,7 @@ public class OrganizationTest {
     }
     
     @Test
-    public void readYearByYear() throws Exception {
+    public void readYear_byYear_2012() throws Exception {
         Year year = organization.getYear(java.time.Year.of(2012)).get();
         YearId yearId = new YearId("C");
         assertEquals(yearId, year.getYearId());
@@ -41,7 +41,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readEvent_2012_A1() throws Exception {
+    public void readEvent_byEventId_2012A1() throws Exception {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         EventId eventId = new EventId(yearId, 1, new Series("A"));
         Event event = organization.getEvent(eventId).get();
