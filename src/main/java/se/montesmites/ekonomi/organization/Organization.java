@@ -2,10 +2,12 @@ package se.montesmites.ekonomi.organization;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
@@ -38,8 +40,8 @@ public class Organization {
     private final Map<EventId, Event> eventsByEventId;
     private final Map<java.time.Year, Year> yearsByYear;
 
-    private final Map<LocalDate, AccountIdAmountAggregate> accountAmountAggragatesByDate;
     private final Map<LocalDate, Map<AccountId, Currency>> accountAmountByDate;
+    private final Map<YearMonth, Map<AccountId, Currency>> accountAmountByYearMonth;
 
     private Organization(
             Collection<Account> accounts,
@@ -58,23 +60,27 @@ public class Organization {
         this.yearsByYear = years.stream()
                 .collect(toMap(Year::getYear, identity()));
 
-        this.accountAmountAggragatesByDate
-                = accountAmountAggregatesByDate(entries);
         this.accountAmountByDate
-                = accountAmountAggragatesByDate.entrySet().stream()
-                        .collect(toMap(
-                                Map.Entry::getKey,
-                                e -> e.getValue().asAccountIdAmountMap()));
+                = accountAmountAggregatesGrouper(entries, this::entryDate);
+        this.accountAmountByYearMonth
+                = accountAmountAggregatesGrouper(entries,
+                        entry -> YearMonth.from(entryDate(entry)));
     }
 
-    private Map<LocalDate, AccountIdAmountAggregate> accountAmountAggregatesByDate(Collection<Entry> entries) {
+    private <T> Map<T, Map<AccountId, Currency>> accountAmountAggregatesGrouper(
+            Collection<Entry> entries,
+            Function<Entry, T> keyMapper) {
         return entries.stream()
                 .collect(
                         toMap(
-                                this::entryDate,
+                                keyMapper::apply,
                                 AccountIdAmountAggregate::new,
                                 AccountIdAmountAggregate::merge
-                        ));
+                        ))
+                .entrySet().stream()
+                .collect(toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().asAccountIdAmountMap()));
     }
 
     public Optional<Year> getYear(java.time.Year year) {
@@ -91,6 +97,10 @@ public class Organization {
 
     public Optional<Map<AccountId, Currency>> getEntries(LocalDate date) {
         return Optional.ofNullable(accountAmountByDate.get(date));
+    }
+
+    public Optional<Map<AccountId, Currency>> getEntries(YearMonth yearMonth) {
+        return Optional.ofNullable(accountAmountByYearMonth.get(yearMonth));
     }
 
     public Optional<Account> getAccount(AccountId accountId) {

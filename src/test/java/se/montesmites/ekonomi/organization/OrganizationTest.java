@@ -1,9 +1,11 @@
 package se.montesmites.ekonomi.organization;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -81,9 +83,9 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readEntries_byDate_20120112() throws Exception {
+    public void readAccountAmount_byDate_20120112() throws Exception {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
-        List<AccountIdAmountTuple> tuples = Arrays.asList(
+        List<AccountIdAmountTuple> expTuples = Arrays.asList(
                 tuple(yearId, 1650, -1085600),
                 tuple(yearId, 1920, -50000000),
                 tuple(yearId, 1930, -8365353),
@@ -100,10 +102,72 @@ public class OrganizationTest {
         LocalDate date = LocalDate.parse("2012-01-12");
         Map<AccountId, Currency> actAmounts = organization.getEntries(date).get();
         Map<AccountId, Currency> expAmounts
-                = new AccountIdAmountAggregate(tuples).asAccountIdAmountMap();
-        assertEquals(expAmounts, actAmounts);
+                = new AccountIdAmountAggregate(expTuples).asAccountIdAmountMap();
+        mapEqualityAssertion(expAmounts, actAmounts);
     }
-
+    
+    @Test
+    public void readAccountAmount_byYearMonth_2012January() throws Exception {
+        YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
+        List<AccountIdAmountTuple> expTuples = Arrays.asList(
+                tuple(yearId, 1400, 12077000),
+                tuple(yearId, 1510, -32556400),
+                tuple(yearId, 1650, -98200),
+                tuple(yearId, 1710, 3200000),
+                tuple(yearId, 1910, -117000),
+                tuple(yearId, 1920, -29543100),
+                tuple(yearId, 1930, -7217100),
+                tuple(yearId, 1940, 50000000),
+                tuple(yearId, 2440, 881799),
+                tuple(yearId, 2510, 1400000),
+                tuple(yearId, 2710, 49700),
+                tuple(yearId, 2920, -711413),
+                tuple(yearId, 2940, -2588),
+                tuple(yearId, 2941, -229645),
+                tuple(yearId, 3041, -12807500),
+                tuple(yearId, 3051, -4370000),
+                tuple(yearId, 3590, -147000),
+                tuple(yearId, 3740, 98),
+                tuple(yearId, 3960, -764999),
+                tuple(yearId, 4010, 15099000),
+                tuple(yearId, 4990, -12077000),
+                tuple(yearId, 5010, 1600000),
+                tuple(yearId, 5090, 100320),
+                tuple(yearId, 5410, 446650),
+                tuple(yearId, 5611, 353544),
+                tuple(yearId, 5615, 371875),
+                tuple(yearId, 6071, 40000),
+                tuple(yearId, 6212, 256800),
+                tuple(yearId, 6250, 44000),
+                tuple(yearId, 6570, 8000),
+                tuple(yearId, 7010, 5188204),
+                tuple(yearId, 7082, 553604),
+                tuple(yearId, 7090, 135413),
+                tuple(yearId, 7210, 4800000),
+                tuple(yearId, 7290, 576000),
+                tuple(yearId, 7385, 413700),
+                tuple(yearId, 7399, -413700),
+                tuple(yearId, 7510, 3220693),
+                tuple(yearId, 7519, 229645),
+                tuple(yearId, 7690, 9600)
+        );
+        YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
+        Map<AccountId, Currency> actAmounts = organization.getEntries(yearMonth).get();
+        Map<AccountId, Currency> expAmounts
+                = new AccountIdAmountAggregate(expTuples).asAccountIdAmountMap();
+        mapEqualityAssertion(expAmounts, actAmounts);
+    }
+    
+    private <K, V> void mapEqualityAssertion(Map<K, V> expected, Map<K, V> actual) {
+        assertEquals(expected.size(), expected.size());
+        expected.entrySet().forEach(exp -> {
+            K key = exp.getKey();
+            V value = exp.getValue();
+            assertTrue(key.toString(), actual.containsKey(key));
+            assertEquals(key.toString(), value, actual.get(key));
+        });
+    }
+    
     @Test
     public void readAccount_byAccountId_20121920() throws Exception {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
