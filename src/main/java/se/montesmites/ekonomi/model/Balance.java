@@ -4,18 +4,12 @@ import java.util.Objects;
 
 public class Balance {
 
-    private final YearId yearId;
     private final AccountId accountId;
     private final Currency balance;
 
-    public Balance(YearId yearId, AccountId accountId, Currency balance) {
-        this.yearId = yearId;
+    public Balance(AccountId accountId, Currency balance) {
         this.accountId = accountId;
         this.balance = balance;
-    }
-
-    public YearId getYearId() {
-        return yearId;
     }
 
     public AccountId getAccountId() {
@@ -29,7 +23,6 @@ public class Balance {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.yearId);
         hash = 71 * hash + Objects.hashCode(this.accountId);
         hash = 71 * hash + Objects.hashCode(this.balance);
         return hash;
@@ -47,9 +40,6 @@ public class Balance {
             return false;
         }
         final Balance other = (Balance) obj;
-        if (!Objects.equals(this.yearId, other.yearId)) {
-            return false;
-        }
         if (!Objects.equals(this.accountId, other.accountId)) {
             return false;
         }
@@ -58,6 +48,6 @@ public class Balance {
 
     @Override
     public String toString() {
-        return "Balance{" + "yearId=" + yearId + ", accountId=" + accountId + ", balance=" + balance + '}';
+        return "Balance{" + "accountId=" + accountId + ", balance=" + balance + '}';
     }
 }

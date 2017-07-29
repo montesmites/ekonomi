@@ -109,7 +109,7 @@ public class ParserTest {
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.BALANCES)
                 .stream().collect(
                         Collectors.groupingBy(
-                                balance -> balance.getYearId().getId(),
+                                balance -> balance.getAccountId().getYearId().getId(),
                                 Collectors.counting()));
         assertEquals(expCount.entrySet(), actCount.entrySet());
     }

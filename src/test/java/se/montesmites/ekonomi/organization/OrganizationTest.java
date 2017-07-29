@@ -93,7 +93,6 @@ public class OrganizationTest {
         AccountId accountId = new AccountId(yearId, "1920");
         Balance balance = organization.getBalance(accountId).get();
         assertEquals(accountId, balance.getAccountId());
-        assertEquals(yearId, balance.getYearId());
         assertEquals(currency(83340012), balance.getBalance());
     }
 

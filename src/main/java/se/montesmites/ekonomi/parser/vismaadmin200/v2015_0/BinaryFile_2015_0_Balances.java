@@ -30,6 +30,6 @@ public class BinaryFile_2015_0_Balances extends BinaryFile_2015_0<Balance> {
         YearId yearid = new YearId(YEARID.extract(record));
         AccountId accountid = new AccountId(yearid, ACCOUNT.extract(record));
         Currency amount = AMOUNT.extract(record);
-        return new Balance(yearid, accountid, amount);
+        return new Balance(accountid, amount);
     }
 }
