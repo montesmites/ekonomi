@@ -10,10 +10,6 @@ import static se.montesmites.ekonomi.parser.vismaadmin200.DataType.CURRENCY;
 import static se.montesmites.ekonomi.parser.vismaadmin200.DataType.STRING;
 import se.montesmites.ekonomi.parser.vismaadmin200.Field;
 import se.montesmites.ekonomi.parser.vismaadmin200.Record;
-import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.ACCOUNTS;
-import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.ENTRIES;
-import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.EVENTS;
-import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.YEARS;
 
 public class BinaryFile_2015_0_Balances extends BinaryFile_2015_0<Balance> {
 

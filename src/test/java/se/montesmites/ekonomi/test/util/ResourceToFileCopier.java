@@ -14,7 +14,8 @@ public class ResourceToFileCopier {
     private final static String PATH_TO_BINARY_FILES = "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
 
     public void copyAll(TemporaryFolder tempfolder) {
-        BinaryFile_2015_0.values().stream().forEach(f -> copyTestFile(f, tempfolder));
+        BinaryFile_2015_0.values().stream().forEach(f -> copyTestFile(f,
+                tempfolder));
     }
 
     public void copyTestFile(BinaryFile_2015_0<?> source, TemporaryFolder target) {

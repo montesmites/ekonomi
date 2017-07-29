@@ -13,7 +13,7 @@ public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T
     public final static BinaryFile_2015_0_Events EVENTS = new BinaryFile_2015_0_Events();
     public final static BinaryFile_2015_0_Entries ENTRIES = new BinaryFile_2015_0_Entries();
     public final static BinaryFile_2015_0_Balances BALANCES = new BinaryFile_2015_0_Balances();
-    
+
     public final static List<BinaryFile_2015_0<?>> values() {
         return Arrays.asList(ACCOUNTS, BALANCES, ENTRIES, EVENTS, YEARS);
     }
