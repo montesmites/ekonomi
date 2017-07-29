@@ -2,30 +2,26 @@ package se.montesmites.ekonomi.model;
 
 public class Currency {
 
-    private final int decimals;
+    private final int decimals = 2;
+    private final double divisor = Math.pow(10, decimals);
     private final long amount;
 
     public Currency(long amount) {
-        this(2, amount);
-    }
-
-    public Currency(int decimals, long amount) {
-        this.decimals = decimals;
         this.amount = amount;
     }
-
-    public int getDecimals() {
-        return decimals;
+    
+    public Currency add(Currency that) {
+        return new Currency(this.amount + that.amount);
     }
-
+    
     public long getAmount() {
         return amount;
     }
 
     public double toDouble() {
-        return (double) amount / Math.pow(10, decimals);
+        return (double) amount / divisor;
     }
-
+    
     public String format() {
         String fmt = "%.2f";
         String msg = String.format(fmt, toDouble());
