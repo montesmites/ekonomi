@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.organization;
 
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,10 @@ import static java.util.stream.Collectors.*;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
+import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.Year;
+import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 
 public class Organization {
 
@@ -35,6 +38,9 @@ public class Organization {
     private final Map<EventId, Event> eventsByEventId;
     private final Map<java.time.Year, Year> yearsByYear;
 
+    private final Map<LocalDate, AccountIdAmountAggregate> accountAmountAggragatesByDate;
+    private final Map<LocalDate, Map<AccountId, Currency>> accountAmountByDate;
+
     private Organization(
             Collection<Account> accounts,
             Collection<Balance> balances,
@@ -51,6 +57,24 @@ public class Organization {
                 .collect(toMap(Event::getEventId, identity()));
         this.yearsByYear = years.stream()
                 .collect(toMap(Year::getYear, identity()));
+
+        this.accountAmountAggragatesByDate
+                = accountAmountAggregatesByDate(entries);
+        this.accountAmountByDate
+                = accountAmountAggragatesByDate.entrySet().stream()
+                        .collect(toMap(
+                                Map.Entry::getKey,
+                                e -> e.getValue().asAccountIdAmountMap()));
+    }
+
+    private Map<LocalDate, AccountIdAmountAggregate> accountAmountAggregatesByDate(Collection<Entry> entries) {
+        return entries.stream()
+                .collect(
+                        toMap(
+                                this::entryDate,
+                                AccountIdAmountAggregate::new,
+                                AccountIdAmountAggregate::merge
+                        ));
     }
 
     public Optional<Year> getYear(java.time.Year year) {
@@ -65,11 +89,19 @@ public class Organization {
         return Optional.ofNullable(entriesByEventId.get(eventId));
     }
 
+    public Optional<Map<AccountId, Currency>> getEntries(LocalDate date) {
+        return Optional.ofNullable(accountAmountByDate.get(date));
+    }
+
     public Optional<Account> getAccount(AccountId accountId) {
         return Optional.ofNullable(accountsByAccountId.get(accountId));
     }
 
     public Optional<Balance> getBalance(AccountId accountId) {
         return Optional.ofNullable(balancesByAccountId.get(accountId));
+    }
+
+    private LocalDate entryDate(Entry entry) {
+        return getEvent(entry.getEventId()).get().getDate();
     }
 }

@@ -17,6 +17,7 @@ import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 import static java.util.Comparator.*;
+import java.util.Map;
 import static java.util.stream.Collectors.*;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
@@ -25,6 +26,8 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.EntryEvent;
 import se.montesmites.ekonomi.model.EntryStatus;
+import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
+import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 
 public class OrganizationTest {
 
@@ -72,9 +75,33 @@ public class OrganizationTest {
                 .sorted(comparing(entry -> entry.getAccountId().getId()))
                 .collect(toList());
         List<Entry> expEntries = Arrays.asList(
-                entry(eventId, "1920", -50000000),
-                entry(eventId, "1940", 50000000));
+                entry(eventId, 1920, -50000000),
+                entry(eventId, 1940, 50000000));
         assertEquals(expEntries, actEntries);
+    }
+
+    @Test
+    public void readEntries_byDate_20120112() throws Exception {
+        YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
+        List<AccountIdAmountTuple> tuples = Arrays.asList(
+                tuple(yearId, 1650, -1085600),
+                tuple(yearId, 1920, -50000000),
+                tuple(yearId, 1930, -8365353),
+                tuple(yearId, 1940, 50000000),
+                tuple(yearId, 2440, 1463852),
+                tuple(yearId, 2510, 1400000),
+                tuple(yearId, 2710, 3361000),
+                tuple(yearId, 2940, 3527105),
+                tuple(yearId, 3740, -005),
+                tuple(yearId, 3960, 001),
+                tuple(yearId, 6570, 8000),
+                tuple(yearId, 7510, -309000))
+                .stream().collect(toList());
+        LocalDate date = LocalDate.parse("2012-01-12");
+        Map<AccountId, Currency> actAmounts = organization.getEntries(date).get();
+        Map<AccountId, Currency> expAmounts
+                = new AccountIdAmountAggregate(tuples).asAccountIdAmountMap();
+        assertEquals(expAmounts, actAmounts);
     }
 
     @Test
@@ -96,13 +123,23 @@ public class OrganizationTest {
         assertEquals(currency(83340012), balance.getBalance());
     }
 
-    private Entry entry(EventId eventId, String account, long amount) {
-        return new Entry(eventId, new AccountId(eventId.getYearId(), account),
-                currency(amount), new EntryStatus(EntryStatus.Status.ACTIVE,
-                EntryEvent.ORIGINAL));
+    private Entry entry(EventId eventId, int account, long amount) {
+        return new Entry(
+                eventId,
+                new AccountId(
+                        eventId.getYearId(),
+                        Integer.toString(account)),
+                currency(amount),
+                new EntryStatus(EntryStatus.Status.ACTIVE, EntryEvent.ORIGINAL));
     }
 
     private Currency currency(long amount) {
         return new Currency(amount);
+    }
+
+    private AccountIdAmountTuple tuple(YearId yearId, int account, long amount) {
+        return new AccountIdAmountTuple(
+                new AccountId(yearId, Integer.toString(account)),
+                new Currency(amount));
     }
 }
