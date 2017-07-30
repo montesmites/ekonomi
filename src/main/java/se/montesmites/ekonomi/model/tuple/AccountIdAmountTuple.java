@@ -1,7 +1,5 @@
 package se.montesmites.ekonomi.model.tuple;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;

@@ -17,10 +17,10 @@ import static java.util.stream.Collectors.*;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
-import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
+import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 
 public class Organization {
 
@@ -40,8 +40,8 @@ public class Organization {
     private final Map<EventId, Event> eventsByEventId;
     private final Map<java.time.Year, Year> yearsByYear;
 
-    private final Map<LocalDate, Map<AccountId, Currency>> accountAmountByDate;
-    private final Map<YearMonth, Map<AccountId, Currency>> accountAmountByYearMonth;
+    private final Map<LocalDate, List<AccountIdAmountTuple>> accountAmountByDate;
+    private final Map<YearMonth, List<AccountIdAmountTuple>> accountAmountByYearMonth;
 
     private Organization(
             Collection<Account> accounts,
@@ -67,7 +67,7 @@ public class Organization {
                         entry -> YearMonth.from(entryDate(entry)));
     }
 
-    private <T> Map<T, Map<AccountId, Currency>> accountAmountAggregatesGrouper(
+    private <T> Map<T, List<AccountIdAmountTuple>> accountAmountAggregatesGrouper(
             Collection<Entry> entries,
             Function<Entry, T> keyMapper) {
         return entries.stream()
@@ -80,7 +80,7 @@ public class Organization {
                 .entrySet().stream()
                 .collect(toMap(
                         Map.Entry::getKey,
-                        e -> e.getValue().asAccountIdAmountMap()));
+                        e -> e.getValue().getTuples()));
     }
 
     public Optional<Year> getYear(java.time.Year year) {
@@ -95,11 +95,11 @@ public class Organization {
         return Optional.ofNullable(entriesByEventId.get(eventId));
     }
 
-    public Optional<Map<AccountId, Currency>> getEntries(LocalDate date) {
+    public Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(LocalDate date) {
         return Optional.ofNullable(accountAmountByDate.get(date));
     }
 
-    public Optional<Map<AccountId, Currency>> getEntries(YearMonth yearMonth) {
+    public Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
         return Optional.ofNullable(accountAmountByYearMonth.get(yearMonth));
     }
 

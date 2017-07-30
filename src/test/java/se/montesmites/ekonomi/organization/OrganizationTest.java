@@ -28,6 +28,7 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.EntryEvent;
 import se.montesmites.ekonomi.model.EntryStatus;
+import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 import static se.montesmites.ekonomi.test.util.AccountIdAmountAggregateExpectedElements.*;
 
@@ -86,7 +87,8 @@ public class OrganizationTest {
     public void readAccountAmount_byDate_20120112() throws Exception {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         LocalDate date = LocalDate.parse("2012-01-12");
-        Map<AccountId, Currency> actAmounts = organization.getEntries(date).get();
+        Map<AccountId, Currency> actAmounts = new AccountIdAmountAggregate(
+                organization.getAccountIdAmountTuples(date).get()).asAccountIdAmountMap();
         Map<AccountId, Currency> expAmounts = BY_DATE_20120112.getAggregate(
                 yearId).asAccountIdAmountMap();
         mapEqualityAssertion(expAmounts, actAmounts);
@@ -96,7 +98,8 @@ public class OrganizationTest {
     public void readAccountAmount_byYearMonth_2012January() throws Exception {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
-        Map<AccountId, Currency> actAmounts = organization.getEntries(yearMonth).get();
+        Map<AccountId, Currency> actAmounts = new AccountIdAmountAggregate(
+                organization.getAccountIdAmountTuples(yearMonth).get()).asAccountIdAmountMap();
         Map<AccountId, Currency> expAmounts
                 = BY_YEARMONTH_201201.getAggregate(yearId).asAccountIdAmountMap();
         mapEqualityAssertion(expAmounts, actAmounts);
