@@ -10,6 +10,7 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
 
@@ -43,7 +44,12 @@ public class CashflowReportBuilder {
             public String getDescription() {
                 return accountId.getId();
             }
-
+            
+            @Override
+            public Optional<Balance> getBalance() {
+                return organization.getBalance(accountId);
+            }
+            
             @Override
             public Optional<Currency> getAmount(YearMonth yearMonth) {
                 Optional<Currency> amount

@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import static org.junit.Assert.*;
 import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 
@@ -27,6 +28,8 @@ public class CashflowReport_NoAccountGroups_Test {
     public static TemporaryFolder tempfolder = new TemporaryFolder();
 
     private final Year year = Year.of(2012);
+    private YearId yearId;
+
     private Organization organization;
     private CashflowReportBuilder builder;
     private CashflowReport report;
@@ -40,6 +43,7 @@ public class CashflowReport_NoAccountGroups_Test {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.yearId = organization.getYear(year).get().getYearId();
         this.builder = new CashflowReportBuilder(this.organization);
         this.report = builder.build(year);
     }
@@ -64,25 +68,37 @@ public class CashflowReport_NoAccountGroups_Test {
                 .forEach(ym -> assertAccountYearMonthAmount(row, ym)));
     }
 
-    private void assertAccountYearMonthAmount(Row row, YearMonth ym) {
-        final Optional<Currency> exp = getAccountMonthAmount(row, ym);
-        final Optional<Currency> act = row.getAmount(ym);
+    @Test
+    public void assertBalances() {
+        report.getRows().stream()
+                .forEach(row -> assertBalance(row));
+    }
+
+    private void assertAccountYearMonthAmount(Row row, YearMonth yearMonth) {
+        final Optional<Currency> exp
+                = organization.getAccountIdAmountMap(yearMonth)
+                        .map(m -> m.get(accountId(row)));
+        final Optional<Currency> act = row.getAmount(yearMonth);
         String fmt = "%s (%s)";
-        String msg = String.format(fmt, row.getDescription(), ym);
+        String msg = String.format(fmt, row.getDescription(), yearMonth);
         assertEquals(msg, exp, act);
     }
 
-    private Optional<Currency> getAccountMonthAmount(Row row, YearMonth yearMonth) {
-        final YearId yearId = organization.getYear(
-                Year.of(yearMonth.getYear())).get().getYearId();
-        final AccountId accountId = new AccountId(yearId, row.getDescription());
-        final Optional<Currency> amount
-                = organization.getAccountIdAmountMap(yearMonth)
-                        .map(m -> m.get(accountId));
-        return amount;
+    private void assertBalance(Row row) {
+        final Optional<Balance> exp
+                = organization.getBalance(accountId(row));
+        final Optional<Balance> act
+                = row.getBalance();
+        String fmt = "%s";
+        String msg = String.format(fmt, row.getDescription());
+        assertEquals(msg, exp, act);
     }
 
     private Stream<YearMonth> yearMonths() {
         return stream(Month.values()).map(m -> YearMonth.of(year.getValue(), m));
+    }
+
+    private AccountId accountId(Row row) {
+        return new AccountId(yearId, row.getDescription());
     }
 }
