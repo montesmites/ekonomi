@@ -3,11 +3,11 @@ package se.montesmites.ekonomi.report;
 import java.util.stream.Stream;
 
 public class Section {
-    private final AccountAmountFetcher fetcher;
+    private final CashflowDataFetcher fetcher;
     private final java.time.Year year;
     private HeaderRow header;
     
-    public Section(AccountAmountFetcher fetcher, java.time.Year year) {
+    public Section(CashflowDataFetcher fetcher, java.time.Year year) {
         this.fetcher = fetcher;
         this.year = year;
     }

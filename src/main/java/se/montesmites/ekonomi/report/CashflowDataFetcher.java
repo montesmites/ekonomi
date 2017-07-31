@@ -12,11 +12,11 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
 
-public class AccountAmountFetcher {
+public class CashflowDataFetcher {
 
     private final Organization organization;
 
-    public AccountAmountFetcher(Organization organization) {
+    public CashflowDataFetcher(Organization organization) {
         this.organization = organization;
     }
 

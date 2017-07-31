@@ -21,7 +21,7 @@ public class CashflowReport_NoTemplate_Test {
     private final Year year = Year.of(2012);
 
     private Organization organization;
-    private AccountAmountFetcher fetcher;
+    private CashflowDataFetcher fetcher;
     private CashflowReport report;
     private Section section;
 
@@ -34,7 +34,7 @@ public class CashflowReport_NoTemplate_Test {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
-        this.fetcher = new AccountAmountFetcher(this.organization);
+        this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year);
         this.section = report.sectionStream().findFirst().get();
     }

@@ -5,10 +5,10 @@ import java.util.stream.Stream;
 
 public class CashflowReport {
 
-    private final AccountAmountFetcher fetcher;
+    private final CashflowDataFetcher fetcher;
     private final java.time.Year year;
 
-    public CashflowReport(AccountAmountFetcher fetcher, java.time.Year year) {
+    public CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
         this.fetcher = fetcher;
         this.year = year;
     }
