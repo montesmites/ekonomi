@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.*;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
+import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
@@ -42,6 +43,7 @@ public class Organization {
 
     private final Map<LocalDate, List<AccountIdAmountTuple>> accountAmountByDate;
     private final Map<YearMonth, List<AccountIdAmountTuple>> accountAmountByYearMonth;
+    private final Map<YearMonth, Map<AccountId, Currency>> accountAmountByYearMonthMap;
 
     private Organization(
             Collection<Account> accounts,
@@ -61,26 +63,32 @@ public class Organization {
                 .collect(toMap(Year::getYear, identity()));
 
         this.accountAmountByDate
-                = accountAmountAggregatesGrouper(entries, this::entryDate);
+                = aggregatesGrouper(accountIdAmountMap(entries, this::entryDate));
+        Map<YearMonth, AccountIdAmountAggregate> aggregatesMap = accountIdAmountMap(
+                entries, entry -> YearMonth.from(entryDate(entry)));
         this.accountAmountByYearMonth
-                = accountAmountAggregatesGrouper(entries,
-                        entry -> YearMonth.from(entryDate(entry)));
+                = aggregatesGrouper(aggregatesMap);
+        this.accountAmountByYearMonthMap
+                = aggregatesMap.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, e -> e.getValue().asAccountIdAmountMap()));
     }
 
-    private <T> Map<T, List<AccountIdAmountTuple>> accountAmountAggregatesGrouper(
-            Collection<Entry> entries,
-            Function<Entry, T> keyMapper) {
+    private <T> Map<T, List<AccountIdAmountTuple>> aggregatesGrouper(
+            Map<T, AccountIdAmountAggregate> aggregates) {
+        return aggregates.entrySet().stream()
+                .collect(toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().getTuples()));
+    }
+
+    private <T> Map<T, AccountIdAmountAggregate> accountIdAmountMap(Collection<Entry> entries, Function<Entry, T> keyMapper) {
         return entries.stream()
                 .collect(
                         toMap(
                                 keyMapper::apply,
                                 AccountIdAmountAggregate::new,
                                 AccountIdAmountAggregate::merge
-                        ))
-                .entrySet().stream()
-                .collect(toMap(
-                        Map.Entry::getKey,
-                        e -> e.getValue().getTuples()));
+                        ));
     }
 
     public Optional<Year> getYear(java.time.Year year) {
@@ -102,7 +110,11 @@ public class Organization {
     public Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
         return Optional.ofNullable(accountAmountByYearMonth.get(yearMonth));
     }
-
+    
+    public Optional<Map<AccountId, Currency>> getAccountIdAmountMap(YearMonth yearMonth) {
+        return Optional.ofNullable(accountAmountByYearMonthMap.get(yearMonth));
+    }
+    
     public Optional<Account> getAccount(AccountId accountId) {
         return Optional.ofNullable(accountsByAccountId.get(accountId));
     }
