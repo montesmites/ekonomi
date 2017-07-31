@@ -35,7 +35,7 @@ public class CashflowReport_NoTemplate_Test {
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
         this.fetcher = new AccountAmountFetcher(this.organization);
-        this.report = new CashflowReport(fetcher);
+        this.report = new CashflowReport(fetcher, year);
         this.section = report.sectionStream().findFirst().get();
     }
 
@@ -45,13 +45,17 @@ public class CashflowReport_NoTemplate_Test {
     }
 
     @Test
-    public void onlySectionHeader_columnLabels() {
-        Row header = section.getHeader();
+    public void columnLabels() {
         List<String> expColumnLabels = Arrays.asList("Description", "Jan", "Feb",
                 "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
                 "Dec", "Total");
-        List<String> actColumnLabels = header.columnStream().map(
+        List<String> actColumnLabels = report.columnStream().map(
                 Column::getLabel).collect(toList());
         assertEquals(expColumnLabels, actColumnLabels);
+    }
+    
+    @Test
+    public void body_rowCount() {
+        assertEquals(fetcher.streamAccountIds(year).count(), section.bodyStream().count());
     }
 }
