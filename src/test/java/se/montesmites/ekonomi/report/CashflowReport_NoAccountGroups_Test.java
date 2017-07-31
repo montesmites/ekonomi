@@ -21,12 +21,15 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 
-public class CashflowReportTest {
+public class CashflowReport_NoAccountGroups_Test {
 
     @ClassRule
     public static TemporaryFolder tempfolder = new TemporaryFolder();
 
+    private final Year year = Year.of(2012);
     private Organization organization;
+    private CashflowReportBuilder builder;
+    private CashflowReport report;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -37,15 +40,13 @@ public class CashflowReportTest {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.builder = new CashflowReportBuilder(this.organization);
+        this.report = builder.build(year);
     }
 
     @Test
-    public void cashflowReportCalendarYear_noRowModel() {
-        CashflowReportBuilder builder = new CashflowReportBuilder(
-                this.organization);
-        final Year year = Year.of(2012);
-        CashflowReport report = builder.build(year);
-        final List<String> expRowDescriptions = yearMonths(year).flatMap(
+    public void cashflowReport_noAccountGroups_assertRows() {
+        final List<String> expRowDescriptions = yearMonths().flatMap(
                 ym -> organization.getAccountIdAmountTuples(ym).get().stream().map(
                         t -> t.getAccountId().getId())).distinct().sorted(
                         naturalOrder()).collect(toList());
@@ -54,15 +55,13 @@ public class CashflowReportTest {
                         .map(Row::getDescription)
                         .collect(toList());
         assertEquals(expRowDescriptions, actRowDescriptions);
-        assertColumns(report, year);
     }
 
-    private void assertColumns(CashflowReport report, Year year) {
+    @Test
+    public void assertYearMonthColumns() {
         report.getRows().stream()
-                .forEach(row
-                        -> yearMonths(year)
-                        .forEach(ym
-                                -> assertAccountYearMonthAmount(row, ym)));
+                .forEach(row -> yearMonths()
+                .forEach(ym -> assertAccountYearMonthAmount(row, ym)));
     }
 
     private void assertAccountYearMonthAmount(Row row, YearMonth ym) {
@@ -83,7 +82,7 @@ public class CashflowReportTest {
         return amount;
     }
 
-    private Stream<YearMonth> yearMonths(Year year) {
+    private Stream<YearMonth> yearMonths() {
         return stream(Month.values()).map(m -> YearMonth.of(year.getValue(), m));
     }
 }
