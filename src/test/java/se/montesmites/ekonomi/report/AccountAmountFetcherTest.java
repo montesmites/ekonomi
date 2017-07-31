@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
-import se.montesmites.ekonomi.model.YearId;
 
 public class AccountAmountFetcherTest {
 
@@ -28,7 +27,6 @@ public class AccountAmountFetcherTest {
     public static TemporaryFolder tempfolder = new TemporaryFolder();
 
     private final Year year = Year.of(2012);
-    private YearId yearId;
 
     private Organization organization;
     private AccountAmountFetcher fetcher;
@@ -42,7 +40,6 @@ public class AccountAmountFetcherTest {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
-        this.yearId = organization.getYear(year).get().getYearId();
         this.fetcher = new AccountAmountFetcher(this.organization);
     }
 
