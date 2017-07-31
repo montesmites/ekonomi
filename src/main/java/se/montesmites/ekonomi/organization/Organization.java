@@ -8,20 +8,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import se.montesmites.ekonomi.model.Event;
-import se.montesmites.ekonomi.model.EventId;
-import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
-import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.*;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
+import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
+import se.montesmites.ekonomi.model.Event;
+import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
+import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
+import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.*;
 
 public class Organization {
 
@@ -34,7 +35,9 @@ public class Organization {
                 p.parse(EVENTS),
                 p.parse(YEARS));
     }
-
+    
+    private final Collection<Year> years;
+    
     private final Map<AccountId, Account> accountsByAccountId;
     private final Map<AccountId, Balance> balancesByAccountId;
     private final Map<EventId, List<Entry>> entriesByEventId;
@@ -51,6 +54,8 @@ public class Organization {
             Collection<Entry> entries,
             Collection<Event> events,
             Collection<Year> years) {
+        this.years = years;
+        
         this.accountsByAccountId = accounts.stream()
                 .collect(toMap(Account::getAccountId, identity()));
         this.balancesByAccountId = balances.stream()
@@ -90,7 +95,11 @@ public class Organization {
                                 AccountIdAmountAggregate::merge
                         ));
     }
-
+    
+    public Stream<Year> yearsStream() {
+        return years.stream();
+    }
+    
     public Optional<Year> getYear(java.time.Year year) {
         return Optional.ofNullable(yearsByYear.get(year));
     }

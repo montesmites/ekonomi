@@ -4,33 +4,33 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.Arrays;
+import static java.util.Comparator.*;
 import java.util.List;
+import java.util.Map;
+import static java.util.stream.Collectors.*;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.Event;
-import se.montesmites.ekonomi.model.EventId;
-import se.montesmites.ekonomi.model.Series;
-import se.montesmites.ekonomi.model.Year;
-import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
-import static java.util.Comparator.*;
-import java.util.Map;
-import static java.util.stream.Collectors.*;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.AccountStatus;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.EntryEvent;
 import se.montesmites.ekonomi.model.EntryStatus;
+import se.montesmites.ekonomi.model.Event;
+import se.montesmites.ekonomi.model.EventId;
+import se.montesmites.ekonomi.model.Series;
+import se.montesmites.ekonomi.model.Year;
+import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 import static se.montesmites.ekonomi.test.util.AccountIdAmountAggregateExpectedElements.*;
+import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class OrganizationTest {
 
@@ -49,7 +49,20 @@ public class OrganizationTest {
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
     }
-
+    
+    @Test
+    public void streamYears() throws Exception {
+        final List<java.time.Year> expYears
+                = Arrays.asList(2012, 2013, 2014, 2015).stream()
+                .map(java.time.Year::of)
+                .collect(toList());
+        final List<java.time.Year> actYears
+                = organization.yearsStream()
+                        .map(y -> y.getYear())
+                        .collect(toList());
+        assertEquals(expYears, actYears);
+    }
+    
     @Test
     public void readYear_byYear_2012() throws Exception {
         Year year = organization.getYear(java.time.Year.of(2012)).get();
