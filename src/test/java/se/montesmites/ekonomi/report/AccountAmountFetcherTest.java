@@ -22,7 +22,7 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 
-public class CashflowReport_NoAccountGroups_Test {
+public class AccountAmountFetcherTest {
 
     @ClassRule
     public static TemporaryFolder tempfolder = new TemporaryFolder();
@@ -31,8 +31,7 @@ public class CashflowReport_NoAccountGroups_Test {
     private YearId yearId;
 
     private Organization organization;
-    private CashflowReportBuilder builder;
-    private CashflowReport report;
+    private AccountAmountFetcher fetcher;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -44,61 +43,52 @@ public class CashflowReport_NoAccountGroups_Test {
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
         this.yearId = organization.getYear(year).get().getYearId();
-        this.builder = new CashflowReportBuilder(this.organization);
-        this.report = builder.build(year);
+        this.fetcher = new AccountAmountFetcher(this.organization);
     }
 
     @Test
-    public void cashflowReport_noAccountGroups_assertRows() {
-        final List<String> expRowDescriptions = yearMonths().flatMap(
+    public void assertAccountIds() {
+        final List<AccountId> expAccountIds = yearMonths().flatMap(
                 ym -> organization.getAccountIdAmountTuples(ym).get().stream().map(
-                        t -> t.getAccountId().getId())).distinct().sorted(
-                        naturalOrder()).collect(toList());
-        final List<String> actRowDescriptions
-                = report.getRows().stream()
-                        .map(Row::getDescription)
-                        .collect(toList());
-        assertEquals(expRowDescriptions, actRowDescriptions);
+                        t -> t.getAccountId())).distinct().sorted(
+                        comparing(AccountId::getId)).collect(toList());
+        final List<AccountId> actAccountIds
+                = fetcher.streamAccountIds(year).collect(toList());
+        assertEquals(expAccountIds, actAccountIds);
     }
 
     @Test
     public void assertYearMonthColumns() {
-        report.getRows().stream()
-                .forEach(row -> yearMonths()
-                .forEach(ym -> assertAccountYearMonthAmount(row, ym)));
+        fetcher.streamAccountIds(year)
+                .forEach(accountId -> yearMonths()
+                .forEach(ym -> assertAccountYearMonthAmount(accountId, ym)));
     }
 
     @Test
     public void assertBalances() {
-        report.getRows().stream()
-                .forEach(row -> assertBalance(row));
+        fetcher.streamAccountIds(year)
+                .forEach(accountId -> assertBalance(accountId));
     }
 
-    private void assertAccountYearMonthAmount(Row row, YearMonth yearMonth) {
+    private void assertAccountYearMonthAmount(AccountId accountId, YearMonth yearMonth) {
         final Optional<Currency> exp
                 = organization.getAccountIdAmountMap(yearMonth)
-                        .map(m -> m.get(accountId(row)));
-        final Optional<Currency> act = row.getAmount(yearMonth);
+                        .map(m -> m.get(accountId));
+        final Optional<Currency> act = fetcher.fetchAmount(accountId, yearMonth);
         String fmt = "%s (%s)";
-        String msg = String.format(fmt, row.getDescription(), yearMonth);
+        String msg = String.format(fmt, accountId.getId(), yearMonth);
         assertEquals(msg, exp, act);
     }
 
-    private void assertBalance(Row row) {
-        final Optional<Balance> exp
-                = organization.getBalance(accountId(row));
-        final Optional<Balance> act
-                = row.getBalance();
+    private void assertBalance(AccountId accountId) {
+        final Optional<Balance> exp = organization.getBalance(accountId);
+        final Optional<Balance> act = fetcher.fetchBalance(accountId);
         String fmt = "%s";
-        String msg = String.format(fmt, row.getDescription());
+        String msg = String.format(fmt, accountId.getId());
         assertEquals(msg, exp, act);
     }
 
     private Stream<YearMonth> yearMonths() {
         return stream(Month.values()).map(m -> YearMonth.of(year.getValue(), m));
-    }
-
-    private AccountId accountId(Row row) {
-        return new AccountId(yearId, row.getDescription());
     }
 }
