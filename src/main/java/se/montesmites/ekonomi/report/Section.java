@@ -13,7 +13,7 @@ public class Section {
         this.fetcher = fetcher;
         this.year = year;
         this.header = new HeaderRow();
-        this.footer = new FooterRow();
+        this.footer = new FooterRow(this, year);
     }
 
     public HeaderRow getHeader() {
