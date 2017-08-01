@@ -28,7 +28,6 @@ import se.montesmites.ekonomi.model.Series;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
-import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 import static se.montesmites.ekonomi.test.util.AccountIdAmountAggregateExpectedElements.*;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
@@ -159,11 +158,5 @@ public class OrganizationTest {
 
     private Currency currency(long amount) {
         return new Currency(amount);
-    }
-
-    private AccountIdAmountTuple tuple(YearId yearId, int account, long amount) {
-        return new AccountIdAmountTuple(
-                new AccountId(yearId, Integer.toString(account)),
-                new Currency(amount));
     }
 }
