@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
@@ -67,6 +68,19 @@ public class CashflowReport_NoTemplate_Test {
     }
 
     @Test
+    public void body_rowLabels() {
+        List<String> exp
+                = fetcher.streamAccountIds(year)
+                        .map(AccountId::getId)
+                        .collect(toList());
+        List<String> act
+                = section.bodyStream()
+                        .map(row -> row.getAccountId().getId())
+                        .collect(toList());
+        assertEquals(exp, act);
+    }
+
+    @Test
     public void body_monthlyAmounts() {
         section.bodyStream().forEach(bodyRow
                 -> yearMonths().forEach(yearMonth
@@ -83,12 +97,12 @@ public class CashflowReport_NoTemplate_Test {
         String msg = String.format(fmt, row.getAccountId(), yearMonth);
         assertEquals(msg, exp, act);
     }
-    
+
     @Test
     public void body_yearlyTotals() {
         section.bodyStream().forEach(this::assertBodyRowYearlyTotal);
     }
-    
+
     private void assertBodyRowYearlyTotal(BodyRow row) {
         Currency exp = organization.streamEntries()
                 .filter(e -> e.getAccountId().equals(row.getAccountId()))
