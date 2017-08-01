@@ -23,6 +23,11 @@ public class BodyRow implements Row {
     public AccountId getAccountId() {
         return accountId;
     }
+    
+    @Override
+    public String getDescription() {
+        return accountId.getId();
+    }
 
     public Optional<Currency> getMonthlyAmount(YearMonth yearMonth) {
         return fetcher.fetchAmount(accountId, yearMonth);

@@ -6,11 +6,12 @@ public class Section {
 
     private final CashflowDataFetcher fetcher;
     private final java.time.Year year;
-    private HeaderRow header;
+    private final HeaderRow header;
 
     public Section(CashflowDataFetcher fetcher, java.time.Year year) {
         this.fetcher = fetcher;
         this.year = year;
+        this.header = new HeaderRow();
     }
 
     public HeaderRow getHeader() {

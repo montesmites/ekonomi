@@ -60,7 +60,13 @@ public class CashflowReport_NoTemplate_Test {
                 Column::getLabel).collect(toList());
         assertEquals(expColumnLabels, actColumnLabels);
     }
-
+    
+    @Test
+    public void header_description() {
+        HeaderRow header = section.getHeader();
+        assertEquals("Description", header.getDescription());
+    }
+    
     @Test
     public void body_rowCount() {
         assertEquals(fetcher.streamAccountIds(year).count(),
@@ -75,7 +81,7 @@ public class CashflowReport_NoTemplate_Test {
                         .collect(toList());
         List<String> act
                 = section.streamBodyRows()
-                        .map(row -> row.getAccountId().getId())
+                        .map(Row::getDescription)
                         .collect(toList());
         assertEquals(exp, act);
     }
