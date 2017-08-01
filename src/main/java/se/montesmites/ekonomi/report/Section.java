@@ -19,6 +19,6 @@ public class Section {
 
     public Stream<BodyRow> bodyStream() {
         return fetcher.streamAccountIds(year)
-                .map(accountId -> new BodyRow(fetcher, accountId));
+                .map(accountId -> new BodyRow(fetcher, accountId, year));
     }
 }

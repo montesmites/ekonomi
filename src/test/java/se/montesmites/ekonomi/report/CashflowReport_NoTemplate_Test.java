@@ -83,6 +83,22 @@ public class CashflowReport_NoTemplate_Test {
         String msg = String.format(fmt, row.getAccountId(), yearMonth);
         assertEquals(msg, exp, act);
     }
+    
+    @Test
+    public void body_yearlyTotals() {
+        section.bodyStream().forEach(this::assertBodyRowYearlyTotal);
+    }
+    
+    private void assertBodyRowYearlyTotal(BodyRow row) {
+        Currency exp = organization.streamEntries()
+                .filter(e -> e.getAccountId().equals(row.getAccountId()))
+                .map(e -> e.getAmount())
+                .reduce(new Currency(0), (sum, term) -> sum.add(term));
+        Currency act = row.getYearlyTotal();
+        String fmt = "%s";
+        String msg = String.format(fmt, row.getAccountId());
+        assertEquals(msg, exp, act);
+    }
 
     private Stream<YearMonth> yearMonths() {
         return stream(Month.values()).map(m -> YearMonth.of(year.getValue(), m));
