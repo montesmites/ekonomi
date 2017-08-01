@@ -5,6 +5,7 @@ import java.time.Month;
 import java.time.YearMonth;
 import java.util.Arrays;
 import static java.util.Comparator.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static java.util.stream.Collectors.*;
@@ -48,20 +49,37 @@ public class OrganizationTest {
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
     }
-    
+
     @Test
     public void streamYears() throws Exception {
         final List<java.time.Year> expYears
                 = Arrays.asList(2012, 2013, 2014, 2015).stream()
-                .map(java.time.Year::of)
-                .collect(toList());
+                        .map(java.time.Year::of)
+                        .collect(toList());
         final List<java.time.Year> actYears
-                = organization.yearsStream()
+                = organization.streamYears()
                         .map(y -> y.getYear())
                         .collect(toList());
         assertEquals(expYears, actYears);
     }
-    
+
+    @Test
+    public void streamEntries() throws Exception {
+        final Map<String, Long> expCount = new HashMap<String, Long>() {
+            {
+                put("C", (long) 1306);
+                put("D", (long) 1404);
+                put("E", (long) 1344);
+                put("F", (long) 218);
+            }
+        };
+        final Map<String, Long> actCount = organization.streamEntries()
+                .collect(groupingBy(
+                        e -> e.getEventId().getYearId().getId(),
+                        counting()));
+        assertEquals(expCount.entrySet(), actCount.entrySet());
+    }
+
     @Test
     public void readYear_byYear_2012() throws Exception {
         Year year = organization.getYear(java.time.Year.of(2012)).get();

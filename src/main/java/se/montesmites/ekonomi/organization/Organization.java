@@ -37,6 +37,7 @@ public class Organization {
     }
     
     private final Collection<Year> years;
+    private final Collection<Entry> entries;
     
     private final Map<AccountId, Account> accountsByAccountId;
     private final Map<AccountId, Balance> balancesByAccountId;
@@ -55,6 +56,7 @@ public class Organization {
             Collection<Event> events,
             Collection<Year> years) {
         this.years = years;
+        this.entries = entries;
         
         this.accountsByAccountId = accounts.stream()
                 .collect(toMap(Account::getAccountId, identity()));
@@ -96,8 +98,12 @@ public class Organization {
                         ));
     }
     
-    public Stream<Year> yearsStream() {
+    public Stream<Year> streamYears() {
         return years.stream();
+    }
+    
+    public Stream<Entry> streamEntries() {
+        return entries.stream();
     }
     
     public Optional<Year> getYear(java.time.Year year) {
