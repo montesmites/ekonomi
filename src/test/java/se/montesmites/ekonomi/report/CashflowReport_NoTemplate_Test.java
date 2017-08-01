@@ -43,12 +43,12 @@ public class CashflowReport_NoTemplate_Test {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year);
-        this.section = report.sectionStream().findFirst().get();
+        this.section = report.streamSections().findFirst().get();
     }
 
     @Test
     public void exactlyOneSection() {
-        assertEquals(1, report.sectionStream().count());
+        assertEquals(1, report.streamSections().count());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CashflowReport_NoTemplate_Test {
         List<String> expColumnLabels = Arrays.asList("Description", "Jan", "Feb",
                 "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
                 "Dec", "Total");
-        List<String> actColumnLabels = report.columnStream().map(
+        List<String> actColumnLabels = report.streamColumns().map(
                 Column::getLabel).collect(toList());
         assertEquals(expColumnLabels, actColumnLabels);
     }
@@ -64,7 +64,7 @@ public class CashflowReport_NoTemplate_Test {
     @Test
     public void body_rowCount() {
         assertEquals(fetcher.streamAccountIds(year).count(),
-                section.bodyStream().count());
+                section.streamBodyRows().count());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class CashflowReport_NoTemplate_Test {
                         .map(AccountId::getId)
                         .collect(toList());
         List<String> act
-                = section.bodyStream()
+                = section.streamBodyRows()
                         .map(row -> row.getAccountId().getId())
                         .collect(toList());
         assertEquals(exp, act);
@@ -82,7 +82,7 @@ public class CashflowReport_NoTemplate_Test {
 
     @Test
     public void body_monthlyAmounts() {
-        section.bodyStream().forEach(bodyRow
+        section.streamBodyRows().forEach(bodyRow
                 -> yearMonths().forEach(yearMonth
                         -> assertBodyRowMonthlyAmonuts(bodyRow, yearMonth)));
     }
@@ -100,7 +100,7 @@ public class CashflowReport_NoTemplate_Test {
 
     @Test
     public void body_yearlyTotals() {
-        section.bodyStream().forEach(this::assertBodyRowYearlyTotal);
+        section.streamBodyRows().forEach(this::assertBodyRowYearlyTotal);
     }
 
     private void assertBodyRowYearlyTotal(BodyRow row) {

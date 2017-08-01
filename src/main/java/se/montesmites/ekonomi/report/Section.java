@@ -17,7 +17,7 @@ public class Section {
         return header;
     }
 
-    public Stream<BodyRow> bodyStream() {
+    public Stream<BodyRow> streamBodyRows() {
         return fetcher.streamAccountIds(year)
                 .map(accountId -> new BodyRow(fetcher, accountId, year));
     }

@@ -13,13 +13,13 @@ public class CashflowReport {
         this.year = year;
     }
     
-    public Stream<Column> columnStream() {
+    public Stream<Column> streamColumns() {
         return Arrays.asList("Description", "Jan", "Feb",
                 "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
                 "Dec", "Total").stream().map(Column::new);
     }
 
-    public Stream<Section> sectionStream() {
+    public Stream<Section> streamSections() {
         return Stream.of(new Section(fetcher, year));
     }
 }
