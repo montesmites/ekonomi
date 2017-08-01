@@ -28,4 +28,12 @@ public class Section {
         return fetcher.streamAccountIds(year)
                 .map(accountId -> new BodyRow(fetcher, accountId, year));
     }
+    
+    public Stream<Row> streamAllRows() {
+        Stream.Builder<Row> sb = Stream.builder();
+        sb.add(header);
+        streamBodyRows().forEach(sb::add);
+        sb.add(footer);
+        return sb.build();
+    }
 }

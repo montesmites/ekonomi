@@ -23,7 +23,7 @@ public class Currency {
     }
     
     public String format() {
-        String fmt = "%.2f";
+        String fmt = "%,.2f";
         String msg = String.format(fmt, toDouble());
         return msg;
     }
