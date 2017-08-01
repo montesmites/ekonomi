@@ -68,6 +68,12 @@ public class CashflowReport_NoTemplate_Test {
     }
     
     @Test
+    public void footer_description() {
+        FooterRow footer = section.getFooter();
+        assertEquals("Total", footer.getDescription());
+    }
+    
+    @Test
     public void body_rowCount() {
         assertEquals(fetcher.streamAccountIds(year).count(),
                 section.streamBodyRows().count());
