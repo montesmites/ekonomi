@@ -17,7 +17,7 @@ public class CashflowReport {
     }
 
     public Stream<Section> streamSections() {
-        return Stream.of(new Section(fetcher, year));
+        return Stream.of(new Section("Unspecified Accounts", fetcher, year));
     }
 
     public List<String> render() {

@@ -3,19 +3,21 @@ package se.montesmites.ekonomi.report;
 import java.util.stream.Stream;
 
 public class Section {
-
+    
     private final CashflowDataFetcher fetcher;
     private final java.time.Year year;
+    private final TitleRow title;
     private final HeaderRow header;
     private final FooterRow footer;
 
-    public Section(CashflowDataFetcher fetcher, java.time.Year year) {
+    public Section(String title, CashflowDataFetcher fetcher, java.time.Year year) {
         this.fetcher = fetcher;
         this.year = year;
+        this.title = new TitleRow(title);
         this.header = new HeaderRow();
         this.footer = new FooterRow(this, year);
     }
-
+    
     public HeaderRow getHeader() {
         return header;
     }
@@ -31,6 +33,7 @@ public class Section {
     
     public Stream<Row> streamAllRows() {
         Stream.Builder<Row> sb = Stream.builder();
+        sb.add(title);
         sb.add(header);
         streamBodyRows().forEach(sb::add);
         sb.add(footer);
