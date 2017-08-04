@@ -156,6 +156,6 @@ public class CashflowReport_NoRules_Test {
     }
     
     private AccountId accountId(BodyRow row) {
-        return row.getAccountIds().stream().findFirst().get();
+        return row.getAccountIds().get().findFirst().get();
     }
 }

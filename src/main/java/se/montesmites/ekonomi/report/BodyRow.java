@@ -2,25 +2,26 @@ package se.montesmites.ekonomi.report;
 
 import java.time.Month;
 import java.time.YearMonth;
-import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
 public class BodyRow implements Row {
 
     private final CashflowDataFetcher fetcher;
-    private final Set<AccountId> accountIds;
+    private final Supplier<Stream<AccountId>> accountIds;
     private final java.time.Year year;
     private final String description;
 
-    public BodyRow(CashflowDataFetcher fetcher, Set<AccountId> accountIds, java.time.Year year, String description) {
+    public BodyRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year, String description) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
         this.year = year;
         this.description = description;
     }
 
-    public Set<AccountId> getAccountIds() {
+    public Supplier<Stream<AccountId>> getAccountIds() {
         return accountIds;
     }
 
@@ -37,7 +38,7 @@ public class BodyRow implements Row {
     }
 
     public Currency getMonthlyAmount(Column column) {
-        return accountIds.stream()
+        return accountIds.get()
                 .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }

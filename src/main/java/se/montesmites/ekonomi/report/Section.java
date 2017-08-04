@@ -34,7 +34,7 @@ public class Section {
                 .map(accountId
                         -> new BodyRow(
                         fetcher,
-                        set(accountId),
+                        () -> set(accountId).stream(),
                         year,
                         accountId.getId()));
     }
