@@ -2,62 +2,57 @@ package se.montesmites.ekonomi.report;
 
 import java.time.Month;
 import java.time.YearMonth;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.Set;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
 public class BodyRow implements Row {
 
     private final CashflowDataFetcher fetcher;
-    private final AccountId accountId;
+    private final Set<AccountId> accountIds;
     private final java.time.Year year;
+    private final String description;
 
-    public BodyRow(CashflowDataFetcher fetcher, AccountId accountId, java.time.Year year) {
+    public BodyRow(CashflowDataFetcher fetcher, Set<AccountId> accountIds, java.time.Year year, String description) {
         this.fetcher = fetcher;
-        this.accountId = accountId;
+        this.accountIds = accountIds;
         this.year = year;
+        this.description = description;
     }
 
-    public AccountId getAccountId() {
-        return accountId;
+    public Set<AccountId> getAccountIds() {
+        return accountIds;
     }
 
     @Override
     public String getText(Column column) {
         switch (column.getColumnType()) {
             case DESCRIPTION:
-                return accountId.getId();
+                return description;
             case TOTAL:
                 return getYearlyTotal().format();
             default:
-                return Stream.of(accountId)
-                        .map(acc -> getMonthlyAmount(acc, column.getMonth()))
-                        .map(amount -> amount.orElse(new Currency(0)))
-                        .reduce(new Currency(0), (sum, term) -> sum.add(term))
-                        .format();
+                return getMonthlyAmount(column).format();
         }
     }
 
-    public Optional<Currency> getMonthlyAmount(Column column) {
-        return getMonthlyAmount(accountId, column.getMonth());
+    public Currency getMonthlyAmount(Column column) {
+        return accountIds.stream()
+                .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
+                .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
 
-    private Optional<Currency> getMonthlyAmount(AccountId accountId, Optional<Month> month) {
-        return month.flatMap(m
-                -> getMonthlyAmount(
-                        accountId,
-                        YearMonth.of(year.getValue(), m)));
+    private Currency getMonthlyAmount(AccountId accountId, Month month) {
+        return getMonthlyAmount(accountId, YearMonth.of(year.getValue(), month));
     }
 
-    private Optional<Currency> getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
-        return fetcher.fetchAmount(accountId, yearMonth);
+    private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
+        return fetcher.fetchAmount(accountId, yearMonth).orElse(new Currency(0));
     }
 
     public Currency getYearlyTotal() {
-        return Column.stream()
+        return Column.streamMonths()
                 .map(this::getMonthlyAmount)
-                .map(o -> o.orElse(new Currency(0)))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
 }

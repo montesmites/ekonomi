@@ -3,7 +3,6 @@ package se.montesmites.ekonomi.report;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import static java.util.stream.Collectors.*;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -100,10 +99,10 @@ public class CashflowReport_NoRules_Test {
     }
 
     private void assertBodyRowMonthlyAmounts(BodyRow row, Column column) {
-        Optional<Currency> exp = expectedMonthlyAmount(row, column);
-        Optional<Currency> act = row.getMonthlyAmount(column);
+        Currency exp = expectedMonthlyAmount(row, column);
+        Currency act = row.getMonthlyAmount(column);
         String fmt = "%s %s %s";
-        String msg = String.format(fmt, row.getAccountId(), year, column);
+        String msg = String.format(fmt, accountId(row), year, column);
         assertEquals(msg, exp, act);
     }
 
@@ -118,16 +117,14 @@ public class CashflowReport_NoRules_Test {
     private Currency expectedFooterRowMonthlyTotal(Column column) {
         return section.streamBodyRows()
                 .map(r -> expectedMonthlyAmount(r, column))
-                .map(a -> a.orElse(new Currency(0)))
-                .reduce((sum, term) -> sum.add(term))
-                .get();
+                .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
 
-    private Optional<Currency> expectedMonthlyAmount(BodyRow row, Column column) {
+    private Currency expectedMonthlyAmount(BodyRow row, Column column) {
         return organization.getAccountIdAmountMap(column.asYearMonth(year).get())
-                .map(m -> m.get(row.getAccountId()));
+                .map(m -> m.get(accountId(row))).orElse(new Currency(0));
     }
-
+    
     @Test
     public void body_yearlyTotals() {
         section.streamBodyRows().forEach(this::assertBodyRowYearlyTotal);
@@ -141,12 +138,12 @@ public class CashflowReport_NoRules_Test {
 
     private void assertBodyRowYearlyTotal(BodyRow row) {
         Currency exp = organization.streamEntries()
-                .filter(e -> e.getAccountId().equals(row.getAccountId()))
+                .filter(e -> e.getAccountId().equals(accountId(row)))
                 .map(e -> e.getAmount())
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
         Currency act = row.getYearlyTotal();
         String fmt = "%s";
-        String msg = String.format(fmt, row.getAccountId());
+        String msg = String.format(fmt, accountId(row));
         assertEquals(msg, exp, act);
     }
 
@@ -156,5 +153,9 @@ public class CashflowReport_NoRules_Test {
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
         Currency act = row.getYearlyTotal();
         assertEquals(exp, act);
+    }
+    
+    private AccountId accountId(BodyRow row) {
+        return row.getAccountIds().stream().findFirst().get();
     }
 }

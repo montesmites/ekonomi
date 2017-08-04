@@ -26,9 +26,7 @@ public class FooterRow implements Row {
 
     public Currency getMonthlyTotal(Column column) {
         return parent.streamBodyRows()
-                .map(row
-                        -> row.getMonthlyAmount(column)
-                        .orElse(new Currency(0)))
+                .map(row -> row.getMonthlyAmount(column))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
 
