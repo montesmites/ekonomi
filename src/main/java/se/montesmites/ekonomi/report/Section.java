@@ -20,7 +20,11 @@ public class Section {
         this.header = new HeaderRow();
         this.footer = new FooterRow(this, year);
     }
-
+    
+    public TitleRow getTitle() {
+        return this.title;
+    }
+    
     public HeaderRow getHeader() {
         return header;
     }

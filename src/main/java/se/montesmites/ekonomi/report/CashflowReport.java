@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import java.util.List;
+import java.util.function.Supplier;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -8,16 +9,20 @@ import java.util.stream.Stream;
 
 public class CashflowReport {
 
-    private final CashflowDataFetcher fetcher;
-    private final java.time.Year year;
+    private final Supplier<Stream<Section>> sections;
 
     public CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
-        this.fetcher = fetcher;
-        this.year = year;
+        this(fetcher, year, ()
+                -> Stream.of(
+                        new Section("Unspecified Accounts", fetcher, year)));
+    }
+
+    public CashflowReport(CashflowDataFetcher fetcher, java.time.Year year, Supplier<Stream<Section>> sections) {
+        this.sections = sections;
     }
 
     public Stream<Section> streamSections() {
-        return Stream.of(new Section("Unspecified Accounts", fetcher, year));
+        return sections.get();
     }
 
     public List<String> render() {
