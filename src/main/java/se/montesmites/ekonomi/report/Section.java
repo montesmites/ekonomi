@@ -36,7 +36,7 @@ public class Section {
     public Stream<BodyRow> streamBodyRows() {
         return fetcher.streamAccountIds(year)
                 .map(accountId
-                        -> new BodyRow(
+                        -> new DefaultBodyRow(
                         fetcher,
                         () -> set(accountId).stream(),
                         year,
