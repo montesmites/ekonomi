@@ -15,7 +15,7 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
-public class CashflowReport_NoRules_Test {
+public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @ClassRule
     public static TemporaryFolder tempfolder = new TemporaryFolder();

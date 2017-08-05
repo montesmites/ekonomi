@@ -14,7 +14,7 @@ import org.junit.rules.TemporaryFolder;
 import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
-public class CashflowReport_NoRules_Rendering_Test {
+public class CashflowReport_OneSection_EachAccountOneRow_Rendering_Test {
 
     @ClassRule
     public static TemporaryFolder tempfolder = new TemporaryFolder();
