@@ -64,6 +64,8 @@ public class AmountAggregateTest {
                 = aggregate.getAggregate();
         assertEquals(1, act.size());
         assertEquals(2, sizeOf(act, yearMonth, accountid));
+        assertEquals(entry1, entryOf(act, yearMonth, accountid, 0));
+        assertEquals(entry2, entryOf(act, yearMonth, accountid, 1));
         assertEquals(
                 currency(amount1 + amount2),
                 amountOf(act, yearMonth, accountid));
@@ -85,6 +87,8 @@ public class AmountAggregateTest {
         assertEquals(2, act.size());
         assertEquals(1, sizeOf(act, yearMonth, accountid1));
         assertEquals(1, sizeOf(act, yearMonth, accountid2));
+        assertEquals(entry1, entryOf(act, yearMonth, accountid1, 0));
+        assertEquals(entry2, entryOf(act, yearMonth, accountid2, 0));
         assertEquals(currency(amount1), amountOf(act, yearMonth, accountid1));
         assertEquals(currency(amount2), amountOf(act, yearMonth, accountid2));
     }
