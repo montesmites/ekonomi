@@ -55,7 +55,7 @@ public class AmountAggregateTest {
     }
 
     @Test
-    public void collectTwoEntries_SameAccount() {
+    public void collectTwoEntries_sameAccount() {
         final long amount1 = 100;
         final long amount2 = 200;
         final int accountid = 3010;
@@ -70,6 +70,25 @@ public class AmountAggregateTest {
         assertEquals(
                 currency(amount1 + amount2),
                 act.get(tuple(accountid)).getAmount());
+    }
+
+    @Test
+    public void collectTwoEntries_differentAccounts() {
+        final long amount1 = 100;
+        final long amount2 = 200;
+        final int accountid1 = 3010;
+        final int accountid2 = 3020;
+        final Entry entry1 = entry(1, accountid1, amount1);
+        final Entry entry2 = entry(2, accountid2, amount2);
+        final AmountAggregate aggregate
+                = Stream.of(entry1, entry2).collect(amountCollector());
+        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+                = aggregate.getAggregate();
+        assertEquals(2, act.size());
+        assertEquals(1, act.get(tuple(accountid1)).getEntries().size());
+        assertEquals(1, act.get(tuple(accountid2)).getEntries().size());
+        assertEquals(currency(amount1), act.get(tuple(accountid1)).getAmount());
+        assertEquals(currency(amount2), act.get(tuple(accountid2)).getAmount());
     }
 
     private AccountId accountId(int accountid) {
