@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import static org.junit.Assert.*;
@@ -14,6 +15,7 @@ import se.montesmites.ekonomi.model.EntryStatus;
 import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Series;
 import se.montesmites.ekonomi.model.YearId;
+import se.montesmites.ekonomi.model.tuple.CurrencyEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
 public class AmountAggregateTest {
@@ -31,8 +33,7 @@ public class AmountAggregateTest {
     @Test
     public void collectEmptyStream() {
         AmountAggregate act
-                = Stream.<Entry>empty()
-                        .collect(new AmountCollector(dateProvider));
+                = Stream.<Entry>empty().collect(amountCollector());
         assertEquals(0, act.getAggregate().size());
     }
 
@@ -40,17 +41,35 @@ public class AmountAggregateTest {
     public void collectOneEntry() {
         final long amount = 100;
         final int accountid = 3010;
-        Entry entry = entry(1, accountid, amount);
-        AmountAggregate act
-                = Stream.of(entry)
-                        .collect(new AmountCollector(dateProvider));
-        assertEquals(1, act.getAggregate().size());
-        assertEquals(1,
-                act.getAggregate().get(tuple(accountid)).getEntries().size());
-        assertEquals(entry,
-                act.getAggregate().get(tuple(accountid)).getEntries().get(0));
-        assertEquals(currency(amount),
-                act.getAggregate().get(tuple(accountid)).getAmount());
+        final Entry entry = entry(1, accountid, amount);
+        final AmountAggregate aggregate
+                = Stream.of(entry).collect(amountCollector());
+        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+                = aggregate.getAggregate();
+        assertEquals(1, act.size());
+        assertEquals(1, act.get(tuple(accountid)).getEntries().size());
+        assertEquals(entry, act.get(tuple(accountid)).getEntries().get(0));
+        assertEquals(
+                currency(amount),
+                act.get(tuple(accountid)).getAmount());
+    }
+
+    @Test
+    public void collectTwoEntries_SameAccount() {
+        final long amount1 = 100;
+        final long amount2 = 200;
+        final int accountid = 3010;
+        final Entry entry1 = entry(1, accountid, amount1);
+        final Entry entry2 = entry(2, accountid, amount2);
+        final AmountAggregate aggregate
+                = Stream.of(entry1, entry2).collect(amountCollector());
+        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+                = aggregate.getAggregate();
+        assertEquals(1, act.size());
+        assertEquals(2, act.get(tuple(accountid)).getEntries().size());
+        assertEquals(
+                currency(amount1 + amount2),
+                act.get(tuple(accountid)).getAmount());
     }
 
     private AccountId accountId(int accountid) {
@@ -69,5 +88,9 @@ public class AmountAggregateTest {
 
     private YearMonthAccountIdTuple tuple(int accountid) {
         return new YearMonthAccountIdTuple(yearMonth, accountId(accountid));
+    }
+
+    private AmountCollector amountCollector() {
+        return new AmountCollector(dateProvider);
     }
 }
