@@ -9,7 +9,7 @@ import org.junit.Test;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.EventId;
 
-public class AmountCollectorTest {
+public class AmountAggregateTest {
 
     private Function<EventId, YearMonth> dateProvider;
 
