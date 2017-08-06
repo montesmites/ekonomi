@@ -3,7 +3,6 @@ package se.montesmites.ekonomi.report;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -20,11 +19,8 @@ import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
 public class AmountAggregateTest {
 
-    private final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
     private final YearId yearId = new YearId("A");
     private final Series series = new Series("A");
-    private final Function<EventId, YearMonth> dateProvider
-            = eventId -> yearMonth;
 
     @Before
     public void before() {
@@ -32,48 +28,50 @@ public class AmountAggregateTest {
 
     @Test
     public void collectEmptyStream() {
+        final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         AmountAggregate act
-                = Stream.<Entry>empty().collect(amountCollector());
+                = Stream.<Entry>empty().collect(amountCollector(yearMonth));
         assertEquals(0, act.getAggregate().size());
     }
 
     @Test
     public void collectOneEntry() {
+        final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         final long amount = 100;
         final int accountid = 3010;
         final Entry entry = entry(1, accountid, amount);
         final AmountAggregate aggregate
-                = Stream.of(entry).collect(amountCollector());
+                = Stream.of(entry).collect(amountCollector(yearMonth));
         final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(1, act.size());
-        assertEquals(1, act.get(tuple(accountid)).getEntries().size());
-        assertEquals(entry, act.get(tuple(accountid)).getEntries().get(0));
-        assertEquals(
-                currency(amount),
-                act.get(tuple(accountid)).getAmount());
+        assertEquals(1, sizeOf(act, yearMonth, accountid));
+        assertEquals(entry, entryOf(act, yearMonth, accountid, 0));
+        assertEquals(currency(amount), amountOf(act, yearMonth, accountid));
     }
 
     @Test
     public void collectTwoEntries_sameAccount() {
+        final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         final long amount1 = 100;
         final long amount2 = 200;
         final int accountid = 3010;
         final Entry entry1 = entry(1, accountid, amount1);
         final Entry entry2 = entry(2, accountid, amount2);
         final AmountAggregate aggregate
-                = Stream.of(entry1, entry2).collect(amountCollector());
+                = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
         final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(1, act.size());
-        assertEquals(2, act.get(tuple(accountid)).getEntries().size());
+        assertEquals(2, sizeOf(act, yearMonth, accountid));
         assertEquals(
                 currency(amount1 + amount2),
-                act.get(tuple(accountid)).getAmount());
+                amountOf(act, yearMonth, accountid));
     }
 
     @Test
     public void collectTwoEntries_differentAccounts() {
+        final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         final long amount1 = 100;
         final long amount2 = 200;
         final int accountid1 = 3010;
@@ -81,14 +79,14 @@ public class AmountAggregateTest {
         final Entry entry1 = entry(1, accountid1, amount1);
         final Entry entry2 = entry(2, accountid2, amount2);
         final AmountAggregate aggregate
-                = Stream.of(entry1, entry2).collect(amountCollector());
+                = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
         final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(2, act.size());
-        assertEquals(1, act.get(tuple(accountid1)).getEntries().size());
-        assertEquals(1, act.get(tuple(accountid2)).getEntries().size());
-        assertEquals(currency(amount1), act.get(tuple(accountid1)).getAmount());
-        assertEquals(currency(amount2), act.get(tuple(accountid2)).getAmount());
+        assertEquals(1, sizeOf(act, yearMonth, accountid1));
+        assertEquals(1, sizeOf(act, yearMonth, accountid2));
+        assertEquals(currency(amount1), amountOf(act, yearMonth, accountid1));
+        assertEquals(currency(amount2), amountOf(act, yearMonth, accountid2));
     }
 
     private AccountId accountId(int accountid) {
@@ -105,11 +103,38 @@ public class AmountAggregateTest {
         return new Currency(amount);
     }
 
-    private YearMonthAccountIdTuple tuple(int accountid) {
-        return new YearMonthAccountIdTuple(yearMonth, accountId(accountid));
+    private CurrencyEntryListTuple tuple(
+            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+            YearMonth yearMonth,
+            int accountid) {
+        YearMonthAccountIdTuple key
+                = new YearMonthAccountIdTuple(yearMonth, accountId(accountid));
+        return map.get(key);
     }
 
-    private AmountCollector amountCollector() {
-        return new AmountCollector(dateProvider);
+    private int sizeOf(
+            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+            YearMonth yearMonth,
+            int accountid) {
+        return tuple(map, yearMonth, accountid).getEntries().size();
+    }
+
+    private Currency amountOf(
+            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+            YearMonth yearMonth,
+            int accountid) {
+        return tuple(map, yearMonth, accountid).getAmount();
+    }
+
+    private Entry entryOf(
+            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+            YearMonth yearMonth,
+            int accountid,
+            int entryIndex) {
+        return tuple(map, yearMonth, accountid).getEntries().get(entryIndex);
+    }
+
+    private AmountCollector amountCollector(YearMonth yearMonth) {
+        return new AmountCollector(eventId -> yearMonth);
     }
 }
