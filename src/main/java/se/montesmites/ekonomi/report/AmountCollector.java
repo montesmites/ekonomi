@@ -2,23 +2,20 @@ package se.montesmites.ekonomi.report;
 
 import java.time.YearMonth;
 import java.util.EnumSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import static java.util.function.Function.*;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collector.Characteristics;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
-import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.EventId;
-import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
-public class AmountCollector implements Collector<Entry, Map<YearMonthAccountIdTuple, Currency>, AmountAggregate> {
+public class AmountCollector implements Collector<Entry, AmountAggregate, AmountAggregate> {
 
     private final Function<EventId, YearMonth> yearMonthProvider;
 
@@ -27,32 +24,23 @@ public class AmountCollector implements Collector<Entry, Map<YearMonthAccountIdT
     }
 
     @Override
-    public Supplier<Map<YearMonthAccountIdTuple, Currency>> supplier() {
-        return () -> new ConcurrentHashMap<>();
+    public Supplier<AmountAggregate> supplier() {
+        return () -> new AmountAggregate(yearMonthProvider);
     }
 
     @Override
-    public BiConsumer<Map<YearMonthAccountIdTuple, Currency>, Entry> accumulator() {
-        return (map, entry)
-                -> map.merge(
-                        new YearMonthAccountIdTuple(entry, yearMonthProvider),
-                        entry.getAmount(),
-                        (sum, term) -> sum.add(term));
+    public BiConsumer<AmountAggregate, Entry> accumulator() {
+        return (aggregate, entry) -> aggregate.accumulate(entry);
     }
 
     @Override
-    public BinaryOperator<Map<YearMonthAccountIdTuple, Currency>> combiner() {
-        return (map1, map2) -> {
-            Map<YearMonthAccountIdTuple, Currency> ret = new ConcurrentHashMap<>();
-            ret.putAll(map1);
-            ret.putAll(map2);
-            return ret;
-        };
+    public BinaryOperator<AmountAggregate> combiner() {
+        return (aggregate1, aggregate2) -> aggregate1.merge(aggregate2);
     }
 
     @Override
-    public Function<Map<YearMonthAccountIdTuple, Currency>, AmountAggregate> finisher() {
-        return (map) -> new AmountAggregate(map);
+    public Function<AmountAggregate, AmountAggregate> finisher() {
+        return identity();
     }
 
     @Override
