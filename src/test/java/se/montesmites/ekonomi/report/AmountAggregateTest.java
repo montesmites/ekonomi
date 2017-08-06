@@ -93,6 +93,35 @@ public class AmountAggregateTest {
         assertEquals(currency(amount2), amountOf(act, yearMonth, accountid2));
     }
 
+    @Test
+    public void collectTwoEntries_sameAccounts_differentMonths() {
+        final YearMonth yearMonth1 = YearMonth.of(2012, Month.JANUARY);
+        final YearMonth yearMonth2 = YearMonth.of(2012, Month.FEBRUARY);
+        final long amount1 = 100;
+        final long amount2 = 200;
+        final int accountid1 = 3010;
+        final int accountid2 = 3010;
+        final Entry entry1 = entry(1, accountid1, amount1);
+        final Entry entry2 = entry(2, accountid2, amount2);
+        final AmountAggregate aggregate
+                = Stream.of(entry1, entry2)
+                        .collect(
+                                new AmountCollector(
+                                        eventId
+                                        -> eventId.getId() == 1
+                                        ? yearMonth1
+                                        : yearMonth2));
+        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+                = aggregate.getAggregate();
+        assertEquals(2, act.size());
+        assertEquals(1, sizeOf(act, yearMonth1, accountid1));
+        assertEquals(1, sizeOf(act, yearMonth2, accountid2));
+        assertEquals(entry1, entryOf(act, yearMonth1, accountid1, 0));
+        assertEquals(entry2, entryOf(act, yearMonth2, accountid2, 0));
+        assertEquals(currency(amount1), amountOf(act, yearMonth1, accountid1));
+        assertEquals(currency(amount2), amountOf(act, yearMonth2, accountid2));
+    }
+
     private AccountId accountId(int accountid) {
         return new AccountId(yearId, "" + accountid);
     }
