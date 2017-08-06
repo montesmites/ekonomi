@@ -21,12 +21,8 @@ public class AmountAggregateTest {
     private final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
     private final YearId yearId = new YearId("A");
     private final Series series = new Series("A");
-    private final AccountId accountId = new AccountId(yearId, "3010");
     private final Function<EventId, YearMonth> dateProvider
             = eventId -> yearMonth;
-    private final YearMonthAccountIdTuple yearMonthAccountIdTuple
-            = new YearMonthAccountIdTuple(yearMonth, accountId);
-    private Entry entry;
 
     @Before
     public void before() {
@@ -42,21 +38,36 @@ public class AmountAggregateTest {
 
     @Test
     public void collectOneEntry() {
-        Currency amount = new Currency(1);
-        EventId eventId = new EventId(yearId, 1, series);
-        EntryStatus status = new EntryStatus(EntryStatus.Status.ACTIVE);
-        this.entry = new Entry(eventId, accountId, amount, status);
+        final long amount = 100;
+        final int accountid = 3010;
+        Entry entry = entry(1, accountid, amount);
         AmountAggregate act
                 = Stream.of(entry)
                         .collect(new AmountCollector(dateProvider));
         assertEquals(1, act.getAggregate().size());
         assertEquals(1,
-                act.getAggregate().get(yearMonthAccountIdTuple).getEntries().size());
+                act.getAggregate().get(tuple(accountid)).getEntries().size());
         assertEquals(entry,
-                act.getAggregate().get(yearMonthAccountIdTuple)
-                        .getEntries().get(0));
-        assertEquals(amount,
-                act.getAggregate().get(yearMonthAccountIdTuple)
-                        .getAmount());
+                act.getAggregate().get(tuple(accountid)).getEntries().get(0));
+        assertEquals(currency(amount),
+                act.getAggregate().get(tuple(accountid)).getAmount());
+    }
+
+    private AccountId accountId(int accountid) {
+        return new AccountId(yearId, "" + accountid);
+    }
+
+    private Entry entry(int eventid, int accountid, long amount) {
+        final EventId eventId = new EventId(yearId, eventid, series);
+        final EntryStatus status = new EntryStatus(EntryStatus.Status.ACTIVE);
+        return new Entry(eventId, accountId(accountid), currency(amount), status);
+    }
+
+    private Currency currency(long amount) {
+        return new Currency(amount);
+    }
+
+    private YearMonthAccountIdTuple tuple(int accountid) {
+        return new YearMonthAccountIdTuple(yearMonth, accountId(accountid));
     }
 }
