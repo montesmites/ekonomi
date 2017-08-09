@@ -17,7 +17,7 @@ import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.CurrencyEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
-public class AmountAggregateTest {
+public class EntryAggregateTest {
 
     private final YearId yearId = new YearId("A");
     private final Series series = new Series("A");
@@ -29,7 +29,7 @@ public class AmountAggregateTest {
     @Test
     public void collectEmptyStream() {
         final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
-        AmountAggregate act
+        EntryAggregate act
                 = Stream.<Entry>empty().collect(amountCollector(yearMonth));
         assertEquals(0, act.getAggregate().size());
     }
@@ -40,7 +40,7 @@ public class AmountAggregateTest {
         final long amount = 100;
         final int accountid = 3010;
         final Entry entry = entry(1, accountid, amount);
-        final AmountAggregate aggregate
+        final EntryAggregate aggregate
                 = Stream.of(entry).collect(amountCollector(yearMonth));
         final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
                 = aggregate.getAggregate();
@@ -58,7 +58,7 @@ public class AmountAggregateTest {
         final int accountid = 3010;
         final Entry entry1 = entry(1, accountid, amount1);
         final Entry entry2 = entry(2, accountid, amount2);
-        final AmountAggregate aggregate
+        final EntryAggregate aggregate
                 = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
         final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
                 = aggregate.getAggregate();
@@ -80,7 +80,7 @@ public class AmountAggregateTest {
         final int accountid2 = 3020;
         final Entry entry1 = entry(1, accountid1, amount1);
         final Entry entry2 = entry(2, accountid2, amount2);
-        final AmountAggregate aggregate
+        final EntryAggregate aggregate
                 = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
         final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
                 = aggregate.getAggregate();
@@ -103,10 +103,10 @@ public class AmountAggregateTest {
         final int accountid2 = 3010;
         final Entry entry1 = entry(1, accountid1, amount1);
         final Entry entry2 = entry(2, accountid2, amount2);
-        final AmountAggregate aggregate
+        final EntryAggregate aggregate
                 = Stream.of(entry1, entry2)
                         .collect(
-                                new AmountCollector(
+                                new EntryCollector(
                                         eventId
                                         -> eventId.getId() == 1
                                         ? yearMonth1
@@ -167,7 +167,7 @@ public class AmountAggregateTest {
         return tuple(map, yearMonth, accountid).getEntries().get(entryIndex);
     }
 
-    private AmountCollector amountCollector(YearMonth yearMonth) {
-        return new AmountCollector(eventId -> yearMonth);
+    private EntryCollector amountCollector(YearMonth yearMonth) {
+        return new EntryCollector(eventId -> yearMonth);
     }
 }

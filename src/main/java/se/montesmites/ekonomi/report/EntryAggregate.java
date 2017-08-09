@@ -9,17 +9,17 @@ import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.tuple.CurrencyEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
-public class AmountAggregate {
+public class EntryAggregate {
 
     private final Function<EventId, YearMonth> yearMonthProvider;
 
     private final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> aggregate;
 
-    public AmountAggregate(Function<EventId, YearMonth> yearMonthProvider) {
+    public EntryAggregate(Function<EventId, YearMonth> yearMonthProvider) {
         this(new ConcurrentHashMap<>(), yearMonthProvider);
     }
 
-    private AmountAggregate(
+    private EntryAggregate(
             Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> aggregate,
             Function<EventId, YearMonth> yearMonthProvider) {
         this.aggregate = aggregate;
@@ -37,7 +37,7 @@ public class AmountAggregate {
                 (tuple1, tuple2) -> tuple1.merge(tuple2));
     }
 
-    public AmountAggregate merge(AmountAggregate that) {
+    public EntryAggregate merge(EntryAggregate that) {
         Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map = new ConcurrentHashMap<>();
         map.putAll(this.getAggregate());
         that.aggregate.entrySet().stream()
@@ -46,6 +46,6 @@ public class AmountAggregate {
                         e.getKey(),
                         e.getValue(),
                         (tuple1, tuple2) -> tuple1.merge(tuple2)));
-        return new AmountAggregate(map, yearMonthProvider);
+        return new EntryAggregate(map, yearMonthProvider);
     }
 }

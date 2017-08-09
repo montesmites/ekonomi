@@ -15,31 +15,31 @@ import static java.util.stream.Collector.Characteristics.UNORDERED;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.EventId;
 
-public class AmountCollector implements Collector<Entry, AmountAggregate, AmountAggregate> {
+public class EntryCollector implements Collector<Entry, EntryAggregate, EntryAggregate> {
 
     private final Function<EventId, YearMonth> yearMonthProvider;
 
-    public AmountCollector(Function<EventId, YearMonth> yearMonthProvider) {
+    public EntryCollector(Function<EventId, YearMonth> yearMonthProvider) {
         this.yearMonthProvider = yearMonthProvider;
     }
 
     @Override
-    public Supplier<AmountAggregate> supplier() {
-        return () -> new AmountAggregate(yearMonthProvider);
+    public Supplier<EntryAggregate> supplier() {
+        return () -> new EntryAggregate(yearMonthProvider);
     }
 
     @Override
-    public BiConsumer<AmountAggregate, Entry> accumulator() {
+    public BiConsumer<EntryAggregate, Entry> accumulator() {
         return (aggregate, entry) -> aggregate.accumulate(entry);
     }
 
     @Override
-    public BinaryOperator<AmountAggregate> combiner() {
+    public BinaryOperator<EntryAggregate> combiner() {
         return (aggregate1, aggregate2) -> aggregate1.merge(aggregate2);
     }
 
     @Override
-    public Function<AmountAggregate, AmountAggregate> finisher() {
+    public Function<EntryAggregate, EntryAggregate> finisher() {
         return identity();
     }
 
