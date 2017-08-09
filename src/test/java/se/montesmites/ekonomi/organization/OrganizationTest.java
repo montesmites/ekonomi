@@ -114,17 +114,6 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readAccountAmount_byDate_20120112() throws Exception {
-        YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
-        LocalDate date = LocalDate.parse("2012-01-12");
-        Map<AccountId, Currency> actAmounts = new AccountIdAmountAggregate(
-                organization.getAccountIdAmountTuples(date).get()).asAccountIdAmountMap();
-        Map<AccountId, Currency> expAmounts = BY_DATE_20120112.getAggregate(
-                yearId).asAccountIdAmountMap();
-        mapEqualityAssertion(expAmounts, actAmounts);
-    }
-
-    @Test
     public void readAccountAmount_byYearMonth_2012January() throws Exception {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);

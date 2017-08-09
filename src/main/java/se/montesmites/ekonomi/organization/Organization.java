@@ -45,7 +45,6 @@ public class Organization {
     private final Map<EventId, Event> eventsByEventId;
     private final Map<java.time.Year, Year> yearsByYear;
 
-    private final Map<LocalDate, List<AccountIdAmountTuple>> accountAmountByDate;
     private final Map<YearMonth, List<AccountIdAmountTuple>> accountAmountByYearMonth;
     private final Map<YearMonth, Map<AccountId, Currency>> accountAmountByYearMonthMap;
 
@@ -69,8 +68,6 @@ public class Organization {
         this.yearsByYear = years.stream()
                 .collect(toMap(Year::getYear, identity()));
 
-        this.accountAmountByDate
-                = aggregatesGrouper(accountIdAmountMap(entries, this::entryDate));
         Map<YearMonth, AccountIdAmountAggregate> aggregatesMap = accountIdAmountMap(
                 entries, entry -> YearMonth.from(entryDate(entry)));
         this.accountAmountByYearMonth
@@ -116,10 +113,6 @@ public class Organization {
 
     public Optional<List<Entry>> getEntries(EventId eventId) {
         return Optional.ofNullable(entriesByEventId.get(eventId));
-    }
-
-    public Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(LocalDate date) {
-        return Optional.ofNullable(accountAmountByDate.get(date));
     }
 
     public Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
