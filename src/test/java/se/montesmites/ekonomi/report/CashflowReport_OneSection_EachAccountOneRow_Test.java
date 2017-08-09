@@ -121,7 +121,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     }
 
     private Currency expectedMonthlyAmount(BodyRow row, Column column) {
-        return organization.getAccountIdAmountMap(column.asYearMonth(year).get())
+        return fetcher.getAccountIdAmountMap(column.asYearMonth(year).get())
                 .map(m -> m.get(accountId(row))).orElse(new Currency(0));
     }
     

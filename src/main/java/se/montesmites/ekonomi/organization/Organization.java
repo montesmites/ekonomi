@@ -1,26 +1,20 @@
 package se.montesmites.ekonomi.organization;
 
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
-import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Year;
-import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
-import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.*;
 
@@ -45,9 +39,6 @@ public class Organization {
     private final Map<EventId, Event> eventsByEventId;
     private final Map<java.time.Year, Year> yearsByYear;
 
-    private final Map<YearMonth, List<AccountIdAmountTuple>> accountAmountByYearMonth;
-    private final Map<YearMonth, Map<AccountId, Currency>> accountAmountByYearMonthMap;
-
     private Organization(
             Collection<Account> accounts,
             Collection<Balance> balances,
@@ -67,34 +58,8 @@ public class Organization {
                 .collect(toMap(Event::getEventId, identity()));
         this.yearsByYear = years.stream()
                 .collect(toMap(Year::getYear, identity()));
-
-        Map<YearMonth, AccountIdAmountAggregate> aggregatesMap = accountIdAmountMap(
-                entries, entry -> YearMonth.from(entryDate(entry)));
-        this.accountAmountByYearMonth
-                = aggregatesGrouper(aggregatesMap);
-        this.accountAmountByYearMonthMap
-                = aggregatesMap.entrySet().stream()
-                .collect(toMap(Map.Entry::getKey, e -> e.getValue().asAccountIdAmountMap()));
     }
 
-    private <T> Map<T, List<AccountIdAmountTuple>> aggregatesGrouper(
-            Map<T, AccountIdAmountAggregate> aggregates) {
-        return aggregates.entrySet().stream()
-                .collect(toMap(
-                        Map.Entry::getKey,
-                        e -> e.getValue().getTuples()));
-    }
-
-    private <T> Map<T, AccountIdAmountAggregate> accountIdAmountMap(Collection<Entry> entries, Function<Entry, T> keyMapper) {
-        return entries.stream()
-                .collect(
-                        toMap(
-                                keyMapper::apply,
-                                AccountIdAmountAggregate::new,
-                                AccountIdAmountAggregate::merge
-                        ));
-    }
-    
     public Stream<Year> streamYears() {
         return years.stream();
     }
@@ -114,14 +79,6 @@ public class Organization {
     public Optional<List<Entry>> getEntries(EventId eventId) {
         return Optional.ofNullable(entriesByEventId.get(eventId));
     }
-
-    public Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
-        return Optional.ofNullable(accountAmountByYearMonth.get(yearMonth));
-    }
-    
-    public Optional<Map<AccountId, Currency>> getAccountIdAmountMap(YearMonth yearMonth) {
-        return Optional.ofNullable(accountAmountByYearMonthMap.get(yearMonth));
-    }
     
     public Optional<Account> getAccount(AccountId accountId) {
         return Optional.ofNullable(accountsByAccountId.get(accountId));
@@ -129,9 +86,5 @@ public class Organization {
 
     public Optional<Balance> getBalance(AccountId accountId) {
         return Optional.ofNullable(balancesByAccountId.get(accountId));
-    }
-
-    private LocalDate entryDate(Entry entry) {
-        return getEvent(entry.getEventId()).get().getDate();
     }
 }

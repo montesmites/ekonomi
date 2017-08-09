@@ -1,8 +1,6 @@
 package se.montesmites.ekonomi.organization;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.YearMonth;
 import java.util.Arrays;
 import static java.util.Comparator.*;
 import java.util.HashMap;
@@ -28,8 +26,6 @@ import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Series;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
-import static se.montesmites.ekonomi.test.util.AccountIdAmountAggregateExpectedElements.*;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class OrganizationTest {
@@ -111,27 +107,6 @@ public class OrganizationTest {
                 entry(eventId, 1920, -50000000),
                 entry(eventId, 1940, 50000000));
         assertEquals(expEntries, actEntries);
-    }
-
-    @Test
-    public void readAccountAmount_byYearMonth_2012January() throws Exception {
-        YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
-        YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
-        Map<AccountId, Currency> actAmounts = new AccountIdAmountAggregate(
-                organization.getAccountIdAmountTuples(yearMonth).get()).asAccountIdAmountMap();
-        Map<AccountId, Currency> expAmounts
-                = BY_YEARMONTH_201201.getAggregate(yearId).asAccountIdAmountMap();
-        mapEqualityAssertion(expAmounts, actAmounts);
-    }
-
-    private <K, V> void mapEqualityAssertion(Map<K, V> expected, Map<K, V> actual) {
-        assertEquals(expected.size(), expected.size());
-        expected.entrySet().forEach(exp -> {
-            K key = exp.getKey();
-            V value = exp.getValue();
-            assertTrue(key.toString(), actual.containsKey(key));
-            assertEquals(key.toString(), value, actual.get(key));
-        });
     }
 
     @Test
