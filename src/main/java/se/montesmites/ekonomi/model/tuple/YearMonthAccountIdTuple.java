@@ -2,19 +2,12 @@ package se.montesmites.ekonomi.model.tuple;
 
 import java.time.YearMonth;
 import java.util.Objects;
-import java.util.function.Function;
 import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.EventId;
 
 public class YearMonthAccountIdTuple {
     
     private final YearMonth yearMonth;
     private final AccountId accountId;
-    
-    public YearMonthAccountIdTuple(Entry entry, Function<EventId, YearMonth> yearMonthProvider) {
-        this(yearMonthProvider.apply(entry.getEventId()), entry.getAccountId());
-    }
     
     public YearMonthAccountIdTuple(YearMonth yearMonth, AccountId accountId) {
         this.yearMonth = yearMonth;

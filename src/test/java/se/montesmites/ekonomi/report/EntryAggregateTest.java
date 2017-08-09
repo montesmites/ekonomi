@@ -3,6 +3,7 @@ package se.montesmites.ekonomi.report;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -109,8 +110,8 @@ public class EntryAggregateTest {
                                 new EntryCollector(
                                         eventId
                                         -> eventId.getId() == 1
-                                        ? yearMonth1
-                                        : yearMonth2));
+                                        ? Optional.of(yearMonth1)
+                                        : Optional.of(yearMonth2)));
         final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(2, act.size());
@@ -168,6 +169,6 @@ public class EntryAggregateTest {
     }
 
     private EntryCollector amountCollector(YearMonth yearMonth) {
-        return new EntryCollector(eventId -> yearMonth);
+        return new EntryCollector(eventId -> Optional.of(yearMonth));
     }
 }

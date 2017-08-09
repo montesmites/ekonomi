@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import java.time.YearMonth;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -17,9 +18,9 @@ import se.montesmites.ekonomi.model.EventId;
 
 public class EntryCollector implements Collector<Entry, EntryAggregate, EntryAggregate> {
 
-    private final Function<EventId, YearMonth> yearMonthProvider;
+    private final Function<EventId, Optional<YearMonth>> yearMonthProvider;
 
-    public EntryCollector(Function<EventId, YearMonth> yearMonthProvider) {
+    public EntryCollector(Function<EventId, Optional<YearMonth>> yearMonthProvider) {
         this.yearMonthProvider = yearMonthProvider;
     }
 

@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import java.time.YearMonth;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import se.montesmites.ekonomi.model.Entry;
@@ -11,17 +12,17 @@ import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
 public class EntryAggregate {
 
-    private final Function<EventId, YearMonth> yearMonthProvider;
+    private final Function<EventId, Optional<YearMonth>> yearMonthProvider;
 
     private final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> aggregate;
 
-    public EntryAggregate(Function<EventId, YearMonth> yearMonthProvider) {
+    public EntryAggregate(Function<EventId, Optional<YearMonth>> yearMonthProvider) {
         this(new ConcurrentHashMap<>(), yearMonthProvider);
     }
 
     private EntryAggregate(
             Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> aggregate,
-            Function<EventId, YearMonth> yearMonthProvider) {
+            Function<EventId, Optional<YearMonth>> yearMonthProvider) {
         this.aggregate = aggregate;
         this.yearMonthProvider = yearMonthProvider;
     }
@@ -31,10 +32,12 @@ public class EntryAggregate {
     }
 
     public void accumulate(Entry entry) {
-        aggregate.merge(
-                new YearMonthAccountIdTuple(entry, yearMonthProvider),
-                new CurrencyEntryListTuple(entry),
-                (tuple1, tuple2) -> tuple1.merge(tuple2));
+        yearMonthProvider.apply(entry.getEventId()).ifPresent(yearMonth
+                -> aggregate.merge(
+                        new YearMonthAccountIdTuple(yearMonth, entry.getAccountId()),
+                        new CurrencyEntryListTuple(entry),
+                        (tuple1, tuple2) -> tuple1.merge(tuple2))
+        );
     }
 
     public EntryAggregate merge(EntryAggregate that) {
