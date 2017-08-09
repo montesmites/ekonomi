@@ -82,7 +82,7 @@ public class ParserTest {
     public void parseEntries() throws Exception {
         final Map<String, Long> expCount = new HashMap<String, Long>() {
             {
-                put("C", (long) 1306);
+                put("C", (long) 1313);
                 put("D", (long) 1404);
                 put("E", (long) 1344);
                 put("F", (long) 218);

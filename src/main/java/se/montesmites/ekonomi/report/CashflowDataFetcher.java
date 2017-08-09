@@ -59,7 +59,11 @@ public class CashflowDataFetcher {
                 = getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
         return amount;
     }
-
+    
+    public EntryAggregate getEntryAggregate() {
+        return entryAggregate;
+    }
+    
     Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
         return Optional.of(
                 streamEntryAggregateByYearMonth(yearMonth)
