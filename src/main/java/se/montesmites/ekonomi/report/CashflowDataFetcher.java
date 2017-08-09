@@ -1,10 +1,8 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
-import static java.util.Arrays.stream;
 import static java.util.Comparator.comparing;
 import java.util.List;
 import java.util.Map;
@@ -16,18 +14,34 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
+import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 import se.montesmites.ekonomi.organization.Organization;
 
 public class CashflowDataFetcher {
 
+    private static EntryCollector entryCollector(Organization organization) {
+        return new EntryCollector(
+                eventId -> organization.getEvent(eventId)
+                        .map((Event event) -> toYearMonth(event.getDate())));
+    }
+
+    private static YearMonth toYearMonth(LocalDate date) {
+        return YearMonth.of(date.getYear(), date.getMonth());
+    }
+
     private final Organization organization;
+
+    private final EntryAggregate entryAggregate;
     private final Map<YearMonth, List<AccountIdAmountTuple>> accountAmountByYearMonth;
     private final Map<YearMonth, Map<AccountId, Currency>> accountAmountByYearMonthMap;
 
     public CashflowDataFetcher(Organization organization) {
         this.organization = organization;
+        this.entryAggregate
+                = organization.streamEntries()
+                        .collect(entryCollector(organization));
 
         Map<YearMonth, AccountIdAmountAggregate> aggregatesMap
                 = accountIdAmountMap(
@@ -42,9 +56,9 @@ public class CashflowDataFetcher {
     }
 
     public Stream<AccountId> streamAccountIds(Year year) {
-        return yearMonths(year).flatMap(
-                ym -> getAccountIdAmountTuples(ym).get().stream()
-                        .flatMap(t -> Stream.of(t.getAccountId())))
+        return entryAggregate.getAggregate().entrySet().stream()
+                .filter(e -> e.getKey().getYearMonth().getYear() == year.getValue())
+                .map(e -> e.getKey().getAccountId())
                 .distinct()
                 .sorted(comparing(AccountId::getId));
     }
@@ -57,10 +71,6 @@ public class CashflowDataFetcher {
         Optional<Currency> amount
                 = getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
         return amount;
-    }
-
-    private Stream<YearMonth> yearMonths(Year year) {
-        return stream(Month.values()).map(m -> YearMonth.of(year.getValue(), m));
     }
 
     Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
