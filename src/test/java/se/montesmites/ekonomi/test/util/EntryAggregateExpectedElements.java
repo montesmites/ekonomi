@@ -9,7 +9,7 @@ import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 
-public enum AccountIdAmountAggregateExpectedElements {
+public enum EntryAggregateExpectedElements {
     BY_DATE_20120112 {
         @Override
         public AccountIdAmountAggregate getAggregate(YearId yearId) {

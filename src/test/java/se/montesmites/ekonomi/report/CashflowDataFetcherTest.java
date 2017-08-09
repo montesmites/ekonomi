@@ -21,7 +21,7 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 import se.montesmites.ekonomi.organization.Organization;
-import static se.montesmites.ekonomi.test.util.AccountIdAmountAggregateExpectedElements.BY_YEARMONTH_201201;
+import static se.montesmites.ekonomi.test.util.EntryAggregateExpectedElements.BY_YEARMONTH_201201;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class CashflowDataFetcherTest {
