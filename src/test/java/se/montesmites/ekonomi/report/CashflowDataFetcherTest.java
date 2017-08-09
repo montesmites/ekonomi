@@ -88,7 +88,7 @@ public class CashflowDataFetcherTest {
                         fetcher.getAccountIdAmountTuples(yearMonth).get())
                         .asAccountIdAmountMap();
         Map<AccountId, Currency> expAmounts
-                = BY_YEARMONTH_201201.getAggregate(yearId).asAccountIdAmountMap();
+                = BY_YEARMONTH_201201.getAggregate(yearId);
         mapEqualityAssertion(expAmounts, actAmounts);
     }
 
