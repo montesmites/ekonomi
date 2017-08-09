@@ -10,16 +10,16 @@ import se.montesmites.ekonomi.model.Entry;
 
 ;
 
-public class CurrencyEntryListTuple {
+public class AmountEntryListTuple {
 
     private final Currency amount;
     private final List<Entry> entries;
     
-    public CurrencyEntryListTuple(Entry entry) {
+    public AmountEntryListTuple(Entry entry) {
         this(entry.getAmount(), Arrays.asList(entry));
     }
     
-    public CurrencyEntryListTuple(Currency amount, List<Entry> entries) {
+    public AmountEntryListTuple(Currency amount, List<Entry> entries) {
         this.amount = amount;
         this.entries = entries.stream().collect(toList());
     }
@@ -32,14 +32,14 @@ public class CurrencyEntryListTuple {
         return entries;
     }
 
-    public CurrencyEntryListTuple merge(CurrencyEntryListTuple that) {
+    public AmountEntryListTuple merge(AmountEntryListTuple that) {
         Currency sum = this.getAmount().add(that.getAmount());
         List<Entry> retEntries
                 = Stream.concat(
                         this.getEntries().stream(),
                         that.getEntries().stream())
                         .collect(toList());
-        return new CurrencyEntryListTuple(sum, retEntries);
+        return new AmountEntryListTuple(sum, retEntries);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CurrencyEntryListTuple {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CurrencyEntryListTuple other = (CurrencyEntryListTuple) obj;
+        final AmountEntryListTuple other = (AmountEntryListTuple) obj;
         if (!Objects.equals(this.amount, other.amount)) {
             return false;
         }

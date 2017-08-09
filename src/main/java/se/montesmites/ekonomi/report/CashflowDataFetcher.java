@@ -15,7 +15,7 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
-import se.montesmites.ekonomi.model.tuple.CurrencyEntryListTuple;
+import se.montesmites.ekonomi.model.tuple.AmountEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 import se.montesmites.ekonomi.organization.Organization;
 
@@ -81,7 +81,7 @@ public class CashflowDataFetcher {
         );
     }
 
-    private Stream<Map.Entry<YearMonthAccountIdTuple, CurrencyEntryListTuple>> streamEntryAggregateByYearMonth(YearMonth yearMonth) {
+    private Stream<Map.Entry<YearMonthAccountIdTuple, AmountEntryListTuple>> streamEntryAggregateByYearMonth(YearMonth yearMonth) {
         return entryAggregate.getAggregate().entrySet().stream()
                 .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
     }

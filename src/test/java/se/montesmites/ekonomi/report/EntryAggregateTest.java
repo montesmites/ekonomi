@@ -15,7 +15,7 @@ import se.montesmites.ekonomi.model.EntryStatus;
 import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Series;
 import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.model.tuple.CurrencyEntryListTuple;
+import se.montesmites.ekonomi.model.tuple.AmountEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
 public class EntryAggregateTest {
@@ -43,7 +43,7 @@ public class EntryAggregateTest {
         final Entry entry = entry(1, accountid, amount);
         final EntryAggregate aggregate
                 = Stream.of(entry).collect(amountCollector(yearMonth));
-        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(1, act.size());
         assertEquals(1, sizeOf(act, yearMonth, accountid));
@@ -61,7 +61,7 @@ public class EntryAggregateTest {
         final Entry entry2 = entry(2, accountid, amount2);
         final EntryAggregate aggregate
                 = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
-        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(1, act.size());
         assertEquals(2, sizeOf(act, yearMonth, accountid));
@@ -83,7 +83,7 @@ public class EntryAggregateTest {
         final Entry entry2 = entry(2, accountid2, amount2);
         final EntryAggregate aggregate
                 = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
-        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(2, act.size());
         assertEquals(1, sizeOf(act, yearMonth, accountid1));
@@ -112,7 +112,7 @@ public class EntryAggregateTest {
                                         -> eventId.getId() == 1
                                         ? Optional.of(yearMonth1)
                                         : Optional.of(yearMonth2)));
-        final Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> act
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
                 = aggregate.getAggregate();
         assertEquals(2, act.size());
         assertEquals(1, sizeOf(act, yearMonth1, accountid1));
@@ -137,8 +137,8 @@ public class EntryAggregateTest {
         return new Currency(amount);
     }
 
-    private CurrencyEntryListTuple tuple(
-            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+    private AmountEntryListTuple tuple(
+            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map,
             YearMonth yearMonth,
             int accountid) {
         YearMonthAccountIdTuple key
@@ -147,21 +147,21 @@ public class EntryAggregateTest {
     }
 
     private int sizeOf(
-            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map,
             YearMonth yearMonth,
             int accountid) {
         return tuple(map, yearMonth, accountid).getEntries().size();
     }
 
     private Currency amountOf(
-            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map,
             YearMonth yearMonth,
             int accountid) {
         return tuple(map, yearMonth, accountid).getAmount();
     }
 
     private Entry entryOf(
-            Map<YearMonthAccountIdTuple, CurrencyEntryListTuple> map,
+            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map,
             YearMonth yearMonth,
             int accountid,
             int entryIndex) {
