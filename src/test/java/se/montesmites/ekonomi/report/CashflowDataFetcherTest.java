@@ -1,10 +1,9 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.Month;
-import java.time.Year;
 import java.time.YearMonth;
+import java.util.Arrays;
 import static java.util.Arrays.stream;
-import static java.util.Comparator.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,7 +29,7 @@ public class CashflowDataFetcherTest {
     @ClassRule
     public static TemporaryFolder tempfolder = new TemporaryFolder();
 
-    private final Year year = Year.of(2012);
+    private final java.time.Year year = java.time.Year.of(2012);
 
     private Organization organization;
     private CashflowDataFetcher fetcher;
@@ -49,10 +48,19 @@ public class CashflowDataFetcherTest {
 
     @Test
     public void assertAccountIds() {
-        final List<AccountId> expAccountIds = yearMonths().flatMap(
-                ym -> fetcher.getAccountIdAmountTuples(ym).get().stream().map(
-                        t -> t.getAccountId())).distinct().sorted(
-                        comparing(AccountId::getId)).collect(toList());
+        final YearId yearId = new YearId("C");
+        final List<AccountId> expAccountIds = Arrays.asList(1221, 1229, 1400,
+                1510, 1650, 1710, 1910, 1920, 1930, 1940, 2091, 2098, 2099, 2440,
+                2510, 2611, 2615, 2641, 2645, 2650, 2710, 2732, 2920, 2921, 2940,
+                2941, 2995, 3041, 3045, 3048, 3051, 3055, 3058, 3540, 3590, 3592,
+                3740, 3960, 4010, 4056, 4990, 5010, 5020, 5090, 5410, 5460, 5500,
+                5611, 5612, 5613, 5615, 5800, 5930, 6071, 6072, 6090, 6110, 6211,
+                6212, 6250, 6310, 6420, 6530, 6570, 6970, 7010, 7081, 7082, 7090,
+                7210, 7281, 7285, 7290, 7385, 7399, 7411, 7510, 7519, 7533, 7570,
+                7690, 7832, 8300, 8910, 8999).stream()
+                .map(id -> Integer.toString(id))
+                .map(id -> new AccountId(yearId, id))
+                .collect(toList());
         final List<AccountId> actAccountIds
                 = fetcher.streamAccountIds(year).collect(toList());
         assertEquals(expAccountIds, actAccountIds);
@@ -75,8 +83,10 @@ public class CashflowDataFetcherTest {
     public void readAccountAmount_byYearMonth_2012January() throws Exception {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
-        Map<AccountId, Currency> actAmounts = new AccountIdAmountAggregate(
-                fetcher.getAccountIdAmountTuples(yearMonth).get()).asAccountIdAmountMap();
+        Map<AccountId, Currency> actAmounts
+                = new AccountIdAmountAggregate(
+                        fetcher.getAccountIdAmountTuples(yearMonth))
+                        .asAccountIdAmountMap();
         Map<AccountId, Currency> expAmounts
                 = BY_YEARMONTH_201201.getAggregate(yearId).asAccountIdAmountMap();
         mapEqualityAssertion(expAmounts, actAmounts);

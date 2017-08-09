@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
@@ -34,7 +35,6 @@ public class CashflowDataFetcher {
     private final Organization organization;
 
     private final EntryAggregate entryAggregate;
-    private final Map<YearMonth, List<AccountIdAmountTuple>> accountAmountByYearMonth;
     private final Map<YearMonth, Map<AccountId, Currency>> accountAmountByYearMonthMap;
 
     public CashflowDataFetcher(Organization organization) {
@@ -47,8 +47,6 @@ public class CashflowDataFetcher {
                 = accountIdAmountMap(
                         organization.streamEntries(),
                         entry -> YearMonth.from(entryDate(entry)));
-        this.accountAmountByYearMonth
-                = aggregatesGrouper(aggregatesMap);
         this.accountAmountByYearMonthMap
                 = aggregatesMap.entrySet().stream()
                         .collect(toMap(Map.Entry::getKey,
@@ -73,20 +71,18 @@ public class CashflowDataFetcher {
         return amount;
     }
 
-    Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
-        return Optional.ofNullable(accountAmountByYearMonth.get(yearMonth));
+    List<AccountIdAmountTuple> getAccountIdAmountTuples(YearMonth yearMonth) {
+        return entryAggregate.getAggregate().entrySet().stream()
+                .filter(e -> e.getKey().getYearMonth().equals(yearMonth))
+                .map(e
+                        -> new AccountIdAmountTuple(
+                        e.getKey().getAccountId(),
+                        e.getValue().getAmount()))
+                .collect(toList());
     }
 
     Optional<Map<AccountId, Currency>> getAccountIdAmountMap(YearMonth yearMonth) {
         return Optional.ofNullable(accountAmountByYearMonthMap.get(yearMonth));
-    }
-
-    private <T> Map<T, List<AccountIdAmountTuple>> aggregatesGrouper(
-            Map<T, AccountIdAmountAggregate> aggregates) {
-        return aggregates.entrySet().stream()
-                .collect(toMap(
-                        Map.Entry::getKey,
-                        e -> e.getValue().getTuples()));
     }
 
     private <T> Map<T, AccountIdAmountAggregate> accountIdAmountMap(Stream<Entry> entries, Function<Entry, T> keyMapper) {
