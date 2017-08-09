@@ -85,7 +85,7 @@ public class CashflowDataFetcherTest {
         YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         Map<AccountId, Currency> actAmounts
                 = new AccountIdAmountAggregate(
-                        fetcher.getAccountIdAmountTuples(yearMonth))
+                        fetcher.getAccountIdAmountTuples(yearMonth).get())
                         .asAccountIdAmountMap();
         Map<AccountId, Currency> expAmounts
                 = BY_YEARMONTH_201201.getAggregate(yearId).asAccountIdAmountMap();
