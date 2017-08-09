@@ -1,8 +1,15 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.Year;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.EnumMap;
 import java.util.List;
-import static java.util.stream.Collectors.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -11,6 +18,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.report.Column.*;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
@@ -52,19 +60,19 @@ public class CashflowReport_OneSection_NetResults_OneRow_Test {
         return bodyRow(filterAccounts());
     }
 
-    private Stream<AccountId> filterAccounts() {
+    private Supplier<Stream<AccountId>> filterAccounts() {
         final String regex = "([3-7]\\d|8[1-8])\\d\\d";
         final AccountFilter filter = new AccountFilterByRegex(regex);
-        final Stream<AccountId> accounts = filter.filter(
-                fetcher.streamAccountIds(year));
-        return accounts;
+        final Set<AccountId> accounts = filter.filter(
+                fetcher.streamAccountIds(year)).collect(toSet());
+        return () -> accounts.stream();
     }
 
-    private Stream<BodyRow> bodyRow(Stream<AccountId> accountIds) {
+    private Stream<BodyRow> bodyRow(Supplier<Stream<AccountId>> accountIds) {
         return Stream.of(
                 new DefaultBodyRow(
                         fetcher,
-                        () -> accountIds,
+                        accountIds,
                         year,
                         ROW_DESCRIPTION));
     }
@@ -90,5 +98,39 @@ public class CashflowReport_OneSection_NetResults_OneRow_Test {
                         .collect(toList());
         assertEquals(1, act.size());
         assertEquals(exp, act.get(0));
+    }
+
+    @Test
+    public void testMonthlyAmountsForGroupedRow() {
+        final Map<Column, Currency> exp = new EnumMap<Column, Currency>(
+                Column.class) {
+            {
+                put(JANUARY, new Currency(2866947));
+                put(FEBRUARY, new Currency(-6758901));
+                put(MARCH, new Currency(-14611584));
+                put(APRIL, new Currency(-2150417));
+                put(MAY, new Currency(6833003));
+                put(JUNE, new Currency(-30431649));
+                put(JULY, new Currency(4877975));
+                put(AUGUST, new Currency(-3810720));
+                put(SEPTEMBER, new Currency(-4316052));
+                put(OCTOBER, new Currency(123642));
+                put(NOVEMBER, new Currency(-21238571));
+                put(DECEMBER, new Currency(21533255));
+            }
+        };
+        final List<Map<Column, Currency>> actList = section.streamBodyRows()
+                .map(row -> Column.streamMonths()
+                .map(col -> new SimpleEntry<>(col, row.getMonthlyAmount(col)))
+                .collect(
+                        toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue)))
+                .collect(toList());
+        final Map<Column, Currency> act = actList.get(0);
+        assertEquals(1, actList.size());
+        Column.streamMonths().forEach(column
+                -> assertEquals(column.name(), exp.get(column), act.get(column))
+        );
     }
 }
