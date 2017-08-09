@@ -7,7 +7,8 @@ import static java.util.Arrays.stream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import java.util.stream.Stream;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -19,7 +20,6 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.model.tuple.AccountIdAmountAggregate;
 import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.test.util.EntryAggregateExpectedElements.BY_YEARMONTH_201201;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
@@ -84,9 +84,15 @@ public class CashflowDataFetcherTest {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         Map<AccountId, Currency> actAmounts
-                = new AccountIdAmountAggregate(
-                        fetcher.getAccountIdAmountTuples(yearMonth).get())
-                        .asAccountIdAmountMap();
+                = fetcher.getAccountIdAmountTuples(yearMonth)
+                        .get()
+                        .stream()
+                        .collect(
+                                toMap(
+                                        t -> t.getAccountId(),
+                                        t -> t.getAmount()
+                                )
+                        );
         Map<AccountId, Currency> expAmounts
                 = BY_YEARMONTH_201201.getAggregate(yearId);
         mapEqualityAssertion(expAmounts, actAmounts);
