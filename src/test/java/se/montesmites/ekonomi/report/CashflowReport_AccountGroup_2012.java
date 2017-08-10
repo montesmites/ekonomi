@@ -25,8 +25,6 @@ import static se.montesmites.ekonomi.report.Column.NOVEMBER;
 import static se.montesmites.ekonomi.report.Column.OCTOBER;
 import static se.montesmites.ekonomi.report.Column.SEPTEMBER;
 
-;
-
 public enum CashflowReport_AccountGroup_2012 {
     BOKFORT_RESULTAT(
             "Bokfört resultat",
@@ -46,8 +44,27 @@ public enum CashflowReport_AccountGroup_2012 {
             put(NOVEMBER, new Currency(-21238571));
             put(DECEMBER, new Currency(21533255));
         }
-    }
-    );
+    }),
+    KORTFRISTIGA_SKULDER(
+            "Kortfristiga skulder",
+            "2[4-9]\\d\\d",
+            new EnumMap<Column, Currency>(
+                    Column.class) {
+        {
+            put(JANUARY, new Currency(1387853));
+            put(FEBRUARY, new Currency(-50442848));
+            put(MARCH, new Currency(-63669735));
+            put(APRIL, new Currency(137123271));
+            put(MAY, new Currency(-9537958));
+            put(JUNE, new Currency(288127));
+            put(JULY, new Currency(10662616));
+            put(AUGUST, new Currency(-14155331));
+            put(SEPTEMBER, new Currency(12777139));
+            put(OCTOBER, new Currency(-7434716));
+            put(NOVEMBER, new Currency(6669553));
+            put(DECEMBER, new Currency(-35070604));
+        }
+    });
 
     private final static java.time.Year YEAR = java.time.Year.of(2012);
 
