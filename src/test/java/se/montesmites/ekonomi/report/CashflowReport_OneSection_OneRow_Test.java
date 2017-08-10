@@ -23,7 +23,7 @@ import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.report.Column.*;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
-public class CashflowReport_OneSection_NetResults_OneRow_Test {
+public class CashflowReport_OneSection_OneRow_Test {
 
     @ClassRule
     public static TemporaryFolder tempfolder = new TemporaryFolder();
