@@ -28,8 +28,8 @@ public class CashflowReport_OneSection_OneRow_Test {
     @ClassRule
     public static TemporaryFolder tempfolder = new TemporaryFolder();
 
-    private final static String HEADER_TITLE = "Den löpande verksamheten";
-    private final static String ROW_DESCRIPTION = "Kassaflöde från den löpande verksamheten";
+    private final static String DEN_LOPANDE_VERKSAMHETEN = "Den löpande verksamheten";
+    private final static String BOKFORT_RESULTAT = "Bokfört resultat";
 
     private final Year year = Year.of(2012);
 
@@ -49,7 +49,7 @@ public class CashflowReport_OneSection_OneRow_Test {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year, () -> sections());
-        this.section = new Section(HEADER_TITLE, fetcher, year, () -> bodyRows());
+        this.section = new Section(DEN_LOPANDE_VERKSAMHETEN, fetcher, year, () -> bodyRows());
     }
 
     private Stream<Section> sections() {
@@ -57,24 +57,25 @@ public class CashflowReport_OneSection_OneRow_Test {
     }
 
     private Stream<BodyRow> bodyRows() {
-        return bodyRow(filterAccounts());
+        return Stream.of(
+                bodyRow(
+                        filterAccounts("([3-7]\\d|8[1-8])\\d\\d"),
+                        BOKFORT_RESULTAT));
     }
 
-    private Supplier<Stream<AccountId>> filterAccounts() {
-        final String regex = "([3-7]\\d|8[1-8])\\d\\d";
+    private Supplier<Stream<AccountId>> filterAccounts(String regex) {
         final AccountFilter filter = new AccountFilterByRegex(regex);
         final Set<AccountId> accounts = filter.filter(
                 fetcher.streamAccountIds(year)).collect(toSet());
         return () -> accounts.stream();
     }
 
-    private Stream<BodyRow> bodyRow(Supplier<Stream<AccountId>> accountIds) {
-        return Stream.of(
-                new DefaultBodyRow(
-                        fetcher,
-                        accountIds,
-                        year,
-                        ROW_DESCRIPTION));
+    private BodyRow bodyRow(Supplier<Stream<AccountId>> accountIds, String description) {
+        return new DefaultBodyRow(
+                fetcher,
+                accountIds,
+                year,
+                description);
     }
 
     @Test
@@ -84,14 +85,14 @@ public class CashflowReport_OneSection_OneRow_Test {
 
     @Test
     public void sectionTitle() {
-        final String exp = HEADER_TITLE.toUpperCase();
+        final String exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
         final String act = section.getTitle().getText(DESCRIPTION);
         assertEquals(exp, act);
     }
 
     @Test
     public void body_rowDescription() {
-        final String exp = ROW_DESCRIPTION;
+        final String exp = BOKFORT_RESULTAT;
         final List<String> act
                 = section.streamBodyRows()
                         .map(row -> row.getText(DESCRIPTION))
