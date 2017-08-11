@@ -66,7 +66,7 @@ public class CashflowReport {
             case DESCRIPTION:
                 return "%-20s";
             case TOTAL:
-                return "%20s\n";
+                return "%20s";
             default:
                 return "%20s";
         }
