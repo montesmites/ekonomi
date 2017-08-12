@@ -30,6 +30,7 @@ public class Organization {
                 p.parse(YEARS));
     }
     
+    private final Collection<Account> accounts;
     private final Collection<Year> years;
     private final Collection<Entry> entries;
     
@@ -45,6 +46,7 @@ public class Organization {
             Collection<Entry> entries,
             Collection<Event> events,
             Collection<Year> years) {
+        this.accounts = accounts;
         this.years = years;
         this.entries = entries;
         
@@ -59,7 +61,11 @@ public class Organization {
         this.yearsByYear = years.stream()
                 .collect(toMap(Year::getYear, identity()));
     }
-
+    
+    public Stream<Account> streamAccounts() {
+        return accounts.stream();
+    }
+    
     public Stream<Year> streamYears() {
         return years.stream();
     }
