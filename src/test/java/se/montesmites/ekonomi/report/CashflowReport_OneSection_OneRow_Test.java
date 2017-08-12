@@ -39,7 +39,7 @@ public class CashflowReport_OneSection_OneRow_Test {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
-        this.fetcher = new CashflowDataFetcher(this.organization);
+        this.fetcher = new CashflowDataFetcher(this.organization, __ -> 1);
         this.report = new CashflowReport(fetcher, year, () -> sections());
         this.groups = Arrays.asList(BOKFORT_RESULTAT);
         this.section = new Section(

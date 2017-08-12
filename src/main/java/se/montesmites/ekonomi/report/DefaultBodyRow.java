@@ -20,7 +20,7 @@ public class DefaultBodyRow implements BodyRow {
         this.year = year;
         this.description = description;
     }
-    
+
     @Override
     public Supplier<Stream<AccountId>> getAccountIds() {
         return accountIds;
@@ -37,7 +37,7 @@ public class DefaultBodyRow implements BodyRow {
                 return getMonthlyAmount(column).format();
         }
     }
-    
+
     @Override
     public Currency getMonthlyAmount(Column column) {
         return accountIds.get()
@@ -50,9 +50,13 @@ public class DefaultBodyRow implements BodyRow {
     }
 
     private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
-        return fetcher.fetchAmount(accountId, yearMonth).orElse(new Currency(0));
+        return fetcher.fetchAmount(accountId, yearMonth)
+                .map(currency -> currency.getAmount())
+                .map(amount -> amount * fetcher.getCoefficient(accountId))
+                .map(Currency::new)
+                .orElse(new Currency(0));
     }
-    
+
     @Override
     public Currency getYearlyTotal() {
         return Column.streamMonths()

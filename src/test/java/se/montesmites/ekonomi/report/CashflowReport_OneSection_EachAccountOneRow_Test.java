@@ -36,7 +36,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
-        this.fetcher = new CashflowDataFetcher(this.organization);
+        this.fetcher = new CashflowDataFetcher(this.organization, __ -> 1);
         this.report = new CashflowReport(fetcher, year);
         this.section = report.streamSections().findFirst().get();
     }
