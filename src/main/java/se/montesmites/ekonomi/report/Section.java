@@ -43,6 +43,7 @@ public class Section {
         sb.add(header);
         streamBodyRows().forEach(sb::add);
         sb.add(footer);
+        sb.add(new EmptyRow());
         return sb.build();
     }
 }
