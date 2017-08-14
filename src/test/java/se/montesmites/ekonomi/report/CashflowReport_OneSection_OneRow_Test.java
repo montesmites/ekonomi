@@ -42,7 +42,7 @@ public class CashflowReport_OneSection_OneRow_Test {
         this.fetcher = new CashflowDataFetcher(this.organization, __ -> 1);
         this.report = new CashflowReport(fetcher, year, () -> sections());
         this.groups = Arrays.asList(BOKFORT_RESULTAT);
-        this.section = new Section(
+        this.section = new DefaultSection(
                 DEN_LOPANDE_VERKSAMHETEN,
                 year,
                 () -> bodyRowsOf(fetcher, groups));

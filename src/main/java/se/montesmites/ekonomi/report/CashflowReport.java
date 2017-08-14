@@ -33,7 +33,7 @@ public class CashflowReport {
     public CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
         this(fetcher, year, ()
                 -> Stream.of(
-                        new Section(
+                        new DefaultSection(
                                 "Unspecified Accounts",
                                 year,
                                 () -> bodyRows(fetcher, year))));

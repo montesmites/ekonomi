@@ -59,7 +59,7 @@ public class CashflowReport_TwoSections_OneRowEach_Test {
     private Map.Entry<Section, List<CashflowReport_AccountGroup_2012>> section(
             String title, List<CashflowReport_AccountGroup_2012> groups) {
         return new SimpleEntry<>(
-                new Section(
+                new DefaultSection(
                         title,
                         year,
                         () -> bodyRowsOf(
