@@ -85,8 +85,8 @@ public enum CashflowReport_AccountGroup_2012 {
                         .collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
-            String fmt = "index %d";
-            String msg = String.format(fmt, i);
+            String fmt = "%s at %d";
+            String msg = String.format(fmt, section.getTitle(), i);
             assertEquals(msg, exp.get(i), act.get(i));
         }
     }
@@ -113,10 +113,13 @@ public enum CashflowReport_AccountGroup_2012 {
             final int ix = i;
             final Map<Column, Currency> exp = expList.get(i);
             final Map<Column, Currency> act = actList.get(i);
-            final String fmt = "%s at %s: ";
+            final String fmt = "%s at %s at %s: ";
             Column.streamMonths().forEach(column
                     -> assertEquals(
-                            String.format(fmt, column.name(), ix),
+                            String.format(
+                                    fmt, section.getTitle(),
+                                    column.name(),
+                                    ix),
                             exp.get(column),
                             act.get(column))
             );
