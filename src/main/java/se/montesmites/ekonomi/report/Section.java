@@ -5,16 +5,12 @@ import java.util.stream.Stream;
 
 public class Section {
 
-    private final CashflowDataFetcher fetcher;
-    private final java.time.Year year;
     private final TitleRow title;
     private final HeaderRow header;
     private final FooterRow footer;
     private final Supplier<Stream<BodyRow>> bodyRows;
 
-    public Section(String title, CashflowDataFetcher fetcher, java.time.Year year, Supplier<Stream<BodyRow>> bodyRows) {
-        this.fetcher = fetcher;
-        this.year = year;
+    public Section(String title, java.time.Year year, Supplier<Stream<BodyRow>> bodyRows) {
         this.title = new TitleRow(title);
         this.header = new HeaderRow();
         this.footer = new FooterRow(this, year);
