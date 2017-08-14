@@ -44,7 +44,6 @@ public class CashflowReport_OneSection_OneRow_Test {
         this.groups = Arrays.asList(BOKFORT_RESULTAT);
         this.section = new DefaultSection(
                 DEN_LOPANDE_VERKSAMHETEN,
-                year,
                 () -> bodyRowsOf(fetcher, groups));
     }
 

@@ -10,10 +10,10 @@ public class DefaultSection implements Section {
     private final FooterRow footer;
     private final Supplier<Stream<BodyRow>> bodyRows;
 
-    public DefaultSection(String title, java.time.Year year, Supplier<Stream<BodyRow>> bodyRows) {
+    public DefaultSection(String title, Supplier<Stream<BodyRow>> bodyRows) {
         this.title = new TitleRow(title);
         this.header = new HeaderRow();
-        this.footer = new FooterRow(this, year);
+        this.footer = new FooterRow(this);
         this.bodyRows = bodyRows;
     }
     

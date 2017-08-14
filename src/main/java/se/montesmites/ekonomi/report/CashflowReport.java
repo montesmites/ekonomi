@@ -35,7 +35,6 @@ public class CashflowReport {
                 -> Stream.of(
                         new DefaultSection(
                                 "Unspecified Accounts",
-                                year,
                                 () -> bodyRows(fetcher, year))));
     }
 

@@ -61,7 +61,6 @@ public class CashflowReport_TwoSections_OneRowEach_Test {
         return new SimpleEntry<>(
                 new DefaultSection(
                         title,
-                        year,
                         () -> bodyRowsOf(
                                 fetcher,
                                 groups)),

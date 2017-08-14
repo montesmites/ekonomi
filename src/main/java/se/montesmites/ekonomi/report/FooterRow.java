@@ -5,11 +5,9 @@ import se.montesmites.ekonomi.model.Currency;
 public class FooterRow implements Row {
 
     private final Section parent;
-    private final java.time.Year year;
 
-    public FooterRow(Section parent, java.time.Year year) {
+    public FooterRow(Section parent) {
         this.parent = parent;
-        this.year = year;
     }
 
     @Override
