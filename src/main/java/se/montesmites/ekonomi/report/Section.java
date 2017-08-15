@@ -18,7 +18,6 @@ public interface Section {
         streamHeader().forEach(sb::add);
         streamBody().forEach(sb::add);
         streamFooter().forEach(sb::add);
-        sb.add(new EmptyRow());
         return sb.build();
     }
 }

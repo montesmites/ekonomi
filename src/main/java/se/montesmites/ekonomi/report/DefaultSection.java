@@ -29,7 +29,7 @@ public class DefaultSection implements Section {
 
     @Override
     public Stream<Row> streamFooter() {
-        return Stream.of(footer);
+        return Stream.of(footer, new EmptyRow());
     }
 
     @Override
