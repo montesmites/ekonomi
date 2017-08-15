@@ -79,7 +79,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     @Test
     public void body_monthlyAmounts() {
         section.streamBody()
-                .map(row -> (BodyRow) row)
+                .map(row -> (RowWithAccounts) row)
                 .forEach(bodyRow
                         -> Column.streamMonths()
                         .forEach(column
@@ -100,7 +100,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
                         -> assertFooterRowMonthlyTotal(footer, column));
     }
 
-    private void assertBodyRowMonthlyAmounts(BodyRow row, Column column) {
+    private void assertBodyRowMonthlyAmounts(RowWithAccounts row, Column column) {
         Currency exp = expectedMonthlyAmount(row, column);
         Currency act = row.getMonthlyAmount(column);
         String fmt = "%s %s %s";
@@ -119,12 +119,12 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     private Currency expectedFooterRowMonthlyTotal(Column column) {
         return section.streamBody()
-                .map(row -> (BodyRow) row)
+                .map(row -> (RowWithAccounts) row)
                 .map(r -> expectedMonthlyAmount(r, column))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
 
-    private Currency expectedMonthlyAmount(BodyRow row, Column column) {
+    private Currency expectedMonthlyAmount(RowWithAccounts row, Column column) {
         return fetcher.getAccountIdAmountMap(column.asYearMonth(year).get())
                 .map(m -> m.get(accountId(row))).orElse(new Currency(0));
     }
@@ -132,7 +132,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     @Test
     public void body_yearlyTotals() {
         section.streamBody()
-                .map(row -> (BodyRow) row)
+                .map(row -> (RowWithAccounts) row)
                 .forEach(this::assertBodyRowYearlyTotal);
     }
 
@@ -142,7 +142,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         assertFooterRowYearlyTotal(footer);
     }
 
-    private void assertBodyRowYearlyTotal(BodyRow row) {
+    private void assertBodyRowYearlyTotal(RowWithAccounts row) {
         Currency exp = organization.streamEntries()
                 .filter(e -> e.getAccountId().equals(accountId(row)))
                 .map(e -> e.getAmount())
@@ -162,7 +162,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         assertEquals(exp, act);
     }
 
-    private AccountId accountId(BodyRow row) {
+    private AccountId accountId(RowWithAccounts row) {
         return row.getAccountIds().get().findFirst().get();
     }
 }

@@ -140,7 +140,7 @@ public enum CashflowReport_AccountGroup_2012 {
         this.expectedAmounts = expectedAmounts;
     }
 
-    private BodyRow bodyRow(CashflowDataFetcher fetcher) {
+    private RowWithAccounts bodyRow(CashflowDataFetcher fetcher) {
         final AccountFilter filter = new AccountFilterByRegex(regex);
         List<AccountId> accountIds
                 = filter
@@ -148,7 +148,7 @@ public enum CashflowReport_AccountGroup_2012 {
                         .distinct()
                         .sorted(comparing(AccountId::getId))
                         .collect(toList());
-        return new DefaultBodyRow(
+        return new DefaultRowWithAccounts(
                 fetcher,
                 () -> accountIds.stream(),
                 YEAR,

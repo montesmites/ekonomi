@@ -7,14 +7,14 @@ import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
-public class DefaultBodyRow implements BodyRow {
+public class DefaultRowWithAccounts implements RowWithAccounts {
 
     private final CashflowDataFetcher fetcher;
     private final Supplier<Stream<AccountId>> accountIds;
     private final java.time.Year year;
     private final String description;
 
-    public DefaultBodyRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year, String description) {
+    public DefaultRowWithAccounts(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year, String description) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
         this.year = year;

@@ -6,9 +6,9 @@ import static java.util.stream.Collectors.toList;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.report.AccountFilter;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
-import se.montesmites.ekonomi.report.BodyRow;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.DefaultBodyRow;
+import se.montesmites.ekonomi.report.DefaultRowWithAccounts;
+import se.montesmites.ekonomi.report.RowWithAccounts;
 
 enum NikkaAccountGroup {
     LONEINBETALNINGAR("Löner och arvoden", "(30|36)\\d\\d"),
@@ -40,7 +40,7 @@ enum NikkaAccountGroup {
         this.regex = regex;
     }
 
-    BodyRow bodyRow(CashflowDataFetcher fetcher, java.time.Year year) {
+    RowWithAccounts bodyRow(CashflowDataFetcher fetcher, java.time.Year year) {
         final AccountFilter filter = new AccountFilterByRegex(regex);
         List<AccountId> accountIds
                 = filter
@@ -48,7 +48,7 @@ enum NikkaAccountGroup {
                         .distinct()
                         .sorted(comparing(AccountId::getId))
                         .collect(toList());
-        return new DefaultBodyRow(
+        return new DefaultRowWithAccounts(
                 fetcher,
                 () -> accountIds.stream(),
                 year,
