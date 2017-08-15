@@ -86,7 +86,7 @@ public enum CashflowReport_AccountGroup_2012 {
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
-            String msg = String.format(fmt, section.getTitle(), i);
+            String msg = String.format(fmt, section.streamTitle(), i);
             assertEquals(msg, exp.get(i), act.get(i));
         }
     }
@@ -117,7 +117,7 @@ public enum CashflowReport_AccountGroup_2012 {
             Column.streamMonths().forEach(column
                     -> assertEquals(
                             String.format(
-                                    fmt, section.getTitle(),
+                                    fmt, section.streamTitle(),
                                     column.name(),
                                     ix),
                             exp.get(column),

@@ -48,7 +48,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @Test
     public void header_texts() {
-        HeaderRow header = section.getHeader();
+        HeaderRow header = section.streamHeader().findFirst().get();
         List<String> expColumnLabels = Arrays.asList("Description", "Jan", "Feb",
                 "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
                 "Dec", "Total");
@@ -86,13 +86,13 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @Test
     public void footer_description() {
-        FooterRow footer = section.getFooter();
+        FooterRow footer = section.streamFooter().findFirst().get();
         assertEquals("Total", footer.getText(Column.DESCRIPTION));
     }
 
     @Test
     public void footer_monthlyTotals() {
-        FooterRow footer = section.getFooter();
+        FooterRow footer = section.streamFooter().findFirst().get();
         Column.streamMonths()
                 .forEach(column
                         -> assertFooterRowMonthlyTotal(footer, column));
@@ -132,7 +132,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @Test
     public void footer_yearlyTotal() {
-        FooterRow footer = section.getFooter();
+        FooterRow footer = section.streamFooter().findFirst().get();
         assertFooterRowYearlyTotal(footer);
     }
 

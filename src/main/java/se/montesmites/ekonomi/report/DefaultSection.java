@@ -18,18 +18,18 @@ public class DefaultSection implements Section {
     }
     
     @Override
-    public TitleRow getTitle() {
-        return this.title;
+    public Stream<TitleRow> streamTitle() {
+        return Stream.of(this.title);
     }
 
     @Override
-    public HeaderRow getHeader() {
-        return header;
+    public Stream<HeaderRow> streamHeader() {
+        return Stream.of(header);
     }
 
     @Override
-    public FooterRow getFooter() {
-        return footer;
+    public Stream<FooterRow> streamFooter() {
+        return Stream.of(footer);
     }
 
     @Override

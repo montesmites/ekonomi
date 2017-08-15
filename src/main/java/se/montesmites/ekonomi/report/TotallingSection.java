@@ -14,19 +14,20 @@ public class TotallingSection implements Section {
     }
 
     @Override
-    public TitleRow getTitle() {
-        return new TitleRow(title);
+    public Stream<TitleRow> streamTitle() {
+        return Stream.of(new TitleRow(title));
     }
 
     @Override
-    public HeaderRow getHeader() {
-        return new HeaderRow();
+    public Stream<HeaderRow> streamHeader() {
+        return Stream.of(new HeaderRow());
     }
 
     @Override
-    public FooterRow getFooter() {
-        return new FooterRow(
-                () -> sections.stream().flatMap(Section::streamBodyRows));
+    public Stream<FooterRow> streamFooter() {
+        return Stream.of(
+                new FooterRow(
+                        () -> sections.stream().flatMap(Section::streamBodyRows)));
     }
 
     @Override

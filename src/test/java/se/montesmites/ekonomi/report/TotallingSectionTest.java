@@ -56,7 +56,8 @@ public class TotallingSectionTest {
     public void assertTitle() {
         assertEquals(
                 TOTALLING_SECTION_TITLE,
-                totallingSection.getTitle().getText(DESCRIPTION));
+                totallingSection.streamTitle()
+                        .findFirst().get().getText(DESCRIPTION));
     }
 
     @Test
@@ -72,9 +73,12 @@ public class TotallingSectionTest {
         Column.streamMonths().forEach(month
                 -> assertEquals(
                         month.name(),
-                        section1.getFooter().getMonthlyTotal(month)
-                                .add(section2.getFooter().getMonthlyTotal(month)),
-                        totallingSection.getFooter().getMonthlyTotal(month)
+                        section1.streamFooter()
+                                .findFirst().get().getMonthlyTotal(month)
+                                .add(section2.streamFooter()
+                                        .findFirst().get().getMonthlyTotal(month)),
+                        totallingSection.streamFooter()
+                                .findFirst().get().getMonthlyTotal(month)
                 )
         );
     }
