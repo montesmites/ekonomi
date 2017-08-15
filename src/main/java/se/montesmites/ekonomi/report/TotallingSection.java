@@ -14,7 +14,7 @@ public class TotallingSection implements Section {
     }
 
     @Override
-    public Stream<TitleRow> streamTitle() {
+    public Stream<Row> streamTitle() {
         return Stream.of(new TitleRow(title));
     }
 

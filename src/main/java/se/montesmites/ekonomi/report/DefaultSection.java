@@ -18,7 +18,7 @@ public class DefaultSection implements Section {
     }
     
     @Override
-    public Stream<TitleRow> streamTitle() {
+    public Stream<Row> streamTitle() {
         return Stream.of(this.title);
     }
 

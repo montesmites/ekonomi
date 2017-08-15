@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 public interface Section {
     
-    public Stream<TitleRow> streamTitle();
+    public Stream<Row> streamTitle();
     
     public Stream<HeaderRow> streamHeader();
 
