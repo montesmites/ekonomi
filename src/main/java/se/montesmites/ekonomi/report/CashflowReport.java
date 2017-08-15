@@ -18,7 +18,7 @@ public class CashflowReport {
         return set;
     }
 
-    private static Stream<BodyRow> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
+    private static Stream<Row> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
         return fetcher.streamAccountIds(year)
                 .map(accountId
                         -> new DefaultBodyRow(

@@ -7,13 +7,13 @@ import se.montesmites.ekonomi.model.Currency;
 
 public class FooterRow implements Row, RowWithAmounts {
 
-    private final Supplier<Stream<BodyRow>> bodyRows;
+    private final Supplier<Stream<Row>> bodyRows;
 
     public FooterRow(Section parent) {
         this.bodyRows = () -> parent.streamBodyRows();
     }
     
-    public FooterRow(Supplier<Stream<BodyRow>> bodyRows) {
+    public FooterRow(Supplier<Stream<Row>> bodyRows) {
         this.bodyRows = bodyRows;
     }
 
@@ -32,6 +32,7 @@ public class FooterRow implements Row, RowWithAmounts {
     @Override
     public Currency getMonthlyAmount(Column column) {
         return bodyRows.get()
+                .map(row -> row.asRowWithAmounts().get())
                 .map(row -> row.getMonthlyAmount(column))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }

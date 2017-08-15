@@ -68,7 +68,7 @@ public enum CashflowReport_AccountGroup_2012 {
 
     private final static java.time.Year YEAR = java.time.Year.of(2012);
 
-    public static Stream<BodyRow> bodyRowsOf(
+    public static Stream<Row> bodyRowsOf(
             CashflowDataFetcher fetcher,
             List<CashflowReport_AccountGroup_2012> groups) {
         return groups.stream().map(group -> group.bodyRow(fetcher));
@@ -100,6 +100,7 @@ public enum CashflowReport_AccountGroup_2012 {
                         .collect(toList());
         final List<Map<Column, Currency>> actList
                 = section.streamBodyRows()
+                        .map(row -> row.asRowWithAmounts().get())
                         .map(row -> Column.streamMonths()
                         .map(col -> new AbstractMap.SimpleEntry<>(col,
                         row.getMonthlyAmount(col)))

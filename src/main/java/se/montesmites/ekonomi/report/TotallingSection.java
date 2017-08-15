@@ -31,7 +31,7 @@ public class TotallingSection implements Section {
     }
 
     @Override
-    public Stream<BodyRow> streamBodyRows() {
+    public Stream<Row> streamBodyRows() {
         return Stream.empty();
     }
 }

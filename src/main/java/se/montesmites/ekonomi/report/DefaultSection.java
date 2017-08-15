@@ -8,9 +8,9 @@ public class DefaultSection implements Section {
     private final TitleRow title;
     private final HeaderRow header;
     private final FooterRow footer;
-    private final Supplier<Stream<BodyRow>> bodyRows;
+    private final Supplier<Stream<Row>> bodyRows;
 
-    public DefaultSection(String title, Supplier<Stream<BodyRow>> bodyRows) {
+    public DefaultSection(String title, Supplier<Stream<Row>> bodyRows) {
         this.title = new TitleRow(title);
         this.header = new HeaderRow();
         this.footer = new FooterRow(this);
@@ -33,7 +33,7 @@ public class DefaultSection implements Section {
     }
 
     @Override
-    public Stream<BodyRow> streamBodyRows() {
+    public Stream<Row> streamBodyRows() {
         return bodyRows.get();
     }
 }

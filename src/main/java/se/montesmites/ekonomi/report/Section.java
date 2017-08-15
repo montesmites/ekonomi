@@ -10,7 +10,7 @@ public interface Section {
 
     public Stream<Row> streamFooter();
     
-    public Stream<BodyRow> streamBodyRows();
+    public Stream<Row> streamBodyRows();
 
     default Stream<Row> streamAllRows() {
         Stream.Builder<Row> sb = Stream.builder();
