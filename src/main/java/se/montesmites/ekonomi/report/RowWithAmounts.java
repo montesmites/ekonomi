@@ -6,5 +6,9 @@ public interface RowWithAmounts {
 
     public Currency getMonthlyAmount(Column column);
 
-    public Currency getYearlyTotal();
+    default Currency getYearlyTotal() {
+        return Column.streamMonths()
+                .map(this::getMonthlyAmount)
+                .reduce(new Currency(0), (sum, term) -> sum.add(term));
+    }
 }

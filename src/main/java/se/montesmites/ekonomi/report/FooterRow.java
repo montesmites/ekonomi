@@ -34,11 +34,4 @@ public class FooterRow implements Row, RowWithAmounts {
                 .map(row -> row.getMonthlyAmount(column))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
-    
-    @Override
-    public Currency getYearlyTotal() {
-        return Column.streamMonths()
-                .map(this::getMonthlyAmount)
-                .reduce(new Currency(0), (sum, term) -> sum.add(term));
-    }
 }

@@ -56,11 +56,4 @@ public class DefaultBodyRow implements BodyRow {
                 .map(Currency::new)
                 .orElse(new Currency(0));
     }
-
-    @Override
-    public Currency getYearlyTotal() {
-        return Column.streamMonths()
-                .map(this::getMonthlyAmount)
-                .reduce(new Currency(0), (sum, term) -> sum.add(term));
-    }
 }
