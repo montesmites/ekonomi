@@ -23,7 +23,7 @@ public class DefaultSection implements Section {
     }
 
     @Override
-    public Stream<HeaderRow> streamHeader() {
+    public Stream<Row> streamHeader() {
         return Stream.of(header);
     }
 

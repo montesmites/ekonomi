@@ -6,7 +6,7 @@ public interface Section {
     
     public Stream<Row> streamTitle();
     
-    public Stream<HeaderRow> streamHeader();
+    public Stream<Row> streamHeader();
 
     public Stream<FooterRow> streamFooter();
     

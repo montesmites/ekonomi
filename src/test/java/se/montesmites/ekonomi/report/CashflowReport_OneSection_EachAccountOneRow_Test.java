@@ -48,7 +48,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @Test
     public void header_texts() {
-        HeaderRow header = section.streamHeader().findFirst().get();
+        Row header = section.streamHeader().findFirst().get();
         List<String> expColumnLabels = Arrays.asList("Description", "Jan", "Feb",
                 "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
                 "Dec", "Total");
