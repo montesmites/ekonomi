@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.report;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
@@ -33,5 +34,10 @@ public class FooterRow implements Row, RowWithAmounts {
         return bodyRows.get()
                 .map(row -> row.getMonthlyAmount(column))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
+    }
+
+    @Override
+    public Optional<RowWithAmounts> asRowWithAmounts() {
+        return Optional.of(this);
     }
 }

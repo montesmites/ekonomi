@@ -1,12 +1,14 @@
 package se.montesmites.ekonomi.report;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.BOKFORT_RESULTAT;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.KORTFRISTIGA_SKULDER;
@@ -73,13 +75,23 @@ public class TotallingSectionTest {
         Column.streamMonths().forEach(month
                 -> assertEquals(
                         month.name(),
-                        section1.streamFooter()
-                                .findFirst().get().getMonthlyAmount(month)
-                                .add(section2.streamFooter()
-                                        .findFirst().get().getMonthlyAmount(month)),
+                        expectedMonthlyTotal(month),
                         totallingSection.streamFooter()
-                                .findFirst().get().getMonthlyAmount(month)
+                                .findFirst().get()
+                                .asRowWithAmounts().get()
+                                .getMonthlyAmount(month)
                 )
         );
+    }
+
+    private Currency expectedMonthlyTotal(Column month) {
+        return Stream.of(section1, section2)
+                .map(section
+                        -> section.streamFooter()
+                        .findFirst().get()
+                        .asRowWithAmounts().get()
+                        .getMonthlyAmount(month)
+                )
+                .reduce(new Currency(0), Currency::add);
     }
 }

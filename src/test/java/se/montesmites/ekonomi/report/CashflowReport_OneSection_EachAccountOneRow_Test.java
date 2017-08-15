@@ -86,13 +86,13 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @Test
     public void footer_description() {
-        FooterRow footer = section.streamFooter().findFirst().get();
+        Row footer = section.streamFooter().findFirst().get();
         assertEquals("Total", footer.getText(Column.DESCRIPTION));
     }
 
     @Test
     public void footer_monthlyTotals() {
-        FooterRow footer = section.streamFooter().findFirst().get();
+        Row footer = section.streamFooter().findFirst().get();
         Column.streamMonths()
                 .forEach(column
                         -> assertFooterRowMonthlyTotal(footer, column));
@@ -106,9 +106,10 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         assertEquals(msg, exp, act);
     }
 
-    private void assertFooterRowMonthlyTotal(RowWithAmounts row, Column column) {
+    private void assertFooterRowMonthlyTotal(Row row, Column column) {
+        RowWithAmounts rwo = row.asRowWithAmounts().get();
         Currency exp = expectedFooterRowMonthlyTotal(column);
-        Currency act = row.getMonthlyAmount(column);
+        Currency act = rwo.getMonthlyAmount(column);
         String fmt = "Total %s %s";
         String msg = String.format(fmt, column, year);
         assertEquals(msg, exp, act);
@@ -132,7 +133,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @Test
     public void footer_yearlyTotal() {
-        FooterRow footer = section.streamFooter().findFirst().get();
+        Row footer = section.streamFooter().findFirst().get();
         assertFooterRowYearlyTotal(footer);
     }
 
@@ -147,11 +148,12 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         assertEquals(msg, exp, act);
     }
 
-    private void assertFooterRowYearlyTotal(FooterRow row) {
+    private void assertFooterRowYearlyTotal(Row row) {
+        RowWithAmounts rwa = row.asRowWithAmounts().get();
         Currency exp = Column.streamMonths()
                 .map(this::expectedFooterRowMonthlyTotal)
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
-        Currency act = row.getYearlyTotal();
+        Currency act = rwa.getYearlyTotal();
         assertEquals(exp, act);
     }
     

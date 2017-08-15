@@ -24,7 +24,7 @@ public class TotallingSection implements Section {
     }
 
     @Override
-    public Stream<FooterRow> streamFooter() {
+    public Stream<Row> streamFooter() {
         return Stream.of(
                 new FooterRow(
                         () -> sections.stream().flatMap(Section::streamBodyRows)));

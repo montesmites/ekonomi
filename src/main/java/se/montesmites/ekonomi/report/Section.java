@@ -8,7 +8,7 @@ public interface Section {
     
     public Stream<Row> streamHeader();
 
-    public Stream<FooterRow> streamFooter();
+    public Stream<Row> streamFooter();
     
     public Stream<BodyRow> streamBodyRows();
 
