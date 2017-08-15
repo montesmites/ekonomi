@@ -106,9 +106,9 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         assertEquals(msg, exp, act);
     }
 
-    private void assertFooterRowMonthlyTotal(FooterRow row, Column column) {
+    private void assertFooterRowMonthlyTotal(RowWithAmounts row, Column column) {
         Currency exp = expectedFooterRowMonthlyTotal(column);
-        Currency act = row.getMonthlyTotal(column);
+        Currency act = row.getMonthlyAmount(column);
         String fmt = "Total %s %s";
         String msg = String.format(fmt, column, year);
         assertEquals(msg, exp, act);

@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
 
-public class FooterRow implements Row {
+public class FooterRow implements Row, RowWithAmounts {
 
     private final Supplier<Stream<BodyRow>> bodyRows;
 
@@ -24,19 +24,21 @@ public class FooterRow implements Row {
             case TOTAL:
                 return getYearlyTotal().format();
             default:
-                return getMonthlyTotal(column).format();
+                return getMonthlyAmount(column).format();
         }
     }
-
-    public Currency getMonthlyTotal(Column column) {
+    
+    @Override
+    public Currency getMonthlyAmount(Column column) {
         return bodyRows.get()
                 .map(row -> row.getMonthlyAmount(column))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
-
+    
+    @Override
     public Currency getYearlyTotal() {
         return Column.streamMonths()
-                .map(this::getMonthlyTotal)
+                .map(this::getMonthlyAmount)
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
     }
 }

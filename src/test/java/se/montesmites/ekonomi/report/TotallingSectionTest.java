@@ -74,11 +74,11 @@ public class TotallingSectionTest {
                 -> assertEquals(
                         month.name(),
                         section1.streamFooter()
-                                .findFirst().get().getMonthlyTotal(month)
+                                .findFirst().get().getMonthlyAmount(month)
                                 .add(section2.streamFooter()
-                                        .findFirst().get().getMonthlyTotal(month)),
+                                        .findFirst().get().getMonthlyAmount(month)),
                         totallingSection.streamFooter()
-                                .findFirst().get().getMonthlyTotal(month)
+                                .findFirst().get().getMonthlyAmount(month)
                 )
         );
     }
