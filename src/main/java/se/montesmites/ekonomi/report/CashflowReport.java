@@ -48,7 +48,7 @@ public class CashflowReport {
 
     public List<String> render() {
         return streamSections()
-                .flatMap(section -> section.streamAllRows()
+                .flatMap(section -> section.stream()
                 .flatMap(row -> Column.stream()
                 .map(column -> format(row, column))
                 .collect(collectingAndThen(joining(), Stream::of)))).

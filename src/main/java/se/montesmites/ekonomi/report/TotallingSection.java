@@ -27,11 +27,11 @@ public class TotallingSection implements Section {
     public Stream<Row> streamFooter() {
         return Stream.of(
                 new FooterRow(
-                        () -> sections.stream().flatMap(Section::streamBodyRows)));
+                        () -> sections.stream().flatMap(Section::streamBody)));
     }
 
     @Override
-    public Stream<Row> streamBodyRows() {
+    public Stream<Row> streamBody() {
         return Stream.empty();
     }
 }

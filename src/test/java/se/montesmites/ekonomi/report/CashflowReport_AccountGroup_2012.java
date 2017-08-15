@@ -80,7 +80,7 @@ public enum CashflowReport_AccountGroup_2012 {
         final List<String> exp
                 = groups.stream().map(g -> g.description).collect(toList());
         final List<String> act
-                = section.streamBodyRows()
+                = section.streamBody()
                         .map(row -> row.getText(DESCRIPTION))
                         .collect(toList());
         assertEquals(exp.size(), act.size());
@@ -99,7 +99,7 @@ public enum CashflowReport_AccountGroup_2012 {
                         .map(group -> group.expectedAmounts)
                         .collect(toList());
         final List<Map<Column, Currency>> actList
-                = section.streamBodyRows()
+                = section.streamBody()
                         .map(row -> row.asRowWithAmounts().get())
                         .map(row -> Column.streamMonths()
                         .map(col -> new AbstractMap.SimpleEntry<>(col,

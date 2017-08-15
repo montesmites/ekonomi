@@ -66,7 +66,7 @@ public class TotallingSectionTest {
     public void assertNoBodyRows() {
         assertEquals(
                 0,
-                totallingSection.streamBodyRows().count()
+                totallingSection.streamBody().count()
         );
     }
 

@@ -10,7 +10,7 @@ public class FooterRow implements Row, RowWithAmounts {
     private final Supplier<Stream<Row>> bodyRows;
 
     public FooterRow(Section parent) {
-        this.bodyRows = () -> parent.streamBodyRows();
+        this.bodyRows = () -> parent.streamBody();
     }
     
     public FooterRow(Supplier<Stream<Row>> bodyRows) {

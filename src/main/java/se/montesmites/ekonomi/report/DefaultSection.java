@@ -33,7 +33,7 @@ public class DefaultSection implements Section {
     }
 
     @Override
-    public Stream<Row> streamBodyRows() {
+    public Stream<Row> streamBody() {
         return bodyRows.get();
     }
 }
