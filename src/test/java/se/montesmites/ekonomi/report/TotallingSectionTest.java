@@ -38,7 +38,7 @@ public class TotallingSectionTest {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
-        this.fetcher = new CashflowDataFetcher(this.organization, __ -> 1);
+        this.fetcher = new CashflowDataFetcher(this.organization);
         section1 = new DefaultSection(
                 "Section 1",
                 () -> bodyRowsOf(

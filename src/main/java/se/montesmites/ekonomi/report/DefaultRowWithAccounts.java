@@ -52,8 +52,8 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
     private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
         return fetcher.fetchAmount(accountId, yearMonth)
                 .map(currency -> currency.getAmount())
-                .map(amount -> amount * fetcher.getCoefficient(accountId))
                 .map(Currency::new)
+                .map(amount -> Signedness.NEGATED_SIGN.apply(amount))
                 .orElse(new Currency(0));
     }
 }

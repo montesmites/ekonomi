@@ -8,21 +8,19 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import static se.montesmites.ekonomi.report.Column.*;
-
+import static se.montesmites.ekonomi.report.Signedness.*;
 public class AccumulatingRow implements RowWithAccounts {
 
     private final CashflowDataFetcher fetcher;
     private final Supplier<Stream<AccountId>> accountIds;
     private final DefaultRowWithAccounts monthlyNetAmounts;
     private final Map<Column, Currency> amounts;
-    private final Signedness signedness;
 
-    public AccumulatingRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year, Signedness signedness) {
+    public AccumulatingRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
         this.monthlyNetAmounts
                 = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
-        this.signedness = signedness;
         this.amounts = getAmounts();
     }
 
@@ -54,7 +52,7 @@ public class AccumulatingRow implements RowWithAccounts {
         Map<Column, Currency> map = new EnumMap<>(Column.class);
         Currency accumulator = new Currency(0);
         for (Column column : Column.values()) {
-            Currency net = signedness.apply(columnNetAmount(column));
+            Currency net = columnNetAmount(column);
             Currency columnBalance = accumulator.add(net);
             map.put(column, columnBalance);
             accumulator = columnBalance;
@@ -79,9 +77,7 @@ public class AccumulatingRow implements RowWithAccounts {
     private Currency balance(AccountId accountId) {
         return fetcher.fetchBalance(accountId)
                 .map(Balance::getBalance)
-                .map(Currency::getAmount)
-                .map(signedness::apply)
-                .map(Currency::new)
+                .map(NEGATED_SIGN::apply)
                 .orElse(new Currency(0));
     }
 }

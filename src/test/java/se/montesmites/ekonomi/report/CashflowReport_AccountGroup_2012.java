@@ -31,18 +31,18 @@ public enum CashflowReport_AccountGroup_2012 {
             "([3-7]\\d|8[1-8])\\d\\d",
             new EnumMap<Column, Currency>(Column.class) {
         {
-            put(JANUARY, new Currency(2866947));
-            put(FEBRUARY, new Currency(-6758901));
-            put(MARCH, new Currency(-14611584));
-            put(APRIL, new Currency(-2150417));
-            put(MAY, new Currency(6833003));
-            put(JUNE, new Currency(-30431649));
-            put(JULY, new Currency(4877975));
-            put(AUGUST, new Currency(-3810720));
-            put(SEPTEMBER, new Currency(-4316052));
-            put(OCTOBER, new Currency(123642));
-            put(NOVEMBER, new Currency(-21238571));
-            put(DECEMBER, new Currency(21533255));
+            put(JANUARY, new Currency(-2866947));
+            put(FEBRUARY, new Currency(6758901));
+            put(MARCH, new Currency(14611584));
+            put(APRIL, new Currency(2150417));
+            put(MAY, new Currency(-6833003));
+            put(JUNE, new Currency(30431649));
+            put(JULY, new Currency(-4877975));
+            put(AUGUST, new Currency(3810720));
+            put(SEPTEMBER, new Currency(4316052));
+            put(OCTOBER, new Currency(-123642));
+            put(NOVEMBER, new Currency(21238571));
+            put(DECEMBER, new Currency(-21533255));
         }
     }),
     KORTFRISTIGA_SKULDER(
@@ -51,18 +51,18 @@ public enum CashflowReport_AccountGroup_2012 {
             new EnumMap<Column, Currency>(
                     Column.class) {
         {
-            put(JANUARY, new Currency(1387853));
-            put(FEBRUARY, new Currency(-50442848));
-            put(MARCH, new Currency(-63669735));
-            put(APRIL, new Currency(137123271));
-            put(MAY, new Currency(-9537958));
-            put(JUNE, new Currency(288127));
-            put(JULY, new Currency(10662616));
-            put(AUGUST, new Currency(-14155331));
-            put(SEPTEMBER, new Currency(12777139));
-            put(OCTOBER, new Currency(-7434716));
-            put(NOVEMBER, new Currency(6669553));
-            put(DECEMBER, new Currency(-35070604));
+            put(JANUARY, new Currency(-1387853));
+            put(FEBRUARY, new Currency(50442848));
+            put(MARCH, new Currency(63669735));
+            put(APRIL, new Currency(-137123271));
+            put(MAY, new Currency(9537958));
+            put(JUNE, new Currency(-288127));
+            put(JULY, new Currency(-10662616));
+            put(AUGUST, new Currency(14155331));
+            put(SEPTEMBER, new Currency(-12777139));
+            put(OCTOBER, new Currency(7434716));
+            put(NOVEMBER, new Currency(-6669553));
+            put(DECEMBER, new Currency(35070604));
         }
     });
 

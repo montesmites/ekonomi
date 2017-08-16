@@ -12,6 +12,7 @@ import org.junit.rules.TemporaryFolder;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
+import static se.montesmites.ekonomi.report.Signedness.*;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class CashflowReport_OneSection_EachAccountOneRow_Test {
@@ -35,7 +36,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     @Before
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
-        this.fetcher = new CashflowDataFetcher(this.organization, __ -> 1);
+        this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year);
         this.section = report.streamSections().findFirst().get();
     }
@@ -100,15 +101,18 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     }
 
     private Currency expectedFooterRowMonthlyTotal(Column column) {
-        return section.streamBody()
+        final Currency amount = section.streamBody()
                 .map(row -> (RowWithAccounts) row)
                 .map(r -> expectedMonthlyAmount(r, column))
                 .reduce(new Currency(0), (sum, term) -> sum.add(term));
+        return NEGATED_SIGN.apply(amount);
     }
 
     private Currency expectedMonthlyAmount(RowWithAccounts row, Column column) {
-        return fetcher.getAccountIdAmountMap(column.asYearMonth(year).get())
+        final Currency amount = fetcher.getAccountIdAmountMap(
+                column.asYearMonth(year).get())
                 .map(m -> m.get(accountId(row))).orElse(new Currency(0));
+        return NEGATED_SIGN.apply(amount);
     }
 
     @Test
@@ -125,10 +129,11 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     }
 
     private void assertBodyRowYearlyTotal(RowWithAccounts row) {
-        Currency exp = organization.streamEntries()
-                .filter(e -> e.getAccountId().equals(accountId(row)))
-                .map(e -> e.getAmount())
-                .reduce(new Currency(0), (sum, term) -> sum.add(term));
+        Currency exp = NEGATED_SIGN.apply(
+                organization.streamEntries()
+                        .filter(e -> e.getAccountId().equals(accountId(row)))
+                        .map(e -> e.getAmount())
+                        .reduce(new Currency(0), (sum, term) -> sum.add(term)));
         Currency act = row.getYearlyTotal();
         String fmt = "%s";
         String msg = String.format(fmt, accountId(row));

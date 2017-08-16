@@ -7,7 +7,6 @@ import static java.util.Comparator.comparing;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import java.util.stream.Stream;
@@ -36,15 +35,8 @@ public class CashflowDataFetcher {
 
     private final EntryAggregate entryAggregate;
     
-    private final Function<AccountId, Integer> accountCoefficient;
-    
     public CashflowDataFetcher(Organization organization) {
-        this(organization, __ -> -1);
-    }
-
-    public CashflowDataFetcher(Organization organization, Function<AccountId, Integer> accountCoefficient) {
         this.organization = organization;
-        this.accountCoefficient = accountCoefficient;
         this.entryAggregate
                 = organization.streamEntries()
                         .collect(entryCollector(organization));
@@ -64,16 +56,13 @@ public class CashflowDataFetcher {
 
     public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
         Optional<Currency> amount
-                = getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
+                = getAccountIdAmountMap(yearMonth)
+                        .map(m -> m.get(accountId));
         return amount;
     }
     
     public EntryAggregate getEntryAggregate() {
         return entryAggregate;
-    }
-    
-    public int getCoefficient(AccountId accountId) {
-        return accountCoefficient.apply(accountId);
     }
     
     Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
