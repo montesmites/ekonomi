@@ -15,6 +15,7 @@ import se.montesmites.ekonomi.report.AccumulatingRow;
 import se.montesmites.ekonomi.report.AccumulatingSection;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
+import se.montesmites.ekonomi.report.Coefficient;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.TotallingSection;
 
@@ -58,7 +59,8 @@ public class Main {
                                                 "1493|19\\d\\d")
                                                 .filter(fetcher.streamAccountIds(
                                                         year)),
-                                        year)));
+                                        year,
+                                        Coefficient.NEGATE)));
         CashflowReport report
                 = new CashflowReport(
                         fetcher,
