@@ -10,6 +10,9 @@ import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.organization.Organization;
+import se.montesmites.ekonomi.report.AccountFilterByRegex;
+import se.montesmites.ekonomi.report.AccumulatingRow;
+import se.montesmites.ekonomi.report.AccumulatingSection;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.Section;
@@ -45,12 +48,23 @@ public class Main {
                 = new TotallingSection(
                         "Kontrollsumma",
                         sections.get().collect(toList()));
+        AccumulatingSection accumlation
+                = new AccumulatingSection(
+                        "Ackumulerade likvida medel (inkl. SBAB-konto)",
+                        () -> Stream.of(
+                                new AccumulatingRow(
+                                        fetcher,
+                                        () -> new AccountFilterByRegex(
+                                                "1493|19\\d\\d")
+                                                .filter(fetcher.streamAccountIds(
+                                                        year)),
+                                        year)));
         CashflowReport report
                 = new CashflowReport(
                         fetcher,
                         year, () -> Stream.concat(
                                 sections.get(),
-                                Stream.of(total)));
+                                Stream.of(total, accumlation)));
         return report;
     }
 
