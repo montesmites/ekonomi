@@ -44,7 +44,7 @@ enum NikkaSection {
             Arrays.asList(
                     NETTOUTLANING)),
     FORANDRING_LIKVIDA_MEDEL(
-            "Förändring likvida medel",
+            "Förändring likvida medel (OBS! omvänt tecken)",
             Arrays.asList(
                     SBAB_SPAR_NETTO,
                     OVRIGA_LIKVIDA_MEDEL

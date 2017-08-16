@@ -66,7 +66,9 @@ public class Main {
                         fetcher,
                         year, () -> Stream.concat(
                                 sections.get(),
-                                Stream.of(total, accumlation)));
+                                Stream.of(
+                                        total,
+                                        accumlation)));
         return report;
     }
 
