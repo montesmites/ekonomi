@@ -1,16 +1,13 @@
 package se.montesmites.ekonomi.report;
 
-public class TitleRow implements Row {
-    private final String title;
+public interface TitleRow extends Row {
     
-    public TitleRow(String title) {
-        this.title = title.toUpperCase();
-    }
+    public String getTitle();
     
     @Override
-    public String getText(Column column) {
+    default String getText(Column column) {
         switch (column.getColumnType()) {
-            case DESCRIPTION: return title;
+            case DESCRIPTION: return getTitle();
             default: return "";
         }
     }

@@ -11,7 +11,7 @@ public class DefaultSection implements Section {
     private final Supplier<Stream<Row>> bodyRows;
 
     public DefaultSection(String title, Supplier<Stream<Row>> bodyRows) {
-        this.title = new TitleRow(title);
+        this.title = new DefaultTitleRow(title);
         this.header = new DefaultHeaderRow();
         this.footer = new FooterRow(this);
         this.bodyRows = bodyRows;
