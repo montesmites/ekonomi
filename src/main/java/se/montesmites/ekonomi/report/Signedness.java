@@ -6,17 +6,17 @@ public enum Signedness {
     UNCHANGED_SIGN (1),
     NEGATED_SIGN (-1);
     
-    private final int coefficient;
+    private final int signedness;
     
-    private Signedness(int coefficient) {
-        this.coefficient = coefficient;
+    private Signedness(int signedness) {
+        this.signedness = signedness;
     }
     
     public long apply(long number) {
-        return number * coefficient;
+        return number * signedness;
     }
     
     public Currency apply(Currency amount) {
-        return new Currency(amount.getAmount() * coefficient);
+        return new Currency(amount.getAmount() * signedness);
     }
 }
