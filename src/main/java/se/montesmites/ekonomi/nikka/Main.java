@@ -15,8 +15,8 @@ import se.montesmites.ekonomi.report.AccumulatingRow;
 import se.montesmites.ekonomi.report.AccumulatingSection;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
-import se.montesmites.ekonomi.report.Coefficient;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.Signedness;
 import se.montesmites.ekonomi.report.TotallingSection;
 
 public class Main {
@@ -52,15 +52,14 @@ public class Main {
         AccumulatingSection accumlation
                 = new AccumulatingSection(
                         "Ackumulerade likvida medel (inkl. SBAB-konto)",
-                        () -> Stream.of(
-                                new AccumulatingRow(
+                        () -> Stream.of(new AccumulatingRow(
                                         fetcher,
                                         () -> new AccountFilterByRegex(
                                                 "1493|19\\d\\d")
                                                 .filter(fetcher.streamAccountIds(
                                                         year)),
                                         year,
-                                        Coefficient.NEGATE)));
+                                        Signedness.NEGATED_SIGN)));
         CashflowReport report
                 = new CashflowReport(
                         fetcher,

@@ -2,13 +2,13 @@ package se.montesmites.ekonomi.report;
 
 import se.montesmites.ekonomi.model.Currency;
 
-public enum Coefficient {
-    SAME (1),
-    NEGATE (-1);
+public enum Signedness {
+    UNCHANGED_SIGN (1),
+    NEGATED_SIGN (-1);
     
     private final int coefficient;
     
-    private Coefficient(int coefficient) {
+    private Signedness(int coefficient) {
         this.coefficient = coefficient;
     }
     

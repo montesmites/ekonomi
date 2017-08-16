@@ -48,7 +48,7 @@ public class AccumulatingRowTest {
                 () -> Stream.of("1910", "1920", "1930", "1940")
                         .map(account -> new AccountId(yearId, account)),
                 year,
-                Coefficient.SAME
+                Signedness.UNCHANGED_SIGN
         );
         assertEquals(expectedAmounts().get(DESCRIPTION), row.getBalance());
         Column.streamMonths().forEach(month

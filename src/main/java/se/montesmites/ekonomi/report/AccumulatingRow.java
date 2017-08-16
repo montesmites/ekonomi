@@ -15,14 +15,14 @@ public class AccumulatingRow implements RowWithAccounts {
     private final Supplier<Stream<AccountId>> accountIds;
     private final DefaultRowWithAccounts monthlyNetAmounts;
     private final Map<Column, Currency> amounts;
-    private final Coefficient coefficient;
+    private final Signedness signedness;
 
-    public AccumulatingRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year, Coefficient coefficient) {
+    public AccumulatingRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year, Signedness signedness) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
         this.monthlyNetAmounts
                 = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
-        this.coefficient = coefficient;
+        this.signedness = signedness;
         this.amounts = getAmounts();
     }
 
@@ -54,7 +54,7 @@ public class AccumulatingRow implements RowWithAccounts {
         Map<Column, Currency> map = new EnumMap<>(Column.class);
         Currency accumulator = new Currency(0);
         for (Column column : Column.values()) {
-            Currency net = coefficient.apply(columnNetAmount(column));
+            Currency net = signedness.apply(columnNetAmount(column));
             Currency columnBalance = accumulator.add(net);
             map.put(column, columnBalance);
             accumulator = columnBalance;
@@ -80,7 +80,7 @@ public class AccumulatingRow implements RowWithAccounts {
         return fetcher.fetchBalance(accountId)
                 .map(Balance::getBalance)
                 .map(Currency::getAmount)
-                .map(coefficient::apply)
+                .map(signedness::apply)
                 .map(Currency::new)
                 .orElse(new Currency(0));
     }
