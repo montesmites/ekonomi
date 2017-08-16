@@ -62,11 +62,11 @@ public class CashflowReport {
     private String formatString(Column column) {
         switch (column.getColumnType()) {
             case DESCRIPTION:
-                return "%-20s";
+                return "%-30s";
             case TOTAL:
-                return "%20s";
+                return "%14s";
             default:
-                return "%20s";
+                return "%14s";
         }
     }
 }
