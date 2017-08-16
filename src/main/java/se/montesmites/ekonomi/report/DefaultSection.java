@@ -12,7 +12,7 @@ public class DefaultSection implements Section {
 
     public DefaultSection(String title, Supplier<Stream<Row>> bodyRows) {
         this.title = new TitleRow(title);
-        this.header = new HeaderRow();
+        this.header = new DefaultHeaderRow();
         this.footer = new FooterRow(this);
         this.bodyRows = bodyRows;
     }

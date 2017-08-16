@@ -1,7 +1,6 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.Year;
-import java.util.Arrays;
 import java.util.List;
 import static java.util.stream.Collectors.*;
 import static org.junit.Assert.*;
@@ -44,17 +43,6 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     @Test
     public void exactlyOneSection() {
         assertEquals(1, report.streamSections().count());
-    }
-
-    @Test
-    public void header_texts() {
-        Row header = section.streamHeader().findFirst().get();
-        List<String> expColumnLabels = Arrays.asList("Description", "Jan", "Feb",
-                "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov",
-                "Dec", "Total");
-        List<String> actColumnLabels
-                = Column.stream().map(header::getText).collect(toList());
-        assertEquals(expColumnLabels, actColumnLabels);
     }
 
     @Test

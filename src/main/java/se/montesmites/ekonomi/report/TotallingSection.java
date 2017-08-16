@@ -20,7 +20,7 @@ public class TotallingSection implements Section {
 
     @Override
     public Stream<Row> streamHeader() {
-        return Stream.of(new HeaderRow());
+        return Stream.of(new DefaultHeaderRow());
     }
 
     @Override

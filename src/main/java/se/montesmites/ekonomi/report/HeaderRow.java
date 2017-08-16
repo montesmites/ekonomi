@@ -3,18 +3,30 @@ package se.montesmites.ekonomi.report;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class HeaderRow implements Row {
+public interface HeaderRow extends Row {
+
+    default String getDescription() {
+        return "";
+    }
+
+    default String getTotal() {
+        return "";
+    }
+
+    default String getMonth(Column column) {
+        return column.getMonth().get()
+                .getDisplayName(TextStyle.SHORT, Locale.getDefault());
+    }
 
     @Override
-    public String getText(Column column) {
+    default String getText(Column column) {
         switch (column.getColumnType()) {
             case DESCRIPTION:
-                return "Description";
+                return getDescription();
             case TOTAL:
-                return "Total";
+                return getTotal();
             default:
-                return column.getMonth().get()
-                        .getDisplayName(TextStyle.SHORT, Locale.UK);
+                return getMonth(column);
         }
     }
 }
