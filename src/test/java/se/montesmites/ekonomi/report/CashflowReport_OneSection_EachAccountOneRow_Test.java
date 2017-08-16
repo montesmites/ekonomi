@@ -75,12 +75,6 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     }
 
     @Test
-    public void footer_description() {
-        Row footer = section.streamFooter().findFirst().get();
-        assertEquals("Total", footer.getText(Column.DESCRIPTION));
-    }
-
-    @Test
     public void footer_monthlyTotals() {
         Row footer = section.streamFooter().findFirst().get();
         Column.streamMonths()
