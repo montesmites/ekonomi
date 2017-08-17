@@ -8,28 +8,28 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import static se.montesmites.ekonomi.report.Column.*;
-import static se.montesmites.ekonomi.report.Signedness.*;
 
-public class AccumulatingRow implements RowWithAccounts {
+public class AccumulatingNegatedRow implements RowWithAccounts {
 
     private final CashflowDataFetcher fetcher;
     private final Supplier<Stream<AccountId>> accountIds;
-    private final DefaultRowWithAccounts monthlyNetAmounts;
+    private final RowWithAccounts monthlyNetAmounts;
     private final Map<Column, Currency> amounts;
 
-    public AccumulatingRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year) {
+    public AccumulatingNegatedRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
         this.monthlyNetAmounts
-                = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
+                = new DefaultRowWithAccountsWithNegatedAmounts(
+                        new DefaultRowWithAccounts(fetcher, accountIds, year, ""));
         this.amounts = getAmounts();
     }
-    
+
     @Override
     public String getDescription() {
         return getBalance().format();
     }
-    
+
     @Override
     public Supplier<Stream<AccountId>> getAccountIds() {
         return accountIds;
@@ -49,11 +49,11 @@ public class AccumulatingRow implements RowWithAccounts {
     public Currency getYearlyTotal() {
         return amounts.get(DECEMBER);
     }
-    
+
     public Currency getBalance() {
         return amounts.get(DESCRIPTION);
     }
-    
+
     private Map<Column, Currency> getAmounts() {
         Map<Column, Currency> map = new EnumMap<>(Column.class);
         Currency accumulator = new Currency(0);
@@ -68,12 +68,15 @@ public class AccumulatingRow implements RowWithAccounts {
 
     private Currency columnNetAmount(Column column) {
         switch (column) {
-            case DESCRIPTION: return balance();
-            case TOTAL: return new Currency(0);
-            default: return monthlyNetAmounts.getMonthlyAmount(column);
+            case DESCRIPTION:
+                return balance();
+            case TOTAL:
+                return new Currency(0);
+            default:
+                return monthlyNetAmounts.getMonthlyAmount(column);
         }
     }
-    
+
     private Currency balance() {
         return accountIds.get()
                 .map(this::balance)
@@ -83,7 +86,6 @@ public class AccumulatingRow implements RowWithAccounts {
     private Currency balance(AccountId accountId) {
         return fetcher.fetchBalance(accountId)
                 .map(Balance::getBalance)
-                .map(NEGATED_SIGN::apply)
                 .orElse(new Currency(0));
     }
 }

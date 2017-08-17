@@ -43,7 +43,7 @@ public class AccumulatingRowTest {
 
     @Test
     public void fourAccounts() {
-        AccumulatingRow row = new AccumulatingRow(
+        AccumulatingNegatedRow row = new AccumulatingNegatedRow(
                 fetcher,
                 () -> Stream.of("1910", "1920", "1930", "1940")
                         .map(account -> new AccountId(yearId, account)),
@@ -63,19 +63,19 @@ public class AccumulatingRowTest {
     private Map<Column, Currency> expectedAmounts() {
         return new EnumMap< Column, Currency>(Column.class) {
             {
-                put(DESCRIPTION, new Currency(-127622521));
-                put(JANUARY, new Currency(-140745321));
-                put(FEBRUARY, new Currency(-140888401));
-                put(MARCH, new Currency(-185524301));
-                put(APRIL, new Currency(-117604301));
-                put(MAY, new Currency(-127820601));
-                put(JUNE, new Currency(-159100301));
-                put(JULY, new Currency(-196575843));
-                put(AUGUST, new Currency(-184371543));
-                put(SEPTEMBER, new Currency(-161756373));
-                put(OCTOBER, new Currency(-190541831));
-                put(NOVEMBER, new Currency(-207509032));
-                put(DECEMBER, new Currency(-241088832));
+                put(DESCRIPTION, new Currency(127622521));
+                put(JANUARY, new Currency(140745321));
+                put(FEBRUARY, new Currency(140888401));
+                put(MARCH, new Currency(185524301));
+                put(APRIL, new Currency(117604301));
+                put(MAY, new Currency(127820601));
+                put(JUNE, new Currency(159100301));
+                put(JULY, new Currency(196575843));
+                put(AUGUST, new Currency(184371543));
+                put(SEPTEMBER, new Currency(161756373));
+                put(OCTOBER, new Currency(190541831));
+                put(NOVEMBER, new Currency(207509032));
+                put(DECEMBER, new Currency(241088832));
             }
         };
     }
