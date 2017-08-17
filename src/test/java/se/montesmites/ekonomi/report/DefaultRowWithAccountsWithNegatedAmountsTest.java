@@ -1,6 +1,8 @@
 package se.montesmites.ekonomi.report;
 
+import java.time.LocalDate;
 import java.time.Year;
+import java.time.YearMonth;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
@@ -11,9 +13,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.organization.Organization;
-import static se.montesmites.ekonomi.report.Column.*;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class DefaultRowWithAccountsWithNegatedAmountsTest {
@@ -26,6 +28,11 @@ public class DefaultRowWithAccountsWithNegatedAmountsTest {
     private Organization organization;
     private CashflowDataFetcher fetcher;
     private CashflowReport report;
+    private YearId yearId;
+    private AccountId accountId;
+    private Supplier<Stream<AccountId>> accountIds;
+    private DefaultRowWithAccounts source;
+    private DefaultRowWithAccountsWithNegatedAmounts negated;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -37,28 +44,34 @@ public class DefaultRowWithAccountsWithNegatedAmountsTest {
     public void before() throws Exception {
         this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
         this.fetcher = new CashflowDataFetcher(this.organization);
+        this.yearId = organization.getYear(year).get().getYearId();
+        this.accountId = new AccountId(yearId, "1920");
+        this.accountIds = () -> Stream.of(accountId);
+        this.source = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
+        this.negated = new DefaultRowWithAccountsWithNegatedAmounts(source);
     }
 
     @Test
     public void negateMonthlyAmount() {
-        YearId yearId = organization.getYear(year).get().getYearId();
-        Supplier<Stream<AccountId>> accountIds
-                = () -> Stream.of(new AccountId(yearId, "1920"));
-        final DefaultRowWithAccounts source
-                = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
-        final DefaultRowWithAccountsWithNegatedAmounts negated
-                = new DefaultRowWithAccountsWithNegatedAmounts(source);
-        assertEquals(new Currency(-29543100), negated.getMonthlyAmount(JANUARY));
-        assertEquals(new Currency(7546500), negated.getMonthlyAmount(FEBRUARY));
-        assertEquals(new Currency(-47437100), negated.getMonthlyAmount(MARCH));
-        assertEquals(new Currency(3653800), negated.getMonthlyAmount(APRIL));
-        assertEquals(new Currency(3610100), negated.getMonthlyAmount(MAY));
-        assertEquals(new Currency(-6197000), negated.getMonthlyAmount(JUNE));
-        assertEquals(new Currency(35616342), negated.getMonthlyAmount(JULY));
-        assertEquals(new Currency(-28806200), negated.getMonthlyAmount(AUGUST));
-        assertEquals(new Currency(11695600), negated.getMonthlyAmount(SEPTEMBER));
-        assertEquals(new Currency(16937600), negated.getMonthlyAmount(OCTOBER));
-        assertEquals(new Currency(-23696499), negated.getMonthlyAmount(NOVEMBER));
-        assertEquals(new Currency(-5269900), negated.getMonthlyAmount(DECEMBER));
+        Column.streamMonths().forEach(month
+                -> assertEquals(
+                        month.name(),
+                        entrySum(accountId, month),
+                        negated.getMonthlyAmount(month))
+        );
+    }
+
+    private Currency entrySum(AccountId accountId, Column month) {
+        YearMonth yearMonth = YearMonth.of(2012, month.getMonth().get());
+        return organization.streamEntries()
+                .filter(entry -> entry.getAccountId().equals(accountId))
+                .filter(entry -> entryYearMonth(entry).equals(yearMonth))
+                .map(Entry::getAmount)
+                .reduce(new Currency(0), Currency::add);
+    }
+
+    private YearMonth entryYearMonth(Entry entry) {
+        LocalDate date = organization.getEvent(entry.getEventId()).get().getDate();
+        return YearMonth.of(date.getYear(), date.getMonth());
     }
 }
