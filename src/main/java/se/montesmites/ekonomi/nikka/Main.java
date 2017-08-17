@@ -15,6 +15,9 @@ import se.montesmites.ekonomi.report.AccumulatingRow;
 import se.montesmites.ekonomi.report.AccumulatingSection;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
+import static se.montesmites.ekonomi.report.Column.*;
+import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
+import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.TotallingSection;
 
@@ -47,17 +50,33 @@ public class Main {
         TotallingSection total
                 = new TotallingSection(
                         "Kontrollsumma",
-                        sections.get().collect(toList()));
+                        sections.get().collect(toList())) {
+            @Override
+            public Row wrapSectionRow(Section section, Row row) {
+                if (sectionEquals(section, NikkaSection.FORANDRING_LIKVIDA_MEDEL)) {
+                    return new DefaultRowWithAccountsWithNegatedAmounts(
+                            row.asRowWithAccounts().get());
+                } else {
+                    return row;
+                }
+            }
+
+            private boolean sectionEquals(Section section, NikkaSection nikkaSection) {
+                return section.streamTitle().findFirst().get().getText(
+                        DESCRIPTION).trim().toUpperCase().equals(
+                                nikkaSection.getTitle().trim().toUpperCase());
+            }
+        };
         AccumulatingSection accumlation
                 = new AccumulatingSection(
                         "Ackumulerade likvida medel (inkl. SBAB-konto)",
                         () -> Stream.of(new AccumulatingRow(
-                                        fetcher,
-                                        () -> new AccountFilterByRegex(
-                                                "1493|19\\d\\d")
-                                                .filter(fetcher.streamAccountIds(
-                                                        year)),
-                                        year)));
+                                fetcher,
+                                ()
+                                -> new AccountFilterByRegex("1493|19\\d\\d")
+                                        .filter(fetcher.streamAccountIds(
+                                                year)),
+                                year)));
         CashflowReport report
                 = new CashflowReport(
                         fetcher,

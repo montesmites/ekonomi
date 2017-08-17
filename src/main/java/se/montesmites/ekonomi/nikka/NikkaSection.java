@@ -68,7 +68,11 @@ enum NikkaSection {
         this.title = title;
         this.groups = groups;
     }
-
+    
+    public String getTitle() {
+        return title;
+    }
+    
     Section section(CashflowDataFetcher fetcher, java.time.Year year) {
         return new DefaultSection(
                 title,

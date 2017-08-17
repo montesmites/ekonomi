@@ -17,6 +17,11 @@ public interface RowWithAccounts extends Row, RowWithAmounts {
     }
     
     @Override
+    default Optional<RowWithAccounts> asRowWithAccounts() {
+        return Optional.of(this);
+    }
+    
+    @Override
     default String getText(Column column) {
         switch (column.getColumnType()) {
             case DESCRIPTION:

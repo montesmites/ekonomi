@@ -27,8 +27,21 @@ public class TotallingSection implements Section {
     public Stream<Row> streamFooter() {
         return Stream.of(
                 new DefaultFooterRow(
-                        () -> sections.stream().flatMap(Section::streamBody)),
+                        ()
+                        -> sections.stream()
+                                .flatMap(
+                                        section -> section.streamBody()
+                                                .flatMap(row
+                                                        -> Stream.of(
+                                                        wrapSectionRow(
+                                                                section,
+                                                                row)))
+                                )),
                 new EmptyRow());
+    }
+
+    public Row wrapSectionRow(Section section, Row row) {
+        return row;
     }
 
     @Override
