@@ -22,20 +22,13 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
     }
 
     @Override
-    public Supplier<Stream<AccountId>> getAccountIds() {
-        return accountIds;
+    public String getDescription() {
+        return description;
     }
 
     @Override
-    public String getText(Column column) {
-        switch (column.getColumnType()) {
-            case DESCRIPTION:
-                return description;
-            case TOTAL:
-                return getYearlyTotal().format();
-            default:
-                return getMonthlyAmount(column).format();
-        }
+    public Supplier<Stream<AccountId>> getAccountIds() {
+        return accountIds;
     }
 
     @Override

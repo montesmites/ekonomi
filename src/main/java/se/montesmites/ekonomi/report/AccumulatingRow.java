@@ -9,6 +9,7 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import static se.montesmites.ekonomi.report.Column.*;
 import static se.montesmites.ekonomi.report.Signedness.*;
+
 public class AccumulatingRow implements RowWithAccounts {
 
     private final CashflowDataFetcher fetcher;
@@ -23,7 +24,12 @@ public class AccumulatingRow implements RowWithAccounts {
                 = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
         this.amounts = getAmounts();
     }
-
+    
+    @Override
+    public String getDescription() {
+        return getBalance().format();
+    }
+    
     @Override
     public Supplier<Stream<AccountId>> getAccountIds() {
         return accountIds;

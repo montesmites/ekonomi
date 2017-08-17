@@ -61,6 +61,16 @@ public class DefaultRowWithAccountsWithNegatedAmountsTest {
         );
     }
 
+    @Test
+    public void negatedTexts() {
+        Column.streamMonths().forEach(month
+                -> assertEquals(
+                        month.name(),
+                        entrySum(accountId, month).format(),
+                        negated.getText(month).trim())
+        );
+    }
+
     private Currency entrySum(AccountId accountId, Column month) {
         YearMonth yearMonth = YearMonth.of(2012, month.getMonth().get());
         return organization.streamEntries()
