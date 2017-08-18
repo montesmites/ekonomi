@@ -11,40 +11,46 @@ import se.montesmites.ekonomi.report.RowWithAccounts;
 import se.montesmites.ekonomi.report.Section;
 
 enum NikkaSection {
-    ARBETE_BOENDE_FRITID(
-            "Arbete, boende, fritid",
+    INKOMSTER(
+            "Inkomster",
+            Arrays.asList(LONEINBETALNINGAR,
+                    NETTOOMSATTNING_OVRIGT
+            )),
+    BOENDE(
+            "Boende",
             Arrays.asList(
-                    LONEINBETALNINGAR,
-                    NETTOOMSATTNING_OVR,
+                    MANADSAVGIFT,
+                    AMORTERING_FREDSGATAN_13,
+                    BOLAN_RANTA,
+                    HEMFORSAKRING,
+                    EL,
+                    MOBIL_TV_BREDBAND
+            )),
+    FORNODENHETER(
+            "Förnödenheter",
+            Arrays.asList(
                     DAGLIGVAROR,
                     KLADER_OCH_SKOR,
-                    BOENDE_EL_TELEKOM,
-                    TRANSPORTER,
-                    OVRIGT,
-                    KORTFRISTIGA_PLACERINGAR,
-                    KORTFRISTIGA_FORDRINGAR,
-                    KORTFRISTIGA_SKULDER)),
-    FINANSIELLA_OCH_EXTRAORDINARA_POSTER(
-            "Finansiella och extraordinära poster",
+                    TRANSPORTER
+            )),
+    OVRIGT(
+            "Övrigt",
             Arrays.asList(
+                    INVESTERING_BOENDE,
+                    BOENDE_DIVERSE,
+                    NikkaAccountGroup.OVRIGT,
                     FINANSIELLA_INTAKTER,
                     FINANSIELLA_KOSTNADER,
                     EXTRAORDINART_NETTO
             )),
-    AGANDE_AV_BOSTAD(
-            "Ägande av bostad",
+    BALANSPOSTER_NETTO(
+            "Balansposter netto",
             Arrays.asList(
-                    LAN_FREDSGATAN_13,
-                    INVESTERING_BOENDE
-            )),
-    LANGSIKTIGT_SPARANDE(
-            "Långsiktigt sparande",
-            Arrays.asList(
+                    KORTFRISTIGA_PLACERINGAR,
+                    KORTFRISTIGA_FORDRINGAR,
+                    KORTFRISTIGA_SKULDER,
                     FRITT_SPARANDE,
-                    PENSIONSAVSATTNINGAR)),
-    UTLANINGSVERKSAMHET(
-            "Utlåningsverksamhet",
-            Arrays.asList(
+                    PENSIONSAVSATTNINGAR,
                     NETTOUTLANING)),
     FORANDRING_LIKVIDA_MEDEL(
             "Förändring likvida medel",
@@ -68,11 +74,11 @@ enum NikkaSection {
         this.title = title;
         this.groups = groups;
     }
-    
+
     public String getTitle() {
         return title;
     }
-    
+
     Section section(CashflowDataFetcher fetcher, java.time.Year year) {
         return new DefaultSection(
                 title,
