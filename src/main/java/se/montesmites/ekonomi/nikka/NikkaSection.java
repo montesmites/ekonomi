@@ -31,6 +31,8 @@ enum NikkaSection {
             Arrays.asList(
                     DAGLIGVAROR,
                     KLADER_OCH_SKOR,
+                    KROPP_OCH_SJAL,
+                    AKASSA_FACK_BANK_SKATT,
                     TRANSPORTER
             )),
     OVRIGT(
