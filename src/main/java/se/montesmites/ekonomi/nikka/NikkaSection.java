@@ -36,22 +36,17 @@ enum NikkaSection {
     OVRIGT(
             "Övrigt",
             Arrays.asList(
-                    INVESTERING_BOENDE,
                     BOENDE_DIVERSE,
                     NikkaAccountGroup.OVRIGT,
-                    FINANSIELLA_INTAKTER,
-                    FINANSIELLA_KOSTNADER,
+                    FINANSIELLT_NETTO,
                     EXTRAORDINART_NETTO
             )),
     BALANSPOSTER_NETTO(
             "Balansposter netto",
             Arrays.asList(
-                    KORTFRISTIGA_PLACERINGAR,
-                    KORTFRISTIGA_FORDRINGAR,
-                    KORTFRISTIGA_SKULDER,
-                    FRITT_SPARANDE,
-                    PENSIONSAVSATTNINGAR,
-                    NETTOUTLANING)),
+                    INVESTERING_BOENDE,
+                    KORTFRISTIGT_NETTO,
+                    LANGSIKTIGT_NETTO)),
     FORANDRING_LIKVIDA_MEDEL(
             "Förändring likvida medel",
             Arrays.asList(
