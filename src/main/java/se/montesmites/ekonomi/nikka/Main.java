@@ -19,6 +19,7 @@ import static se.montesmites.ekonomi.report.Column.*;
 import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
 import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.TotallingCompactSection;
 import se.montesmites.ekonomi.report.TotallingSection;
 
 public class Main {
@@ -48,7 +49,7 @@ public class Main {
                 = () -> Arrays.stream(NikkaSection.values())
                         .map(section -> section.section(fetcher, year));
         TotallingSection total
-                = new TotallingSection(
+                = new TotallingCompactSection(
                         "Kontrollsumma",
                         sections.get().collect(toList())) {
             @Override
