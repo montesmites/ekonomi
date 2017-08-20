@@ -68,7 +68,7 @@ public class Main {
                                 nikkaSection.getTitle().trim().toUpperCase());
             }
         };
-        AccumulatingSection accumlation
+        AccumulatingSection accumulation
                 = new AccumulatingSection(
                         "Ackumulerade likvida medel",
                         () -> Stream.of(new AccumulatingNegatedRow(
@@ -85,7 +85,7 @@ public class Main {
                                 sections.get(),
                                 Stream.of(
                                         total,
-                                        accumlation)));
+                                        accumulation)));
         return report;
     }
 
