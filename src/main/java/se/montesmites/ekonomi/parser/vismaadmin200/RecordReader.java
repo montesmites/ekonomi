@@ -20,7 +20,7 @@ public class RecordReader {
                 chunk -> this.recordDefinition.getFields().stream().reduce(
                         new Record(),
                         (rec, def) -> def.populate(rec, chunk),
-                        (rec1, rec2) -> rec1.merge(rec2)));
+                        Record::merge));
     }
 
     private List<ByteChunk> byteChunks() {
