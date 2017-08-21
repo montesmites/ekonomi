@@ -21,9 +21,13 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
         this.description = description;
     }
 
-    @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String formatDescription() {
+        return getDescription();
     }
 
     @Override

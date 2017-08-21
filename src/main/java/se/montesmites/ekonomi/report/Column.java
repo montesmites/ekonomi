@@ -21,7 +21,8 @@ public enum Column {
     OCTOBER (ColumnType.MONTH),
     NOVEMBER (ColumnType.MONTH),
     DECEMBER (ColumnType.MONTH),
-    TOTAL (ColumnType.TOTAL);
+    TOTAL (ColumnType.TOTAL),
+    AVERAGE (ColumnType.AVERAGE);
     
     public static Stream<Column> stream() {
         return Arrays.stream(values());

@@ -26,18 +26,13 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
     }
 
     @Override
-    public String getDescription() {
+    public String formatDescription() {
         return getBalance().format();
     }
 
     @Override
     public Supplier<Stream<AccountId>> getAccountIds() {
         return accountIds;
-    }
-
-    @Override
-    public String getText(Column column) {
-        return amounts.get(column).format();
     }
 
     @Override
@@ -71,6 +66,8 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
             case DESCRIPTION:
                 return balance();
             case TOTAL:
+                return new Currency(0);
+            case AVERAGE:
                 return new Currency(0);
             default:
                 return monthlyNetAmounts.getMonthlyAmount(column);

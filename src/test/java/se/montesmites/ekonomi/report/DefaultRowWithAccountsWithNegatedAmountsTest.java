@@ -67,7 +67,7 @@ public class DefaultRowWithAccountsWithNegatedAmountsTest {
                 -> assertEquals(
                         month.name(),
                         entrySum(accountId, month).format(),
-                        negated.getText(month).trim())
+                        negated.formatText(month).trim())
         );
     }
 

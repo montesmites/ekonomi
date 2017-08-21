@@ -81,7 +81,7 @@ public enum CashflowReport_AccountGroup_2012 {
                 = groups.stream().map(g -> g.description).collect(toList());
         final List<String> act
                 = section.streamBody()
-                        .map(row -> row.getText(DESCRIPTION))
+                        .map(row -> row.formatText(DESCRIPTION))
                         .collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {

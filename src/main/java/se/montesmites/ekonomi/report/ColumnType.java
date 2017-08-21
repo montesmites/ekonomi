@@ -5,12 +5,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public enum ColumnType {
-    DESCRIPTION(c -> Optional.empty()),
+    DESCRIPTION(__ -> Optional.empty()),
     MONTH(c -> Optional.of(Month.valueOf(c.name()))),
-    TOTAL(c -> Optional.empty());
+    TOTAL(__ -> Optional.empty()),
+    AVERAGE(__ -> Optional.empty());
 
     private final Function<Column, Optional<Month>> asMonthFunction;
-
+    
     private ColumnType(Function<Column, Optional<Month>> asMonthFunction) {
         this.asMonthFunction = asMonthFunction;
     }
@@ -18,5 +19,4 @@ public enum ColumnType {
     public final Optional<Month> asMonth(Column column) {
         return asMonthFunction.apply(column);
     }
-
 }

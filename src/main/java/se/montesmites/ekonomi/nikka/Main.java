@@ -63,7 +63,7 @@ public class Main {
             }
 
             private boolean sectionEquals(Section section, NikkaSection nikkaSection) {
-                return section.streamTitle().findFirst().get().getText(
+                return section.streamTitle().findFirst().get().formatText(
                         DESCRIPTION).trim().toUpperCase().equals(
                                 nikkaSection.getTitle().trim().toUpperCase());
             }

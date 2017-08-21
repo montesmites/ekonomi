@@ -14,14 +14,18 @@ public class TotallingCompactSection extends TotallingSection {
     public Stream<Row> streamTitle() {
         final Row title = super.streamTitle().findFirst().get();
         final Row total = super.streamFooter().findFirst().get();
-        return Stream.of(column -> {
-            switch (column) {
-                case DESCRIPTION:
-                    return title.getText(DESCRIPTION);
-                default:
-                    return total.getText(column);
+        final Row row = new Row() {
+            @Override
+            public String formatDescription() {
+                return title.formatText(DESCRIPTION);
             }
-        });
+
+            @Override
+            public String formatMonth(Column column) {
+                return total.formatText(column);
+            }
+        };
+        return Stream.of(row);
     }
 
     @Override

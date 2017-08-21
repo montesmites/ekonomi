@@ -60,7 +60,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
                         .collect(toList());
         List<String> act
                 = section.streamBody()
-                        .map(row -> row.getText(Column.DESCRIPTION))
+                        .map(row -> row.formatText(Column.DESCRIPTION))
                         .collect(toList());
         assertEquals(exp, act);
     }

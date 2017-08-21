@@ -14,8 +14,8 @@ public class DefaultRowWithAccountsWithNegatedAmounts implements RowWithAccounts
     }
 
     @Override
-    public String getDescription() {
-        return source.getDescription();
+    public String formatDescription() {
+        return source.formatDescription();
     }
 
     @Override

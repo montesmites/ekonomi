@@ -56,7 +56,7 @@ public class CashflowReport {
     }
 
     private String format(Row row, Column column) {
-        return String.format(formatString(column), row.getText(column));
+        return String.format(formatString(column), row.formatText(column));
     }
 
     private String formatString(Column column) {
@@ -64,6 +64,8 @@ public class CashflowReport {
             case DESCRIPTION:
                 return "%-27s";
             case TOTAL:
+                return "%16s";
+            case AVERAGE:
                 return "%16s";
             default:
                 return "%13s";

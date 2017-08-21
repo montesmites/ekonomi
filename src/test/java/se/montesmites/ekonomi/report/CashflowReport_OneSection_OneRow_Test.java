@@ -60,7 +60,7 @@ public class CashflowReport_OneSection_OneRow_Test {
     public void sectionTitle() {
         final String exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
         final String act = section.streamTitle()
-                .findFirst().get().getText(DESCRIPTION);
+                .findFirst().get().formatText(DESCRIPTION);
         assertEquals(exp, act);
     }
 

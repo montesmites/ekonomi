@@ -59,7 +59,7 @@ public class TotallingSectionTest {
         assertEquals(
                 TOTALLING_SECTION_TITLE,
                 totallingSection.streamTitle()
-                        .findFirst().get().getText(DESCRIPTION));
+                        .findFirst().get().formatText(DESCRIPTION));
     }
 
     @Test
