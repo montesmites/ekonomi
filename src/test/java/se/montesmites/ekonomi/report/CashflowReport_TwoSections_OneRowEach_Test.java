@@ -15,6 +15,7 @@ import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.BOKFORT_RESULTAT;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.KORTFRISTIGA_SKULDER;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertBodyRowDescriptions;
+import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertExpectedAverages;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertMonthlyAmounts;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bodyRowsOf;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
@@ -49,10 +50,10 @@ public class CashflowReport_TwoSections_OneRowEach_Test {
     private List<Map.Entry<Section, List<CashflowReport_AccountGroup_2012>>> sections() {
         return Arrays.asList(
                 section(
-                        "Section 1",
+                        "Bokfört resultat",
                         Arrays.asList(BOKFORT_RESULTAT)),
                 section(
-                        "Section 2",
+                        "Kortfristiga skulder",
                         Arrays.asList(KORTFRISTIGA_SKULDER)));
     }
 
@@ -86,5 +87,13 @@ public class CashflowReport_TwoSections_OneRowEach_Test {
                 -> assertMonthlyAmounts(
                         section.getKey(),
                         section.getValue()));
+    }
+    
+    @Test
+    public void testAverage() {
+        sections().stream().forEach(section
+        -> assertExpectedAverages(
+                section.getKey(),
+                section.getValue()));
     }
 }

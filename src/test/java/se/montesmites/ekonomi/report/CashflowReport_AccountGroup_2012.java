@@ -29,6 +29,7 @@ public enum CashflowReport_AccountGroup_2012 {
     BOKFORT_RESULTAT(
             "Bokfört resultat",
             "([3-7]\\d|8[1-8])\\d\\d",
+            new Currency(3923589),
             new EnumMap<Column, Currency>(Column.class) {
         {
             put(JANUARY, new Currency(-2866947));
@@ -48,6 +49,7 @@ public enum CashflowReport_AccountGroup_2012 {
     KORTFRISTIGA_SKULDER(
             "Kortfristiga skulder",
             "2[4-9]\\d\\d",
+            new Currency(950219),
             new EnumMap<Column, Currency>(
                     Column.class) {
         {
@@ -86,7 +88,10 @@ public enum CashflowReport_AccountGroup_2012 {
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
-            String msg = String.format(fmt, section.streamTitle(), i);
+            String description
+                    = section.streamTitle()
+                            .findFirst().get().formatDescription();
+            String msg = String.format(fmt, description, i);
             assertEquals(msg, exp.get(i), act.get(i));
         }
     }
@@ -114,11 +119,15 @@ public enum CashflowReport_AccountGroup_2012 {
             final int ix = i;
             final Map<Column, Currency> exp = expList.get(i);
             final Map<Column, Currency> act = actList.get(i);
+            String description
+                    = section.streamTitle()
+                            .findFirst().get().formatDescription();
             final String fmt = "%s at %s at %s: ";
             Column.streamMonths().forEach(column
                     -> assertEquals(
                             String.format(
-                                    fmt, section.streamTitle(),
+                                    fmt,
+                                    description,
                                     column.name(),
                                     ix),
                             exp.get(column),
@@ -127,17 +136,40 @@ public enum CashflowReport_AccountGroup_2012 {
         }
     }
 
+    public static void assertExpectedAverages(
+            Section section,
+            List<CashflowReport_AccountGroup_2012> groups) {
+        final List<Currency> exp
+                = groups.stream().map(g -> g.expectedAverage).collect(toList());
+        final List<Currency> act
+                = section.streamBody()
+                        .map(row -> row.asRowWithAmounts().get().getAverage())
+                        .collect(toList());
+        assertEquals(exp.size(), act.size());
+        for (int i = 0; i < exp.size(); i++) {
+            String fmt = "%s at %d";
+            String description
+                    = section.streamTitle()
+                            .findFirst().get().formatDescription();
+            String msg = String.format(fmt, description, i);
+            assertEquals(msg, exp.get(i), act.get(i));
+        }
+    }
+
     private final String description;
     private final String regex;
     private final Map<Column, Currency> expectedAmounts;
+    private final Currency expectedAverage;
 
     private CashflowReport_AccountGroup_2012(
             String description,
             String regex,
+            Currency expectedAverage,
             Map<Column, Currency> expectedAmounts) {
         this.description = description;
         this.regex = regex;
         this.expectedAmounts = expectedAmounts;
+        this.expectedAverage = expectedAverage;
     }
 
     private RowWithAccounts bodyRow(CashflowDataFetcher fetcher) {
