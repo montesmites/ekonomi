@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.organization.Organization;
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccumulatingNegatedRow;
 import se.montesmites.ekonomi.report.AccumulatingSection;
@@ -40,7 +41,7 @@ public class Main {
     Main() {
         Path path = Paths.get(
                 "C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
-        this.organization = Organization.fromPath(path);
+        this.organization = new OrganizationBuilder(path).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
     }
 

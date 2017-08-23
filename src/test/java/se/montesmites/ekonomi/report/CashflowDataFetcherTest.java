@@ -22,6 +22,8 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.test.util.EntryAggregateExpectedElements.BY_YEARMONTH_201201;
+
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class CashflowDataFetcherTest {
@@ -42,7 +44,7 @@ public class CashflowDataFetcherTest {
 
     @Before
     public void before() throws Exception {
-        this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
     }
 

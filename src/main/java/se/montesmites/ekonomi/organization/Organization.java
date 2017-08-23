@@ -1,37 +1,17 @@
 package se.montesmites.ekonomi.organization;
 
-import java.nio.file.Path;
+import se.montesmites.ekonomi.model.*;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
+
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
-import java.util.stream.Stream;
-import se.montesmites.ekonomi.model.Account;
-import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Balance;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.Event;
-import se.montesmites.ekonomi.model.EventId;
-import se.montesmites.ekonomi.model.Year;
-import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
-import static se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0.*;
-
 public class Organization {
-
-    public static Organization fromPath(Path path) {
-        Parser p = new Parser(path);
-        return new Organization(
-                p.parse(ACCOUNTS),
-                p.parse(BALANCES),
-                p.parse(ENTRIES),
-                p.parse(EVENTS),
-                p.parse(YEARS));
-    }
-
     private final Collection<Account> accounts;
     private final Collection<Balance> balances;
     private final Collection<Entry> entries;
@@ -45,7 +25,7 @@ public class Organization {
     private final Map<java.time.Year, Year> yearsByYear;
     private final Map<YearId, Year> yearsByYearId;
 
-    private Organization(
+    Organization(
             Stream<Account> accounts,
             Stream<Balance> balances,
             Stream<Entry> entries,

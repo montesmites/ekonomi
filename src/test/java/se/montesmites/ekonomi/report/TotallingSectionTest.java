@@ -14,6 +14,8 @@ import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.BOK
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.KORTFRISTIGA_SKULDER;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bodyRowsOf;
 import static se.montesmites.ekonomi.report.Column.*;
+
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class TotallingSectionTest {
@@ -37,7 +39,7 @@ public class TotallingSectionTest {
 
     @Before
     public void before() throws Exception {
-        this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
         section1 = new DefaultSection(
                 "Section 1",

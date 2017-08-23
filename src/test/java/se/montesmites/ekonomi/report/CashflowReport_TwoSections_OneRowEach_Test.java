@@ -18,6 +18,8 @@ import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.ass
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertExpectedAverages;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertMonthlyAmounts;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bodyRowsOf;
+
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class CashflowReport_TwoSections_OneRowEach_Test {
@@ -39,7 +41,7 @@ public class CashflowReport_TwoSections_OneRowEach_Test {
 
     @Before
     public void before() throws Exception {
-        this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(
                 fetcher,

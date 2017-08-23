@@ -16,6 +16,7 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.organization.Organization;
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class DefaultRowWithAccountsWithNegatedAmountsTest {
@@ -42,7 +43,7 @@ public class DefaultRowWithAccountsWithNegatedAmountsTest {
 
     @Before
     public void before() throws Exception {
-        this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.yearId = organization.getYear(year).get().getYearId();
         this.accountId = new AccountId(yearId, "1920");

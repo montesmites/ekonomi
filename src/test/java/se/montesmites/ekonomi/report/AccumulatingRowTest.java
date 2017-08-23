@@ -15,6 +15,8 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.report.Column.*;
+
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class AccumulatingRowTest {
@@ -36,7 +38,7 @@ public class AccumulatingRowTest {
 
     @Before
     public void before() throws Exception {
-        this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.yearId = organization.getYear(year).get().getYearId();
     }

@@ -13,6 +13,8 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.report.Signedness.*;
+
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class CashflowReport_OneSection_EachAccountOneRow_Test {
@@ -35,7 +37,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
 
     @Before
     public void before() throws Exception {
-        this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year);
         this.section = report.streamSections().findFirst().get();

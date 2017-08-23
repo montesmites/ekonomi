@@ -13,6 +13,8 @@ import org.junit.rules.TemporaryFolder;
 import se.montesmites.ekonomi.organization.Organization;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 import static se.montesmites.ekonomi.report.Column.*;
+
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 
 public class CashflowReport_OneSection_OneRow_Test {
@@ -38,7 +40,7 @@ public class CashflowReport_OneSection_OneRow_Test {
 
     @Before
     public void before() throws Exception {
-        this.organization = Organization.fromPath(tempfolder.getRoot().toPath());
+        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year, () -> sections());
         this.groups = Arrays.asList(BOKFORT_RESULTAT);
