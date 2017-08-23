@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.parser.vismaadmin200;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Parser {
 
@@ -11,7 +12,7 @@ public class Parser {
         this.path = path;
     }
 
-    public <T> List<T> parse(BinaryFile_VismaAdmin200<T> binaryFile) {
+    public <T> Stream<T> parse(BinaryFile_VismaAdmin200<T> binaryFile) {
         return binaryFile.parse(path);
     }
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
+
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
@@ -30,11 +31,13 @@ public class Organization {
                 p.parse(EVENTS),
                 p.parse(YEARS));
     }
-    
+
     private final Collection<Account> accounts;
-    private final Collection<Year> years;
+    private final Collection<Balance> balances;
     private final Collection<Entry> entries;
-    
+    private final Collection<Event> events;
+    private final Collection<Year> years;
+
     private final Map<AccountId, Account> accountsByAccountId;
     private final Map<AccountId, Balance> balancesByAccountId;
     private final Map<EventId, List<Entry>> entriesByEventId;
@@ -43,26 +46,28 @@ public class Organization {
     private final Map<YearId, Year> yearsByYearId;
 
     private Organization(
-            Collection<Account> accounts,
-            Collection<Balance> balances,
-            Collection<Entry> entries,
-            Collection<Event> events,
-            Collection<Year> years) {
-        this.accounts = accounts;
-        this.years = years;
-        this.entries = entries;
-        
-        this.accountsByAccountId = accounts.stream()
+            Stream<Account> accounts,
+            Stream<Balance> balances,
+            Stream<Entry> entries,
+            Stream<Event> events,
+            Stream<Year> years) {
+        this.accounts = accounts.collect(toList());
+        this.balances = balances.collect(toList());
+        this.entries = entries.collect(toList());
+        this.events = events.collect(toList());
+        this.years = years.collect(toList());
+
+        this.accountsByAccountId = this.accounts.stream()
                 .collect(toMap(Account::getAccountId, identity()));
-        this.balancesByAccountId = balances.stream()
+        this.balancesByAccountId = this.balances.stream()
                 .collect(toMap(Balance::getAccountId, identity()));
-        this.entriesByEventId = entries.stream()
+        this.entriesByEventId = this.entries.stream()
                 .collect(groupingBy(Entry::getEventId));
-        this.eventsByEventId = events.stream()
+        this.eventsByEventId = this.events.stream()
                 .collect(toMap(Event::getEventId, identity()));
-        this.yearsByYear = years.stream()
+        this.yearsByYear = this.years.stream()
                 .collect(toMap(Year::getYear, identity()));
-        this.yearsByYearId = years.stream()
+        this.yearsByYearId = this.years.stream()
                 .collect(toMap(Year::getYearId, identity()));
     }
     

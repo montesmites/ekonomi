@@ -5,16 +5,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public interface BinaryFile_VismaAdmin200<T> {
 
-    default List<T> parse(Path path) {
+    default Stream<T> parse(Path path) {
         Path p = path.resolve(this.getFileName());
         RecordReader rr = new RecordReader(
                 this.getRecordDefinition(), readAllBytes(p));
         return rr.allRecordsAsStream().filter(this::filter).map(
-                this::modelize).collect(
-                        Collectors.toList());
+                this::modelize);
     }
 
     String getFileName();

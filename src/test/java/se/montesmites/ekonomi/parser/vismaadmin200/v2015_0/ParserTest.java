@@ -1,14 +1,5 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -18,6 +9,17 @@ import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.parser.vismaadmin200.BinaryFile_VismaAdmin200;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
+import static org.junit.Assert.assertEquals;
 
 public class ParserTest {
 
@@ -52,7 +54,7 @@ public class ParserTest {
             }
         };
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.ACCOUNTS)
-                .stream().collect(
+                .collect(
                         Collectors.groupingBy(
                                 account -> account.getAccountId().getYearId().getId(),
                                 Collectors.counting()));
@@ -71,7 +73,7 @@ public class ParserTest {
             }
         };
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.EVENTS)
-                .stream().collect(
+                .collect(
                         Collectors.groupingBy(
                                 event -> event.getEventId().getYearId().getId(),
                                 Collectors.counting()));
@@ -89,7 +91,7 @@ public class ParserTest {
             }
         };
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.ENTRIES)
-                .stream().collect(
+                .collect(
                         Collectors.groupingBy(
                                 entry -> entry.getEventId().getYearId().getId(),
                                 Collectors.counting()));
@@ -107,14 +109,14 @@ public class ParserTest {
             }
         };
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.BALANCES)
-                .stream().collect(
+                .collect(
                         Collectors.groupingBy(
                                 balance -> balance.getAccountId().getYearId().getId(),
                                 Collectors.counting()));
         assertEquals(expCount.entrySet(), actCount.entrySet());
     }
 
-    private <T> List<T> parse(BinaryFile_VismaAdmin200<T> bf) {
+    private <T> Stream<T> parse(BinaryFile_VismaAdmin200<T> bf) {
         Parser p = new Parser(tempfolder.getRoot().toPath());
         return p.parse(bf);
     }
@@ -124,11 +126,12 @@ public class ParserTest {
                 LocalDate.parse(from), LocalDate.parse(to));
     }
 
-    private <T> Set<T> set(T... arr) {
-        return set(Arrays.asList(arr));
+    @SafeVarargs
+    private final <T> Set<T> set(T... arr) {
+        return set(Arrays.stream(arr));
     }
 
-    private <T> Set<T> set(List<T> l) {
-        return new HashSet<>(l);
+    private <T> Set<T> set(Stream<T> l) {
+        return l.collect(toSet());
     }
 }
