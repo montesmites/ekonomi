@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static junit.framework.TestCase.assertEquals;
 
@@ -38,19 +39,29 @@ public class TouchedYearMonthTest {
     @Test
     public void oneMonth() throws Exception {
         final Path path = tempfolder.getRoot().toPath();
-        this.organizationBuilder = new OrganizationBuilder(path, Filter.get(filterEntry(JANUARY)));
+        this.organizationBuilder = new OrganizationBuilder(path, Filter.get(filterEntry(EnumSet.of(JANUARY))));
         CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
         Set<Month> exp = EnumSet.of(JANUARY);
         Set<Month> act = fetcher.touchedMonths(year);
         assertEquals(exp, act);
     }
 
-    private Predicate<Entry> filterEntry(Month month) {
+    @Test
+    public void twoMonths() throws Exception {
+        final Path path = tempfolder.getRoot().toPath();
+        this.organizationBuilder = new OrganizationBuilder(path, Filter.get(filterEntry(EnumSet.of(JANUARY, FEBRUARY))));
+        CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
+        Set<Month> exp = EnumSet.of(JANUARY, FEBRUARY);
+        Set<Month> act = fetcher.touchedMonths(year);
+        assertEquals(exp, act);
+    }
+
+    private Predicate<Entry> filterEntry(Set<Month> months) {
         return entry
                 -> organizationBuilder.getEventManager().getEvent(entry.getEventId())
                 .map(Event::getDate)
                 .filter(date -> date.getYear() == year.getValue())
-                .filter(date -> date.getMonth() == month)
+                .filter(date -> months.contains(date.getMonth()))
                 .isPresent();
     }
 }
