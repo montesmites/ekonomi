@@ -7,10 +7,10 @@ import se.montesmites.ekonomi.model.Currency;
 import java.time.Month;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static se.montesmites.ekonomi.report.Column.DECEMBER;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 public class AccumulatingNegatedRow implements RowWithAccounts {
@@ -27,7 +27,7 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
         this.year = year;
         this.monthlyNetAmounts
                 = new DefaultRowWithAccountsWithNegatedAmounts(
-                        new DefaultRowWithAccounts(fetcher, accountIds, year, ""));
+                new DefaultRowWithAccounts(fetcher, accountIds, year, ""));
         this.amounts = getAmounts();
     }
 
@@ -43,12 +43,12 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
 
     @Override
     public Currency getMonthlyAmount(Column column) {
-        return amounts.get(column);
+        return amounts.getOrDefault(column, new Currency(0));
     }
 
     @Override
     public Currency getYearlyTotal() {
-        return amounts.get(DECEMBER);
+        return new Currency(0);
     }
 
     @Override
@@ -61,13 +61,16 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
     }
 
     private Map<Column, Currency> getAmounts() {
+        final Set<Month> months = fetcher.touchedMonths(year);
         Map<Column, Currency> map = new EnumMap<>(Column.class);
         Currency accumulator = new Currency(0);
         for (Column column : Column.values()) {
-            Currency net = columnNetAmount(column);
-            Currency columnBalance = accumulator.add(net);
-            map.put(column, columnBalance);
-            accumulator = columnBalance;
+            if (!column.getMonth().isPresent() || months.contains(column.getMonth().get())) {
+                Currency net = columnNetAmount(column);
+                Currency columnBalance = accumulator.add(net);
+                map.put(column, columnBalance);
+                accumulator = columnBalance;
+            }
         }
         return map;
     }

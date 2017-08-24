@@ -1,10 +1,5 @@
 package se.montesmites.ekonomi.report;
 
-import java.time.Year;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.stream.Stream;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -14,10 +9,16 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.organization.Organization;
-import static se.montesmites.ekonomi.report.Column.*;
-
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
+
+import java.time.Year;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import static org.junit.Assert.assertEquals;
+import static se.montesmites.ekonomi.report.Column.*;
 
 public class AccumulatingRowTest {
 
@@ -58,7 +59,7 @@ public class AccumulatingRowTest {
                         expectedAmounts().get(month),
                         row.getMonthlyAmount(month)));
         assertEquals(
-                expectedAmounts().get(DECEMBER),
+                new Currency(0),
                 row.getYearlyTotal());
     }
 
