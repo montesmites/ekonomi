@@ -1,14 +1,12 @@
 package se.montesmites.ekonomi.nikka;
 
-import static java.util.Comparator.comparing;
-import java.util.List;
-import static java.util.stream.Collectors.toList;
 import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.report.AccountFilter;
-import se.montesmites.ekonomi.report.AccountFilterByRegex;
-import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.DefaultRowWithAccounts;
-import se.montesmites.ekonomi.report.RowWithAccounts;
+import se.montesmites.ekonomi.report.*;
+
+import java.util.List;
+
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 enum NikkaAccountGroup {
     LONEINBETALNINGAR("Löner och arvoden", "(30|36)\\d\\d"),
@@ -31,8 +29,7 @@ enum NikkaAccountGroup {
     LANGSIKTIGT_NETTO("Långsiktigt netto", "(10\\d|13[456])\\d"),
     FINANSIELLT_NETTO("Finansiellt netto", "8(3\\d|4[2-9])\\d"),
     EXTRAORDINART_NETTO("Extraordinärt netto", "87\\d\\d"),
-    SBAB_SPAR_NETTO("SBAB-spar netto", "1493"),
-    OVRIGA_LIKVIDA_MEDEL("Övriga likvida medel", "19\\d\\d");
+    LIKVIDA_MEDEL("Likvida medel", "1493|19\\d\\d");
 
     private final String description;
     private final String regex;
@@ -52,7 +49,7 @@ enum NikkaAccountGroup {
                         .collect(toList());
         return new DefaultRowWithAccounts(
                 fetcher,
-                () -> accountIds.stream(),
+                accountIds::stream,
                 year,
                 description);
     }

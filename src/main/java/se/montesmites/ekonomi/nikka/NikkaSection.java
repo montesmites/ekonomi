@@ -1,14 +1,12 @@
 package se.montesmites.ekonomi.nikka;
 
+import se.montesmites.ekonomi.report.*;
+
 import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
+
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.*;
-import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
-import se.montesmites.ekonomi.report.DefaultSection;
-import se.montesmites.ekonomi.report.RowWithAccounts;
-import se.montesmites.ekonomi.report.Section;
 
 enum NikkaSection {
     INKOMSTER(
@@ -52,8 +50,7 @@ enum NikkaSection {
     FORANDRING_LIKVIDA_MEDEL(
             "Förändring likvida medel",
             Arrays.asList(
-                    SBAB_SPAR_NETTO,
-                    OVRIGA_LIKVIDA_MEDEL
+                    LIKVIDA_MEDEL
             )) {
         @Override
         RowWithAccounts bodyRow(NikkaAccountGroup group, CashflowDataFetcher fetcher, Year year) {

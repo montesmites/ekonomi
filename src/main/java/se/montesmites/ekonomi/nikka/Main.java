@@ -1,5 +1,9 @@
 package se.montesmites.ekonomi.nikka;
 
+import se.montesmites.ekonomi.organization.Organization;
+import se.montesmites.ekonomi.organization.OrganizationBuilder;
+import se.montesmites.ekonomi.report.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,21 +11,10 @@ import java.nio.file.Paths;
 import java.time.Year;
 import java.util.Arrays;
 import java.util.function.Supplier;
-import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.organization.Organization;
-import se.montesmites.ekonomi.organization.OrganizationBuilder;
-import se.montesmites.ekonomi.report.AccountFilterByRegex;
-import se.montesmites.ekonomi.report.AccumulatingNegatedRow;
-import se.montesmites.ekonomi.report.AccumulatingSection;
-import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.CashflowReport;
-import static se.montesmites.ekonomi.report.Column.*;
-import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
-import se.montesmites.ekonomi.report.Row;
-import se.montesmites.ekonomi.report.Section;
-import se.montesmites.ekonomi.report.TotallingCompactSection;
-import se.montesmites.ekonomi.report.TotallingSection;
+
+import static java.util.stream.Collectors.toList;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 public class Main {
 
@@ -35,14 +28,13 @@ public class Main {
         main.renderToFile(report, path);
     }
 
-    private final Organization organization;
     private final CashflowDataFetcher fetcher;
 
-    Main() {
+    private Main() {
         Path path = Paths.get(
                 "C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
-        this.organization = new OrganizationBuilder(path).build();
-        this.fetcher = new CashflowDataFetcher(this.organization);
+        Organization organization = new OrganizationBuilder(path).build();
+        this.fetcher = new CashflowDataFetcher(organization);
     }
 
     private CashflowReport generateCashflowReport(Year year) {
@@ -79,15 +71,13 @@ public class Main {
                                         .filter(fetcher.streamAccountIds(
                                                 year)),
                                 year)));
-        CashflowReport report
-                = new CashflowReport(
-                        fetcher,
-                        year, () -> Stream.concat(
-                                sections.get(),
-                                Stream.of(
-                                        total,
-                                        accumulation)));
-        return report;
+        return new CashflowReport(
+                fetcher,
+                year, () -> Stream.concat(
+                        sections.get(),
+                        Stream.of(
+                                total,
+                                accumulation)));
     }
 
     private void renderToFile(CashflowReport report, Path path) throws IOException {
