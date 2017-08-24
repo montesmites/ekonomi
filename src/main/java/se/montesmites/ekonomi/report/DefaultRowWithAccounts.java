@@ -1,11 +1,12 @@
 package se.montesmites.ekonomi.report;
 
+import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Currency;
+
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Currency;
 
 public class DefaultRowWithAccounts implements RowWithAccounts {
 
@@ -26,6 +27,11 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
     }
 
     @Override
+    public Supplier<Stream<Month>> months() {
+        return () -> fetcher.touchedMonths(year).stream();
+    }
+
+    @Override
     public String formatDescription() {
         return getDescription();
     }
@@ -39,7 +45,7 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
     public Currency getMonthlyAmount(Column column) {
         return accountIds.get()
                 .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
-                .reduce(new Currency(0), (sum, term) -> sum.add(term));
+                .reduce(new Currency(0), Currency::add);
     }
 
     private Currency getMonthlyAmount(AccountId accountId, Month month) {

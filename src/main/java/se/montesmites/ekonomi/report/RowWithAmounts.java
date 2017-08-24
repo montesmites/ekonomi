@@ -2,6 +2,10 @@ package se.montesmites.ekonomi.report;
 
 import se.montesmites.ekonomi.model.Currency;
 
+import java.time.Month;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 public interface RowWithAmounts extends Row {
 
     public Currency getMonthlyAmount(Column column);
@@ -13,13 +17,17 @@ public interface RowWithAmounts extends Row {
     }
     
     default Currency getAverage() {
-        double avg = Column.streamMonths()
+        double avg = months().get()
+                .map(Column::valueOf)
                 .map(this::getMonthlyAmount)
                 .mapToLong(Currency::getAmount)
-                .filter(amount -> amount != 0)
                 .average()
                 .orElse(0);
         return new Currency(Math.round(avg));
+    }
+
+    default Supplier<Stream<Month>> months() {
+        return () -> Stream.empty();
     }
 
     @Override

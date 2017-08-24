@@ -1,24 +1,30 @@
 package se.montesmites.ekonomi.report;
 
+import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Balance;
+import se.montesmites.ekonomi.model.Currency;
+
+import java.time.Month;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Balance;
-import se.montesmites.ekonomi.model.Currency;
-import static se.montesmites.ekonomi.report.Column.*;
+
+import static se.montesmites.ekonomi.report.Column.DECEMBER;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 public class AccumulatingNegatedRow implements RowWithAccounts {
 
     private final CashflowDataFetcher fetcher;
     private final Supplier<Stream<AccountId>> accountIds;
+    private final java.time.Year year;
     private final RowWithAccounts monthlyNetAmounts;
     private final Map<Column, Currency> amounts;
 
     public AccumulatingNegatedRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
+        this.year = year;
         this.monthlyNetAmounts
                 = new DefaultRowWithAccountsWithNegatedAmounts(
                         new DefaultRowWithAccounts(fetcher, accountIds, year, ""));
@@ -43,6 +49,11 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
     @Override
     public Currency getYearlyTotal() {
         return amounts.get(DECEMBER);
+    }
+
+    @Override
+    public Supplier<Stream<Month>> months() {
+        return () -> fetcher.touchedMonths(year).stream();
     }
 
     public Currency getBalance() {

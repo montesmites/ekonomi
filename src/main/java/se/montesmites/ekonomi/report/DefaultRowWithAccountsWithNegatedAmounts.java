@@ -1,9 +1,11 @@
 package se.montesmites.ekonomi.report;
 
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
+
+import java.time.Month;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class DefaultRowWithAccountsWithNegatedAmounts implements RowWithAccounts {
 
@@ -27,5 +29,10 @@ public class DefaultRowWithAccountsWithNegatedAmounts implements RowWithAccounts
     public Currency getMonthlyAmount(Column column) {
         final Currency sourceAmount = source.getMonthlyAmount(column);
         return Signedness.NEGATED_SIGN.apply(sourceAmount);
+    }
+
+    @Override
+    public Supplier<Stream<Month>> months() {
+        return source.months();
     }
 }

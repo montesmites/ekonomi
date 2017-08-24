@@ -13,6 +13,7 @@ import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptySet;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
 
@@ -42,6 +43,10 @@ public class CashflowDataFetcher {
         this.touchedMonths = touchedMonths();
     }
 
+    public Set<Month> getTouchedMonths(java.time.Year year) {
+        return touchedMonths.getOrDefault(year, emptySet());
+    }
+
     private Map<java.time.Year, Set<Month>> touchedMonths() {
         return organization
                 .streamEntries()
@@ -67,7 +72,7 @@ public class CashflowDataFetcher {
     }
 
     public Set<Month> touchedMonths(java.time.Year year) {
-        return touchedMonths.getOrDefault(year, Collections.emptySet());
+        return touchedMonths.getOrDefault(year, emptySet());
     }
 
     public Stream<AccountId> streamAccountIds(java.time.Year year) {
