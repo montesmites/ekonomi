@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.organization;
 
 import se.montesmites.ekonomi.model.*;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -12,29 +13,29 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
 public class Organization {
+    private final EventManager eventManager;
+
     private final Collection<Account> accounts;
     private final Collection<Balance> balances;
     private final Collection<Entry> entries;
-    private final Collection<Event> events;
     private final Collection<Year> years;
 
     private final Map<AccountId, Account> accountsByAccountId;
     private final Map<AccountId, Balance> balancesByAccountId;
     private final Map<EventId, List<Entry>> entriesByEventId;
-    private final Map<EventId, Event> eventsByEventId;
     private final Map<java.time.Year, Year> yearsByYear;
     private final Map<YearId, Year> yearsByYearId;
 
     Organization(
+            EventManager eventManager,
             Stream<Account> accounts,
             Stream<Balance> balances,
             Stream<Entry> entries,
-            Stream<Event> events,
             Stream<Year> years) {
+        this.eventManager = eventManager;
         this.accounts = accounts.collect(toList());
         this.balances = balances.collect(toList());
         this.entries = entries.collect(toList());
-        this.events = events.collect(toList());
         this.years = years.collect(toList());
 
         this.accountsByAccountId = this.accounts.stream()
@@ -43,14 +44,16 @@ public class Organization {
                 .collect(toMap(Balance::getAccountId, identity()));
         this.entriesByEventId = this.entries.stream()
                 .collect(groupingBy(Entry::getEventId));
-        this.eventsByEventId = this.events.stream()
-                .collect(toMap(Event::getEventId, identity()));
         this.yearsByYear = this.years.stream()
                 .collect(toMap(Year::getYear, identity()));
         this.yearsByYearId = this.years.stream()
                 .collect(toMap(Year::getYearId, identity()));
     }
-    
+
+    public EventManager getEventManager() {
+        return this.eventManager;
+    }
+
     public Stream<Account> streamAccounts() {
         return accounts.stream();
     }
@@ -72,7 +75,15 @@ public class Organization {
     }
 
     public Optional<Event> getEvent(EventId eventId) {
-        return Optional.ofNullable(eventsByEventId.get(eventId));
+        return eventManager.getEvent(eventId);
+    }
+
+    public Optional<Event> getEvent(Entry entry) {
+        return getEvent(entry.getEventId());
+    }
+
+    public Optional<LocalDate> getDate(Entry entry) {
+        return getEvent(entry).map(Event::getDate);
     }
 
     public Optional<List<Entry>> getEntries(EventId eventId) {

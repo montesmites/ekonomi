@@ -10,6 +10,10 @@ public interface Filter {
         };
     }
 
+    public static FilterEntry get(Predicate<Entry> filter) {
+        return () -> filter;
+    }
+
     default Predicate<Account> accountFilter() {
         return __ -> true;
     }

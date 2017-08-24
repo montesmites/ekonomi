@@ -32,6 +32,10 @@ public enum Column {
         return stream().filter(col -> col.getColumnType() == ColumnType.MONTH);
     }
     
+    public static Column valueOf(Month month) {
+        return Column.valueOf(month.name());
+    }
+
     private final ColumnType type;
     private final Optional<Month> month;
     
