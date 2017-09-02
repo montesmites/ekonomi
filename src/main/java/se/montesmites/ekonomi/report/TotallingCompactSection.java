@@ -24,6 +24,16 @@ public class TotallingCompactSection extends TotallingSection {
             public String formatMonth(Column column) {
                 return total.formatText(column);
             }
+
+            @Override
+            public String formatTotal() {
+                return total.formatTotal();
+            }
+
+            @Override
+            public String formatAverage() {
+                return total.formatAverage();
+            }
         };
         return Stream.of(row);
     }
