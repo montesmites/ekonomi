@@ -38,14 +38,14 @@ enum NikkaSection {
             Arrays.asList(
                     BOENDE_DIVERSE,
                     NikkaAccountGroup.OVRIGT,
-                    FINANSIELLT_NETTO,
-                    EXTRAORDINART_NETTO
+                    KORTFRISTIGT_NETTO
             )),
-    BALANSPOSTER_NETTO(
-            "Balansposter netto",
+    JAMFORELSESTORANDE_POSTER(
+            "Jämförelsestörande poster",
             Arrays.asList(
                     INVESTERING_BOENDE,
-                    KORTFRISTIGT_NETTO,
+                    FINANSIELLT_NETTO,
+                    EXTRAORDINART_NETTO,
                     LANGSIKTIGT_NETTO)),
     FORANDRING_LIKVIDA_MEDEL(
             "Förändring likvida medel",
