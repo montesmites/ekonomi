@@ -1,14 +1,14 @@
 package se.montesmites.ekonomi.report;
 
+import se.montesmites.ekonomi.model.AccountId;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.model.AccountId;
+
+import static java.util.stream.Collectors.*;
 
 public class CashflowReport {
 
@@ -62,7 +62,7 @@ public class CashflowReport {
     private String formatString(Column column) {
         switch (column.getColumnType()) {
             case DESCRIPTION:
-                return "%-27s";
+                return "%-30s";
             case TOTAL:
                 return "%16s";
             case AVERAGE:

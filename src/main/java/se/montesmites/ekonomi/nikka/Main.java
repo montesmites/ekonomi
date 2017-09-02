@@ -10,10 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Year;
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static se.montesmites.ekonomi.nikka.NikkaSection.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 public class Main {
@@ -38,16 +39,18 @@ public class Main {
     }
 
     private CashflowReport generateCashflowReport(Year year) {
-        Supplier<Stream<Section>> sections
-                = () -> Arrays.stream(NikkaSection.values())
-                        .map(section -> section.section(fetcher, year));
+        TotallingSection foreJamforelsestorandePoster
+                = new TotallingCompactSection(
+                "Före jämförelsestörande poster",
+                sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT)
+        );
         TotallingSection total
                 = new TotallingCompactSection(
                         "Kontrollsumma",
-                        sections.get().collect(toList())) {
+                        sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT, JAMFORELSESTORANDE_POSTER, FORANDRING_LIKVIDA_MEDEL)) {
             @Override
             public Row wrapSectionRow(Section section, Row row) {
-                if (sectionEquals(section, NikkaSection.FORANDRING_LIKVIDA_MEDEL)) {
+                if (sectionEquals(section, FORANDRING_LIKVIDA_MEDEL)) {
                     return new DefaultRowWithAccountsWithNegatedAmounts(
                             row.asRowWithAccounts().get());
                 } else {
@@ -73,14 +76,30 @@ public class Main {
                                 year)));
         return new CashflowReport(
                 fetcher,
-                year, () -> Stream.concat(
-                        sections.get(),
-                        Stream.of(
-                                total,
-                                accumulation)));
+                year, () -> Stream.of(
+                        s(year, INKOMSTER),
+                s(year, BOENDE),
+                s(year, FORNODENHETER),
+                s(year, OVRIGT),
+                foreJamforelsestorandePoster,
+                s(year, JAMFORELSESTORANDE_POSTER),
+                s(year, FORANDRING_LIKVIDA_MEDEL),
+                total,
+                accumulation));
     }
 
     private void renderToFile(CashflowReport report, Path path) throws IOException {
         Files.write(path, report.render());
+    }
+
+    private List<Section> sections(Year year, NikkaSection... sections) {
+        return Arrays.stream(sections)
+                .map(section -> section.section(fetcher, year))
+                .collect(toList());
+
+    }
+
+    private Section s(Year year, NikkaSection section) {
+        return section.section(fetcher, year);
     }
 }
