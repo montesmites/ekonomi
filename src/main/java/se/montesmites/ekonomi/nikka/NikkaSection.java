@@ -30,6 +30,7 @@ enum NikkaSection {
                     DAGLIGVAROR,
                     KLADER_OCH_SKOR,
                     KROPP_OCH_SJAL,
+                    PERSONFORSAKRINGAR,
                     AKASSA_FACK_BANK_SKATT,
                     TRANSPORTER
             )),

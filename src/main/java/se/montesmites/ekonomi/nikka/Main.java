@@ -83,7 +83,7 @@ public class Main {
                 s(year, OVRIGT),
                 new CompactSection(foreJamforelsestorandePoster),
                 s(year, JAMFORELSESTORANDE_POSTER),
-                s(year, FORANDRING_LIKVIDA_MEDEL),
+                new CompactSection(s(year, FORANDRING_LIKVIDA_MEDEL)),
                 new CompactSection(total),
                 accumulation));
     }
