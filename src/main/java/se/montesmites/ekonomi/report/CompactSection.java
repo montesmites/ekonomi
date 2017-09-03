@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.stream.Stream;
 import static se.montesmites.ekonomi.report.Column.*;
 
-public class TotallingCompactSection extends TotallingSection {
+public class CompactSection extends TotallingSection {
 
-    public TotallingCompactSection(String title, List<Section> sections) {
+    public CompactSection(String title, List<Section> sections) {
         super(title, sections);
     }
 
