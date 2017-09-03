@@ -30,7 +30,7 @@ public class TotallingSection implements Section {
                         ()
                         -> sections.stream()
                                 .flatMap(
-                                        section -> section.streamBody()
+                                        (Section section) -> section.streamBody()
                                                 .flatMap(row
                                                         -> Stream.of(
                                                         wrapSectionRow(
