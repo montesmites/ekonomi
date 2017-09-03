@@ -40,12 +40,12 @@ public class Main {
 
     private CashflowReport generateCashflowReport(Year year) {
         TotallingSection foreJamforelsestorandePoster
-                = new CompactSection(
+                = new TotallingSection(
                 "Före jämförelsestörande poster",
                 sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT)
         );
         TotallingSection total
-                = new CompactSection(
+                = new TotallingSection(
                         "Kontrollsumma",
                         sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT, JAMFORELSESTORANDE_POSTER, FORANDRING_LIKVIDA_MEDEL)) {
             @Override
@@ -81,10 +81,10 @@ public class Main {
                 s(year, BOENDE),
                 s(year, FORNODENHETER),
                 s(year, OVRIGT),
-                foreJamforelsestorandePoster,
+                new CompactSection(foreJamforelsestorandePoster),
                 s(year, JAMFORELSESTORANDE_POSTER),
                 s(year, FORANDRING_LIKVIDA_MEDEL),
-                total,
+                new CompactSection(total),
                 accumulation));
     }
 

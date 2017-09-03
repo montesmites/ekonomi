@@ -1,20 +1,21 @@
 package se.montesmites.ekonomi.report;
 
-import java.util.List;
 import java.util.stream.Stream;
-import static se.montesmites.ekonomi.report.Column.*;
 
-public class CompactSection extends TotallingSection {
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
-    public CompactSection(String title, List<Section> sections) {
-        super(title, sections);
+public class CompactSection implements Section {
+    private final Section section;
+
+    public CompactSection(Section section) {
+        this.section = section;
     }
 
     @Override
-    public Stream<Row> streamTitle() {
-        final Row title = super.streamTitle().findFirst().get();
-        final Row total = super.streamFooter().findFirst().get();
-        final Row row = new Row() {
+    public Stream<Row> stream() {
+        Row title = section.streamTitle().findFirst().get();
+        Row total = section.streamFooter().findFirst().get();
+        Row row = new Row() {
             @Override
             public String formatDescription() {
                 return title.formatText(DESCRIPTION);
@@ -35,16 +36,6 @@ public class CompactSection extends TotallingSection {
                 return total.formatAverage();
             }
         };
-        return Stream.of(row);
-    }
-
-    @Override
-    public Stream<Row> streamHeader() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<Row> streamFooter() {
-        return Stream.of(new EmptyRow());
+        return Stream.of(row, new EmptyRow());
     }
 }

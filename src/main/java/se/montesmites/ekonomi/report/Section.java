@@ -4,13 +4,21 @@ import java.util.stream.Stream;
 
 public interface Section {
     
-    public Stream<Row> streamTitle();
+    default Stream<Row> streamTitle() {
+        return Stream.empty();
+    }
     
-    public Stream<Row> streamHeader();
+    default Stream<Row> streamHeader() {
+        return Stream.empty();
+    }
 
-    public Stream<Row> streamFooter();
+    default Stream<Row> streamFooter() {
+        return Stream.empty();
+    }
     
-    public Stream<Row> streamBody();
+    default Stream<Row> streamBody() {
+        return Stream.empty();
+    }
 
     default Stream<Row> stream() {
         Stream.Builder<Row> sb = Stream.builder();
