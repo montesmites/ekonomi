@@ -1,14 +1,13 @@
 package se.montesmites.ekonomi.report;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.organization.Filter;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
-import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
+import testdata.DefaultTestDataExtension;
+import testdata.PathToBinaryFiles;
 
 import java.nio.file.Path;
 import java.time.Month;
@@ -21,25 +20,17 @@ import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
 import static junit.framework.TestCase.assertEquals;
 
-public class TouchedYearMonthTest {
-
-    @ClassRule
-    public static TemporaryFolder tempfolder = new TemporaryFolder();
-
+@ExtendWith(DefaultTestDataExtension.class)
+class TouchedYearMonthTest {
     private final Year year = Year.of(2012);
 
+    @PathToBinaryFiles
+    private Path pathToBinaryFiles;
     private OrganizationBuilder organizationBuilder;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        ResourceToFileCopier copier = new ResourceToFileCopier();
-        copier.copyAll(tempfolder);
-    }
-
     @Test
-    public void oneMonth() throws Exception {
-        final Path path = tempfolder.getRoot().toPath();
-        this.organizationBuilder = new OrganizationBuilder(path, Filter.get(filterEntry(EnumSet.of(JANUARY))));
+    void oneMonth() {
+        this.organizationBuilder = new OrganizationBuilder(pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY))));
         CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
         Set<Month> exp = EnumSet.of(JANUARY);
         Set<Month> act = fetcher.touchedMonths(year);
@@ -47,9 +38,8 @@ public class TouchedYearMonthTest {
     }
 
     @Test
-    public void twoMonths() throws Exception {
-        final Path path = tempfolder.getRoot().toPath();
-        this.organizationBuilder = new OrganizationBuilder(path, Filter.get(filterEntry(EnumSet.of(JANUARY, FEBRUARY))));
+    void twoMonths() {
+        this.organizationBuilder = new OrganizationBuilder(pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY, FEBRUARY))));
         CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
         Set<Month> exp = EnumSet.of(JANUARY, FEBRUARY);
         Set<Month> act = fetcher.touchedMonths(year);

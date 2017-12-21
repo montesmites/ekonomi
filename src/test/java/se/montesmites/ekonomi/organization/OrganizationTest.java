@@ -1,67 +1,43 @@
 package se.montesmites.ekonomi.organization;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import se.montesmites.ekonomi.model.*;
+import testdata.DefaultTestDataExtension;
+import testdata.OrganizationInjector;
+
 import java.time.LocalDate;
 import java.util.Arrays;
-import static java.util.Comparator.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import se.montesmites.ekonomi.model.Account;
-import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.AccountStatus;
-import se.montesmites.ekonomi.model.Balance;
-import se.montesmites.ekonomi.model.Currency;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.EntryEvent;
-import se.montesmites.ekonomi.model.EntryStatus;
-import se.montesmites.ekonomi.model.Event;
-import se.montesmites.ekonomi.model.EventId;
-import se.montesmites.ekonomi.model.Series;
-import se.montesmites.ekonomi.model.Year;
-import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
+import static org.junit.Assert.assertEquals;
 
-public class OrganizationTest {
-
-    @ClassRule
-    public static TemporaryFolder tempfolder = new TemporaryFolder();
-
+@ExtendWith(DefaultTestDataExtension.class)
+class OrganizationTest {
+    @OrganizationInjector
     private Organization organization;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        ResourceToFileCopier copier = new ResourceToFileCopier();
-        copier.copyAll(tempfolder);
-    }
-
-    @Before
-    public void before() throws Exception {
-        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
-    }
-
     @Test
-    public void streamYears() throws Exception {
+    void streamYears() {
         final List<java.time.Year> expYears
-                = Arrays.asList(2012, 2013, 2014, 2015).stream()
+                = Stream.of(2012, 2013, 2014, 2015)
                         .map(java.time.Year::of)
                         .collect(toList());
         final List<java.time.Year> actYears
                 = organization.streamYears()
-                        .map(y -> y.getYear())
+                        .map(Year::getYear)
                         .collect(toList());
         assertEquals(expYears, actYears);
     }
 
     @Test
-    public void streamEntries() throws Exception {
-        final Map<String, Long> expCount = new HashMap<String, Long>() {
+    void streamEntries() {
+        final Map<String, Long> expCount = new HashMap<>() {
             {
                 put("C", (long) 1313);
                 put("D", (long) 1404);
@@ -77,7 +53,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readYear_byYear_2012() throws Exception {
+    void readYear_byYear_2012() {
         Year year = organization.getYear(java.time.Year.of(2012)).get();
         YearId yearId = new YearId("C");
         assertEquals(yearId, year.getYearId());
@@ -86,7 +62,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readEvent_byEventId_2012A1() throws Exception {
+    void readEvent_byEventId_2012A1() {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         EventId eventId = new EventId(yearId, 1, new Series("A"));
         Event event = organization.getEvent(eventId).get();
@@ -97,7 +73,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readEntries_byEventId_2012A1() throws Exception {
+    void readEntries_byEventId_2012A1() {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         EventId eventId = new EventId(yearId, 1, new Series("A"));
         List<Entry> actEntries = organization.getEntries(eventId).get().stream()
@@ -110,7 +86,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readAccount_byAccountId_20121920() throws Exception {
+    void readAccount_byAccountId_20121920() {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         AccountId accountId = new AccountId(yearId, "1920");
         Account account = organization.getAccount(accountId).get();
@@ -120,7 +96,7 @@ public class OrganizationTest {
     }
 
     @Test
-    public void readBalance_byAccountId_20121920() throws Exception {
+    void readBalance_byAccountId_20121920() {
         YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
         AccountId accountId = new AccountId(yearId, "1920");
         Balance balance = organization.getBalance(accountId).get();

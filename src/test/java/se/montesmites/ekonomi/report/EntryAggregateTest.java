@@ -1,50 +1,37 @@
 package se.montesmites.ekonomi.report;
 
+import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.model.*;
+import se.montesmites.ekonomi.model.tuple.AmountEntryListTuple;
+import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
+
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Currency;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.EntryStatus;
-import se.montesmites.ekonomi.model.EventId;
-import se.montesmites.ekonomi.model.Series;
-import se.montesmites.ekonomi.model.YearId;
-import se.montesmites.ekonomi.model.tuple.AmountEntryListTuple;
-import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 
-public class EntryAggregateTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+class EntryAggregateTest {
     private final YearId yearId = new YearId("A");
     private final Series series = new Series("A");
 
-    @Before
-    public void before() {
-    }
-
     @Test
-    public void collectEmptyStream() {
+    void collectEmptyStream() {
         final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
-        EntryAggregate act
-                = Stream.<Entry>empty().collect(amountCollector(yearMonth));
+        EntryAggregate act = Stream.<Entry>empty().collect(amountCollector(yearMonth));
         assertEquals(0, act.getAggregate().size());
     }
 
     @Test
-    public void collectOneEntry() {
+    void collectOneEntry() {
         final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         final long amount = 100;
         final int accountid = 3010;
         final Entry entry = entry(1, accountid, amount);
-        final EntryAggregate aggregate
-                = Stream.of(entry).collect(amountCollector(yearMonth));
-        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
-                = aggregate.getAggregate();
+        final EntryAggregate aggregate = Stream.of(entry).collect(amountCollector(yearMonth));
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act = aggregate.getAggregate();
         assertEquals(1, act.size());
         assertEquals(1, sizeOf(act, yearMonth, accountid));
         assertEquals(entry, entryOf(act, yearMonth, accountid, 0));
@@ -52,28 +39,24 @@ public class EntryAggregateTest {
     }
 
     @Test
-    public void collectTwoEntries_sameAccount() {
+    void collectTwoEntries_sameAccount() {
         final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         final long amount1 = 100;
         final long amount2 = 200;
         final int accountid = 3010;
         final Entry entry1 = entry(1, accountid, amount1);
         final Entry entry2 = entry(2, accountid, amount2);
-        final EntryAggregate aggregate
-                = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
-        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
-                = aggregate.getAggregate();
+        final EntryAggregate aggregate = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act = aggregate.getAggregate();
         assertEquals(1, act.size());
         assertEquals(2, sizeOf(act, yearMonth, accountid));
         assertEquals(entry1, entryOf(act, yearMonth, accountid, 0));
         assertEquals(entry2, entryOf(act, yearMonth, accountid, 1));
-        assertEquals(
-                currency(amount1 + amount2),
-                amountOf(act, yearMonth, accountid));
+        assertEquals(currency(amount1 + amount2), amountOf(act, yearMonth, accountid));
     }
 
     @Test
-    public void collectTwoEntries_differentAccounts() {
+    void collectTwoEntries_differentAccounts() {
         final YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
         final long amount1 = 100;
         final long amount2 = 200;
@@ -81,10 +64,8 @@ public class EntryAggregateTest {
         final int accountid2 = 3020;
         final Entry entry1 = entry(1, accountid1, amount1);
         final Entry entry2 = entry(2, accountid2, amount2);
-        final EntryAggregate aggregate
-                = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
-        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
-                = aggregate.getAggregate();
+        final EntryAggregate aggregate = Stream.of(entry1, entry2).collect(amountCollector(yearMonth));
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act = aggregate.getAggregate();
         assertEquals(2, act.size());
         assertEquals(1, sizeOf(act, yearMonth, accountid1));
         assertEquals(1, sizeOf(act, yearMonth, accountid2));
@@ -95,7 +76,7 @@ public class EntryAggregateTest {
     }
 
     @Test
-    public void collectTwoEntries_sameAccounts_differentMonths() {
+    void collectTwoEntries_sameAccounts_differentMonths() {
         final YearMonth yearMonth1 = YearMonth.of(2012, Month.JANUARY);
         final YearMonth yearMonth2 = YearMonth.of(2012, Month.FEBRUARY);
         final long amount1 = 100;
@@ -104,16 +85,9 @@ public class EntryAggregateTest {
         final int accountid2 = 3010;
         final Entry entry1 = entry(1, accountid1, amount1);
         final Entry entry2 = entry(2, accountid2, amount2);
-        final EntryAggregate aggregate
-                = Stream.of(entry1, entry2)
-                        .collect(
-                                new EntryCollector(
-                                        eventId
-                                        -> eventId.getId() == 1
-                                        ? Optional.of(yearMonth1)
-                                        : Optional.of(yearMonth2)));
-        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act
-                = aggregate.getAggregate();
+        final EntryAggregate aggregate = Stream.of(entry1, entry2)
+                .collect(new EntryCollector(eventId -> eventId.getId() == 1 ? Optional.of(yearMonth1) : Optional.of(yearMonth2)));
+        final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act = aggregate.getAggregate();
         assertEquals(2, act.size());
         assertEquals(1, sizeOf(act, yearMonth1, accountid1));
         assertEquals(1, sizeOf(act, yearMonth2, accountid2));

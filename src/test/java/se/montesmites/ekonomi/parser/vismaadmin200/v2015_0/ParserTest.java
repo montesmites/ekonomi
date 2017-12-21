@@ -1,18 +1,15 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.parser.vismaadmin200.BinaryFile_VismaAdmin200;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
-import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
+import testdata.DefaultTestDataExtension;
+import testdata.ParserInjector;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,20 +18,14 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 
-public class ParserTest {
-
-    @ClassRule
-    public static TemporaryFolder tempfolder = new TemporaryFolder();
-
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        ResourceToFileCopier copier = new ResourceToFileCopier();
-        copier.copyAll(tempfolder);
-    }
+@ExtendWith(DefaultTestDataExtension.class)
+class ParserTest {
+    @ParserInjector
+    private Parser parser;
 
     @Test
-    public void parseYears() throws Exception {
-        Set<Year> exp = set(
+    void parseYears() {
+        Set<Year> exp = Set.of(
                 year("C", 2012, "2012-01-01", "2012-12-31"),
                 year("D", 2013, "2013-01-01", "2013-12-31"),
                 year("E", 2014, "2014-01-01", "2014-12-31"),
@@ -44,15 +35,8 @@ public class ParserTest {
     }
 
     @Test
-    public void parseAccounts() throws Exception {
-        final Map<String, Long> expCount = new HashMap<String, Long>() {
-            {
-                put("C", (long) 525);
-                put("D", (long) 526);
-                put("E", (long) 536);
-                put("F", (long) 590);
-            }
-        };
+    void parseAccounts() {
+        final Map<String, Long> expCount = Map.of("C", (long) 525, "D", (long) 526, "E", (long) 536, "F", (long) 590);
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.ACCOUNTS)
                 .collect(
                         Collectors.groupingBy(
@@ -62,16 +46,8 @@ public class ParserTest {
     }
 
     @Test
-    public void parseEvents() throws Exception {
-        final Map<String, Long> expCount = new HashMap<String, Long>() {
-            {
-                put("A", (long) 1);
-                put("C", (long) 272);
-                put("D", (long) 310);
-                put("E", (long) 295);
-                put("F", (long) 62);
-            }
-        };
+    void parseEvents() {
+        final Map<String, Long> expCount = Map.of("A", (long) 1, "C", (long) 272, "D", (long) 310, "E", (long) 295, "F", (long) 62);
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.EVENTS)
                 .collect(
                         Collectors.groupingBy(
@@ -81,15 +57,8 @@ public class ParserTest {
     }
 
     @Test
-    public void parseEntries() throws Exception {
-        final Map<String, Long> expCount = new HashMap<String, Long>() {
-            {
-                put("C", (long) 1313);
-                put("D", (long) 1404);
-                put("E", (long) 1344);
-                put("F", (long) 218);
-            }
-        };
+    void parseEntries() {
+        final Map<String, Long> expCount = Map.of("C", (long) 1313, "D", (long) 1404, "E", (long) 1344, "F", (long) 218);
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.ENTRIES)
                 .collect(
                         Collectors.groupingBy(
@@ -99,15 +68,8 @@ public class ParserTest {
     }
 
     @Test
-    public void parseBalances() throws Exception {
-        final Map<String, Long> expCount = new HashMap<String, Long>() {
-            {
-                put("C", (long) 33);
-                put("D", (long) 34);
-                put("E", (long) 33);
-                put("F", (long) 27);
-            }
-        };
+    void parseBalances() {
+        final Map<String, Long> expCount = Map.of("C", (long) 33, "D", (long) 34, "E", (long) 33, "F", (long) 27);
         final Map<String, Long> actCount = parse(BinaryFile_2015_0.BALANCES)
                 .collect(
                         Collectors.groupingBy(
@@ -117,18 +79,12 @@ public class ParserTest {
     }
 
     private <T> Stream<T> parse(BinaryFile_VismaAdmin200<T> bf) {
-        Parser p = new Parser(tempfolder.getRoot().toPath());
-        return p.parse(bf);
+        return parser.parse(bf);
     }
 
     private Year year(String id, int year, String from, String to) {
         return new Year(new YearId(id), java.time.Year.of(year),
                 LocalDate.parse(from), LocalDate.parse(to));
-    }
-
-    @SafeVarargs
-    private final <T> Set<T> set(T... arr) {
-        return set(Arrays.stream(arr));
     }
 
     private <T> Set<T> set(Stream<T> l) {

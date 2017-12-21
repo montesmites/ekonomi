@@ -1,16 +1,14 @@
 package se.montesmites.ekonomi.report;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.organization.Organization;
-import se.montesmites.ekonomi.organization.OrganizationBuilder;
-import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
+import testdata.DefaultTestDataExtension;
+import testdata.OrganizationInjector;
 
 import java.time.Year;
 import java.util.EnumMap;
@@ -20,32 +18,23 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static se.montesmites.ekonomi.report.Column.*;
 
-public class AccumulatingRowTest {
-
-    @ClassRule
-    public static TemporaryFolder tempfolder = new TemporaryFolder();
-
+@ExtendWith(DefaultTestDataExtension.class)
+class AccumulatingRowTest {
     private final Year year = Year.of(2012);
 
     private YearId yearId;
+    @OrganizationInjector
     private Organization organization;
     private CashflowDataFetcher fetcher;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        ResourceToFileCopier copier = new ResourceToFileCopier();
-        copier.copyAll(tempfolder);
-    }
-
-    @Before
-    public void before() throws Exception {
-        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
+    @BeforeEach
+    void before() {
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.yearId = organization.getYear(year).get().getYearId();
     }
 
     @Test
-    public void fourAccounts() {
+    void fourAccounts() {
         AccumulatingNegatedRow row = new AccumulatingNegatedRow(
                 fetcher,
                 () -> Stream.of("1910", "1920", "1930", "1940")

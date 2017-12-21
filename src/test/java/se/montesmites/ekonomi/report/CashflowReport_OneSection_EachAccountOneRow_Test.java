@@ -1,61 +1,52 @@
 package se.montesmites.ekonomi.report;
 
-import java.time.Year;
-import java.util.List;
-import static java.util.stream.Collectors.*;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.organization.Organization;
-import static se.montesmites.ekonomi.report.Signedness.*;
+import testdata.DefaultTestDataExtension;
+import testdata.OrganizationInjector;
 
-import se.montesmites.ekonomi.organization.OrganizationBuilder;
-import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
+import java.time.Year;
+import java.util.List;
 
-public class CashflowReport_OneSection_EachAccountOneRow_Test {
+import static java.util.stream.Collectors.toList;
+import static org.junit.Assert.assertEquals;
+import static se.montesmites.ekonomi.report.Signedness.NEGATED_SIGN;
 
-    @ClassRule
-    public static TemporaryFolder tempfolder = new TemporaryFolder();
-
+@ExtendWith(DefaultTestDataExtension.class)
+class CashflowReport_OneSection_EachAccountOneRow_Test {
     private final Year year = Year.of(2012);
 
+    @OrganizationInjector
     private Organization organization;
     private CashflowDataFetcher fetcher;
     private CashflowReport report;
     private Section section;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        ResourceToFileCopier copier = new ResourceToFileCopier();
-        copier.copyAll(tempfolder);
-    }
-
-    @Before
-    public void before() throws Exception {
-        this.organization = new OrganizationBuilder(tempfolder.getRoot().toPath()).build();
+    @BeforeEach
+    void before() {
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year);
         this.section = report.streamSections().findFirst().get();
     }
 
     @Test
-    public void exactlyOneSection() {
+    void exactlyOneSection() {
         assertEquals(1, report.streamSections().count());
     }
 
     @Test
-    public void body_rowCount() {
+    void body_rowCount() {
         assertEquals(fetcher.streamAccountIds(year).count(),
                 section.streamBody().count());
     }
 
     @Test
-    public void body_rowDescription() {
+    void body_rowDescription() {
         List<String> exp
                 = fetcher.streamAccountIds(year)
                         .map(AccountId::getId)
@@ -68,7 +59,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     }
 
     @Test
-    public void body_monthlyAmounts() {
+    void body_monthlyAmounts() {
         section.streamBody()
                 .map(row -> (RowWithAccounts) row)
                 .forEach(bodyRow
@@ -78,7 +69,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     }
 
     @Test
-    public void footer_monthlyTotals() {
+    void footer_monthlyTotals() {
         Row footer = section.streamFooter().findFirst().get();
         Column.streamMonths()
                 .forEach(column
@@ -106,7 +97,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         final Currency amount = section.streamBody()
                 .map(row -> (RowWithAccounts) row)
                 .map(r -> expectedMonthlyAmount(r, column))
-                .reduce(new Currency(0), (sum, term) -> sum.add(term));
+                .reduce(new Currency(0), Currency::add);
         return NEGATED_SIGN.apply(amount);
     }
 
@@ -118,14 +109,14 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
     }
 
     @Test
-    public void body_yearlyTotals() {
+    void body_yearlyTotals() {
         section.streamBody()
                 .map(row -> (RowWithAccounts) row)
                 .forEach(this::assertBodyRowYearlyTotal);
     }
 
     @Test
-    public void footer_yearlyTotal() {
+    void footer_yearlyTotal() {
         Row footer = section.streamFooter().findFirst().get();
         assertFooterRowYearlyTotal(footer);
     }
@@ -134,8 +125,8 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         Currency exp = NEGATED_SIGN.apply(
                 organization.streamEntries()
                         .filter(e -> e.getAccountId().equals(accountId(row)))
-                        .map(e -> e.getAmount())
-                        .reduce(new Currency(0), (sum, term) -> sum.add(term)));
+                        .map(Entry::getAmount)
+                        .reduce(new Currency(0), Currency::add));
         Currency act = row.getYearlyTotal();
         String fmt = "%s";
         String msg = String.format(fmt, accountId(row));
@@ -146,7 +137,7 @@ public class CashflowReport_OneSection_EachAccountOneRow_Test {
         RowWithAmounts rwa = row.asRowWithAmounts().get();
         Currency exp = Column.streamMonths()
                 .map(this::expectedFooterRowMonthlyTotal)
-                .reduce(new Currency(0), (sum, term) -> sum.add(term));
+                .reduce(new Currency(0), Currency::add);
         Currency act = rwa.getYearlyTotal();
         assertEquals(exp, act);
     }

@@ -1,13 +1,15 @@
 package se.montesmites.ekonomi.test.util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import static java.util.stream.Collectors.toMap;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toMap;
 
 public enum EntryAggregateExpectedElements {
     BY_DATE_20120112 {
@@ -23,8 +25,8 @@ public enum EntryAggregateExpectedElements {
                             tuple(yearId, 2510, 1400000),
                             tuple(yearId, 2710, 3361000),
                             tuple(yearId, 2940, 3527105),
-                            tuple(yearId, 3740, -005),
-                            tuple(yearId, 3960, 001),
+                            tuple(yearId, 3740, -5),
+                            tuple(yearId, 3960, 1),
                             tuple(yearId, 6570, 8000),
                             tuple(yearId, 7510, -309000))
             );
@@ -91,12 +93,7 @@ public enum EntryAggregateExpectedElements {
     }
 
     private static Map<AccountId, Currency> asMap(List<AccountIdAmountTuple> tuples) {
-        return tuples.stream()
-                .collect(
-                        toMap(
-                                t -> t.getAccountId(),
-                                t -> t.getAmount()
-                        ));
+        return tuples.stream().collect(toMap(AccountIdAmountTuple::getAccountId, AccountIdAmountTuple::getAmount));
 
     }
 }

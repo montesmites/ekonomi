@@ -1,29 +1,19 @@
 package se.montesmites.ekonomi.report;
 
+import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Currency;
+
 import java.util.AbstractMap;
-import static java.util.Comparator.comparing;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
-import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Currency;
-import static se.montesmites.ekonomi.report.Column.APRIL;
-import static se.montesmites.ekonomi.report.Column.AUGUST;
-import static se.montesmites.ekonomi.report.Column.DECEMBER;
-import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
-import static se.montesmites.ekonomi.report.Column.FEBRUARY;
-import static se.montesmites.ekonomi.report.Column.JANUARY;
-import static se.montesmites.ekonomi.report.Column.JULY;
-import static se.montesmites.ekonomi.report.Column.JUNE;
-import static se.montesmites.ekonomi.report.Column.MARCH;
-import static se.montesmites.ekonomi.report.Column.MAY;
-import static se.montesmites.ekonomi.report.Column.NOVEMBER;
-import static se.montesmites.ekonomi.report.Column.OCTOBER;
-import static se.montesmites.ekonomi.report.Column.SEPTEMBER;
+import static se.montesmites.ekonomi.report.Column.*;
 
 public enum CashflowReport_AccountGroup_2012 {
     BOKFORT_RESULTAT(
@@ -161,7 +151,7 @@ public enum CashflowReport_AccountGroup_2012 {
     private final Map<Column, Currency> expectedAmounts;
     private final Currency expectedAverage;
 
-    private CashflowReport_AccountGroup_2012(
+    CashflowReport_AccountGroup_2012(
             String description,
             String regex,
             Currency expectedAverage,
@@ -182,7 +172,7 @@ public enum CashflowReport_AccountGroup_2012 {
                         .collect(toList());
         return new DefaultRowWithAccounts(
                 fetcher,
-                () -> accountIds.stream(),
+                accountIds::stream,
                 YEAR,
                 description);
     }

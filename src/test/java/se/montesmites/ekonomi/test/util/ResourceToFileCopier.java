@@ -1,29 +1,25 @@
 package se.montesmites.ekonomi.test.util;
 
-import java.io.File;
+import se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import org.junit.rules.TemporaryFolder;
-import se.montesmites.ekonomi.parser.vismaadmin200.v2015_0.BinaryFile_2015_0;
 
 public class ResourceToFileCopier {
-
     private final static String PATH_TO_BINARY_FILES = "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
 
-    public void copyAll(TemporaryFolder tempfolder) {
-        BinaryFile_2015_0.values().stream().forEach(f -> copyTestFile(f,
-                tempfolder));
+    public void copyAll(Path path) {
+        BinaryFile_2015_0.values().forEach(f -> copyTestFile(f, path));
     }
 
-    public void copyTestFile(BinaryFile_2015_0<?> source, TemporaryFolder target) {
+    private void copyTestFile(BinaryFile_2015_0<?> source, Path path) {
         try {
-            final InputStream is = asStream(
-                    PATH_TO_BINARY_FILES + source.getFileName());
-            final File file = target.newFile(source.getFileName());
-            Files.copy(is, file.toPath(), copyOptions());
+            final InputStream is = asStream(PATH_TO_BINARY_FILES + source.getFileName());
+            Files.copy(is, Files.createFile(path.resolve(source.getFileName())), copyOptions());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
