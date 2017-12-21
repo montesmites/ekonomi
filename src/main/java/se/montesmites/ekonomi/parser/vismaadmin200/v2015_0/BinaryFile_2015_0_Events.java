@@ -1,7 +1,6 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.EventId;
@@ -32,7 +31,7 @@ public class BinaryFile_2015_0_Events extends BinaryFile_2015_0<Event> {
 
     @Override
     List<Field<?>> getFields() {
-        return Arrays.asList(YEARID, ID, SERIES, EDATE, RDATE, DESCR);
+        return List.of(YEARID, ID, SERIES, EDATE, RDATE, DESCR);
     }
 
     @Override

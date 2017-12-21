@@ -60,7 +60,7 @@ public class CashflowDataFetcher {
     }
 
     private Map.Entry<java.time.Year, Month> entry(LocalDate date) {
-        return new AbstractMap.SimpleEntry<java.time.Year, Month>(year(date), month(date));
+        return new AbstractMap.SimpleEntry<>(year(date), month(date));
     }
 
     private java.time.Year year(LocalDate date) {

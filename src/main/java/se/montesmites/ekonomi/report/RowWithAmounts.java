@@ -13,7 +13,7 @@ public interface RowWithAmounts extends Row {
     default Currency getYearlyTotal() {
         return Column.streamMonths()
                 .map(this::getMonthlyAmount)
-                .reduce(new Currency(0), (sum, term) -> sum.add(term));
+                .reduce(new Currency(0), Currency::add);
     }
     
     default Currency getAverage() {
@@ -27,7 +27,7 @@ public interface RowWithAmounts extends Row {
     }
 
     default Supplier<Stream<Month>> months() {
-        return () -> Stream.empty();
+        return Stream::empty;
     }
 
     @Override

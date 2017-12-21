@@ -5,7 +5,6 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ public enum EntryAggregateExpectedElements {
         @Override
         public Map<AccountId, Currency> getAggregate(YearId yearId) {
             return asMap(
-                    Arrays.asList(
+                    List.of(
                             tuple(yearId, 1650, -1085600),
                             tuple(yearId, 1920, -50000000),
                             tuple(yearId, 1930, -8365353),
@@ -37,7 +36,7 @@ public enum EntryAggregateExpectedElements {
         @Override
         public Map<AccountId, Currency> getAggregate(YearId yearId) {
             return asMap(
-                    Arrays.asList(
+                    List.of(
                             tuple(yearId, 1400, 12077000),
                             tuple(yearId, 1510, -32556400),
                             tuple(yearId, 1650, -98200),

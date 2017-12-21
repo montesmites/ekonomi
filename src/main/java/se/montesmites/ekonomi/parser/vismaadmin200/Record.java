@@ -13,25 +13,25 @@ public class Record {
     }
 
     Record(FieldKey<?> key, Optional<?> value) {
-        this(new HashMap<FieldKey<?>, Optional<?>>() {
+        this(new HashMap<>() {
             {
                 put(key, value);
             }
         });
     }
 
-    Record(Map<FieldKey<?>, Optional<?>> map) {
+    private Record(Map<FieldKey<?>, Optional<?>> map) {
         this.inner = map;
     }
 
-    Record(Map<FieldKey<?>, Optional<?>> map1, Map<FieldKey<?>, Optional<?>> map2) {
+    private Record(Map<FieldKey<?>, Optional<?>> map1, Map<FieldKey<?>, Optional<?>> map2) {
         this();
         inner.putAll(map1);
         inner.putAll(map2);
     }
 
     <T> Optional<T> get(FieldKey<T> key) {
-        return inner.get(key).map(value -> key.asInstanceOf(value));
+        return inner.get(key).map(key::asInstanceOf);
     }
 
     <T> T extract(FieldKey<T> key) {

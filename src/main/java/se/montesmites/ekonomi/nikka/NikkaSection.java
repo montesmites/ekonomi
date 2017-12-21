@@ -3,7 +3,6 @@ package se.montesmites.ekonomi.nikka;
 import se.montesmites.ekonomi.report.*;
 
 import java.time.Year;
-import java.util.Arrays;
 import java.util.List;
 
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.*;
@@ -11,12 +10,12 @@ import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.*;
 enum NikkaSection {
     INKOMSTER(
             "Inkomster",
-            Arrays.asList(LONEINBETALNINGAR,
+            List.of(LONEINBETALNINGAR,
                     NETTOOMSATTNING_OVRIGT
             )),
     BOENDE(
             "Boende",
-            Arrays.asList(
+            List.of(
                     MANADSAVGIFT,
                     AMORTERING_FREDSGATAN_13,
                     BOLAN_RANTA,
@@ -26,7 +25,7 @@ enum NikkaSection {
             )),
     FORNODENHETER(
             "Förnödenheter",
-            Arrays.asList(
+            List.of(
                     DAGLIGVAROR,
                     KLADER_OCH_SKOR,
                     KROPP_OCH_SJAL,
@@ -36,13 +35,13 @@ enum NikkaSection {
             )),
     OVRIGT(
             "Övrigt",
-            Arrays.asList(
+            List.of(
                     BOENDE_DIVERSE,
                     NikkaAccountGroup.OVRIGT
             )),
     JAMFORELSESTORANDE_POSTER(
             "Jämförelsestörande poster",
-            Arrays.asList(
+            List.of(
                     KORTFRISTIGT_NETTO,
                     LANGSIKTIGT_NETTO,
                     FINANSIELLT_NETTO,
@@ -50,7 +49,7 @@ enum NikkaSection {
                     EXTRAORDINART_NETTO)),
     FORANDRING_LIKVIDA_MEDEL(
             "Förändring likvida medel",
-            Arrays.asList(
+            List.of(
                     LIKVIDA_MEDEL
             )) {
         @Override

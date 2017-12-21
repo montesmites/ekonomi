@@ -22,7 +22,7 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
         this.description = description;
     }
 
-    public String getDescription() {
+    private String getDescription() {
         return description;
     }
 
@@ -54,9 +54,9 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
 
     private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
         return fetcher.fetchAmount(accountId, yearMonth)
-                .map(currency -> currency.getAmount())
+                .map(Currency::getAmount)
                 .map(Currency::new)
-                .map(amount -> Signedness.NEGATED_SIGN.apply(amount))
+                .map(Signedness.NEGATED_SIGN::apply)
                 .orElse(new Currency(0));
     }
 }

@@ -7,7 +7,6 @@ import testdata.DefaultTestDataExtension;
 import testdata.OrganizationInjector;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +78,7 @@ class OrganizationTest {
         List<Entry> actEntries = organization.getEntries(eventId).get().stream()
                 .sorted(comparing(entry -> entry.getAccountId().getId()))
                 .collect(toList());
-        List<Entry> expEntries = Arrays.asList(
+        List<Entry> expEntries = List.of(
                 entry(eventId, 1920, -50000000),
                 entry(eventId, 1940, 50000000));
         assertEquals(expEntries, actEntries);

@@ -1,6 +1,5 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import se.montesmites.ekonomi.model.Account;
@@ -25,7 +24,7 @@ public class BinaryFile_2015_0_Accounts extends BinaryFile_2015_0<Account> {
 
     @Override
     List<Field<?>> getFields() {
-        return Arrays.asList(YEARID, ID, DESCR, REMOVED, CLOSED);
+        return List.of(YEARID, ID, DESCR, REMOVED, CLOSED);
     }
 
     @Override

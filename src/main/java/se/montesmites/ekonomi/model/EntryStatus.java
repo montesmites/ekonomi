@@ -1,14 +1,13 @@
 package se.montesmites.ekonomi.model;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public class EntryStatus {
 
-    public static enum Status {
-        ACTIVE, PASSIVE;
+    public enum Status {
+        ACTIVE, PASSIVE
     }
 
     public static Optional<EntryStatus> parse(String flags) {
@@ -33,10 +32,10 @@ public class EntryStatus {
     private final List<EntryEvent> events;
 
     public EntryStatus(Status status, EntryEvent... events) {
-        this(status, Arrays.asList(events));
+        this(status, List.of(events));
     }
 
-    public EntryStatus(Status status, List<EntryEvent> events) {
+    private EntryStatus(Status status, List<EntryEvent> events) {
         this.status = status;
         this.events = events;
     }
@@ -65,10 +64,7 @@ public class EntryStatus {
             return false;
         }
         final EntryStatus other = (EntryStatus) obj;
-        if (this.status != other.status) {
-            return false;
-        }
-        return Objects.equals(this.events, other.events);
+        return this.status == other.status && Objects.equals(this.events, other.events);
     }
 
     @Override

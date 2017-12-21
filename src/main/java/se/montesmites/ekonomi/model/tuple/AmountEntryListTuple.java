@@ -1,12 +1,14 @@
 package se.montesmites.ekonomi.model.tuple;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import static java.util.stream.Collectors.toList;
-import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 ;
 
@@ -16,12 +18,12 @@ public class AmountEntryListTuple {
     private final List<Entry> entries;
     
     public AmountEntryListTuple(Entry entry) {
-        this(entry.getAmount(), Arrays.asList(entry));
+        this(entry.getAmount(), List.of(entry));
     }
     
-    public AmountEntryListTuple(Currency amount, List<Entry> entries) {
+    private AmountEntryListTuple(Currency amount, List<Entry> entries) {
         this.amount = amount;
-        this.entries = entries.stream().collect(toList());
+        this.entries = new ArrayList<>(entries);
     }
 
     public Currency getAmount() {

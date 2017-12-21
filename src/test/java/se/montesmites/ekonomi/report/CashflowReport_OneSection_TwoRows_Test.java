@@ -8,7 +8,6 @@ import testdata.DefaultTestDataExtension;
 import testdata.OrganizationInjector;
 
 import java.time.Year;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -33,7 +32,7 @@ class CashflowReport_OneSection_TwoRows_Test {
     void before() {
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year, this::sections);
-        this.groups = Arrays.asList(BOKFORT_RESULTAT, KORTFRISTIGA_SKULDER);
+        this.groups = List.of(BOKFORT_RESULTAT, KORTFRISTIGA_SKULDER);
         this.section = new DefaultSection(
                 DEN_LOPANDE_VERKSAMHETEN,
                 () -> bodyRowsOf(fetcher, groups));

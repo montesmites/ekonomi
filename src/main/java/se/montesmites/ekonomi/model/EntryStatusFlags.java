@@ -1,22 +1,18 @@
 package se.montesmites.ekonomi.model;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
-import static se.montesmites.ekonomi.model.EntryEvent.DELETED;
-import static se.montesmites.ekonomi.model.EntryEvent.DELETE_CANCELLED;
-import static se.montesmites.ekonomi.model.EntryEvent.INSERTED;
-import static se.montesmites.ekonomi.model.EntryEvent.NOT_REGISTERED;
-import static se.montesmites.ekonomi.model.EntryEvent.ORIGINAL;
-import static se.montesmites.ekonomi.model.EntryEvent.REINSERTED;
+import static se.montesmites.ekonomi.model.EntryEvent.*;
 import static se.montesmites.ekonomi.model.EntryStatus.Status.ACTIVE;
 import static se.montesmites.ekonomi.model.EntryStatus.Status.PASSIVE;
 
 class EntryStatusFlags {
 
     public final static Map<String, EntryStatusFlags> ENTRY_STATUS_FLAGS
-            = Arrays.asList(
+            = List.of(
                     new EntryStatusFlags("T   ",
                             "Original, and then untouched",
                             new EntryStatus(ACTIVE, ORIGINAL)),
@@ -28,8 +24,7 @@ class EntryStatusFlags {
                             new EntryStatus(ACTIVE, INSERTED)),
                     new EntryStatusFlags("T FT",
                             "Original, then deleted, then reinserted",
-                            new EntryStatus(ACTIVE, ORIGINAL, DELETED,
-                                    REINSERTED)),
+                            new EntryStatus(ACTIVE, ORIGINAL, DELETED, REINSERTED)),
                     new EntryStatusFlags("TTTT",
                             "Inserted after original registration, then deleted",
                             new EntryStatus(PASSIVE, INSERTED, DELETED)),
@@ -57,13 +52,13 @@ class EntryStatusFlags {
     private final String descr;
     private final EntryStatus status;
 
-    EntryStatusFlags(String flags, String descr, EntryStatus status) {
+    private EntryStatusFlags(String flags, String descr, EntryStatus status) {
         this.flags = flags;
         this.descr = descr;
         this.status = status;
     }
 
-    public String getFlags() {
+    private String getFlags() {
         return flags;
     }
 

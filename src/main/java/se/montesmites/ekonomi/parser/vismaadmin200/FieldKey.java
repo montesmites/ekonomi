@@ -27,8 +27,7 @@ class FieldKey<T> {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        return hash;
+        return 5;
     }
 
     @Override

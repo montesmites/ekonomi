@@ -1,7 +1,6 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.model.YearId;
@@ -30,7 +29,7 @@ public class BinaryFile_2015_0_Years extends BinaryFile_2015_0<Year> {
 
     @Override
     public List<Field<?>> getFields() {
-        return Arrays.asList(STATUS, YEARID, YEAR, FROM, TO);
+        return List.of(STATUS, YEARID, YEAR, FROM, TO);
     }
 
     @Override

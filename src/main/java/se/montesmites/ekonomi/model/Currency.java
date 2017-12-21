@@ -18,7 +18,7 @@ public class Currency {
         return amount;
     }
 
-    public double toDouble() {
+    private double toDouble() {
         return (double) amount / divisor;
     }
     

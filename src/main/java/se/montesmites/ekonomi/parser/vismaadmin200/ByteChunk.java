@@ -2,7 +2,7 @@ package se.montesmites.ekonomi.parser.vismaadmin200;
 
 import java.util.Arrays;
 
-public class ByteChunk {
+class ByteChunk {
 
     private final RecordDefinition recordDefinition;
     private final int fileLength;

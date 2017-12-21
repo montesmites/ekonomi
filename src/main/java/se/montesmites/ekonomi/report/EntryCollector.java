@@ -16,7 +16,7 @@ import static java.util.stream.Collector.Characteristics.UNORDERED;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.EventId;
 
-public class EntryCollector implements Collector<Entry, EntryAggregate, EntryAggregate> {
+class EntryCollector implements Collector<Entry, EntryAggregate, EntryAggregate> {
 
     private final Function<EventId, Optional<YearMonth>> yearMonthProvider;
 
@@ -31,12 +31,12 @@ public class EntryCollector implements Collector<Entry, EntryAggregate, EntryAgg
 
     @Override
     public BiConsumer<EntryAggregate, Entry> accumulator() {
-        return (aggregate, entry) -> aggregate.accumulate(entry);
+        return EntryAggregate::accumulate;
     }
 
     @Override
     public BinaryOperator<EntryAggregate> combiner() {
-        return (aggregate1, aggregate2) -> aggregate1.merge(aggregate2);
+        return EntryAggregate::merge;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class TotallingSection implements Section {
                 new EmptyRow());
     }
 
-    public Row wrapSectionRow(Section section, Row row) {
+    protected Row wrapSectionRow(Section section, Row row) {
         return row;
     }
 

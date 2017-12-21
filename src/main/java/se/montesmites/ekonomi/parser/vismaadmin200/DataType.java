@@ -1,23 +1,24 @@
 package se.montesmites.ekonomi.parser.vismaadmin200;
 
+import se.montesmites.ekonomi.model.Currency;
+
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Optional;
-import se.montesmites.ekonomi.model.Currency;
 
 public interface DataType<T> {
 
     @SuppressWarnings("Convert2Lambda")
-    public final static DataType<byte[]> BYTE_ARRAY = new DataType<byte[]>() {
+    public final static DataType<byte[]> BYTE_ARRAY = new DataType<>() {
 
         @Override
         public Optional<byte[]> read(ByteChunk chunk, int start, int length) {
             if (chunk.getBytes().length >= start + length) {
                 byte[] b = Arrays.copyOfRange(chunk.getBytes(), start,
-                        start + length);
+                                              start + length);
                 return Optional.of(b);
             } else {
                 return Optional.empty();
@@ -25,7 +26,7 @@ public interface DataType<T> {
         }
     };
 
-    public final static DataType<String> STRING = new DataType<String>() {
+    public final static DataType<String> STRING = new DataType<>() {
 
         private final static String ENCODING = "Cp1252";
 
@@ -44,7 +45,7 @@ public interface DataType<T> {
         }
     };
 
-    public final static DataType<LocalDate> DATE = new DataType<LocalDate>() {
+    public final static DataType<LocalDate> DATE = new DataType<>() {
 
         private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(
                 "yyyyMMdd");
@@ -67,7 +68,7 @@ public interface DataType<T> {
     };
 
     @SuppressWarnings("Convert2Lambda")
-    public final static DataType<Integer> INTEGER = new DataType<Integer>() {
+    public final static DataType<Integer> INTEGER = new DataType<>() {
         @Override
         public Optional<Integer> read(ByteChunk chunk, int start, int length) {
             return STRING.read(chunk, start, length)
@@ -78,7 +79,7 @@ public interface DataType<T> {
     };
 
     @SuppressWarnings("Convert2Lambda")
-    public final static DataType<Long> LONG = new DataType<Long>() {
+    public final static DataType<Long> LONG = new DataType<>() {
         @Override
         public Optional<Long> read(ByteChunk chunk, int start, int length) {
             return STRING.read(chunk, start, length)
@@ -89,7 +90,7 @@ public interface DataType<T> {
     };
 
     @SuppressWarnings("Convert2Lambda")
-    public final static DataType<Currency> CURRENCY = new DataType<Currency>() {
+    public final static DataType<Currency> CURRENCY = new DataType<>() {
         @Override
         public Optional<Currency> read(ByteChunk chunk, int start, int length) {
             return LONG.read(chunk, start, length).map(Currency::new);

@@ -1,10 +1,10 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
-import java.util.Arrays;
-import java.util.List;
 import se.montesmites.ekonomi.parser.vismaadmin200.BinaryFile_VismaAdmin200;
 import se.montesmites.ekonomi.parser.vismaadmin200.Field;
 import se.montesmites.ekonomi.parser.vismaadmin200.RecordDefinition;
+
+import java.util.List;
 
 public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
@@ -15,7 +15,7 @@ public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T
     public final static BinaryFile_2015_0_Balances BALANCES = new BinaryFile_2015_0_Balances();
 
     public final static List<BinaryFile_2015_0<?>> values() {
-        return Arrays.asList(ACCOUNTS, BALANCES, ENTRIES, EVENTS, YEARS);
+        return List.of(ACCOUNTS, BALANCES, ENTRIES, EVENTS, YEARS);
     }
 
     private final String fileName;

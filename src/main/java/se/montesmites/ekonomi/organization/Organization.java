@@ -78,7 +78,7 @@ public class Organization {
         return eventManager.getEvent(eventId);
     }
 
-    public Optional<Event> getEvent(Entry entry) {
+    private Optional<Event> getEvent(Entry entry) {
         return getEvent(entry.getEventId());
     }
 

@@ -1,7 +1,6 @@
 package se.montesmites.ekonomi.parser.vismaadmin200;
 
 import java.nio.file.Path;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class Parser {

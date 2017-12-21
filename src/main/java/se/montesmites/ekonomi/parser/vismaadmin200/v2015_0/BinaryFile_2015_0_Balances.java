@@ -1,6 +1,5 @@
 package se.montesmites.ekonomi.parser.vismaadmin200.v2015_0;
 
-import java.util.Arrays;
 import java.util.List;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
@@ -29,7 +28,7 @@ public class BinaryFile_2015_0_Balances extends BinaryFile_2015_0<Balance> {
 
     @Override
     List<Field<?>> getFields() {
-        return Arrays.asList(ASTERISK, YEARID, ACCOUNT, AMOUNT);
+        return List.of(ASTERISK, YEARID, ACCOUNT, AMOUNT);
     }
 
     @Override

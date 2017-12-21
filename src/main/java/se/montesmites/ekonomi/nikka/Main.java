@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.nikka.NikkaSection.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
-public class Main {
+class Main {
 
     public static void main(String[] args) throws Exception {
         final Year year = Year.of(2017);
