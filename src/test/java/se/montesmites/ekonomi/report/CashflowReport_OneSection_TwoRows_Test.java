@@ -11,7 +11,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 

@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 
 import static java.time.Month.FEBRUARY;
 import static java.time.Month.JANUARY;
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class TouchedYearMonthTest {

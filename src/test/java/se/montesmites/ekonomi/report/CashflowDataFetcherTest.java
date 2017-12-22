@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.montesmites.ekonomi.test.util.EntryAggregateExpectedElements.BY_YEARMONTH_201201;
 
 @ExtendWith(DefaultTestDataExtension.class)
@@ -94,8 +94,8 @@ class CashflowDataFetcherTest {
     private <K, V> void mapEqualityAssertion(Map<K, V> expected, Map<K, V> actual) {
         assertEquals(expected.size(), expected.size());
         expected.forEach((key, value) -> {
-            assertTrue(key.toString(), actual.containsKey(key));
-            assertEquals(key.toString(), value, actual.get(key));
+            assertTrue(actual.containsKey(key), key.toString());
+            assertEquals(value, actual.get(key), key.toString());
         });
     }
 
@@ -106,7 +106,7 @@ class CashflowDataFetcherTest {
         final Optional<Currency> act = fetcher.fetchAmount(accountId, yearMonth);
         String fmt = "%s (%s)";
         String msg = String.format(fmt, accountId.getId(), yearMonth);
-        assertEquals(msg, exp, act);
+        assertEquals(exp, act, msg);
     }
 
     private void assertBalance(AccountId accountId) {
@@ -114,7 +114,7 @@ class CashflowDataFetcherTest {
         final Optional<Balance> act = fetcher.fetchBalance(accountId);
         String fmt = "%s";
         String msg = String.format(fmt, accountId.getId());
-        assertEquals(msg, exp, act);
+        assertEquals(exp, act, msg);
     }
 
     private Stream<YearMonth> yearMonths() {

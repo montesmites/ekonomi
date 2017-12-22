@@ -15,7 +15,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.Column.*;
 
 @ExtendWith(DefaultTestDataExtension.class)
@@ -42,14 +42,8 @@ class AccumulatingRowTest {
                 year
         );
         assertEquals(expectedAmounts().get(DESCRIPTION), row.getBalance());
-        Column.streamMonths().forEach(month
-                -> assertEquals(
-                        month.name(),
-                        expectedAmounts().get(month),
-                        row.getMonthlyAmount(month)));
-        assertEquals(
-                new Currency(0),
-                row.getYearlyTotal());
+        Column.streamMonths().forEach(month -> assertEquals(expectedAmounts().get(month), row.getMonthlyAmount(month), month.name()));
+        assertEquals(new Currency(0), row.getYearlyTotal());
     }
 
     private Map<Column, Currency> expectedAmounts() {

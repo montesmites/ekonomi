@@ -11,7 +11,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
@@ -33,9 +33,7 @@ class CashflowReport_OneSection_OneRow_Test {
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year, this::sections);
         this.groups = List.of(BOKFORT_RESULTAT);
-        this.section = new DefaultSection(
-                DEN_LOPANDE_VERKSAMHETEN,
-                () -> bodyRowsOf(fetcher, groups));
+        this.section = new DefaultSection(DEN_LOPANDE_VERKSAMHETEN, () -> bodyRowsOf(fetcher, groups));
     }
 
     private Stream<Section> sections() {
@@ -50,8 +48,7 @@ class CashflowReport_OneSection_OneRow_Test {
     @Test
     void sectionTitle() {
         final String exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
-        final String act = section.streamTitle()
-                .findFirst().get().formatText(DESCRIPTION);
+        final String act = section.streamTitle().findFirst().get().formatText(DESCRIPTION);
         assertEquals(exp, act);
     }
 

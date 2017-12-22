@@ -12,7 +12,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 
 @ExtendWith(DefaultTestDataExtension.class)

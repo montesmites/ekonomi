@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.Column.*;
 
 public enum CashflowReport_AccountGroup_2012 {
@@ -21,42 +21,42 @@ public enum CashflowReport_AccountGroup_2012 {
             "([3-7]\\d|8[1-8])\\d\\d",
             new Currency(3923589),
             new EnumMap<Column, Currency>(Column.class) {
-        {
-            put(JANUARY, new Currency(-2866947));
-            put(FEBRUARY, new Currency(6758901));
-            put(MARCH, new Currency(14611584));
-            put(APRIL, new Currency(2150417));
-            put(MAY, new Currency(-6833003));
-            put(JUNE, new Currency(30431649));
-            put(JULY, new Currency(-4877975));
-            put(AUGUST, new Currency(3810720));
-            put(SEPTEMBER, new Currency(4316052));
-            put(OCTOBER, new Currency(-123642));
-            put(NOVEMBER, new Currency(21238571));
-            put(DECEMBER, new Currency(-21533255));
-        }
-    }),
+                {
+                    put(JANUARY, new Currency(-2866947));
+                    put(FEBRUARY, new Currency(6758901));
+                    put(MARCH, new Currency(14611584));
+                    put(APRIL, new Currency(2150417));
+                    put(MAY, new Currency(-6833003));
+                    put(JUNE, new Currency(30431649));
+                    put(JULY, new Currency(-4877975));
+                    put(AUGUST, new Currency(3810720));
+                    put(SEPTEMBER, new Currency(4316052));
+                    put(OCTOBER, new Currency(-123642));
+                    put(NOVEMBER, new Currency(21238571));
+                    put(DECEMBER, new Currency(-21533255));
+                }
+            }),
     KORTFRISTIGA_SKULDER(
             "Kortfristiga skulder",
             "2[4-9]\\d\\d",
             new Currency(950219),
             new EnumMap<Column, Currency>(
                     Column.class) {
-        {
-            put(JANUARY, new Currency(-1387853));
-            put(FEBRUARY, new Currency(50442848));
-            put(MARCH, new Currency(63669735));
-            put(APRIL, new Currency(-137123271));
-            put(MAY, new Currency(9537958));
-            put(JUNE, new Currency(-288127));
-            put(JULY, new Currency(-10662616));
-            put(AUGUST, new Currency(14155331));
-            put(SEPTEMBER, new Currency(-12777139));
-            put(OCTOBER, new Currency(7434716));
-            put(NOVEMBER, new Currency(-6669553));
-            put(DECEMBER, new Currency(35070604));
-        }
-    });
+                {
+                    put(JANUARY, new Currency(-1387853));
+                    put(FEBRUARY, new Currency(50442848));
+                    put(MARCH, new Currency(63669735));
+                    put(APRIL, new Currency(-137123271));
+                    put(MAY, new Currency(9537958));
+                    put(JUNE, new Currency(-288127));
+                    put(JULY, new Currency(-10662616));
+                    put(AUGUST, new Currency(14155331));
+                    put(SEPTEMBER, new Currency(-12777139));
+                    put(OCTOBER, new Currency(7434716));
+                    put(NOVEMBER, new Currency(-6669553));
+                    put(DECEMBER, new Currency(35070604));
+                }
+            });
 
     private final static java.time.Year YEAR = java.time.Year.of(2012);
 
@@ -73,16 +73,16 @@ public enum CashflowReport_AccountGroup_2012 {
                 = groups.stream().map(g -> g.description).collect(toList());
         final List<String> act
                 = section.streamBody()
-                        .map(row -> row.formatText(DESCRIPTION))
-                        .collect(toList());
+                .map(row -> row.formatText(DESCRIPTION))
+                .collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
             String description
                     = section.streamTitle()
-                            .findFirst().get().formatDescription();
-            String msg = String.format(fmt, description, i);
-            assertEquals(msg, exp.get(i), act.get(i));
+                    .findFirst().get().formatDescription();
+            final String msg = String.format(fmt, description, i);
+            assertEquals(exp.get(i), act.get(i), msg);
         }
     }
 
@@ -91,19 +91,19 @@ public enum CashflowReport_AccountGroup_2012 {
             List<CashflowReport_AccountGroup_2012> groups) {
         final List<Map<Column, Currency>> expList
                 = groups.stream()
-                        .map(group -> group.expectedAmounts)
-                        .collect(toList());
+                .map(group -> group.expectedAmounts)
+                .collect(toList());
         final List<Map<Column, Currency>> actList
                 = section.streamBody()
-                        .map(row -> row.asRowWithAmounts().get())
-                        .map(row -> Column.streamMonths()
+                .map(row -> row.asRowWithAmounts().get())
+                .map(row -> Column.streamMonths()
                         .map(col -> new AbstractMap.SimpleEntry<>(col,
-                        row.getMonthlyAmount(col)))
+                                                                  row.getMonthlyAmount(col)))
                         .collect(
                                 toMap(
                                         Map.Entry::getKey,
                                         Map.Entry::getValue)))
-                        .collect(toList());
+                .collect(toList());
         assertEquals(expList.size(), actList.size());
         for (int i = 0; i < expList.size(); i++) {
             final int ix = i;
@@ -111,17 +111,13 @@ public enum CashflowReport_AccountGroup_2012 {
             final Map<Column, Currency> act = actList.get(i);
             String description
                     = section.streamTitle()
-                            .findFirst().get().formatDescription();
+                    .findFirst().get().formatDescription();
             final String fmt = "%s at %s at %s: ";
-            Column.streamMonths().forEach(column
-                    -> assertEquals(
-                            String.format(
-                                    fmt,
-                                    description,
-                                    column.name(),
-                                    ix),
+            Column.streamMonths().forEach(
+                    column -> assertEquals(
                             exp.get(column),
-                            act.get(column))
+                            act.get(column),
+                            String.format(fmt, description, column.name(), ix))
             );
         }
     }
@@ -133,16 +129,16 @@ public enum CashflowReport_AccountGroup_2012 {
                 = groups.stream().map(g -> g.expectedAverage).collect(toList());
         final List<Currency> act
                 = section.streamBody()
-                        .map(row -> row.asRowWithAmounts().get().getAverage())
-                        .collect(toList());
+                .map(row -> row.asRowWithAmounts().get().getAverage())
+                .collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
             String description
                     = section.streamTitle()
-                            .findFirst().get().formatDescription();
+                    .findFirst().get().formatDescription();
             String msg = String.format(fmt, description, i);
-            assertEquals(msg, exp.get(i), act.get(i));
+            assertEquals(exp.get(i), act.get(i), msg);
         }
     }
 
@@ -166,10 +162,10 @@ public enum CashflowReport_AccountGroup_2012 {
         final AccountFilter filter = new AccountFilterByRegex(regex);
         List<AccountId> accountIds
                 = filter
-                        .filter(fetcher.streamAccountIds(YEAR))
-                        .distinct()
-                        .sorted(comparing(AccountId::getId))
-                        .collect(toList());
+                .filter(fetcher.streamAccountIds(YEAR))
+                .distinct()
+                .sorted(comparing(AccountId::getId))
+                .collect(toList());
         return new DefaultRowWithAccounts(
                 fetcher,
                 accountIds::stream,

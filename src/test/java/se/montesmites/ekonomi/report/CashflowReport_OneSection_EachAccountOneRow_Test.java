@@ -14,7 +14,7 @@ import java.time.Year;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.Signedness.NEGATED_SIGN;
 
 @ExtendWith(DefaultTestDataExtension.class)
@@ -81,7 +81,7 @@ class CashflowReport_OneSection_EachAccountOneRow_Test {
         Currency act = row.getMonthlyAmount(column);
         String fmt = "%s %s %s";
         String msg = String.format(fmt, accountId(row), year, column);
-        assertEquals(msg, exp, act);
+        assertEquals(exp, act, msg);
     }
 
     private void assertFooterRowMonthlyTotal(Row row, Column column) {
@@ -90,7 +90,7 @@ class CashflowReport_OneSection_EachAccountOneRow_Test {
         Currency act = rwo.getMonthlyAmount(column);
         String fmt = "Total %s %s";
         String msg = String.format(fmt, column, year);
-        assertEquals(msg, exp, act);
+        assertEquals(exp, act, msg);
     }
 
     private Currency expectedFooterRowMonthlyTotal(Column column) {
@@ -130,7 +130,7 @@ class CashflowReport_OneSection_EachAccountOneRow_Test {
         Currency act = row.getYearlyTotal();
         String fmt = "%s";
         String msg = String.format(fmt, accountId(row));
-        assertEquals(msg, exp, act);
+        assertEquals(exp, act, msg);
     }
 
     private void assertFooterRowYearlyTotal(Row row) {

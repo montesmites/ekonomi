@@ -17,7 +17,7 @@ import java.time.YearMonth;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class DefaultRowWithAccountsWithNegatedAmountsTest {
@@ -41,14 +41,12 @@ class DefaultRowWithAccountsWithNegatedAmountsTest {
 
     @Test
     void negateMonthlyAmount() {
-        Column.streamMonths().forEach(month -> assertEquals(month.name(), entrySum(accountId, month), negated.getMonthlyAmount(month))
-        );
+        Column.streamMonths().forEach(month -> assertEquals(entrySum(accountId, month), negated.getMonthlyAmount(month), month.name()));
     }
 
     @Test
     void negatedTexts() {
-        Column.streamMonths().forEach(month -> assertEquals(month.name(), entrySum(accountId, month).format(), negated.formatText(month).trim())
-        );
+        Column.streamMonths().forEach(month -> assertEquals(entrySum(accountId, month).format(), negated.formatText(month).trim(), month.name()));
     }
 
     private Currency entrySum(AccountId accountId, Column month) {

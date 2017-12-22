@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class OrganizationTest {
