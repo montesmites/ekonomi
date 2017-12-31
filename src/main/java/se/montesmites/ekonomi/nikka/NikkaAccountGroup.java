@@ -1,12 +1,6 @@
 package se.montesmites.ekonomi.nikka;
 
-import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.report.*;
-
-import java.util.List;
-
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 enum NikkaAccountGroup {
     LONEINBETALNINGAR("Löner och arvoden", "(30|36)\\d\\d"),
@@ -42,16 +36,6 @@ enum NikkaAccountGroup {
 
     RowWithAccounts bodyRow(CashflowDataFetcher fetcher, java.time.Year year) {
         final AccountFilter filter = new AccountFilterByRegex(regex);
-        List<AccountId> accountIds
-                = filter
-                        .filter(fetcher.streamAccountIds(year))
-                        .distinct()
-                        .sorted(comparing(AccountId::getId))
-                        .collect(toList());
-        return new DefaultRowWithAccounts(
-                fetcher,
-                accountIds::stream,
-                year,
-                description);
+        return new DefaultRowWithAccounts(fetcher, () -> filter.filter(fetcher.streamAccountIds(year)), year, description);
     }
 }

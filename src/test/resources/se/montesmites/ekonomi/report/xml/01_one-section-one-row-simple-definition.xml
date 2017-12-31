@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<defintion>
+    <report>
+        <section id="section-1">
+            <description>Section 1</description>
+            <account-group>
+                <description>Account Group 1</description>
+                <regex>Account Group 1</regex>
+            </account-group>
+        </section>
+    </report>
+</defintion>
