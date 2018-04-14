@@ -8,7 +8,7 @@ public enum Signedness {
     
     private final int signedness;
     
-    private Signedness(int signedness) {
+    Signedness(int signedness) {
         this.signedness = signedness;
     }
     

@@ -1,5 +1,8 @@
 package se.montesmites.ekonomi.report;
 
+import se.montesmites.ekonomi.model.Entry;
+import se.montesmites.ekonomi.model.EventId;
+
 import java.time.YearMonth;
 import java.util.EnumSet;
 import java.util.Optional;
@@ -7,20 +10,18 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import static java.util.function.Function.*;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
-import java.util.stream.Collector.Characteristics;
+
+import static java.util.function.Function.identity;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collector.Characteristics.UNORDERED;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.EventId;
 
 class EntryCollector implements Collector<Entry, EntryAggregate, EntryAggregate> {
 
     private final Function<EventId, Optional<YearMonth>> yearMonthProvider;
 
-    public EntryCollector(Function<EventId, Optional<YearMonth>> yearMonthProvider) {
+    EntryCollector(Function<EventId, Optional<YearMonth>> yearMonthProvider) {
         this.yearMonthProvider = yearMonthProvider;
     }
 

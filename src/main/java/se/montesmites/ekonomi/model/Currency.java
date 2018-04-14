@@ -23,9 +23,7 @@ public class Currency {
     }
     
     public String format() {
-        String fmt = "%,.2f";
-        String msg = String.format(fmt, toDouble());
-        return msg;
+        return String.format("%,.2f", toDouble());
     }
 
     @Override
@@ -48,9 +46,6 @@ public class Currency {
             return false;
         }
         final Currency other = (Currency) obj;
-        if (this.decimals != other.decimals) {
-            return false;
-        }
         return this.amount == other.amount;
     }
 

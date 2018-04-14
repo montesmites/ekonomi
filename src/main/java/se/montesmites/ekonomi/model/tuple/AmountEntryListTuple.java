@@ -6,11 +6,9 @@ import se.montesmites.ekonomi.model.Entry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-
-;
+import static java.util.stream.Stream.concat;
 
 public class AmountEntryListTuple {
 
@@ -35,13 +33,9 @@ public class AmountEntryListTuple {
     }
 
     public AmountEntryListTuple merge(AmountEntryListTuple that) {
-        Currency sum = this.getAmount().add(that.getAmount());
-        List<Entry> retEntries
-                = Stream.concat(
-                        this.getEntries().stream(),
-                        that.getEntries().stream())
-                        .collect(toList());
-        return new AmountEntryListTuple(sum, retEntries);
+        var sum = this.getAmount().add(that.getAmount());
+        var entries = concat(this.getEntries().stream(), that.getEntries().stream()).collect(toList());
+        return new AmountEntryListTuple(sum, entries);
     }
 
     @Override

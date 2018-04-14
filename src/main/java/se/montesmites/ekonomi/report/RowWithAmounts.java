@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public interface RowWithAmounts extends Row {
 
-    public Currency getMonthlyAmount(Column column);
+    Currency getMonthlyAmount(Column column);
 
     default Currency getYearlyTotal() {
         return Column.streamMonths()

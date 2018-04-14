@@ -30,7 +30,7 @@ public class CashflowReport {
 
     private final Supplier<Stream<Section>> sections;
 
-    public CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
+    CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
         this(fetcher, year, ()
                 -> Stream.of(
                         new DefaultSection(
@@ -42,7 +42,7 @@ public class CashflowReport {
         this.sections = sections;
     }
 
-    public Stream<Section> streamSections() {
+    Stream<Section> streamSections() {
         return sections.get();
     }
 

@@ -16,7 +16,6 @@ public class Organization {
     private final EventManager eventManager;
 
     private final Collection<Account> accounts;
-    private final Collection<Balance> balances;
     private final Collection<Entry> entries;
     private final Collection<Year> years;
 
@@ -34,13 +33,12 @@ public class Organization {
             Stream<Year> years) {
         this.eventManager = eventManager;
         this.accounts = accounts.collect(toList());
-        this.balances = balances.collect(toList());
         this.entries = entries.collect(toList());
         this.years = years.collect(toList());
 
         this.accountsByAccountId = this.accounts.stream()
                 .collect(toMap(Account::getAccountId, identity()));
-        this.balancesByAccountId = this.balances.stream()
+        this.balancesByAccountId = balances.collect(toList()).stream()
                 .collect(toMap(Balance::getAccountId, identity()));
         this.entriesByEventId = this.entries.stream()
                 .collect(groupingBy(Entry::getEventId));
@@ -58,7 +56,7 @@ public class Organization {
         return accounts.stream();
     }
     
-    public Stream<Year> streamYears() {
+    Stream<Year> streamYears() {
         return years.stream();
     }
     
@@ -86,11 +84,11 @@ public class Organization {
         return getEvent(entry).map(Event::getDate);
     }
 
-    public Optional<List<Entry>> getEntries(EventId eventId) {
+    Optional<List<Entry>> getEntries(EventId eventId) {
         return Optional.ofNullable(entriesByEventId.get(eventId));
     }
     
-    public Optional<Account> getAccount(AccountId accountId) {
+    Optional<Account> getAccount(AccountId accountId) {
         return Optional.ofNullable(accountsByAccountId.get(accountId));
     }
 

@@ -29,10 +29,9 @@ public class BinaryFile_2015_0_Entries extends BinaryFile_2015_0<Entry> {
 
     @Override
     public boolean filter(Record record) {
-        boolean superFilter = super.filter(record);
-        if (superFilter) {
-            Optional<EntryStatus> s = entryStatus(record);
-            return s.isPresent() && s.get().getStatus() == ACTIVE;
+        if (super.filter(record)) {
+            var status = entryStatus(record);
+            return status.isPresent() && status.get().getStatus() == ACTIVE;
         } else {
             return false;
         }
@@ -45,12 +44,12 @@ public class BinaryFile_2015_0_Entries extends BinaryFile_2015_0<Entry> {
 
     @Override
     public Entry modelize(Record record) {
-        YearId yearid = new YearId(YEARID.extract(record));
-        Series series = new Series(SERIES.extract(record));
-        EventId eventid = new EventId(yearid, ID.extract(record), series);
-        AccountId accountid = new AccountId(yearid, ACCOUNT.extract(record));
-        EntryStatus status = entryStatus(record).get();
-        Currency amount = AMOUNT.extract(record);
+        var yearid = new YearId(YEARID.extract(record));
+        var series = new Series(SERIES.extract(record));
+        var eventid = new EventId(yearid, ID.extract(record), series);
+        var accountid = new AccountId(yearid, ACCOUNT.extract(record));
+        var status = entryStatus(record).get();
+        var amount = AMOUNT.extract(record);
         return new Entry(eventid, accountid, amount, status);
     }
 

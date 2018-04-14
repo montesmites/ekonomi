@@ -8,11 +8,9 @@ import java.util.stream.Stream;
 public interface BinaryFile_VismaAdmin200<T> {
 
     default Stream<T> parse(Path path) {
-        Path p = path.resolve(this.getFileName());
-        RecordReader rr = new RecordReader(
-                this.getRecordDefinition(), readAllBytes(p));
-        return rr.allRecordsAsStream().filter(this::filter).map(
-                this::modelize);
+        var filePath = path.resolve(this.getFileName());
+        var recordReader = new RecordReader(this.getRecordDefinition(), readAllBytes(filePath));
+        return recordReader.allRecordsAsStream().filter(this::filter).map(this::modelize);
     }
 
     String getFileName();
@@ -20,11 +18,10 @@ public interface BinaryFile_VismaAdmin200<T> {
     RecordDefinition getRecordDefinition();
 
     default boolean filter(Record record) {
-        return this.getRecordDefinition().getFields().stream().allMatch(
-                def -> def.filter(record));
+        return this.getRecordDefinition().getFields().stream().allMatch(def -> def.filter(record));
     }
 
-    public T modelize(Record record);
+    T modelize(Record record);
 
     default byte[] readAllBytes(Path path) {
         try {

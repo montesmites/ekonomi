@@ -39,7 +39,7 @@ public enum Column {
     private final ColumnType type;
     private final Optional<Month> month;
     
-    private Column(ColumnType type) {
+    Column(ColumnType type) {
         this.type = type;
         this.month = type.asMonth(this);
     }

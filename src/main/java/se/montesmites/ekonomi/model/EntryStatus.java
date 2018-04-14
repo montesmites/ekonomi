@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class EntryStatus {
-
     public enum Status {
         ACTIVE, PASSIVE
     }
@@ -19,10 +18,9 @@ public class EntryStatus {
     }
 
     private static Optional<EntryStatus> eventify(String flags) {
-        final EntryStatusFlags esf = EntryStatusFlags.ENTRY_STATUS_FLAGS.get(
-                flags);
-        if (esf != null) {
-            return Optional.of(esf.getStatus());
+        var entryStatusFlags = EntryStatusFlags.ENTRY_STATUS_FLAGS.get(flags);
+        if (entryStatusFlags != null) {
+            return Optional.of(entryStatusFlags.getStatus());
         } else {
             return Optional.empty();
         }

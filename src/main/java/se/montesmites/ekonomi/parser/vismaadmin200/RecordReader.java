@@ -10,12 +10,12 @@ class RecordReader {
     private final RecordDefinition recordDefinition;
     private final byte[] bytes;
 
-    public RecordReader(RecordDefinition recordDefinition, byte[] bytes) {
+    RecordReader(RecordDefinition recordDefinition, byte[] bytes) {
         this.recordDefinition = recordDefinition;
         this.bytes = bytes;
     }
 
-    public Stream<Record> allRecordsAsStream() {
+    Stream<Record> allRecordsAsStream() {
         return byteChunks().stream().map(
                 chunk -> this.recordDefinition.getFields().stream().reduce(
                         new Record(),

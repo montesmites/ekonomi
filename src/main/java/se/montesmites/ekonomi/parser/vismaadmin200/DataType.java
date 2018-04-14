@@ -6,27 +6,21 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.Optional;
+
+import static java.util.Arrays.copyOfRange;
 
 public interface DataType<T> {
 
-    @SuppressWarnings("Convert2Lambda")
-    public final static DataType<byte[]> BYTE_ARRAY = new DataType<>() {
-
-        @Override
-        public Optional<byte[]> read(ByteChunk chunk, int start, int length) {
-            if (chunk.getBytes().length >= start + length) {
-                byte[] b = Arrays.copyOfRange(chunk.getBytes(), start,
-                                              start + length);
-                return Optional.of(b);
-            } else {
-                return Optional.empty();
-            }
+    DataType<byte[]> BYTE_ARRAY = (chunk, start, length) -> {
+        if (chunk.getBytes().length >= start + length) {
+            return Optional.of(copyOfRange(chunk.getBytes(), start, start + length));
+        } else {
+            return Optional.empty();
         }
     };
 
-    public final static DataType<String> STRING = new DataType<>() {
+    DataType<String> STRING = new DataType<>() {
 
         private final static String ENCODING = "Cp1252";
 
@@ -45,7 +39,7 @@ public interface DataType<T> {
         }
     };
 
-    public final static DataType<LocalDate> DATE = new DataType<>() {
+    DataType<LocalDate> DATE = new DataType<>() {
 
         private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(
                 "yyyyMMdd");
@@ -67,35 +61,18 @@ public interface DataType<T> {
         }
     };
 
-    @SuppressWarnings("Convert2Lambda")
-    public final static DataType<Integer> INTEGER = new DataType<>() {
-        @Override
-        public Optional<Integer> read(ByteChunk chunk, int start, int length) {
-            return STRING.read(chunk, start, length)
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(Integer::parseInt);
-        }
-    };
+    DataType<Integer> INTEGER = (chunk, start, length) -> STRING.read(chunk, start, length)
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .map(Integer::parseInt);
 
-    @SuppressWarnings("Convert2Lambda")
-    public final static DataType<Long> LONG = new DataType<>() {
-        @Override
-        public Optional<Long> read(ByteChunk chunk, int start, int length) {
-            return STRING.read(chunk, start, length)
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(Long::parseLong);
-        }
-    };
+    DataType<Long> LONG = (chunk, start, length) -> STRING.read(chunk, start, length)
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .map(Long::parseLong);
 
-    @SuppressWarnings("Convert2Lambda")
-    public final static DataType<Currency> CURRENCY = new DataType<>() {
-        @Override
-        public Optional<Currency> read(ByteChunk chunk, int start, int length) {
-            return LONG.read(chunk, start, length).map(Currency::new);
-        }
-    };
+    DataType<Currency> CURRENCY = (chunk, start, length) -> LONG.read(chunk, start, length)
+            .map(Currency::new);
 
-    public Optional<T> read(ByteChunk chunk, int start, int length);
+    Optional<T> read(ByteChunk chunk, int start, int length);
 }

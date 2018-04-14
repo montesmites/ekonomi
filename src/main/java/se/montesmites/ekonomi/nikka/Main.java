@@ -1,6 +1,5 @@
 package se.montesmites.ekonomi.nikka;
 
-import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.*;
 
@@ -20,31 +19,30 @@ import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 class Main {
 
     public static void main(String[] args) throws Exception {
-        final Year year = Year.of(2017);
-        final String fmt = "c:/temp/nikka/Kassaflöde %d.txt";
-        final String fileName = String.format(fmt, year.getValue());
-        final Path path = Paths.get(fileName);
-        Main main = new Main();
-        CashflowReport report = main.generateCashflowReport(year);
+        var year = Year.of(2017);
+        var fmt = "c:/temp/nikka/Kassaflöde %d.txt";
+        var fileName = String.format(fmt, year.getValue());
+        var path = Paths.get(fileName);
+        var main = new Main();
+        var report = main.generateCashflowReport(year);
         main.renderToFile(report, path);
     }
 
     private final CashflowDataFetcher fetcher;
 
     private Main() {
-        Path path = Paths.get(
-                "C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
-        Organization organization = new OrganizationBuilder(path).build();
+        var path = Paths.get("C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
+        var organization = new OrganizationBuilder(path).build();
         this.fetcher = new CashflowDataFetcher(organization);
     }
 
     private CashflowReport generateCashflowReport(Year year) {
-        TotallingSection foreJamforelsestorandePoster
+        var foreJamforelsestorandePoster
                 = new TotallingSection(
                 "Före jämförelsestörande poster",
                 sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT)
         );
-        TotallingSection total
+        var total
                 = new TotallingSection(
                         "Kontrollsumma",
                         sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT, JAMFORELSESTORANDE_POSTER, FORANDRING_LIKVIDA_MEDEL)) {
@@ -64,7 +62,7 @@ class Main {
                                 nikkaSection.getTitle().trim().toUpperCase());
             }
         };
-        AccumulatingSection accumulation
+        var accumulation
                 = new AccumulatingSection(
                         "Ackumulerade likvida medel",
                         () -> Stream.of(new AccumulatingNegatedRow(

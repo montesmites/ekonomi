@@ -18,7 +18,7 @@ class XmlDefinition {
         this.report = report;
     }
 
-    public ReportBuilder toReportBuilder(Organization organization, java.time.Year year) {
+    ReportBuilder toReportBuilder(Organization organization, java.time.Year year) {
         final CashflowDataFetcher fetcher = new CashflowDataFetcher(organization);
         final ReportBuilder builder = new ReportBuilder(organization, year);
         report.getSections().stream().map(section -> section.toSectionBuilder(fetcher, year)).forEach(builder::addSectionBuilder);

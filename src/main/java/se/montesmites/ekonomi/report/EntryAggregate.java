@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class EntryAggregate {
+class EntryAggregate {
 
     private final Function<EventId, Optional<YearMonth>> yearMonthProvider;
 
@@ -28,11 +28,11 @@ public class EntryAggregate {
         this.yearMonthProvider = yearMonthProvider;
     }
 
-    public Map<YearMonthAccountIdTuple, AmountEntryListTuple> getAggregate() {
+    Map<YearMonthAccountIdTuple, AmountEntryListTuple> getAggregate() {
         return aggregate;
     }
 
-    public void accumulate(Entry entry) {
+    void accumulate(Entry entry) {
         yearMonthProvider.apply(entry.getEventId())
                 .ifPresent(yearMonth
                                    -> aggregate.merge(new YearMonthAccountIdTuple(yearMonth, entry.getAccountId()),
@@ -41,7 +41,7 @@ public class EntryAggregate {
                 );
     }
 
-    public EntryAggregate merge(EntryAggregate that) {
+    EntryAggregate merge(EntryAggregate that) {
         Map<YearMonthAccountIdTuple, AmountEntryListTuple> map = new ConcurrentHashMap<>(this.getAggregate());
         that.aggregate.forEach((key, value) -> map.merge(key, value, AmountEntryListTuple::merge));
         return new EntryAggregate(map, yearMonthProvider);

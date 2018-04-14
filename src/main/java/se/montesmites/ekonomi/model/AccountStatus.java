@@ -7,7 +7,7 @@ public enum AccountStatus {
     CLOSED("closed"),
     REMOVED("removed");
 
-    public final static Optional<AccountStatus> parse(String removedFlag, String inactiveFlag) {
+    public static Optional<AccountStatus> parse(String removedFlag, String inactiveFlag) {
         if ("*".equals(removedFlag)) {
             return Optional.of(REMOVED);
         } else if ("T".equals(inactiveFlag)) {
@@ -21,7 +21,7 @@ public enum AccountStatus {
 
     private final String description;
 
-    private AccountStatus(String description) {
+    AccountStatus(String description) {
         this.description = description;
     }
 

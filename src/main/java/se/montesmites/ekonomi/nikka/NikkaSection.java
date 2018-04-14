@@ -62,9 +62,7 @@ enum NikkaSection {
     private final String title;
     private final List<NikkaAccountGroup> groups;
 
-    private NikkaSection(
-            String title,
-            List<NikkaAccountGroup> groups) {
+    NikkaSection(String title, List<NikkaAccountGroup> groups) {
         this.title = title;
         this.groups = groups;
     }

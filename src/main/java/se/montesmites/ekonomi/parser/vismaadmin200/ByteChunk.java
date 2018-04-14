@@ -9,26 +9,24 @@ class ByteChunk {
     private final int position;
     private final byte[] bytes;
 
-    public ByteChunk(RecordDefinition recordDefinition, int fileLength, int position, byte[] bytes) {
+    ByteChunk(RecordDefinition recordDefinition, int fileLength, int position, byte[] bytes) {
         this.recordDefinition = recordDefinition;
         this.fileLength = fileLength;
         this.position = position;
         this.bytes = bytes;
     }
 
-    public byte[] getBytes() {
+    byte[] getBytes() {
         return bytes;
     }
 
     @Override
     public String toString() {
-        String fmt = "{%d, %d} of %d at [%d] yields %s";
-        String msg = String.format(fmt,
-                recordDefinition.getFirstBytePosition(),
-                recordDefinition.getLength(),
-                fileLength,
-                position,
-                Arrays.toString(bytes));
-        return msg;
+        return String.format("{%d, %d} of %d at [%d] yields %s",
+                             recordDefinition.getFirstBytePosition(),
+                             recordDefinition.getLength(),
+                             fileLength,
+                             position,
+                             Arrays.toString(bytes));
     }
 }

@@ -14,15 +14,15 @@ public class RecordDefinition {
         this.fields = fields;
     }
 
-    public int getFirstBytePosition() {
+    int getFirstBytePosition() {
         return firstBytePosition;
     }
 
-    public int getLength() {
+    int getLength() {
         return length;
     }
 
-    public List<Field<?>> getFields() {
+    List<Field<?>> getFields() {
         return fields;
     }
 }

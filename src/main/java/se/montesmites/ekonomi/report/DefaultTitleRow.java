@@ -4,7 +4,7 @@ public class DefaultTitleRow implements TitleRow {
 
     private final String title;
 
-    public DefaultTitleRow(String title) {
+    DefaultTitleRow(String title) {
         this.title = title.toUpperCase();
     }
 

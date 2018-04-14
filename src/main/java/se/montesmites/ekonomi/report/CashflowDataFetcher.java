@@ -71,7 +71,7 @@ public class CashflowDataFetcher {
         return date.getMonth();
     }
 
-    public Set<Month> touchedMonths(java.time.Year year) {
+    Set<Month> touchedMonths(java.time.Year year) {
         return touchedMonths.getOrDefault(year, emptySet());
     }
 
@@ -83,15 +83,12 @@ public class CashflowDataFetcher {
                 .sorted(comparing(AccountId::getId));
     }
 
-    public Optional<Balance> fetchBalance(AccountId accountId) {
+    Optional<Balance> fetchBalance(AccountId accountId) {
         return organization.getBalance(accountId);
     }
 
-    public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
-        Optional<Currency> amount
-                = getAccountIdAmountMap(yearMonth)
-                        .map(m -> m.get(accountId));
-        return amount;
+    Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
+        return getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
     }
 
     public EntryAggregate getEntryAggregate() {

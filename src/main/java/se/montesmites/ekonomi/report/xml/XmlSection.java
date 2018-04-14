@@ -38,7 +38,7 @@ public class XmlSection {
         this.accountGroups = accountGroups;
     }
 
-    public SectionBuilder toSectionBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
+    SectionBuilder toSectionBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
         final SectionBuilder builder = new SectionBuilder(description);
         accountGroups.stream().map(group -> group.toRowBuilder(fetcher, year)).forEach(builder::addBodyRowBuilder);
         return builder;

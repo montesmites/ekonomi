@@ -29,7 +29,7 @@ enum NikkaAccountGroup {
     private final String description;
     private final String regex;
 
-    private NikkaAccountGroup(String description, String regex) {
+    NikkaAccountGroup(String description, String regex) {
         this.description = description;
         this.regex = regex;
     }

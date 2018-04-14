@@ -22,7 +22,7 @@ public class XmlAccountGroup {
         this.regex = regex;
     }
 
-    public RowBuilder toRowBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
+    RowBuilder toRowBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
         return new RowBuilder(fetcher, new AccountFilterByRegex(regex), year, description);
     }
 }

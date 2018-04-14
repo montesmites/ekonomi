@@ -7,7 +7,7 @@ class XmlReport {
     private List<XmlSection> sections;
 
     @XmlElement(name = "section")
-    public List<XmlSection> getSections() {
+    List<XmlSection> getSections() {
         return sections;
     }
 

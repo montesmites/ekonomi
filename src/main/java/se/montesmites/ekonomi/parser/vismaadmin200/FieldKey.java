@@ -17,11 +17,11 @@ class FieldKey<T> {
         return this.datatype;
     }
 
-    public T asInstanceOf(Object value) {
+    T asInstanceOf(Object value) {
         return (T) value;
     }
 
-    public Record set(Optional<T> value) {
+    Record set(Optional<T> value) {
         return new Record(this, value);
     }
 

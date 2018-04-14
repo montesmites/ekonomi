@@ -10,11 +10,11 @@ public class DefaultFooterRow implements FooterRow {
 
     private final Supplier<Stream<Row>> bodyRows;
 
-    public DefaultFooterRow(Section parent) {
+    DefaultFooterRow(Section parent) {
         this.bodyRows = parent::streamBody;
     }
 
-    public DefaultFooterRow(Supplier<Stream<Row>> bodyRows) {
+    DefaultFooterRow(Supplier<Stream<Row>> bodyRows) {
         this.bodyRows = bodyRows;
     }
 

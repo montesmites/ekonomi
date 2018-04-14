@@ -1,9 +1,10 @@
 package se.montesmites.ekonomi.model.tuple;
 
-import java.util.Objects;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
+
+import java.util.Objects;
 
 public class AccountIdAmountTuple {
 

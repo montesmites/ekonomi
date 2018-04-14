@@ -21,12 +21,12 @@ public class OrganizationBuilder {
     }
 
     public OrganizationBuilder(Path path, Filter filter) {
-        Parser p = new Parser(path);
-        this.accounts = p.parse(ACCOUNTS).filter(filter.accountFilter());
-        this.balances = p.parse(BALANCES).filter(filter.balanceFilter());
-        this.entries = p.parse(ENTRIES).filter(filter.entryFilter());
-        this.years = p.parse(YEARS).filter(filter.yearFilter());
-        this.eventManager = new EventManager(p.parse(EVENTS).filter(filter.eventFilter()));
+        var parser = new Parser(path);
+        this.accounts = parser.parse(ACCOUNTS).filter(filter.accountFilter());
+        this.balances = parser.parse(BALANCES).filter(filter.balanceFilter());
+        this.entries = parser.parse(ENTRIES).filter(filter.entryFilter());
+        this.years = parser.parse(YEARS).filter(filter.yearFilter());
+        this.eventManager = new EventManager(parser.parse(EVENTS).filter(filter.eventFilter()));
     }
 
     public EventManager getEventManager() {

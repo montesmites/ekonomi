@@ -10,8 +10,7 @@ import static se.montesmites.ekonomi.model.EntryStatus.Status.ACTIVE;
 import static se.montesmites.ekonomi.model.EntryStatus.Status.PASSIVE;
 
 class EntryStatusFlags {
-
-    public final static Map<String, EntryStatusFlags> ENTRY_STATUS_FLAGS
+    final static Map<String, EntryStatusFlags> ENTRY_STATUS_FLAGS
             = List.of(
                     new EntryStatusFlags("T   ",
                             "Original, and then untouched",
@@ -66,7 +65,7 @@ class EntryStatusFlags {
         return descr;
     }
 
-    public EntryStatus getStatus() {
+    EntryStatus getStatus() {
         return status;
     }
 }

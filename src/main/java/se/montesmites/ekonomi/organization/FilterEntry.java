@@ -7,5 +7,5 @@ import java.util.function.Predicate;
 @FunctionalInterface
 public interface FilterEntry extends Filter {
     @Override
-    public Predicate<Entry> entryFilter();
+    Predicate<Entry> entryFilter();
 }
