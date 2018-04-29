@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <defintion>
-    <report>
+    <report description="Two Sections One Row Each Simple Definition">
         <section id="section-1">
             <description>Section 1</description>
             <account-group>
-                <description>Account Group 1</description>
-                <regex>Account Group 1</regex>
+                <description>Description 1-1</description>
+                <regex>Regex 1-1</regex>
             </account-group>
         </section>
         <section id="section-2">
             <description>Section 2</description>
             <account-group>
-                <description>Account Group 2</description>
-                <regex>Account Group 2</regex>
+                <description>Description 2-1</description>
+                <regex>Regex 2-1</regex>
             </account-group>
         </section>
     </report>

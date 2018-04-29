@@ -10,10 +10,12 @@ public class ReportBuilder {
     private final Organization organization;
     private final java.time.Year year;
     private final List<SectionBuilder> sectionBuilders;
+    private final String description;
 
-    public ReportBuilder(Organization organization, Year year) {
+    public ReportBuilder(Organization organization, Year year, String description) {
         this.organization = organization;
         this.year = year;
+        this.description = description;
         this.sectionBuilders = new ArrayList<>();
     }
 
@@ -31,5 +33,9 @@ public class ReportBuilder {
 
     public List<SectionBuilder> getSectionBuilders() {
         return sectionBuilders;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

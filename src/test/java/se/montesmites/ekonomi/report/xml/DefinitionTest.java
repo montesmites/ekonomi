@@ -14,8 +14,9 @@ import javax.xml.bind.JAXB;
 import java.time.Year;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static java.util.List.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static se.montesmites.ekonomi.report.xml._Definition4TestUtil.*;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class DefinitionTest {
@@ -32,13 +33,17 @@ class DefinitionTest {
         var path = "/se/montesmites/ekonomi/report/xml/01_one-section-one-row-simple-definition.xml";
         this.xmlDefinition = JAXB.unmarshal(getClass().getResourceAsStream(path), XmlDefinition.class);
         this.reportBuilder = xmlDefinition.toReportBuilder(organization, year);
-        assertAll("report",
-                  () -> assertEquals(1, getSectionBuilders().size()),
-                  () -> assertEquals("Section 1", getSectionBuilderAt(0).getDescription()),
-                  () -> assertEquals(1, getBodyRowBuildersAt(0).size()),
-                  () -> assertEquals("Account Group 1", getBodyRowBuilderAt(0, 0).getDescription()),
-                  () -> assertEquals("Account Group 1", getRegexPatternAt(0,0))
-        );
+        var definition =
+                definition("One Section One Row Simple Definition",
+                           of(
+                                   section("Section 1",
+                                           of(
+                                                   row("Description 1-1", "Regex 1-1")
+                                           )
+                                   )
+                           )
+                );
+        doAssert(definition);
     }
 
     @Test
@@ -46,15 +51,18 @@ class DefinitionTest {
         var path = "/se/montesmites/ekonomi/report/xml/02_one-section-two-rows-simple-definition.xml";
         this.xmlDefinition = JAXB.unmarshal(getClass().getResourceAsStream(path), XmlDefinition.class);
         this.reportBuilder = xmlDefinition.toReportBuilder(organization, year);
-        assertAll("report",
-                  () -> assertEquals(1, getSectionBuilders().size()),
-                  () -> assertEquals("Section 1", getSectionBuilderAt(0).getDescription()),
-                  () -> assertEquals(2, getBodyRowBuildersAt(0).size()),
-                  () -> assertEquals("Account Group 1", getBodyRowBuilderAt(0, 0).getDescription()),
-                  () -> assertEquals("Account Group 1", getRegexPatternAt(0, 0)),
-                  () -> assertEquals("Account Group 2", getBodyRowBuilderAt(0, 1).getDescription()),
-                  () -> assertEquals("Account Group 2", getRegexPatternAt(0, 1))
-        );
+        var definition =
+                definition("One Section Two Rows Simple Definition",
+                           of(
+                                   section("Section 1",
+                                           of(
+                                                   row("Description 1-1", "Regex 1-1"),
+                                                   row("Description 1-2", "Regex 1-2")
+                                           )
+                                   )
+                           )
+                );
+        doAssert(definition);
     }
 
     @Test
@@ -62,17 +70,41 @@ class DefinitionTest {
         var path = "/se/montesmites/ekonomi/report/xml/03_two-sections-one-row-each-simple-definition.xml";
         this.xmlDefinition = JAXB.unmarshal(getClass().getResourceAsStream(path), XmlDefinition.class);
         this.reportBuilder = xmlDefinition.toReportBuilder(organization, year);
-        assertAll("report",
-                  () -> assertEquals(2, getSectionBuilders().size()),
-                  () -> assertEquals("Section 1", getSectionBuilderAt(0).getDescription()),
-                  () -> assertEquals("Section 2", getSectionBuilderAt(1).getDescription()),
-                  () -> assertEquals(1, getBodyRowBuildersAt(0).size()),
-                  () -> assertEquals(1, getBodyRowBuildersAt(1).size()),
-                  () -> assertEquals("Account Group 1", getBodyRowBuilderAt(0, 0).getDescription()),
-                  () -> assertEquals("Account Group 1", getRegexPatternAt(0, 0)),
-                  () -> assertEquals("Account Group 2", getBodyRowBuilderAt(1, 0).getDescription()),
-                  () -> assertEquals("Account Group 2", getRegexPatternAt(1, 0))
-        );
+        var definition =
+                definition("Two Sections One Row Each Simple Definition",
+                           of(
+                                   section("Section 1",
+                                           of(
+                                                   row("Description 1-1", "Regex 1-1")
+                                           )
+                                   ),
+                                   section("Section 2",
+                                           of(
+                                                   row("Description 2-1", "Regex 2-1")
+                                           )
+                                   )
+                           )
+                );
+        doAssert(definition);
+    }
+
+    private void doAssert(_ReportDefinition4Test definition) {
+        assertEquals(definition.getDescription(), reportBuilder.getDescription(), "definition description");
+        assertEquals(definition.getSections().size(), getSectionBuilders().size(), "section count");
+        var sectionIndex = 0;
+        for (var section : definition.getSections()) {
+            var sectionMessage = "section " + sectionIndex + 1;
+            assertEquals(section.getDescription(), getSectionBuilderAt(sectionIndex).getDescription(), sectionMessage + ", description");
+            assertEquals(section.getRows().size(), getBodyRowBuildersAt(sectionIndex).size(), sectionMessage + ", row count");
+            var rowIndex = 0;
+            for (var row : section.getRows()) {
+                var rowMessage = sectionMessage + ", row " + row + 1;
+                assertEquals(row.getDescription(), getBodyRowBuilderAt(sectionIndex, rowIndex).getDescription(), rowMessage + ", description");
+                assertEquals(row.getRegex(), getRegexPatternAt(sectionIndex, rowIndex), rowMessage + ", regex pattern");
+                rowIndex++;
+            }
+            sectionIndex++;
+        }
     }
 
     private List<SectionBuilder> getSectionBuilders() {
@@ -92,7 +124,7 @@ class DefinitionTest {
     }
 
     private String getRegexPatternAt(int section, int row) {
-        AccountFilterByRegex filter = (AccountFilterByRegex) getBodyRowBuilderAt(section, row).getFilter();
+        var filter = (AccountFilterByRegex) getBodyRowBuilderAt(section, row).getFilter();
         return filter.getPattern().pattern();
     }
 }
