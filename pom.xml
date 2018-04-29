@@ -24,19 +24,16 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>${javax.jaxb.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
             <version>${javax.jaxb.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
             <version>${javax.jaxb.version}</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
