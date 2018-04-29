@@ -29,7 +29,7 @@ class DefinitionTest {
 
     @Test
     void t01_oneSectionOneRowSimpleDefinition() {
-        final String path = "/se/montesmites/ekonomi/report/xml/01_one-section-one-row-simple-definition.xml";
+        var path = "/se/montesmites/ekonomi/report/xml/01_one-section-one-row-simple-definition.xml";
         this.xmlDefinition = JAXB.unmarshal(getClass().getResourceAsStream(path), XmlDefinition.class);
         this.reportBuilder = xmlDefinition.toReportBuilder(organization, year);
         assertAll("report",
@@ -43,7 +43,7 @@ class DefinitionTest {
 
     @Test
     void t02_oneSectionTwoRowsSimpleDefinition() {
-        final String path = "/se/montesmites/ekonomi/report/xml/02_one-section-two-rows-simple-definition.xml";
+        var path = "/se/montesmites/ekonomi/report/xml/02_one-section-two-rows-simple-definition.xml";
         this.xmlDefinition = JAXB.unmarshal(getClass().getResourceAsStream(path), XmlDefinition.class);
         this.reportBuilder = xmlDefinition.toReportBuilder(organization, year);
         assertAll("report",
@@ -54,6 +54,24 @@ class DefinitionTest {
                   () -> assertEquals("Account Group 1", getRegexPatternAt(0, 0)),
                   () -> assertEquals("Account Group 2", getBodyRowBuilderAt(0, 1).getDescription()),
                   () -> assertEquals("Account Group 2", getRegexPatternAt(0, 1))
+        );
+    }
+
+    @Test
+    void t03_twoSectionsOneRowEachSimpleDefinition() {
+        var path = "/se/montesmites/ekonomi/report/xml/03_two-sections-one-row-each-simple-definition.xml";
+        this.xmlDefinition = JAXB.unmarshal(getClass().getResourceAsStream(path), XmlDefinition.class);
+        this.reportBuilder = xmlDefinition.toReportBuilder(organization, year);
+        assertAll("report",
+                  () -> assertEquals(2, getSectionBuilders().size()),
+                  () -> assertEquals("Section 1", getSectionBuilderAt(0).getDescription()),
+                  () -> assertEquals("Section 2", getSectionBuilderAt(1).getDescription()),
+                  () -> assertEquals(1, getBodyRowBuildersAt(0).size()),
+                  () -> assertEquals(1, getBodyRowBuildersAt(1).size()),
+                  () -> assertEquals("Account Group 1", getBodyRowBuilderAt(0, 0).getDescription()),
+                  () -> assertEquals("Account Group 1", getRegexPatternAt(0, 0)),
+                  () -> assertEquals("Account Group 2", getBodyRowBuilderAt(1, 0).getDescription()),
+                  () -> assertEquals("Account Group 2", getRegexPatternAt(1, 0))
         );
     }
 

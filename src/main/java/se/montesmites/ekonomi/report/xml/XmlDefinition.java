@@ -19,9 +19,10 @@ class XmlDefinition {
     }
 
     ReportBuilder toReportBuilder(Organization organization, java.time.Year year) {
-        final CashflowDataFetcher fetcher = new CashflowDataFetcher(organization);
-        final ReportBuilder builder = new ReportBuilder(organization, year);
-        report.getSections().stream().map(section -> section.toSectionBuilder(fetcher, year)).forEach(builder::addSectionBuilder);
+        var fetcher = new CashflowDataFetcher(organization);
+        var builder = new ReportBuilder(organization, year);
+        var sections = report.getSections().stream().map(section -> section.toSectionBuilder(fetcher, year));
+        sections.forEach(builder::addSectionBuilder);
         return builder;
     }
 }
