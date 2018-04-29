@@ -6,8 +6,9 @@ import se.montesmites.ekonomi.report.SectionBuilder;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
+import java.util.function.Function;
 
-public class XmlSection {
+public class XmlSection implements XmlSectionSupplier {
     private String id;
     private String description;
     private List<XmlAccountGroup> accountGroups;
@@ -42,5 +43,10 @@ public class XmlSection {
         final SectionBuilder builder = new SectionBuilder(description);
         accountGroups.stream().map(group -> group.toRowBuilder(fetcher, year)).forEach(builder::addBodyRowBuilder);
         return builder;
+    }
+
+    @Override
+    public XmlSection get(Function<String, XmlSection> sections) {
+        return this;
     }
 }

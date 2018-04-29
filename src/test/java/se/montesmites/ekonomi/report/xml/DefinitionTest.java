@@ -88,6 +88,29 @@ class DefinitionTest {
         doAssert(definition);
     }
 
+    @Test
+    void t04_reportWithTwoSectionRefs() {
+        var path = "/se/montesmites/ekonomi/report/xml/04_report-with-two-sectionrefs.xml";
+        this.xmlDefinition = JAXB.unmarshal(getClass().getResourceAsStream(path), XmlDefinition.class);
+        this.reportBuilder = xmlDefinition.toReportBuilder(organization, year);
+        var definition =
+                definition("Report with Two SectionRefs",
+                           of(
+                                   section("Section 1",
+                                           of(
+                                                   row("Description 1-1", "Regex 1-1")
+                                           )
+                                   ),
+                                   section("Section 2",
+                                           of(
+                                                   row("Description 2-1", "Regex 2-1")
+                                           )
+                                   )
+                           )
+                );
+        doAssert(definition);
+    }
+
     private void doAssert(_ReportDefinition4Test definition) {
         assertEquals(definition.getDescription(), reportBuilder.getDescription(), "definition description");
         assertEquals(definition.getSections().size(), getSectionBuilders().size(), "section count");

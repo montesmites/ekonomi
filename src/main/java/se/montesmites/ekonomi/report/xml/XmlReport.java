@@ -2,11 +2,13 @@ package se.montesmites.ekonomi.report.xml;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import java.util.ArrayList;
 import java.util.List;
 
 class XmlReport {
     private String description;
-    private List<XmlSection> sections;
+    private List<XmlSectionSupplier> sectionSuppliers;
 
     @XmlAttribute
     public String getDescription() {
@@ -17,12 +19,19 @@ class XmlReport {
         this.description = description;
     }
 
-    @XmlElement(name = "section")
-    List<XmlSection> getSections() {
-        return sections;
+    @XmlElements({
+            @XmlElement(name = "section", type=XmlSection.class),
+            @XmlElement(name = "section-ref", type=XmlSectionRef.class)
+    })
+
+    public List<XmlSectionSupplier> getSectionSuppliers() {
+        if (sectionSuppliers == null) {
+            this.sectionSuppliers = new ArrayList<>();
+        }
+        return this.sectionSuppliers;
     }
 
-    public void setSections(List<XmlSection> sections) {
-        this.sections = sections;
+    public void setSectionSuppliers(List<XmlSectionSupplier> sectionSuppliers) {
+        this.sectionSuppliers = sectionSuppliers;
     }
 }
