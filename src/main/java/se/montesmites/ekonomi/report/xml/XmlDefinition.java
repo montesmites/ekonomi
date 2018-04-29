@@ -16,6 +16,7 @@ import static java.util.stream.Collectors.toMap;
 class XmlDefinition {
     private XmlReport report;
     private List<XmlSection> sections;
+    private List<XmlAccountGroup> accountGroups;
 
     public XmlReport getReport() {
         return report;
@@ -37,12 +38,25 @@ class XmlDefinition {
         this.sections = sections;
     }
 
+    @XmlElement(name = "account-group")
+    private List<XmlAccountGroup> getAccountGroups() {
+        if (accountGroups == null) {
+            this.accountGroups = new ArrayList<>();
+        }
+        return this.accountGroups;
+    }
+
+    public void setAccountGroups(List<XmlAccountGroup> accountGroups) {
+        this.accountGroups = accountGroups;
+    }
+
     ReportBuilder toReportBuilder(Organization organization, java.time.Year year) {
+        var sectionsMap = this.getSections().stream().collect(toMap(XmlSection::getId, identity()));
+        var accountGroupsMap = this.getAccountGroups().stream().collect(toMap(XmlAccountGroup::getId, identity()));
         var fetcher = new CashflowDataFetcher(organization);
         var builder = new ReportBuilder(organization, year, report.getDescription(), this.getSections());
-        var sectionsMap = this.getSections().stream().collect(toMap(XmlSection::getId, identity()));
         var sections = report.getSectionSuppliers().stream().map(supplier -> supplier.get(sectionsMap::get));
-        var sectionBuilders = sections.map(section -> section.toSectionBuilder(fetcher, year));
+        var sectionBuilders = sections.map(section -> section.toSectionBuilder(fetcher, year, accountGroupsMap::get));
         sectionBuilders.forEach(builder::addSectionBuilder);
         return builder;
     }

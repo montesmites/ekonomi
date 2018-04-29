@@ -23,8 +23,7 @@ class XmlReport {
             @XmlElement(name = "section", type=XmlSection.class),
             @XmlElement(name = "section-ref", type=XmlSectionRef.class)
     })
-
-    public List<XmlSectionSupplier> getSectionSuppliers() {
+    List<XmlSectionSupplier> getSectionSuppliers() {
         if (sectionSuppliers == null) {
             this.sectionSuppliers = new ArrayList<>();
         }
