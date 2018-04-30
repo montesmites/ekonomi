@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<defintion>
+    <section id="section-1">
+        <description>Section 1</description>
+        <account-group>
+            <description>Description 1-1</description>
+            <regex>Regex 1-1</regex>
+        </account-group>
+    </section>
+    <section id="section-2">
+        <description>Section 2</description>
+        <account-group>
+            <description>Description 2-1</description>
+            <regex>Regex 2-1</regex>
+        </account-group>
+        <compact-section/>
+    </section>
+    <report description="Two SectionRefs, One Compact Ref, One Compact Section">
+        <section-ref id="section-1">
+            <compact-section/>
+        </section-ref>
+        <section-ref id="section-2"/>
+    </report>
+</defintion>

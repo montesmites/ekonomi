@@ -3,7 +3,7 @@ package se.montesmites.ekonomi.report.xml;
 import javax.xml.bind.annotation.XmlAttribute;
 import java.util.function.Function;
 
-class XmlSectionRef implements XmlSectionSupplier {
+class XmlSectionRef extends XmlSectionCommonJAXB implements XmlSectionSupplier {
     private String id;
 
     @XmlAttribute
@@ -17,6 +17,8 @@ class XmlSectionRef implements XmlSectionSupplier {
 
     @Override
     public XmlSection get(Function<String, XmlSection> sections) {
-        return sections.apply(id);
+        var section = sections.apply(id);
+        section.getDecorators().addAll(getDecorators());
+        return section;
     }
 }

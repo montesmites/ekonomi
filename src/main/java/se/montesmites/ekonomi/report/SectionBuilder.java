@@ -5,10 +5,12 @@ import java.util.List;
 
 public class SectionBuilder {
     private final String description;
+    private final List<SectionDecorator> decorators;
     private final List<RowBuilder> bodyRowBuilders;
 
     public SectionBuilder(String description) {
         this.description = description;
+        this.decorators = new ArrayList<>();
         this.bodyRowBuilders = new ArrayList<>();
     }
 
@@ -22,5 +24,13 @@ public class SectionBuilder {
 
     public List<RowBuilder> getBodyRowBuilders() {
         return bodyRowBuilders;
+    }
+
+    public List<SectionDecorator> getDecorators() {
+        return decorators;
+    }
+
+    public void addSectionDecorator(SectionDecorator decorator) {
+        this.decorators.add(decorator);
     }
 }

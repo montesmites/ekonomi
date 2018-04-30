@@ -133,20 +133,20 @@
         <section-ref id="förnödenheter"/>
         <section-ref id="övrigt"/>
         <section-ref id="före jämförelsestörande poster">
-            <type>compact</type>
-            <type>totalling</type>
+            <compact-section/>
+            <totalling-section/>
         </section-ref>
         <section-ref id="jämförelsestörande poster"/>
         <section-ref id="förändring likvida medel">
-            <type>compact</type>
-            <type>negated</type>
+            <compact-section/>
+            <negated-section/>
         </section-ref>
         <section-ref id="kontrollsumma">
-            <type>compact</type>
-            <type>totalling</type>
+            <compact-section/>
+            <totalling-section/>
         </section-ref>
         <section-ref id="ackumulerade likvida medel">
-            <type>accumulating</type>
+            <accumulating-section/>
         </section-ref>
     </report>
 </defintion>

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class XmlSection implements XmlSectionSupplier {
+public class XmlSection extends XmlSectionCommonJAXB implements XmlSectionSupplier {
     private String id;
     private String description;
     private List<XmlAccountGroupSupplier> accountGroupSuppliers;
@@ -51,6 +51,7 @@ public class XmlSection implements XmlSectionSupplier {
         var builder = new SectionBuilder(description);
         var accountGroups = getAccountGroupSuppliers().stream().map(accountGroup -> accountGroup.get(accountGroupsMap));
         accountGroups.map(group -> group.toRowBuilder(fetcher, year)).forEach(builder::addBodyRowBuilder);
+        getDecorators().forEach(builder::addSectionDecorator);
         return builder;
     }
 
