@@ -44,8 +44,8 @@ class Main {
         );
         var total
                 = new TotallingSection(
-                        "Kontrollsumma",
-                        sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT, JAMFORELSESTORANDE_POSTER, FORANDRING_LIKVIDA_MEDEL)) {
+                "Kontrollsumma",
+                sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT, JAMFORELSESTORANDE_POSTER, FORANDRING_LIKVIDA_MEDEL)) {
             @Override
             public Row wrapSectionRow(Section section, Row row) {
                 if (sectionEquals(section, FORANDRING_LIKVIDA_MEDEL)) {
@@ -59,31 +59,32 @@ class Main {
             private boolean sectionEquals(Section section, NikkaSection nikkaSection) {
                 return section.streamTitle().findFirst().get().formatText(
                         DESCRIPTION).trim().toUpperCase().equals(
-                                nikkaSection.getTitle().trim().toUpperCase());
+                        nikkaSection.getTitle().trim().toUpperCase());
             }
         };
         var accumulation
                 = new AccumulatingSection(
-                        "Ackumulerade likvida medel",
-                        () -> Stream.of(new AccumulatingNegatedRow(
-                                fetcher,
-                                ()
+                "Ackumulerade likvida medel",
+                () -> Stream.of(new AccumulatingNegatedRow(
+                        fetcher,
+                        ()
                                 -> new AccountFilterByRegex("1493|19\\d\\d")
-                                        .filter(fetcher.streamAccountIds(
-                                                year)),
-                                year)));
+                                .filter(fetcher.streamAccountIds(
+                                        year)),
+                        year)));
         return new CashflowReport(
                 fetcher,
-                year, () -> Stream.of(
+                year,
+                () -> Stream.of(
                         s(year, INKOMSTER),
-                s(year, BOENDE),
-                s(year, FORNODENHETER),
-                s(year, OVRIGT),
-                new CompactSection(foreJamforelsestorandePoster),
-                s(year, JAMFORELSESTORANDE_POSTER),
-                new CompactSection(s(year, FORANDRING_LIKVIDA_MEDEL)),
-                new CompactSection(total),
-                accumulation));
+                        s(year, BOENDE),
+                        s(year, FORNODENHETER),
+                        s(year, OVRIGT),
+                        new CompactSectionDecorator().decorate(foreJamforelsestorandePoster),
+                        s(year, JAMFORELSESTORANDE_POSTER),
+                        new CompactSectionDecorator().decorate(s(year, FORANDRING_LIKVIDA_MEDEL)),
+                        new CompactSectionDecorator().decorate(total),
+                        accumulation));
     }
 
     private void renderToFile(CashflowReport report, Path path) throws IOException {
@@ -92,8 +93,8 @@ class Main {
 
     private List<Section> sections(Year year, NikkaSection... sections) {
         return Arrays.stream(sections)
-                .map(section -> section.section(fetcher, year))
-                .collect(toList());
+                     .map(section -> section.section(fetcher, year))
+                     .collect(toList());
 
     }
 

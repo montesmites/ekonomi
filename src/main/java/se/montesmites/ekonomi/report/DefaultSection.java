@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class DefaultSection implements Section {
-
     private final TitleRow title;
     private final HeaderRow header;
     private final FooterRow footer;

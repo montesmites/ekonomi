@@ -3,7 +3,6 @@ package se.montesmites.ekonomi.report;
 import java.util.stream.Stream;
 
 public interface Section {
-    
     default Stream<Row> streamTitle() {
         return Stream.empty();
     }

@@ -1,6 +1,9 @@
 package se.montesmites.ekonomi.model;
 
 public class Currency {
+    public static Currency of(long amount) {
+        return new Currency(amount);
+    }
 
     private final int decimals = 2;
     private final double divisor = Math.pow(10, decimals);

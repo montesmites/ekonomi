@@ -4,18 +4,12 @@ import java.util.stream.Stream;
 
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
-public class CompactSection implements Section {
-    private final Section section;
-
-    public CompactSection(Section section) {
-        this.section = section;
-    }
-
+public class CompactSectionDecorator implements SectionDecorator {
     @Override
-    public Stream<Row> stream() {
-        Row title = section.streamTitle().findFirst().get();
-        Row total = section.streamFooter().findFirst().get();
-        Row row = new Row() {
+    public Section decorate(Section section) {
+        var title = section.streamTitle().findFirst().get();
+        var total = section.streamFooter().findFirst().get();
+        var row = new Row() {
             @Override
             public String formatDescription() {
                 return title.formatText(DESCRIPTION);
@@ -36,6 +30,11 @@ public class CompactSection implements Section {
                 return total.formatAverage();
             }
         };
-        return Stream.of(row, new EmptyRow());
+        return new Section() {
+            @Override
+            public Stream<Row> stream() {
+                return Stream.of(row, new EmptyRow());
+            }
+        };
     }
 }
