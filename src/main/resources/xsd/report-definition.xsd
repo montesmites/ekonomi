@@ -5,51 +5,51 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:element name="definition">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
+            <xs:sequence>
                 <xs:element ref="report"/>
-                <xs:element ref="section"/>
-                <xs:element ref="account-group"/>
-            </xs:choice>
+                <xs:element ref="section" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="account-group" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:element name="report">
         <xs:complexType>
-            <xs:choice maxOccurs="unbounded">
-                <xs:element ref="section"/>
-                <xs:element ref="section-ref"/>
-            </xs:choice>
+            <xs:sequence>
+                <xs:element ref="section" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="section-ref" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
     <xs:element name="section">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="description" type="xs:string"/>
-                <xs:choice maxOccurs="unbounded">
-                    <xs:element ref="account-group"/>
-                    <xs:element ref="account-group-ref"/>
-                    <xs:element ref="section-ref"/>
-                    <xs:element ref="section"/>
-                </xs:choice>
+                <xs:sequence>
+                    <xs:element ref="account-group" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element ref="account-group-ref" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element ref="section-ref" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element ref="section" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
             </xs:sequence>
             <xs:attribute name="id" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="section-ref">
         <xs:complexType>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element name="compact-section">
+            <xs:sequence>
+                <xs:element name="compact-section" minOccurs="0">
                     <xs:complexType/>
                 </xs:element>
-                <xs:element name="totalling-section">
+                <xs:element name="totalling-section" minOccurs="0">
                     <xs:complexType/>
                 </xs:element>
-                <xs:element name="negated-section">
+                <xs:element name="negated-section" minOccurs="0">
                     <xs:complexType/>
                 </xs:element>
-                <xs:element name="accumulating-section">
+                <xs:element name="accumulating-section" minOccurs="0">
                     <xs:complexType/>
                 </xs:element>
-            </xs:choice>
+            </xs:sequence>
             <xs:attribute name="id" type="xs:string"/>
         </xs:complexType>
     </xs:element>

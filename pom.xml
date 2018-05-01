@@ -15,6 +15,7 @@
 
         <javax.activation.version>1.1.1</javax.activation.version>
         <javax.jaxb.version>2.3.0</javax.jaxb.version>
+        <jaxb2-maven-plugin.version>2.3.1</jaxb2-maven-plugin.version>
 
         <junit.version>5.0.2</junit.version>
         <junit.platform.surefire.provider.version>1.0.2</junit.platform.surefire.provider.version>
@@ -94,4 +95,53 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>jaxb</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <tasks>
+                                        <echo message="Creating target/generated-sources/jaxb"/>
+                                        <mkdir dir="./target/generated-sources/jaxb"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate schema types</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <executable>xjc</executable>
+                            <arguments>
+                                <argument>-d</argument>
+                                <argument>target/generated-sources/jaxb</argument>
+                                <argument>src/main/resources/xsd/report-definition.xsd</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
