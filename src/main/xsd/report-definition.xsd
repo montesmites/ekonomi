@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="se/montesmites/ekonomi/report-definition"
+           elementFormDefault="qualified"
+           xmlns="se/montesmites/ekonomi/report-definition"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="definition">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="report"/>
+                <xs:element ref="section"/>
+                <xs:element ref="account-group"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="report">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element ref="section"/>
+                <xs:element ref="section-ref"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="section">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="description" type="xs:string"/>
+                <xs:choice maxOccurs="unbounded">
+                    <xs:element ref="account-group"/>
+                    <xs:element ref="account-group-ref"/>
+                    <xs:element ref="section-ref"/>
+                    <xs:element ref="section"/>
+                </xs:choice>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="section-ref">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="compact-section">
+                    <xs:complexType/>
+                </xs:element>
+                <xs:element name="totalling-section">
+                    <xs:complexType/>
+                </xs:element>
+                <xs:element name="negated-section">
+                    <xs:complexType/>
+                </xs:element>
+                <xs:element name="accumulating-section">
+                    <xs:complexType/>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="id" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="account-group">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="regex" type="xs:string"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="account-group-ref">
+        <xs:complexType>
+            <xs:attribute name="id" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
