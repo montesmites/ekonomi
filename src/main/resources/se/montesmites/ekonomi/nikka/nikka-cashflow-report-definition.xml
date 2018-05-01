@@ -146,6 +146,7 @@
             <totalling-section/>
         </section-ref>
         <section-ref id="ackumulerade likvida medel">
+            <compact-section/>
             <accumulating-section/>
         </section-ref>
     </report>
