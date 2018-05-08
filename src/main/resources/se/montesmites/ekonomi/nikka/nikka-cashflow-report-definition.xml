@@ -24,8 +24,8 @@
             <regex>2353</regex>
         </account-group>
         <account-group>
-            <description>Bolån ränta</description>
-            <regex>84[01]\d</regex>
+            <description>Bolån ränta och liknande</description>
+            <regex>84[019]\d</regex>
         </account-group>
         <account-group>
             <description>Hemförsäkring</description>
@@ -85,12 +85,12 @@
             <regex>(1[5-8]|2[4-9])\d\d</regex>
         </account-group>
         <account-group>
-            <description>Långsiktigt netto</description>
-            <regex>(10\d|13[456])\d</regex>
+            <description>Långfristigt netto</description>
+            <regex>(8[56]\d\d)|(10\d\d|13[456]\d)</regex>
         </account-group>
         <account-group>
             <description>Finansiellt netto</description>
-            <regex>8(3\d|4[2-9])\d</regex>
+            <regex>(83\d\d)|(84[2-8]\d)</regex>
         </account-group>
         <account-group>
             <description>Investering boende</description>

@@ -15,14 +15,14 @@ enum NikkaAccountGroup {
     HEMFORSAKRING("Hemförsäkring", "5081"),
     MOBIL_TV_BREDBAND("Mobil, tv, bredband", "51\\d\\d"),
     BOENDE_DIVERSE("Boende diverse", "5060|5[458]\\d\\d"),
-    BOLAN_RANTA("Bolån ränta", "84[01]\\d"),
+    BOLAN_RANTA("Bolån ränta och liknande", "84[019]\\d"),
     TRANSPORTER("Transporter", "56\\d\\d"),
     OVRIGT("Övrigt", "(4[89]|[67]\\d)\\d\\d"),
     KORTFRISTIGT_NETTO("Kortfristigt netto", "(1[5-8]|2[4-9])\\d\\d"),
     AMORTERING_FREDSGATAN_13("Amortering Fredsgatan 13", "2353"),
     INVESTERING_BOENDE("Investering boende", "11\\d\\d"),
-    LANGSIKTIGT_NETTO("Långsiktigt netto", "(10\\d|13[456])\\d"),
-    FINANSIELLT_NETTO("Finansiellt netto", "8(3\\d|4[2-9])\\d"),
+    LANGSIKTIGT_NETTO("Långfristigt netto", "(8[56]\\d\\d)|(10\\d\\d|13[456]\\d)"),
+    FINANSIELLT_NETTO("Finansiellt netto", "(83\\d\\d)|(84[2-8]\\d)"),
     EXTRAORDINART_NETTO("Extraordinärt netto", "87\\d\\d"),
     LIKVIDA_MEDEL("Likvida medel", "1493|19\\d\\d");
 
