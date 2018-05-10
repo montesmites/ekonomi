@@ -16,6 +16,7 @@
         <javax.activation.version>1.1.1</javax.activation.version>
         <javax.jaxb.version>2.3.0</javax.jaxb.version>
         <jaxb2-maven-plugin.version>2.3.1</jaxb2-maven-plugin.version>
+        <jaxb.resources.path>src/main/resources/xsd</jaxb.resources.path>
 
         <junit.version>5.0.2</junit.version>
         <junit.platform.surefire.provider.version>1.0.2</junit.platform.surefire.provider.version>
@@ -135,8 +136,8 @@
                             <executable>xjc</executable>
                             <arguments>
                                 <argument>-d</argument>
-                                <argument>target/generated-sources/jaxb</argument>
-                                <argument>src/main/resources/xsd/report-definition.xsd</argument>
+                                <argument>${project.build.directory}/generated-sources/jaxb</argument>
+                                <argument>${jaxb.resources.path}/report-definition.xsd</argument>
                             </arguments>
                         </configuration>
                     </plugin>

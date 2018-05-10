@@ -29,26 +29,24 @@
                     <xs:element ref="account-group-ref" minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element ref="section-ref" minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element ref="section" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="section-decorator" maxOccurs="unbounded" type="section-decorator"/>
                 </xs:sequence>
             </xs:sequence>
             <xs:attribute name="id" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
+    <xs:simpleType name="section-decorator">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="COMPACT_SECTION"/>
+            <xs:enumeration value="TOTALLING_SECTION"/>
+            <xs:enumeration value="NEGATING_SECTION"/>
+            <xs:enumeration value="ACCUMULATING_SECTION"/>
+        </xs:restriction>
+    </xs:simpleType>
     <xs:element name="section-ref">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element name="compact-section" minOccurs="0">
-                    <xs:complexType/>
-                </xs:element>
-                <xs:element name="totalling-section" minOccurs="0">
-                    <xs:complexType/>
-                </xs:element>
-                <xs:element name="negated-section" minOccurs="0">
-                    <xs:complexType/>
-                </xs:element>
-                <xs:element name="accumulating-section" minOccurs="0">
-                    <xs:complexType/>
-                </xs:element>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="section-decorator" type="section-decorator"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:string"/>
         </xs:complexType>
