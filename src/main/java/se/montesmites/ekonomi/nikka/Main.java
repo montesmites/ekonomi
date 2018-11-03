@@ -19,7 +19,7 @@ import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 class Main {
 
     public static void main(String[] args) throws Exception {
-        var year = Year.of(2017);
+        var year = Year.of(2018);
         var fmt = "c:/temp/nikka/Kassaflöde %d.txt";
         var fileName = String.format(fmt, year.getValue());
         var path = Paths.get(fileName);
