@@ -18,6 +18,7 @@
                 <xs:element ref="section" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element ref="section-ref" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
+            <xs:attribute name="description" type="xs:string"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="section">
@@ -29,24 +30,24 @@
                     <xs:element ref="account-group-ref" minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element ref="section-ref" minOccurs="0" maxOccurs="unbounded"/>
                     <xs:element ref="section" minOccurs="0" maxOccurs="unbounded"/>
-                    <xs:element name="section-decorator" maxOccurs="unbounded" type="section-decorator"/>
+                    <xs:group ref="section-decorator" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
             </xs:sequence>
             <xs:attribute name="id" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
-    <xs:simpleType name="section-decorator">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="COMPACT_SECTION"/>
-            <xs:enumeration value="TOTALLING_SECTION"/>
-            <xs:enumeration value="NEGATING_SECTION"/>
-            <xs:enumeration value="ACCUMULATING_SECTION"/>
-        </xs:restriction>
-    </xs:simpleType>
+    <xs:group name="section-decorator">
+        <xs:choice>
+            <xs:element name="compact-section"/>
+            <xs:element name="totalling-section"/>
+            <xs:element name="negated-section"/>
+            <xs:element name="accumulating-section"/>
+        </xs:choice>
+    </xs:group>
     <xs:element name="section-ref">
         <xs:complexType>
-            <xs:sequence maxOccurs="unbounded">
-                <xs:element name="section-decorator" type="section-decorator"/>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:group ref="section-decorator"/>
             </xs:sequence>
             <xs:attribute name="id" type="xs:string"/>
         </xs:complexType>

@@ -2,6 +2,29 @@
 <definition	xmlns="se/montesmites/ekonomi/report-definition"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="se/montesmites/ekonomi/report-definition ../../../../xsd/report-definition.xsd">
+    <report>
+        <section-ref id="inkomster"/>
+        <section-ref id="boende"/>
+        <section-ref id="förnödenheter"/>
+        <section-ref id="övrigt"/>
+        <section-ref id="före jämförelsestörande poster">
+            <compact-section/>
+            <totalling-section/>
+        </section-ref>
+        <section-ref id="jämförelsestörande poster"/>
+        <section-ref id="förändring likvida medel">
+            <compact-section/>
+            <negated-section/>
+        </section-ref>
+        <section-ref id="kontrollsumma">
+            <compact-section/>
+            <totalling-section/>
+        </section-ref>
+        <section-ref id="ackumulerade likvida medel">
+            <compact-section/>
+            <accumulating-section/>
+        </section-ref>
+    </report>
     <section id="inkomster">
         <description>Inkomster</description>
         <account-group>
@@ -105,10 +128,6 @@
         <description>Förändring likvida medel</description>
         <account-group-ref id="likvida medel"/>
     </section>
-    <account-group id="likvida medel">
-        <description>Likvida medel</description>
-        <regex>1493|19\d\d</regex>
-    </account-group>
     <section id="före jämförelsestörande poster">
         <description>Före jämförelsestörande poster</description>
         <section-ref id="inkomster"/>
@@ -129,27 +148,8 @@
         <description>Ackumulerade likvida medel</description>
         <account-group-ref id="likvida medel"/>
     </section>
-    <report>
-        <section-ref id="inkomster"/>
-        <section-ref id="boende"/>
-        <section-ref id="förnödenheter"/>
-        <section-ref id="övrigt"/>
-        <section-ref id="före jämförelsestörande poster">
-            <compact-section/>
-            <totalling-section/>
-        </section-ref>
-        <section-ref id="jämförelsestörande poster"/>
-        <section-ref id="förändring likvida medel">
-            <compact-section/>
-            <negated-section/>
-        </section-ref>
-        <section-ref id="kontrollsumma">
-            <compact-section/>
-            <totalling-section/>
-        </section-ref>
-        <section-ref id="ackumulerade likvida medel">
-            <compact-section/>
-            <accumulating-section/>
-        </section-ref>
-    </report>
+    <account-group id="likvida medel">
+        <description>Likvida medel</description>
+        <regex>1493|19\d\d</regex>
+    </account-group>
 </definition>
