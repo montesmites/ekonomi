@@ -1,5 +1,7 @@
 package se.montesmites.ekonomi.model;
 
+import se.montesmites.ekonomi.i18n.Messages;
+
 public class Currency {
     public static Currency of(long amount) {
         return new Currency(amount);
@@ -21,12 +23,16 @@ public class Currency {
         return amount;
     }
 
-    private double toDouble() {
+    public int getDecimalPlaces() {
+        return decimals;
+    }
+
+    public double toDouble() {
         return (double) amount / divisor;
     }
     
     public String format() {
-        return String.format("%,.2f", toDouble());
+        return Messages.formatNumber(this);
     }
 
     @Override

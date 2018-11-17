@@ -1,23 +1,24 @@
 package se.montesmites.ekonomi.report;
 
-import java.time.format.TextStyle;
-import java.util.Locale;
+import se.montesmites.ekonomi.i18n.Messages;
+
+import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_AVERAGE;
+import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_TOTAL;
 
 public interface HeaderRow extends Row {
 
     @Override
     default String formatMonth(Column column) {
-        return column.getMonth().get()
-                .getDisplayName(TextStyle.SHORT, Locale.getDefault());
+        return Messages.getShortMonth(column.getMonth().orElseThrow());
     }
 
     @Override
     default String formatTotal() {
-        return "totalt";
+        return Messages.get(HEADER_ROW_TOTAL);
     }
 
     @Override
     default String formatAverage() {
-        return "medel";
+        return Messages.get(HEADER_ROW_AVERAGE);
     }
 }

@@ -1,10 +1,6 @@
 package se.montesmites.ekonomi.report;
 
-import se.montesmites.ekonomi.model.AccountId;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -12,18 +8,12 @@ import static java.util.stream.Collectors.*;
 
 public class CashflowReport {
 
-    private static Set<AccountId> set(AccountId accountId) {
-        Set<AccountId> set = new HashSet<>();
-        set.add(accountId);
-        return set;
-    }
-
     private static Stream<Row> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
         return fetcher.streamAccountIds(year)
                 .map(accountId
                         -> new DefaultRowWithAccounts(
                         fetcher,
-                        () -> set(accountId).stream(),
+                        () -> Stream.of(accountId),
                         year,
                         accountId.getId()));
     }
