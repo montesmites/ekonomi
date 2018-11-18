@@ -13,7 +13,7 @@ public class DefaultSection implements Section {
         this.title = () -> title;
         this.header = new HeaderRow() {
         };
-        this.footer = new DefaultFooterRow(this);
+        this.footer = () -> this::streamBody;
         this.bodyRows = bodyRows;
     }
     

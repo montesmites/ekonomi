@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class TotallingSection implements Section {
@@ -26,19 +27,19 @@ public class TotallingSection implements Section {
 
     @Override
     public Stream<Row> streamFooter() {
-        return Stream.of(
-                new DefaultFooterRow(
-                        ()
-                        -> sections.stream()
-                                .flatMap(
-                                        (Section section) -> section.streamBody()
-                                                .flatMap(row
-                                                        -> Stream.of(
-                                                        wrapSectionRow(
-                                                                section,
-                                                                row)))
-                                )),
-                new EmptyRow());
+        return Stream.<Row>builder().add(streamSectionRows()).add(new EmptyRow()).build();
+    }
+
+    private FooterRow streamSectionRows() {
+        return () -> () -> sections.stream().flatMap(streamWrappedBody());
+    }
+
+    private Function<Section, Stream<? extends Row>> streamWrappedBody() {
+        return (Section section) -> section.streamBody().flatMap(wrapRow(section));
+    }
+
+    private Function<Row, Stream<? extends Row>> wrapRow(Section section) {
+        return row -> Stream.of(wrapSectionRow(section, row));
     }
 
     protected Row wrapSectionRow(Section section, Row row) {
