@@ -9,11 +9,13 @@ import testdata.OrganizationInjector;
 
 import java.time.Year;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
+import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class CashflowReport_OneSection_OneRow_Test {
@@ -33,7 +35,8 @@ class CashflowReport_OneSection_OneRow_Test {
         this.fetcher = new CashflowDataFetcher(this.organization);
         this.report = new CashflowReport(fetcher, year, this::sections);
         this.groups = List.of(BOKFORT_RESULTAT);
-        this.section = new DefaultSection(DEN_LOPANDE_VERKSAMHETEN, () -> bodyRowsOf(fetcher, groups));
+        var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
+        this.section = Section.of(() -> DEN_LOPANDE_VERKSAMHETEN, () -> HEADER_TYPE_SHORT_MONTHS, bodyRows, () -> bodyRows);
     }
 
     private Stream<Section> sections() {
@@ -47,8 +50,8 @@ class CashflowReport_OneSection_OneRow_Test {
 
     @Test
     void sectionTitle() {
-        final String exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
-        final String act = section.streamTitle().findFirst().get().formatText(DESCRIPTION);
+        var exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
+        var act = section.streamTitle().findFirst().orElseThrow().formatText(DESCRIPTION);
         assertEquals(exp, act);
     }
 

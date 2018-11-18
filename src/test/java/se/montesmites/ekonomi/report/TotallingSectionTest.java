@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
+import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class TotallingSectionTest {
@@ -29,14 +30,14 @@ class TotallingSectionTest {
     @BeforeEach
     void before() {
         this.fetcher = new CashflowDataFetcher(this.organization);
-        section1 = new DefaultSection("Section 1", () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
-        section2 = new DefaultSection("Section 2", () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
+        section1 = Section.of(() -> "Section 1", () -> HEADER_TYPE_SHORT_MONTHS, () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)), () -> () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
+        section2 = Section.of(() -> "Section 2", () -> HEADER_TYPE_SHORT_MONTHS, () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)), () -> () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
         totallingSection = new TotallingSection(TOTALLING_SECTION_TITLE, List.of(section1, section2));
     }
 
     @Test
     void assertTitle() {
-        Assertions.assertEquals(TOTALLING_SECTION_TITLE, totallingSection.streamTitle().findFirst().get().formatText(DESCRIPTION));
+        Assertions.assertEquals(TOTALLING_SECTION_TITLE, totallingSection.streamTitle().findFirst().orElseThrow().formatText(DESCRIPTION));
     }
 
     @Test
@@ -50,16 +51,16 @@ class TotallingSectionTest {
         Column.streamMonths().forEach(month -> Assertions.assertEquals(
                 expectedMonthlyTotal(month),
                 totallingSection.streamFooter()
-                        .findFirst().get()
-                        .asRowWithAmounts().get()
-                        .getMonthlyAmount(month),
+                                .findFirst().orElseThrow()
+                                .asRowWithAmounts().orElseThrow()
+                                .getMonthlyAmount(month),
                 month.name())
         );
     }
 
     private Currency expectedMonthlyTotal(Column month) {
         return Stream.of(section1, section2)
-                .map(section -> section.streamFooter().findFirst().get().asRowWithAmounts().get().getMonthlyAmount(month))
-                .reduce(new Currency(0), Currency::add);
+                     .map(section -> section.streamFooter().findFirst().orElseThrow().asRowWithAmounts().orElseThrow().getMonthlyAmount(month))
+                     .reduce(new Currency(0), Currency::add);
     }
 }

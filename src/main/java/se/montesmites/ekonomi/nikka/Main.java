@@ -48,22 +48,22 @@ class Main {
                 sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT, JAMFORELSESTORANDE_POSTER, FORANDRING_LIKVIDA_MEDEL)) {
             @Override
             public Row wrapSectionRow(Section section, Row row) {
-                if (sectionEquals(section, FORANDRING_LIKVIDA_MEDEL)) {
+                if (sectionEqualsForandringLikvidaMedel(section)) {
                     return new DefaultRowWithAccountsWithNegatedAmounts(
-                            row.asRowWithAccounts().get());
+                            row.asRowWithAccounts().orElseThrow());
                 } else {
                     return row;
                 }
             }
 
-            private boolean sectionEquals(Section section, NikkaSection nikkaSection) {
-                return section.streamTitle().findFirst().get().formatText(
+            private boolean sectionEqualsForandringLikvidaMedel(Section section) {
+                return section.streamTitle().findFirst().orElseThrow().formatText(
                         DESCRIPTION).trim().toUpperCase().equals(
-                        nikkaSection.getTitle().trim().toUpperCase());
+                        NikkaSection.FORANDRING_LIKVIDA_MEDEL.getTitle().trim().toUpperCase());
             }
         };
         var accumulation
-                = new AccumulatingSection(
+                = AccumulatingSection.of(
                 "Ackumulerade likvida medel",
                 () -> Stream.of(new AccumulatingNegatedRow(
                         fetcher,

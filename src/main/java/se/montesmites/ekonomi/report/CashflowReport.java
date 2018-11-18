@@ -5,27 +5,31 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
+import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
 
 public class CashflowReport {
 
     private static Stream<Row> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
         return fetcher.streamAccountIds(year)
-                .map(accountId
-                        -> new DefaultRowWithAccounts(
-                        fetcher,
-                        () -> Stream.of(accountId),
-                        year,
-                        accountId.getId()));
+                      .map(accountId
+                                   -> new DefaultRowWithAccounts(
+                              fetcher,
+                              () -> Stream.of(accountId),
+                              year,
+                              accountId.getId()));
     }
 
     private final Supplier<Stream<Section>> sections;
 
     CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
         this(fetcher, year, ()
-                -> Stream.of(
-                        new DefaultSection(
-                                "Unspecified Accounts",
-                                () -> bodyRows(fetcher, year))));
+                -> {
+            var bodyRows = (Supplier<Stream<Row>>) () -> bodyRows(fetcher, year);
+            return Stream.of(
+                    Section.of(
+                            () -> "Unspecified Accounts", () -> HEADER_TYPE_SHORT_MONTHS,
+                            bodyRows, () -> bodyRows));
+        });
     }
 
     public CashflowReport(CashflowDataFetcher fetcher, java.time.Year year, Supplier<Stream<Section>> sections) {
@@ -39,10 +43,10 @@ public class CashflowReport {
     public List<String> render() {
         return streamSections()
                 .flatMap(section -> section.stream()
-                .flatMap(row -> Column.stream()
-                .map(column -> format(row, column))
-                .collect(collectingAndThen(joining(), Stream::of)))).
-                collect(toList());
+                                           .flatMap(row -> Column.stream()
+                                                                 .map(column -> format(row, column))
+                                                                 .collect(collectingAndThen(joining(), Stream::of)))).
+                        collect(toList());
     }
 
     private String format(Row row, Column column) {

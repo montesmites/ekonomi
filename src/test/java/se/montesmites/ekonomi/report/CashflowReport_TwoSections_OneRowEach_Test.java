@@ -8,12 +8,14 @@ import testdata.DefaultTestDataExtension;
 import testdata.OrganizationInjector;
 
 import java.time.Year;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
+import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class CashflowReport_TwoSections_OneRowEach_Test {
@@ -36,7 +38,9 @@ class CashflowReport_TwoSections_OneRowEach_Test {
     }
 
     private Map.Entry<Section, List<CashflowReport_AccountGroup_2012>> section(String title, List<CashflowReport_AccountGroup_2012> groups) {
-        return new SimpleEntry<>(new DefaultSection(title, () -> bodyRowsOf(fetcher, groups)), groups);
+        var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
+        var section = Section.of(() -> title, () -> HEADER_TYPE_SHORT_MONTHS, bodyRows, () -> bodyRows);
+        return Map.entry(section, groups);
     }
 
     @Test

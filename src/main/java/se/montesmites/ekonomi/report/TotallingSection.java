@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
+
 public class TotallingSection implements Section {
 
     private final String title;
@@ -21,8 +23,7 @@ public class TotallingSection implements Section {
 
     @Override
     public Stream<Row> streamHeader() {
-        return Stream.of(new HeaderRow() {
-        });
+        return Stream.of((HeaderRow) () -> HEADER_TYPE_SHORT_MONTHS);
     }
 
     @Override
