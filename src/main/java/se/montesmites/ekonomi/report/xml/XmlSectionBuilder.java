@@ -10,7 +10,7 @@ public class XmlSectionBuilder {
     private final List<SectionDecorator> decorators;
     private final List<XmlRowBuilder> bodyRowBuilders;
 
-    public XmlSectionBuilder(String description) {
+    XmlSectionBuilder(String description) {
         this.description = description;
         this.decorators = new ArrayList<>();
         this.bodyRowBuilders = new ArrayList<>();
@@ -20,19 +20,19 @@ public class XmlSectionBuilder {
         return description;
     }
 
-    public void addBodyRowBuilder(XmlRowBuilder rowBuilder) {
+    void addBodyRowBuilder(XmlRowBuilder rowBuilder) {
         this.bodyRowBuilders.add(rowBuilder);
     }
 
-    public List<XmlRowBuilder> getBodyRowBuilders() {
+    List<XmlRowBuilder> getBodyRowBuilders() {
         return bodyRowBuilders;
     }
 
-    public List<SectionDecorator> getDecorators() {
+    List<SectionDecorator> getDecorators() {
         return decorators;
     }
 
-    public void addSectionDecorator(SectionDecorator decorator) {
+    void addSectionDecorator(SectionDecorator decorator) {
         this.decorators.add(decorator);
     }
 }

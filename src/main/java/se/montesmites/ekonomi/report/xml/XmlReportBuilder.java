@@ -13,7 +13,7 @@ public class XmlReportBuilder {
     private final List<XmlSectionBuilder> sectionBuilders;
     private final String description;
 
-    public XmlReportBuilder(Organization organization, Year year, String description, List<XmlSection> xmlSections) {
+    XmlReportBuilder(Organization organization, Year year, String description, List<XmlSection> xmlSections) {
         this.organization = organization;
         this.year = year;
         this.description = description;
@@ -29,11 +29,11 @@ public class XmlReportBuilder {
         return year;
     }
 
-    public void addSectionBuilder(XmlSectionBuilder sectionBuilder) {
+    void addSectionBuilder(XmlSectionBuilder sectionBuilder) {
         this.sectionBuilders.add(sectionBuilder);
     }
 
-    public List<XmlSectionBuilder> getSectionBuilders() {
+    List<XmlSectionBuilder> getSectionBuilders() {
         return sectionBuilders;
     }
 
