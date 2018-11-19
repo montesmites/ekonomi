@@ -33,6 +33,20 @@ public interface Section {
         };
     }
 
+    static Section of(Supplier<Stream<Row>> rows) {
+        return new Section() {
+            @Override
+            public Stream<Row> streamAfterSection() {
+                return Stream.empty();
+            }
+
+            @Override
+            public Stream<Row> stream() {
+                return rows.get();
+            }
+        };
+    }
+
     default Stream<Row> streamBeforeSection() {
         return Stream.empty();
     }
