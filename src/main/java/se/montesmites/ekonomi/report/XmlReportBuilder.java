@@ -7,14 +7,14 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportBuilder {
+public class XmlReportBuilder {
     private final Organization organization;
     private final java.time.Year year;
     private final List<XmlSection> xmlSections;
-    private final List<SectionBuilder> sectionBuilders;
+    private final List<XmlSectionBuilder> sectionBuilders;
     private final String description;
 
-    public ReportBuilder(Organization organization, Year year, String description, List<XmlSection> xmlSections) {
+    public XmlReportBuilder(Organization organization, Year year, String description, List<XmlSection> xmlSections) {
         this.organization = organization;
         this.year = year;
         this.description = description;
@@ -30,11 +30,11 @@ public class ReportBuilder {
         return year;
     }
 
-    public void addSectionBuilder(SectionBuilder sectionBuilder) {
+    public void addSectionBuilder(XmlSectionBuilder sectionBuilder) {
         this.sectionBuilders.add(sectionBuilder);
     }
 
-    public List<SectionBuilder> getSectionBuilders() {
+    public List<XmlSectionBuilder> getSectionBuilders() {
         return sectionBuilders;
     }
 

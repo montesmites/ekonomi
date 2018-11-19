@@ -2,13 +2,13 @@ package se.montesmites.ekonomi.report;
 
 import java.time.Year;
 
-public class RowBuilder {
+public class XmlRowBuilder {
     private final CashflowDataFetcher fetcher;
     private final AccountFilter filter;
     private final java.time.Year year;
     private final String description;
 
-    public RowBuilder(CashflowDataFetcher fetcher, AccountFilter filter, Year year, String description) {
+    public XmlRowBuilder(CashflowDataFetcher fetcher, AccountFilter filter, Year year, String description) {
         this.fetcher = fetcher;
         this.filter = filter;
         this.year = year;

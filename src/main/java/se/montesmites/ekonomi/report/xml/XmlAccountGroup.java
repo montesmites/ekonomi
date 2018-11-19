@@ -1,6 +1,8 @@
 package se.montesmites.ekonomi.report.xml;
 
-import se.montesmites.ekonomi.report.*;
+import se.montesmites.ekonomi.report.AccountFilterByRegex;
+import se.montesmites.ekonomi.report.CashflowDataFetcher;
+import se.montesmites.ekonomi.report.XmlRowBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import java.util.function.Function;
@@ -35,8 +37,8 @@ public class XmlAccountGroup implements XmlAccountGroupSupplier {
         this.regex = regex;
     }
 
-    RowBuilder toRowBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
-        return new RowBuilder(fetcher, new AccountFilterByRegex(regex), year, description);
+    XmlRowBuilder toRowBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
+        return new XmlRowBuilder(fetcher, new AccountFilterByRegex(regex), year, description);
     }
 
     @Override

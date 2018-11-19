@@ -2,7 +2,7 @@ package se.montesmites.ekonomi.report.xml;
 
 import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.ReportBuilder;
+import se.montesmites.ekonomi.report.XmlReportBuilder;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -50,11 +50,11 @@ class XmlDefinition {
         this.accountGroups = accountGroups;
     }
 
-    ReportBuilder toReportBuilder(Organization organization, java.time.Year year) {
+    XmlReportBuilder toReportBuilder(Organization organization, java.time.Year year) {
         var sectionsMap = this.getSections().stream().collect(toMap(XmlSection::getId, identity()));
         var accountGroupsMap = this.getAccountGroups().stream().collect(toMap(XmlAccountGroup::getId, identity()));
         var fetcher = new CashflowDataFetcher(organization);
-        var builder = new ReportBuilder(organization, year, report.getDescription(), this.getSections());
+        var builder = new XmlReportBuilder(organization, year, report.getDescription(), this.getSections());
         var sections = report.getSectionSuppliers().stream().map(supplier -> supplier.get(sectionsMap::get));
         var sectionBuilders = sections.map(section -> section.toSectionBuilder(fetcher, year, accountGroupsMap::get));
         sectionBuilders.forEach(builder::addSectionBuilder);

@@ -3,12 +3,12 @@ package se.montesmites.ekonomi.report;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SectionBuilder {
+public class XmlSectionBuilder {
     private final String description;
     private final List<SectionDecorator> decorators;
-    private final List<RowBuilder> bodyRowBuilders;
+    private final List<XmlRowBuilder> bodyRowBuilders;
 
-    public SectionBuilder(String description) {
+    public XmlSectionBuilder(String description) {
         this.description = description;
         this.decorators = new ArrayList<>();
         this.bodyRowBuilders = new ArrayList<>();
@@ -18,11 +18,11 @@ public class SectionBuilder {
         return description;
     }
 
-    public void addBodyRowBuilder(RowBuilder rowBuilder) {
+    public void addBodyRowBuilder(XmlRowBuilder rowBuilder) {
         this.bodyRowBuilders.add(rowBuilder);
     }
 
-    public List<RowBuilder> getBodyRowBuilders() {
+    public List<XmlRowBuilder> getBodyRowBuilders() {
         return bodyRowBuilders;
     }
 

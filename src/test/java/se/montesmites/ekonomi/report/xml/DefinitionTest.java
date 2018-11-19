@@ -24,7 +24,7 @@ class DefinitionTest {
     private Organization organization;
 
     private XmlDefinition xmlDefinition;
-    private ReportBuilder reportBuilder;
+    private XmlReportBuilder reportBuilder;
 
     @Test
     void t01_oneSectionOneRowSimpleDefinition() {
@@ -170,19 +170,19 @@ class DefinitionTest {
         }
     }
 
-    private List<SectionBuilder> getSectionBuilders() {
+    private List<XmlSectionBuilder> getSectionBuilders() {
         return reportBuilder.getSectionBuilders();
     }
 
-    private SectionBuilder getSectionBuilderAt(int section) {
+    private XmlSectionBuilder getSectionBuilderAt(int section) {
         return getSectionBuilders().get(section);
     }
 
-    private List<RowBuilder> getBodyRowBuildersAt(int section) {
+    private List<XmlRowBuilder> getBodyRowBuildersAt(int section) {
         return getSectionBuilderAt(section).getBodyRowBuilders();
     }
 
-    private RowBuilder getBodyRowBuilderAt(int section, int row) {
+    private XmlRowBuilder getBodyRowBuilderAt(int section, int row) {
         return getBodyRowBuildersAt(section).get(row);
     }
 
