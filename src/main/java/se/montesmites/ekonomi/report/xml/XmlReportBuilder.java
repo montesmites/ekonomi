@@ -1,7 +1,6 @@
-package se.montesmites.ekonomi.report;
+package se.montesmites.ekonomi.report.xml;
 
 import se.montesmites.ekonomi.organization.Organization;
-import se.montesmites.ekonomi.report.xml.XmlSection;
 
 import java.time.Year;
 import java.util.ArrayList;

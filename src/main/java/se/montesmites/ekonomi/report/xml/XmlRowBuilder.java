@@ -1,4 +1,7 @@
-package se.montesmites.ekonomi.report;
+package se.montesmites.ekonomi.report.xml;
+
+import se.montesmites.ekonomi.report.AccountFilter;
+import se.montesmites.ekonomi.report.CashflowDataFetcher;
 
 import java.time.Year;
 

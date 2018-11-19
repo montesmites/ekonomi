@@ -1,7 +1,6 @@
 package se.montesmites.ekonomi.report.xml;
 
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.XmlSectionBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;

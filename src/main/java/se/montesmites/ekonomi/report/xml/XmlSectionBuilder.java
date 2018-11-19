@@ -1,4 +1,6 @@
-package se.montesmites.ekonomi.report;
+package se.montesmites.ekonomi.report.xml;
+
+import se.montesmites.ekonomi.report.SectionDecorator;
 
 import java.util.ArrayList;
 import java.util.List;

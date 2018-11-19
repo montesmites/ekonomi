@@ -2,7 +2,6 @@ package se.montesmites.ekonomi.report.xml;
 
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.XmlRowBuilder;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import java.util.function.Function;
