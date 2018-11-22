@@ -57,7 +57,7 @@ class Main {
             }
 
             private boolean sectionEqualsForandringLikvidaMedel(Section section) {
-                return section.streamTitle().findFirst().orElseThrow().formatText(
+                return section.streamTitle().findFirst().orElseThrow().format(
                         DESCRIPTION).trim().toUpperCase().equals(
                         NikkaSection.FORANDRING_LIKVIDA_MEDEL.getTitle().trim().toUpperCase());
             }

@@ -20,7 +20,7 @@ public enum CashflowReport_AccountGroup_2012 {
             "Bokfört resultat",
             "([3-7]\\d|8[1-8])\\d\\d",
             new Currency(3923589),
-            new EnumMap<Column, Currency>(Column.class) {
+            new EnumMap<>(Column.class) {
                 {
                     put(JANUARY, new Currency(-2866947));
                     put(FEBRUARY, new Currency(6758901));
@@ -40,7 +40,7 @@ public enum CashflowReport_AccountGroup_2012 {
             "Kortfristiga skulder",
             "2[4-9]\\d\\d",
             new Currency(950219),
-            new EnumMap<Column, Currency>(
+            new EnumMap<>(
                     Column.class) {
                 {
                     put(JANUARY, new Currency(-1387853));
@@ -73,14 +73,14 @@ public enum CashflowReport_AccountGroup_2012 {
                 = groups.stream().map(g -> g.description).collect(toList());
         final List<String> act
                 = section.streamBody()
-                .map(row -> row.formatText(DESCRIPTION))
-                .collect(toList());
+                         .map(row -> row.format(DESCRIPTION))
+                         .collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
             String description
                     = section.streamTitle()
-                    .findFirst().get().formatDescription();
+                             .findFirst().orElseThrow().format(DESCRIPTION);
             final String msg = String.format(fmt, description, i);
             assertEquals(exp.get(i), act.get(i), msg);
         }
@@ -95,15 +95,15 @@ public enum CashflowReport_AccountGroup_2012 {
                 .collect(toList());
         final List<Map<Column, Currency>> actList
                 = section.streamBody()
-                .map(row -> row.asRowWithAmounts().get())
-                .map(row -> Column.streamMonths()
+                         .map(row -> row.asRowWithAmounts().orElseThrow())
+                         .map(row -> Column.streamMonths()
                         .map(col -> new AbstractMap.SimpleEntry<>(col,
                                                                   row.getMonthlyAmount(col)))
                         .collect(
                                 toMap(
                                         Map.Entry::getKey,
                                         Map.Entry::getValue)))
-                .collect(toList());
+                         .collect(toList());
         assertEquals(expList.size(), actList.size());
         for (int i = 0; i < expList.size(); i++) {
             final int ix = i;
@@ -111,7 +111,7 @@ public enum CashflowReport_AccountGroup_2012 {
             final Map<Column, Currency> act = actList.get(i);
             String description
                     = section.streamTitle()
-                    .findFirst().get().formatDescription();
+                             .findFirst().orElseThrow().format(DESCRIPTION);
             final String fmt = "%s at %s at %s: ";
             Column.streamMonths().forEach(
                     column -> assertEquals(
@@ -129,14 +129,14 @@ public enum CashflowReport_AccountGroup_2012 {
                 = groups.stream().map(g -> g.expectedAverage).collect(toList());
         final List<Currency> act
                 = section.streamBody()
-                .map(row -> row.asRowWithAmounts().get().getAverage())
-                .collect(toList());
+                         .map(row -> row.asRowWithAmounts().orElseThrow().getAverage())
+                         .collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
             String description
                     = section.streamTitle()
-                    .findFirst().get().formatDescription();
+                             .findFirst().orElseThrow().format(DESCRIPTION);
             String msg = String.format(fmt, description, i);
             assertEquals(exp.get(i), act.get(i), msg);
         }

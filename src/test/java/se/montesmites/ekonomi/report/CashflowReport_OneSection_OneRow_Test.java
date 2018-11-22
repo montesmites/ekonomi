@@ -51,7 +51,7 @@ class CashflowReport_OneSection_OneRow_Test {
     @Test
     void sectionTitle() {
         var exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
-        var act = section.streamTitle().findFirst().orElseThrow().formatText(DESCRIPTION);
+        var act = section.streamTitle().findFirst().orElseThrow().format(DESCRIPTION);
         assertEquals(exp, act);
     }
 

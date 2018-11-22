@@ -1,4 +1,4 @@
 package se.montesmites.ekonomi.report;
 
-class EmptyRow implements Row {
+class EmptyRow implements RowWithGranularFormatters {
 }

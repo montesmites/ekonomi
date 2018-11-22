@@ -1,7 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 @FunctionalInterface
-public interface TitleRow extends Row {
+public interface TitleRow extends RowWithGranularFormatters {
 
     String getTitle();
 

@@ -6,7 +6,7 @@ import java.time.Month;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public interface RowWithAmounts extends Row {
+public interface RowWithAmounts extends RowWithGranularFormatters {
 
     Currency getMonthlyAmount(Column column);
 

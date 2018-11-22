@@ -6,12 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.organization.Organization;
 import testdata.DefaultTestDataExtension;
 import testdata.OrganizationInjector;
 
-import java.time.LocalDate;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.function.Supplier;
@@ -31,11 +29,11 @@ class DefaultRowWithAccountsWithNegatedAmountsTest {
 
     @BeforeEach
     void before() {
-        final CashflowDataFetcher fetcher = new CashflowDataFetcher(this.organization);
-        final YearId yearId = organization.getYear(year).get().getYearId();
+        var fetcher = new CashflowDataFetcher(this.organization);
+        var yearId = organization.getYear(year).orElseThrow().getYearId();
         this.accountId = new AccountId(yearId, "1920");
-        final Supplier<Stream<AccountId>> accountIds = () -> Stream.of(accountId);
-        final DefaultRowWithAccounts source = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
+        var accountIds = (Supplier<Stream<AccountId>>) () -> Stream.of(accountId);
+        var source = new DefaultRowWithAccounts(fetcher, accountIds, year, "");
         this.negated = new DefaultRowWithAccountsWithNegatedAmounts(source);
     }
 
@@ -46,11 +44,11 @@ class DefaultRowWithAccountsWithNegatedAmountsTest {
 
     @Test
     void negatedTexts() {
-        Column.streamMonths().forEach(month -> assertEquals(entrySum(accountId, month).format(), negated.formatText(month).trim(), month.name()));
+        Column.streamMonths().forEach(month -> assertEquals(entrySum(accountId, month).format(), negated.format(month).trim(), month.name()));
     }
 
     private Currency entrySum(AccountId accountId, Column month) {
-        YearMonth yearMonth = YearMonth.of(2012, month.getMonth().get());
+        var yearMonth = YearMonth.of(2012, month.getMonth().orElseThrow());
         return organization.streamEntries()
                 .filter(entry -> entry.getAccountId().equals(accountId))
                 .filter(entry -> entryYearMonth(entry).equals(yearMonth))
@@ -59,7 +57,7 @@ class DefaultRowWithAccountsWithNegatedAmountsTest {
     }
 
     private YearMonth entryYearMonth(Entry entry) {
-        LocalDate date = organization.getEvent(entry.getEventId()).get().getDate();
+        var date = organization.getEvent(entry.getEventId()).orElseThrow().getDate();
         return YearMonth.of(date.getYear(), date.getMonth());
     }
 }

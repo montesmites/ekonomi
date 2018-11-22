@@ -4,35 +4,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface Row {
-
-    default String formatText(Column column) {
-        switch (column.getColumnType()) {
-            case DESCRIPTION:
-                return formatDescription();
-            case TOTAL:
-                return formatTotal();
-            case AVERAGE:
-                return formatAverage();
-            default:
-                return formatMonth(column);
-        }
-    }
-
-    default String formatDescription() {
-        return "";
-    }
-
-    default String formatTotal() {
-        return "";
-    }
-
-    default String formatMonth(Column column) {
-        return "";
-    }
-
-    default String formatAverage() {
-        return "";
-    }
+    String format(Column column);
 
     default Optional<RowWithAmounts> asRowWithAmounts() {
         return Optional.empty();
@@ -47,6 +19,6 @@ public interface Row {
     }
 
     private Predicate<Column> columnIsEquivalentPredicate(Row that) {
-        return column -> this.formatText(column).equals(that.formatText(column));
+        return column -> this.format(column).equals(that.format(column));
     }
 }

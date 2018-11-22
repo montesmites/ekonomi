@@ -50,7 +50,7 @@ public class CashflowReport {
     }
 
     private String format(Row row, Column column) {
-        return String.format(formatString(column), row.formatText(column));
+        return String.format(formatString(column), row.format(column));
     }
 
     private String formatString(Column column) {

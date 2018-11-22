@@ -50,9 +50,8 @@ class CashflowReport_OneSection_TwoRows_Test {
 
     @Test
     void sectionTitle() {
-        final String exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
-        final String act = section.streamTitle()
-                                  .findFirst().orElseThrow().formatText(DESCRIPTION);
+        var exp = DEN_LOPANDE_VERKSAMHETEN.toUpperCase();
+        var act = section.streamTitle().findFirst().orElseThrow().format(DESCRIPTION);
         assertEquals(exp, act);
     }
 

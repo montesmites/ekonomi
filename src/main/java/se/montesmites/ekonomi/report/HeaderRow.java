@@ -7,7 +7,7 @@ import java.util.function.Function;
 import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_AVERAGE;
 import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_TOTAL;
 
-public interface HeaderRow extends Row {
+public interface HeaderRow extends RowWithGranularFormatters {
     enum HeaderType {
         HEADER_TYPE_SHORT_MONTHS(column -> Messages.getShortMonth(column.getMonth().orElseThrow()));
 

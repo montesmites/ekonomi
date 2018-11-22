@@ -29,8 +29,8 @@ class _Section4TestUtil {
         for (var row = 0; row < actual.size(); row++) {
             for (var column : Column.values()) {
                 var msg = String.format("value at row %d and column %s", row + 1, column);
-                var act = actual.get(row).formatText(column);
-                var exp = expected.get(row).formatText(column);
+                var act = actual.get(row).format(column);
+                var exp = expected.get(row).format(column);
                 assertEquals(exp, act, msg);
             }
         }

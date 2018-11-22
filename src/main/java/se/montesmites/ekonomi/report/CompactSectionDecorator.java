@@ -2,7 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import java.util.stream.Stream;
 
-import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
+import static se.montesmites.ekonomi.report.Column.*;
 
 public class CompactSectionDecorator implements SectionDecorator {
     @Override
@@ -16,27 +16,27 @@ public class CompactSectionDecorator implements SectionDecorator {
     }
 
     private Row createRow(Section section) {
-        var title = section.streamTitle().findFirst().get();
-        var total = section.streamFooter().findFirst().get();
-        return new Row() {
+        var title = section.streamTitle().findFirst().orElseThrow();
+        var total = section.streamFooter().findFirst().orElseThrow();
+        return new RowWithGranularFormatters() {
             @Override
             public String formatDescription() {
-                return title.formatText(DESCRIPTION);
+                return title.format(DESCRIPTION);
             }
 
             @Override
             public String formatMonth(Column column) {
-                return total.formatText(column);
+                return total.format(column);
             }
 
             @Override
             public String formatTotal() {
-                return total.formatTotal();
+                return total.format(TOTAL);
             }
 
             @Override
             public String formatAverage() {
-                return total.formatAverage();
+                return total.format(AVERAGE);
             }
         };
     }
