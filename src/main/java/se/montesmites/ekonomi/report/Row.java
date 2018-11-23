@@ -3,6 +3,7 @@ package se.montesmites.ekonomi.report;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+@FunctionalInterface
 public interface Row {
     String format(Column column);
 
