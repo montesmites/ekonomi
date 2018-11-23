@@ -7,6 +7,10 @@ interface Header {
         return Stream::empty;
     }
 
+    static Header of(Row row) {
+        return () -> Stream.of(row);
+    }
+
     static Header of(TitleRow titleRow) {
         return () -> Stream.of(titleRow);
     }
