@@ -17,7 +17,7 @@ class RowAggregator {
     this.rows = rows;
   }
 
-  Row aggregate() {
+  RowWithAmounts aggregate() {
     return new RowWithAmounts() {
       @Override
       public Supplier<Stream<Month>> months() {

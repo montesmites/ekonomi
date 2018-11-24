@@ -83,7 +83,7 @@ enum NikkaSection {
 
   Section section(CashflowDataFetcher fetcher, java.time.Year year) {
     var bodyRows = bodyRows(fetcher, year);
-    return Section.of(() -> title, SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows);
+    return Section.of(() -> title, SHORT_MONTHS_HEADER, bodyRows);
   }
 
   private Supplier<Stream<Row>> bodyRows(CashflowDataFetcher fetcher, Year year) {

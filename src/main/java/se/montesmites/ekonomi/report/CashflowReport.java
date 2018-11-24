@@ -30,7 +30,7 @@ public class CashflowReport {
           var bodyRows = (Supplier<Stream<Row>>) () -> bodyRows(fetcher, year);
           return Stream.of(
               Section.of(
-                  () -> "Unspecified Accounts", SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows));
+                  () -> "Unspecified Accounts", SHORT_MONTHS_HEADER, bodyRows));
         });
   }
 

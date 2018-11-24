@@ -7,8 +7,9 @@ import java.util.stream.Stream;
 public interface Section {
 
   static Section of(
-      TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows, FooterRow footerRow) {
-    return Section.of(titleRow, headerRow, bodyRows, Optional.of(footerRow));
+      TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows) {
+    return Section
+        .of(titleRow, headerRow, bodyRows, Optional.of(FooterRow.of(RowAggregator.of(bodyRows))));
   }
 
   static Section of(

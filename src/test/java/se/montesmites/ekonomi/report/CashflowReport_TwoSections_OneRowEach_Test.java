@@ -46,7 +46,7 @@ class CashflowReport_TwoSections_OneRowEach_Test {
   private Map.Entry<Section, List<CashflowReport_AccountGroup_2012>> section(
       String title, List<CashflowReport_AccountGroup_2012> groups) {
     var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
-    var section = Section.of(() -> title, SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows);
+    var section = Section.of(() -> title, SHORT_MONTHS_HEADER, bodyRows);
     return Map.entry(section, groups);
   }
 

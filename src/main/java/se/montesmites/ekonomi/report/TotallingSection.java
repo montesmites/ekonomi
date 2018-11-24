@@ -27,7 +27,7 @@ public class TotallingSection implements Section {
   }
 
   private FooterRow streamSectionRows() {
-    return () -> () -> sections.stream().flatMap(streamWrappedBody());
+    return FooterRow.of(RowAggregator.of(() -> sections.stream().flatMap(streamWrappedBody())));
   }
 
   private Function<Section, Stream<? extends Row>> streamWrappedBody() {
