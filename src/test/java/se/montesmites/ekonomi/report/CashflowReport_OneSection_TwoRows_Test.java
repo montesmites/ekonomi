@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
-import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
+import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class CashflowReport_OneSection_TwoRows_Test {
@@ -36,7 +36,7 @@ class CashflowReport_OneSection_TwoRows_Test {
         this.report = new CashflowReport(fetcher, year, this::sections);
         this.groups = List.of(BOKFORT_RESULTAT, KORTFRISTIGA_SKULDER);
         var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
-        this.section = Section.of(() -> DEN_LOPANDE_VERKSAMHETEN, () -> HEADER_TYPE_SHORT_MONTHS, bodyRows, () -> bodyRows);
+        this.section = Section.of(() -> DEN_LOPANDE_VERKSAMHETEN, SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows);
     }
 
     private Stream<Section> sections() {

@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.*;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
-import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
+import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class TotallingSectionTest {
@@ -30,8 +30,8 @@ class TotallingSectionTest {
     @BeforeEach
     void before() {
         this.fetcher = new CashflowDataFetcher(this.organization);
-        section1 = Section.of(() -> "Section 1", () -> HEADER_TYPE_SHORT_MONTHS, () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)), () -> () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
-        section2 = Section.of(() -> "Section 2", () -> HEADER_TYPE_SHORT_MONTHS, () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)), () -> () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
+        section1 = Section.of(() -> "Section 1", SHORT_MONTHS_HEADER, () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)), () -> () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
+        section2 = Section.of(() -> "Section 2", SHORT_MONTHS_HEADER, () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)), () -> () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
         totallingSection = new TotallingSection(TOTALLING_SECTION_TITLE, List.of(section1, section2));
     }
 

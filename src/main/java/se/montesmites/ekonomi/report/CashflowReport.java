@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
-import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
+import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 public class CashflowReport {
 
@@ -27,7 +27,7 @@ public class CashflowReport {
             var bodyRows = (Supplier<Stream<Row>>) () -> bodyRows(fetcher, year);
             return Stream.of(
                     Section.of(
-                            () -> "Unspecified Accounts", () -> HEADER_TYPE_SHORT_MONTHS,
+                            () -> "Unspecified Accounts", SHORT_MONTHS_HEADER,
                             bodyRows, () -> bodyRows));
         });
     }

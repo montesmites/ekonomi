@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.*;
-import static se.montesmites.ekonomi.report.HeaderRow.HeaderType.HEADER_TYPE_SHORT_MONTHS;
+import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 enum NikkaSection {
     INKOMSTER(
@@ -76,7 +76,7 @@ enum NikkaSection {
 
     Section section(CashflowDataFetcher fetcher, java.time.Year year) {
         var bodyRows = bodyRows(fetcher, year);
-        return Section.of(() -> title, () -> HEADER_TYPE_SHORT_MONTHS, bodyRows, () -> bodyRows);
+        return Section.of(() -> title, SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows);
     }
 
     private Supplier<Stream<Row>> bodyRows(CashflowDataFetcher fetcher, Year year) {
