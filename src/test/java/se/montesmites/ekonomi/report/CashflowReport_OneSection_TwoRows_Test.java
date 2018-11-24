@@ -40,7 +40,7 @@ class CashflowReport_OneSection_TwoRows_Test {
     this.groups = List.of(BOKFORT_RESULTAT, KORTFRISTIGA_SKULDER);
     var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
     this.section =
-        Section.of(() -> DEN_LOPANDE_VERKSAMHETEN, SHORT_MONTHS_HEADER, bodyRows);
+        Section.of(Header.of(() -> DEN_LOPANDE_VERKSAMHETEN).add(SHORT_MONTHS_HEADER), bodyRows);
   }
 
   private Stream<Section> sections() {

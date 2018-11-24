@@ -33,13 +33,11 @@ class TotallingSectionTest {
     this.fetcher = new CashflowDataFetcher(this.organization);
     section1 =
         Section.of(
-            () -> "Section 1",
-            SHORT_MONTHS_HEADER,
+            Header.of(() -> "Section 1").add(SHORT_MONTHS_HEADER),
             () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
     section2 =
         Section.of(
-            () -> "Section 2",
-            SHORT_MONTHS_HEADER,
+            Header.of(() -> "Section 2").add(SHORT_MONTHS_HEADER),
             () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
     totallingSection = new TotallingSection(TOTALLING_SECTION_TITLE, List.of(section1, section2));
   }

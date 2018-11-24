@@ -6,19 +6,18 @@ import java.util.stream.Stream;
 
 public interface Section {
 
-  static Section of(TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows) {
-    return Section.of(titleRow, headerRow, bodyRows, Optional.of(RowAggregator.of(bodyRows)));
+  static Section of(Header header, Supplier<Stream<Row>> bodyRows) {
+    return Section.of(header, bodyRows, Optional.of(RowAggregator.of(bodyRows)));
   }
 
   static Section of(
-      TitleRow titleRow,
-      HeaderRow headerRow,
+      Header header,
       Supplier<Stream<Row>> bodyRows,
       Optional<RowAggregator> rowAggregator) {
     return new Section() {
       @Override
       public Header header() {
-        return Header.of(titleRow).add(headerRow);
+        return header;
       }
 
       @Override

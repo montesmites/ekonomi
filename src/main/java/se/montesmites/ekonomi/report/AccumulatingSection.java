@@ -9,6 +9,6 @@ import java.util.stream.Stream;
 public interface AccumulatingSection extends Section {
 
   static Section of(String title, Supplier<Stream<Row>> bodyRows) {
-    return Section.of(() -> title, SHORT_MONTHS_HEADER, bodyRows, Optional.empty());
+    return Section.of(Header.of(() -> title).add(SHORT_MONTHS_HEADER), bodyRows, Optional.empty());
   }
 }
