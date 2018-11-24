@@ -50,7 +50,7 @@ class HeaderTest {
     void combineTitleAndHeader() {
         var titleRow = (TitleRow) () -> "title";
         var headerRow = (HeaderRow) SHORT_MONTHS_HEADER;
-        var combined = RowMerger.template(headerRow).merge(DESCRIPTION, titleRow).asRow();
+        var combined = RowMerger.template(headerRow).add(DESCRIPTION, titleRow).merge();
         var header = Header.of(combined);
         var exp = List.of(combined);
         var act = header.stream().collect(toList());

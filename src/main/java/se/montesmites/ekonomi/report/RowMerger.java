@@ -15,12 +15,12 @@ class RowMerger {
         this.sources = sources;
     }
 
-    RowMerger merge(Column column, Row row) {
+    RowMerger add(Column column, Row row) {
         sources.put(column, row);
         return new RowMerger(sources);
     }
 
-    Row asRow() {
+    Row merge() {
         return column -> sources.get(column).format(column);
     }
 }

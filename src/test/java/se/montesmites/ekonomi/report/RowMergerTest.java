@@ -11,7 +11,7 @@ class RowMergerTest {
         var template = (Row) Column::name;
         var merger = RowMerger.template(template);
         var exp = template;
-        var act = merger.asRow();
+        var act = merger.merge();
         assertTrue(act.isEquivalentTo(exp));
     }
 
@@ -19,9 +19,9 @@ class RowMergerTest {
     void mergeTwoRows() {
         var template = (Row) column -> column.name() + "_template";
         var row1 = (Row) column -> column.name() + "_row1";
-        var merger = RowMerger.template(template).merge(DESCRIPTION, row1);
+        var merger = RowMerger.template(template).add(DESCRIPTION, row1);
         var exp = (Row) column -> (column == DESCRIPTION ? row1 : template).format(column);
-        var act = merger.asRow();
+        var act = merger.merge();
         assertTrue(act.isEquivalentTo(exp));
     }
 }
