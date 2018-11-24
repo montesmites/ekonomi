@@ -12,8 +12,8 @@ public interface Footer {
     return () -> Stream.of(row);
   }
 
-  static Footer of(FooterRow footerRow) {
-    return () -> Stream.of(footerRow);
+  static Footer of(RowAggregator rowAggregator) {
+    return () -> Stream.of(rowAggregator.aggregate());
   }
 
   default Footer add(Row row) {

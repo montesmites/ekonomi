@@ -21,20 +21,20 @@ class FooterTest {
   }
 
   @Test
-  void footerRow() {
+  void aggregator() {
     var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
     var aggregator = RowAggregator.of(() -> Stream.of(row));
-    var footer = Footer.of(FooterRow.of(aggregator));
+    var footer = Footer.of(aggregator);
     var exp = List.of(Row.of(row::format));
     var act = footer.stream().collect(toList());
     assertFooters(exp, act);
   }
 
   @Test
-  void footerRowAndEmptyRow() {
+  void aggregatorAndEmptyRow() {
     var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
     var aggregator = RowAggregator.of(() -> Stream.of(row));
-    var footer = Footer.of(FooterRow.of(aggregator)).add(Row.empty());
+    var footer = Footer.of(aggregator).add(Row.empty());
     var exp = List.of(Row.of(row::format), Row.empty());
     var act = footer.stream().collect(toList());
     assertFooters(exp, act);

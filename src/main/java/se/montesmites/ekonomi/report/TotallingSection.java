@@ -18,7 +18,7 @@ public class TotallingSection implements Section {
 
   @Override
   public Header header() {
-    return Header.of(() -> title).add((HeaderRow) SHORT_MONTHS_HEADER);
+    return Header.of(() -> title).add(SHORT_MONTHS_HEADER);
   }
 
   @Override
@@ -26,8 +26,8 @@ public class TotallingSection implements Section {
     return Stream.<Row>builder().add(streamSectionRows()).add(Row.empty()).build();
   }
 
-  private FooterRow streamSectionRows() {
-    return FooterRow.of(RowAggregator.of(() -> sections.stream().flatMap(streamWrappedBody())));
+  private Row streamSectionRows() {
+    return RowAggregator.of(() -> sections.stream().flatMap(streamWrappedBody())).aggregate();
   }
 
   private Function<Section, Stream<? extends Row>> streamWrappedBody() {

@@ -6,17 +6,15 @@ import java.util.stream.Stream;
 
 public interface Section {
 
-  static Section of(
-      TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows) {
-    return Section
-        .of(titleRow, headerRow, bodyRows, Optional.of(FooterRow.of(RowAggregator.of(bodyRows))));
+  static Section of(TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows) {
+    return Section.of(titleRow, headerRow, bodyRows, Optional.of(RowAggregator.of(bodyRows)));
   }
 
   static Section of(
       TitleRow titleRow,
       HeaderRow headerRow,
       Supplier<Stream<Row>> bodyRows,
-      Optional<FooterRow> footerRow) {
+      Optional<RowAggregator> rowAggregator) {
     return new Section() {
       @Override
       public Header header() {
@@ -30,7 +28,7 @@ public interface Section {
 
       @Override
       public Stream<Row> streamFooter() {
-        return footerRow.stream().flatMap(Stream::of).map(row -> row);
+        return rowAggregator.stream().flatMap(Stream::of).map(RowAggregator::aggregate);
       }
     };
   }
