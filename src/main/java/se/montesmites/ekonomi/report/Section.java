@@ -26,8 +26,8 @@ public interface Section {
       }
 
       @Override
-      public Stream<Row> streamFooter() {
-        return rowAggregator.stream().flatMap(Stream::of).map(RowAggregator::aggregate);
+      public Footer footer() {
+        return rowAggregator.map(Footer::of).orElse(Footer.empty());
       }
     };
   }
@@ -58,8 +58,8 @@ public interface Section {
     return Stream.empty();
   }
 
-  default Stream<Row> streamFooter() {
-    return Stream.empty();
+  default Footer footer() {
+    return Footer.empty();
   }
 
   default Stream<Row> streamAfterSection() {
@@ -71,7 +71,7 @@ public interface Section {
     streamBeforeSection().forEach(sb::add);
     header().stream().forEach(sb::add);
     streamBody().forEach(sb::add);
-    streamFooter().forEach(sb::add);
+    footer().stream().forEach(sb::add);
     streamAfterSection().forEach(sb::add);
     return sb.build();
   }

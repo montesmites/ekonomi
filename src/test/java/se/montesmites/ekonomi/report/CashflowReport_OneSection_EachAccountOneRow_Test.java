@@ -64,7 +64,7 @@ class CashflowReport_OneSection_EachAccountOneRow_Test {
 
   @Test
   void footer_monthlyTotals() {
-    Row footer = section.streamFooter().findFirst().orElseThrow();
+    Row footer = section.footer().stream().findFirst().orElseThrow();
     Column.streamMonths().forEach(column -> assertFooterRowMonthlyTotal(footer, column));
   }
 
@@ -111,7 +111,7 @@ class CashflowReport_OneSection_EachAccountOneRow_Test {
 
   @Test
   void footer_yearlyTotal() {
-    Row footer = section.streamFooter().findFirst().orElseThrow();
+    Row footer = section.footer().stream().findFirst().orElseThrow();
     assertFooterRowYearlyTotal(footer);
   }
 

@@ -22,12 +22,9 @@ public class TotallingSection implements Section {
   }
 
   @Override
-  public Stream<Row> streamFooter() {
-    return Stream.<Row>builder().add(streamSectionRows()).add(Row.empty()).build();
-  }
-
-  private Row streamSectionRows() {
-    return RowAggregator.of(() -> sections.stream().flatMap(streamWrappedBody())).aggregate();
+  public Footer footer() {
+    return Footer.of(
+        RowAggregator.of(() -> sections.stream().flatMap(streamWrappedBody())).aggregate());
   }
 
   private Function<Section, Stream<? extends Row>> streamWrappedBody() {

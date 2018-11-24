@@ -62,7 +62,8 @@ class TotallingSectionTest {
                 Assertions.assertEquals(
                     expectedMonthlyTotal(month),
                     totallingSection
-                        .streamFooter()
+                        .footer()
+                        .stream()
                         .findFirst()
                         .orElseThrow()
                         .asRowWithAmounts()
@@ -76,7 +77,8 @@ class TotallingSectionTest {
         .map(
             section ->
                 section
-                    .streamFooter()
+                    .footer()
+                    .stream()
                     .findFirst()
                     .orElseThrow()
                     .asRowWithAmounts()

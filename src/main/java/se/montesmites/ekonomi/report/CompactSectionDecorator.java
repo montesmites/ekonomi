@@ -20,7 +20,7 @@ public class CompactSectionDecorator implements SectionDecorator {
 
   private Row createRow(Section section) {
     var title = section.header().stream().findFirst().orElseThrow();
-    var total = section.streamFooter().findFirst().orElseThrow();
+    var total = section.footer().stream().findFirst().orElseThrow();
     return new RowWithGranularFormatters() {
       @Override
       public String formatDescription() {
