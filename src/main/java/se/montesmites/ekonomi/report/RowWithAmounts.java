@@ -1,11 +1,21 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.Month;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
 
 public interface RowWithAmounts extends RowWithGranularFormatters {
+
+  static RowWithAmounts empty() {
+    return column -> Currency.of(0);
+  }
+
+  static RowWithAmounts of(Function<Column, Currency> amounts) {
+    return amounts::apply;
+  }
 
   Currency getMonthlyAmount(Column column);
 
@@ -14,7 +24,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
   }
 
   default Currency getAverage() {
-    double avg =
+    var average =
         months()
             .get()
             .map(Column::valueOf)
@@ -22,7 +32,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
             .mapToLong(Currency::getAmount)
             .average()
             .orElse(0);
-    return new Currency(Math.round(avg));
+    return new Currency(Math.round(average));
   }
 
   default Supplier<Stream<Month>> months() {
@@ -42,5 +52,10 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
   @Override
   default String formatAverage() {
     return getAverage().format();
+  }
+
+  @Override
+  default Optional<RowWithAmounts> asRowWithAmounts() {
+    return Optional.of(this);
   }
 }
