@@ -33,16 +33,19 @@ class EntryAggregate {
     }
 
     void accumulate(Entry entry) {
-        yearMonthProvider.apply(entry.getEventId())
-                .ifPresent(yearMonth
-                                   -> aggregate.merge(new YearMonthAccountIdTuple(yearMonth, entry.getAccountId()),
-                                                      new AmountEntryListTuple(entry),
-                                                      AmountEntryListTuple::merge)
-                );
+        yearMonthProvider
+                .apply(entry.getEventId())
+                .ifPresent(
+                        yearMonth ->
+                                aggregate.merge(
+                                        new YearMonthAccountIdTuple(yearMonth, entry.getAccountId()),
+                                        new AmountEntryListTuple(entry),
+                                        AmountEntryListTuple::merge));
     }
 
     EntryAggregate merge(EntryAggregate that) {
-        Map<YearMonthAccountIdTuple, AmountEntryListTuple> map = new ConcurrentHashMap<>(this.getAggregate());
+        Map<YearMonthAccountIdTuple, AmountEntryListTuple> map =
+                new ConcurrentHashMap<>(this.getAggregate());
         that.aggregate.forEach((key, value) -> map.merge(key, value, AmountEntryListTuple::merge));
         return new EntryAggregate(map, yearMonthProvider);
     }

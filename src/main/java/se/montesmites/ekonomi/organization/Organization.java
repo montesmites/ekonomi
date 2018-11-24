@@ -36,16 +36,13 @@ public class Organization {
         this.entries = entries.collect(toList());
         this.years = years.collect(toList());
 
-        this.accountsByAccountId = this.accounts.stream()
-                .collect(toMap(Account::getAccountId, identity()));
-        this.balancesByAccountId = balances.collect(toList()).stream()
-                .collect(toMap(Balance::getAccountId, identity()));
-        this.entriesByEventId = this.entries.stream()
-                .collect(groupingBy(Entry::getEventId));
-        this.yearsByYear = this.years.stream()
-                .collect(toMap(Year::getYear, identity()));
-        this.yearsByYearId = this.years.stream()
-                .collect(toMap(Year::getYearId, identity()));
+        this.accountsByAccountId =
+                this.accounts.stream().collect(toMap(Account::getAccountId, identity()));
+        this.balancesByAccountId =
+                balances.collect(toList()).stream().collect(toMap(Balance::getAccountId, identity()));
+        this.entriesByEventId = this.entries.stream().collect(groupingBy(Entry::getEventId));
+        this.yearsByYear = this.years.stream().collect(toMap(Year::getYear, identity()));
+        this.yearsByYearId = this.years.stream().collect(toMap(Year::getYearId, identity()));
     }
 
     public EventManager getEventManager() {
@@ -55,19 +52,19 @@ public class Organization {
     public Stream<Account> streamAccounts() {
         return accounts.stream();
     }
-    
+
     Stream<Year> streamYears() {
         return years.stream();
     }
-    
+
     public Stream<Entry> streamEntries() {
         return entries.stream();
     }
-    
+
     public Optional<Year> getYear(java.time.Year year) {
         return Optional.ofNullable(yearsByYear.get(year));
     }
-    
+
     public Optional<Year> getYear(YearId yearId) {
         return Optional.ofNullable(yearsByYearId.get(yearId));
     }
@@ -87,7 +84,7 @@ public class Organization {
     Optional<List<Entry>> getEntries(EventId eventId) {
         return Optional.ofNullable(entriesByEventId.get(eventId));
     }
-    
+
     Optional<Account> getAccount(AccountId accountId) {
         return Optional.ofNullable(accountsByAccountId.get(accountId));
     }

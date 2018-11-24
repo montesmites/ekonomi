@@ -21,8 +21,8 @@ public class CashflowDataFetcher {
 
     private static EntryCollector entryCollector(Organization organization) {
         return new EntryCollector(
-                eventId -> organization.getEvent(eventId)
-                        .map((Event event) -> toYearMonth(event.getDate())));
+                eventId ->
+                        organization.getEvent(eventId).map((Event event) -> toYearMonth(event.getDate())));
     }
 
     private static YearMonth toYearMonth(LocalDate date) {
@@ -37,9 +37,7 @@ public class CashflowDataFetcher {
 
     public CashflowDataFetcher(Organization organization) {
         this.organization = organization;
-        this.entryAggregate
-                = organization.streamEntries()
-                        .collect(entryCollector(organization));
+        this.entryAggregate = organization.streamEntries().collect(entryCollector(organization));
         this.touchedMonths = touchedMonths();
     }
 
@@ -76,7 +74,10 @@ public class CashflowDataFetcher {
     }
 
     public Stream<AccountId> streamAccountIds(java.time.Year year) {
-        return entryAggregate.getAggregate().entrySet().stream()
+        return entryAggregate
+                .getAggregate()
+                .entrySet()
+                .stream()
                 .filter(e -> e.getKey().getYearMonth().getYear() == year.getValue())
                 .map(e -> e.getKey().getAccountId())
                 .distinct()
@@ -98,26 +99,22 @@ public class CashflowDataFetcher {
     Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
         return Optional.of(
                 streamEntryAggregateByYearMonth(yearMonth)
-                        .map(e
-                                -> new AccountIdAmountTuple(
-                                e.getKey().getAccountId(),
-                                e.getValue().getAmount()))
-                        .collect(toList())
-        );
+                        .map(e -> new AccountIdAmountTuple(e.getKey().getAccountId(), e.getValue().getAmount()))
+                        .collect(toList()));
     }
 
     Optional<Map<AccountId, Currency>> getAccountIdAmountMap(YearMonth yearMonth) {
         return Optional.of(
                 streamEntryAggregateByYearMonth(yearMonth)
-                        .collect(
-                                toMap(
-                                        e -> e.getKey().getAccountId(),
-                                        e -> e.getValue().getAmount()))
-        );
+                        .collect(toMap(e -> e.getKey().getAccountId(), e -> e.getValue().getAmount())));
     }
 
-    private Stream<Map.Entry<YearMonthAccountIdTuple, AmountEntryListTuple>> streamEntryAggregateByYearMonth(YearMonth yearMonth) {
-        return entryAggregate.getAggregate().entrySet().stream()
+    private Stream<Map.Entry<YearMonthAccountIdTuple, AmountEntryListTuple>>
+    streamEntryAggregateByYearMonth(YearMonth yearMonth) {
+        return entryAggregate
+                .getAggregate()
+                .entrySet()
+                .stream()
                 .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
     }
 }

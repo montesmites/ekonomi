@@ -60,8 +60,8 @@ class HeaderTest {
     private void assertHeaders(List<? extends Row> exp, List<? extends Row> act) {
         assertAll(
                 () -> assertEquals(exp.size(), act.size()),
-                () -> assertAll(
-                        () -> range(0, exp.size())
-                                .forEach(i -> exp.get(i).isEquivalentTo(act.get(i)))));
+                () ->
+                        assertAll(
+                                () -> range(0, exp.size()).forEach(i -> exp.get(i).isEquivalentTo(act.get(i)))));
     }
 }

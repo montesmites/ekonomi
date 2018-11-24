@@ -13,10 +13,7 @@ import java.util.List;
 abstract class XmlSectionCommonJAXB {
     private List<SectionDecorator> decorators;
 
-    @XmlElements({
-            @XmlElement(name = "compact-section", type = CompactSectionDecorator.class)
-    })
-
+    @XmlElements({@XmlElement(name = "compact-section", type = CompactSectionDecorator.class)})
     List<SectionDecorator> getDecorators() {
         if (decorators == null) {
             this.decorators = new ArrayList<>();

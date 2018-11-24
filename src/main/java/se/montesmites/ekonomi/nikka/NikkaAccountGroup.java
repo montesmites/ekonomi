@@ -36,6 +36,7 @@ enum NikkaAccountGroup {
 
     RowWithAccounts bodyRow(CashflowDataFetcher fetcher, java.time.Year year) {
         final AccountFilter filter = new AccountFilterByRegex(regex);
-        return new DefaultRowWithAccounts(fetcher, () -> filter.filter(fetcher.streamAccountIds(year)), year, description);
+        return new DefaultRowWithAccounts(
+                fetcher, () -> filter.filter(fetcher.streamAccountIds(year)), year, description);
     }
 }

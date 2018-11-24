@@ -13,8 +13,10 @@ class CompactSectionDecoratorTest {
     @Test
     void fundamentals() {
         var title = "TITLE";
-        var values = Column.streamMonths().collect(toMap(month -> month, month -> Currency.of(month.ordinal())));
-        var bodyRows = (Supplier<Stream<Row>>) () -> Stream.of(new DefaultRowWithAmounts(title, values::get));
+        var values =
+                Column.streamMonths().collect(toMap(month -> month, month -> Currency.of(month.ordinal())));
+        var bodyRows =
+                (Supplier<Stream<Row>>) () -> Stream.of(new DefaultRowWithAmounts(title, values::get));
         var section = Section.of(() -> title, SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows);
         var decorator = new CompactSectionDecorator();
         var actualSection = decorator.decorate(section);

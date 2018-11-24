@@ -6,7 +6,8 @@ import java.util.Optional;
 
 public class EntryStatus {
     public enum Status {
-        ACTIVE, PASSIVE
+        ACTIVE,
+        PASSIVE
     }
 
     public static Optional<EntryStatus> parse(String flags) {

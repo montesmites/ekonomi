@@ -15,7 +15,11 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
     private final java.time.Year year;
     private final String description;
 
-    public DefaultRowWithAccounts(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year, String description) {
+    public DefaultRowWithAccounts(
+            CashflowDataFetcher fetcher,
+            Supplier<Stream<AccountId>> accountIds,
+            java.time.Year year,
+            String description) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
         this.year = year;
@@ -43,7 +47,8 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
 
     @Override
     public Currency getMonthlyAmount(Column column) {
-        return accountIds.get()
+        return accountIds
+                .get()
                 .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
                 .reduce(new Currency(0), Currency::add);
     }
@@ -53,7 +58,8 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
     }
 
     private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
-        return fetcher.fetchAmount(accountId, yearMonth)
+        return fetcher
+                .fetchAmount(accountId, yearMonth)
                 .map(Currency::getAmount)
                 .map(Currency::new)
                 .map(Signedness.NEGATED_SIGN::apply)

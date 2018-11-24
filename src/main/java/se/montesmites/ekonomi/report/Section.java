@@ -5,11 +5,16 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public interface Section {
-    static Section of(TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows, FooterRow footerRow) {
+    static Section of(
+            TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows, FooterRow footerRow) {
         return Section.of(titleRow, headerRow, bodyRows, Optional.of(footerRow));
     }
 
-    static Section of(TitleRow titleRow, HeaderRow headerRow, Supplier<Stream<Row>> bodyRows, Optional<FooterRow> footerRow) {
+    static Section of(
+            TitleRow titleRow,
+            HeaderRow headerRow,
+            Supplier<Stream<Row>> bodyRows,
+            Optional<FooterRow> footerRow) {
         return new Section() {
             @Override
             public Header header() {

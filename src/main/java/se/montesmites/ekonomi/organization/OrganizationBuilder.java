@@ -1,6 +1,9 @@
 package se.montesmites.ekonomi.organization;
 
-import se.montesmites.ekonomi.model.*;
+import se.montesmites.ekonomi.model.Account;
+import se.montesmites.ekonomi.model.Balance;
+import se.montesmites.ekonomi.model.Entry;
+import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 
 import java.nio.file.Path;

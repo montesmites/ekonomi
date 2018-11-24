@@ -14,8 +14,10 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class DefaultTestDataExtension implements BeforeAllCallback, TestInstancePostProcessor, AfterAllCallback {
-    private final static String PATH_TO_BINARY_FILES = "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
+public class DefaultTestDataExtension
+        implements BeforeAllCallback, TestInstancePostProcessor, AfterAllCallback {
+    private static final String PATH_TO_BINARY_FILES =
+            "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
 
     private File tempfolder;
 

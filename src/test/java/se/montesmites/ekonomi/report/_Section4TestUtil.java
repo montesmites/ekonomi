@@ -17,7 +17,8 @@ class _Section4TestUtil {
         return this;
     }
 
-    _Section4TestUtil addBodyRowWithAmounts(String description, Function<Column, Currency> monthlyAmounts) {
+    _Section4TestUtil addBodyRowWithAmounts(
+            String description, Function<Column, Currency> monthlyAmounts) {
         this.rows.add(new DefaultRowWithAmounts(description, monthlyAmounts));
         return this;
     }

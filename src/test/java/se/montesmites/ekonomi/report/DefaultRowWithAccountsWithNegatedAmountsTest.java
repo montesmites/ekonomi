@@ -39,17 +39,28 @@ class DefaultRowWithAccountsWithNegatedAmountsTest {
 
     @Test
     void negateMonthlyAmount() {
-        Column.streamMonths().forEach(month -> assertEquals(entrySum(accountId, month), negated.getMonthlyAmount(month), month.name()));
+        Column.streamMonths()
+              .forEach(
+                      month ->
+                              assertEquals(
+                                      entrySum(accountId, month), negated.getMonthlyAmount(month), month.name()));
     }
 
     @Test
     void negatedTexts() {
-        Column.streamMonths().forEach(month -> assertEquals(entrySum(accountId, month).format(), negated.format(month).trim(), month.name()));
+        Column.streamMonths()
+              .forEach(
+                      month ->
+                              assertEquals(
+                                      entrySum(accountId, month).format(),
+                                      negated.format(month).trim(),
+                                      month.name()));
     }
 
     private Currency entrySum(AccountId accountId, Column month) {
         var yearMonth = YearMonth.of(2012, month.getMonth().orElseThrow());
-        return organization.streamEntries()
+        return organization
+                .streamEntries()
                 .filter(entry -> entry.getAccountId().equals(accountId))
                 .filter(entry -> entryYearMonth(entry).equals(yearMonth))
                 .map(Entry::getAmount)

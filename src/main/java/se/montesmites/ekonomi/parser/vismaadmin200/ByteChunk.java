@@ -22,11 +22,12 @@ class ByteChunk {
 
     @Override
     public String toString() {
-        return String.format("{%d, %d} of %d at [%d] yields %s",
-                             recordDefinition.getFirstBytePosition(),
-                             recordDefinition.getLength(),
-                             fileLength,
-                             position,
-                             Arrays.toString(bytes));
+        return String.format(
+                "{%d, %d} of %d at [%d] yields %s",
+                recordDefinition.getFirstBytePosition(),
+                recordDefinition.getLength(),
+                fileLength,
+                position,
+                Arrays.toString(bytes));
     }
 }

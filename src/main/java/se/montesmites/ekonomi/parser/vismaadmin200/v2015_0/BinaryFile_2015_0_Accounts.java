@@ -36,7 +36,9 @@ public class BinaryFile_2015_0_Accounts extends BinaryFile_2015_0<Account> {
             var status = accountStatus(record);
             var open = AccountStatus.OPEN;
             var closed = AccountStatus.CLOSED;
-            return status.filter(accountStatus -> accountStatus == open || accountStatus == closed).isPresent();
+            return status
+                    .filter(accountStatus -> accountStatus == open || accountStatus == closed)
+                    .isPresent();
         } else {
             return false;
         }
@@ -48,8 +50,7 @@ public class BinaryFile_2015_0_Accounts extends BinaryFile_2015_0<Account> {
         return new Account(
                 new AccountId(yearId, ID.extract(record)),
                 DESCR.extract(record).trim(),
-                accountStatus(record).get()
-        );
+                accountStatus(record).get());
     }
 
     private Optional<AccountStatus> accountStatus(Record record) {

@@ -32,8 +32,8 @@ public class XmlSection extends XmlSectionCommonJAXB implements XmlSectionSuppli
     }
 
     @XmlElements({
-            @XmlElement(name = "account-group", type=XmlAccountGroup.class),
-            @XmlElement(name = "account-group-ref", type=XmlAccountGroupRef.class)
+            @XmlElement(name = "account-group", type = XmlAccountGroup.class),
+            @XmlElement(name = "account-group-ref", type = XmlAccountGroupRef.class)
     })
     private List<XmlAccountGroupSupplier> getAccountGroupSuppliers() {
         if (accountGroupSuppliers == null) {
@@ -46,10 +46,16 @@ public class XmlSection extends XmlSectionCommonJAXB implements XmlSectionSuppli
         this.accountGroupSuppliers = accountGroupSuppliers;
     }
 
-    XmlSectionBuilder toSectionBuilder(CashflowDataFetcher fetcher, java.time.Year year, Function<String, XmlAccountGroup> accountGroupsMap) {
+    XmlSectionBuilder toSectionBuilder(
+            CashflowDataFetcher fetcher,
+            java.time.Year year,
+            Function<String, XmlAccountGroup> accountGroupsMap) {
         var builder = new XmlSectionBuilder(description);
-        var accountGroups = getAccountGroupSuppliers().stream().map(accountGroup -> accountGroup.get(accountGroupsMap));
-        accountGroups.map(group -> group.toRowBuilder(fetcher, year)).forEach(builder::addBodyRowBuilder);
+        var accountGroups =
+                getAccountGroupSuppliers().stream().map(accountGroup -> accountGroup.get(accountGroupsMap));
+        accountGroups
+                .map(group -> group.toRowBuilder(fetcher, year))
+                .forEach(builder::addBodyRowBuilder);
         getDecorators().forEach(builder::addSectionDecorator);
         return builder;
     }

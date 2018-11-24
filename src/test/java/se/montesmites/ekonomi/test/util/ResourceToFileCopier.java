@@ -10,7 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class ResourceToFileCopier {
-    private final static String PATH_TO_BINARY_FILES = "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
+    private static final String PATH_TO_BINARY_FILES =
+            "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
 
     public void copyAll(Path path) {
         BinaryFile_2015_0.values().forEach(f -> copyTestFile(f, path));

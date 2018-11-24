@@ -13,10 +13,11 @@ public class Record {
     }
 
     Record(FieldKey<?> key, Optional<?> value) {
-        this(new HashMap<>() {
-            {
-                put(key, value);
-            }
+        this(
+                new HashMap<>() {
+                    {
+                        put(key, value);
+                    }
         });
     }
 

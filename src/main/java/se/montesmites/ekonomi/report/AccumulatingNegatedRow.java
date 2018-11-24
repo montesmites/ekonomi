@@ -21,13 +21,14 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
     private final RowWithAccounts monthlyNetAmounts;
     private final Map<Column, Currency> amounts;
 
-    public AccumulatingNegatedRow(CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year) {
+    public AccumulatingNegatedRow(
+            CashflowDataFetcher fetcher, Supplier<Stream<AccountId>> accountIds, java.time.Year year) {
         this.fetcher = fetcher;
         this.accountIds = accountIds;
         this.year = year;
-        this.monthlyNetAmounts
-                = new DefaultRowWithAccountsWithNegatedAmounts(
-                new DefaultRowWithAccounts(fetcher, accountIds, year, ""));
+        this.monthlyNetAmounts =
+                new DefaultRowWithAccountsWithNegatedAmounts(
+                        new DefaultRowWithAccounts(fetcher, accountIds, year, ""));
         this.amounts = getAmounts();
     }
 
@@ -89,14 +90,10 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
     }
 
     private Currency balance() {
-        return accountIds.get()
-                .map(this::balance)
-                .reduce(new Currency(0), Currency::add);
+        return accountIds.get().map(this::balance).reduce(new Currency(0), Currency::add);
     }
 
     private Currency balance(AccountId accountId) {
-        return fetcher.fetchBalance(accountId)
-                .map(Balance::getBalance)
-                .orElse(new Currency(0));
+        return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(new Currency(0));
     }
 }

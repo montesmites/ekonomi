@@ -68,6 +68,15 @@ public class Entry {
 
     @Override
     public String toString() {
-        return "Entry{" + "eventId=" + eventId + ", accountId=" + accountId + ", amount=" + amount + ", status=" + status + '}';
+        return "Entry{"
+                + "eventId="
+                + eventId
+                + ", accountId="
+                + accountId
+                + ", amount="
+                + amount
+                + ", status="
+                + status
+                + '}';
     }
 }

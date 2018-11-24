@@ -85,8 +85,12 @@ class EntryAggregateTest {
         final int accountid2 = 3010;
         final Entry entry1 = entry(1, accountid1, amount1);
         final Entry entry2 = entry(2, accountid2, amount2);
-        final EntryAggregate aggregate = Stream.of(entry1, entry2)
-                .collect(new EntryCollector(eventId -> eventId.getId() == 1 ? Optional.of(yearMonth1) : Optional.of(yearMonth2)));
+        final EntryAggregate aggregate =
+                Stream.of(entry1, entry2)
+                      .collect(
+                              new EntryCollector(
+                                      eventId ->
+                                              eventId.getId() == 1 ? Optional.of(yearMonth1) : Optional.of(yearMonth2)));
         final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act = aggregate.getAggregate();
         assertEquals(2, act.size());
         assertEquals(1, sizeOf(act, yearMonth1, accountid1));
@@ -112,25 +116,18 @@ class EntryAggregateTest {
     }
 
     private AmountEntryListTuple tuple(
-            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map,
-            YearMonth yearMonth,
-            int accountid) {
-        YearMonthAccountIdTuple key
-                = new YearMonthAccountIdTuple(yearMonth, accountId(accountid));
+            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map, YearMonth yearMonth, int accountid) {
+        YearMonthAccountIdTuple key = new YearMonthAccountIdTuple(yearMonth, accountId(accountid));
         return map.get(key);
     }
 
     private int sizeOf(
-            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map,
-            YearMonth yearMonth,
-            int accountid) {
+            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map, YearMonth yearMonth, int accountid) {
         return tuple(map, yearMonth, accountid).getEntries().size();
     }
 
     private Currency amountOf(
-            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map,
-            YearMonth yearMonth,
-            int accountid) {
+            Map<YearMonthAccountIdTuple, AmountEntryListTuple> map, YearMonth yearMonth, int accountid) {
         return tuple(map, yearMonth, accountid).getAmount();
     }
 

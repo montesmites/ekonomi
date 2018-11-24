@@ -11,7 +11,7 @@ public enum ColumnType {
     AVERAGE(__ -> Optional.empty());
 
     private final Function<Column, Optional<Month>> asMonthFunction;
-    
+
     ColumnType(Function<Column, Optional<Month>> asMonthFunction) {
         this.asMonthFunction = asMonthFunction;
     }

@@ -17,17 +17,19 @@ public class BinaryFile_2015_0_Events extends BinaryFile_2015_0<Event> {
     BinaryFile_2015_0_Events() {
         super("VER.DBF", 962, 293);
     }
+
     private final Field<String> YEARID = new Field<>("yearid", STRING, 0, 1);
     private final Field<String> SERIES = new Field<>("series", STRING, 222, 1);
     private final Field<LocalDate> EDATE = new Field<>("date", DATE, 8, 8);
     private final Field<LocalDate> RDATE = new Field<>("regdate", DATE, 16, 8);
     private final Field<String> DESCR = new Field<>("descr", STRING, 32, 60);
-    private final Field<Integer> ID = new Field<>("id", INTEGER, 1, 7) {
+    private final Field<Integer> ID =
+            new Field<>("id", INTEGER, 1, 7) {
         @Override
         public boolean filter(Record record) {
             return super.filter(record) && ID.extract(record) > 0;
         }
-    };
+            };
 
     @Override
     List<Field<?>> getFields() {

@@ -35,19 +35,24 @@ class AccumulatingRowTest {
 
     @Test
     void fourAccounts() {
-        AccumulatingNegatedRow row = new AccumulatingNegatedRow(
-                fetcher,
-                () -> Stream.of("1910", "1920", "1930", "1940")
-                        .map(account -> new AccountId(yearId, account)),
-                year
-        );
+        AccumulatingNegatedRow row =
+                new AccumulatingNegatedRow(
+                        fetcher,
+                        () ->
+                                Stream.of("1910", "1920", "1930", "1940")
+                                      .map(account -> new AccountId(yearId, account)),
+                        year);
         assertEquals(expectedAmounts().get(DESCRIPTION), row.getBalance());
-        Column.streamMonths().forEach(month -> assertEquals(expectedAmounts().get(month), row.getMonthlyAmount(month), month.name()));
+        Column.streamMonths()
+              .forEach(
+                      month ->
+                              assertEquals(
+                                      expectedAmounts().get(month), row.getMonthlyAmount(month), month.name()));
         assertEquals(new Currency(0), row.getYearlyTotal());
     }
 
     private Map<Column, Currency> expectedAmounts() {
-        return new EnumMap< Column, Currency>(Column.class) {
+        return new EnumMap<Column, Currency>(Column.class) {
             {
                 put(DESCRIPTION, new Currency(127622521));
                 put(JANUARY, new Currency(140745321));

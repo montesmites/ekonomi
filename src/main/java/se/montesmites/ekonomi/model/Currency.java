@@ -14,11 +14,11 @@ public class Currency {
     public Currency(long amount) {
         this.amount = amount;
     }
-    
+
     public Currency add(Currency that) {
         return new Currency(this.amount + that.amount);
     }
-    
+
     public long getAmount() {
         return amount;
     }
@@ -30,7 +30,7 @@ public class Currency {
     public double toDouble() {
         return (double) amount / divisor;
     }
-    
+
     public String format() {
         return Messages.formatNumber(this);
     }

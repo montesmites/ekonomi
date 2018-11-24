@@ -14,11 +14,11 @@ public class AmountEntryListTuple {
 
     private final Currency amount;
     private final List<Entry> entries;
-    
+
     public AmountEntryListTuple(Entry entry) {
         this(entry.getAmount(), List.of(entry));
     }
-    
+
     private AmountEntryListTuple(Currency amount, List<Entry> entries) {
         this.amount = amount;
         this.entries = new ArrayList<>(entries);

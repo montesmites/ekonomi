@@ -9,7 +9,10 @@ class _SectionDefinition4Test {
     private final List<Class<? extends SectionDecorator>> decorators;
     private final List<_RowDefinition4Test> rows;
 
-    _SectionDefinition4Test(String description, List<Class<? extends SectionDecorator>> decorators, List<_RowDefinition4Test> rows) {
+    _SectionDefinition4Test(
+            String description,
+            List<Class<? extends SectionDecorator>> decorators,
+            List<_RowDefinition4Test> rows) {
         this.description = description;
         this.decorators = decorators;
         this.rows = rows;

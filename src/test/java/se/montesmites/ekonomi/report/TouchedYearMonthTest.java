@@ -30,7 +30,8 @@ class TouchedYearMonthTest {
 
     @Test
     void oneMonth() {
-        this.organizationBuilder = new OrganizationBuilder(pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY))));
+        this.organizationBuilder =
+                new OrganizationBuilder(pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY))));
         CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
         Set<Month> exp = EnumSet.of(JANUARY);
         Set<Month> act = fetcher.touchedMonths(year);
@@ -39,7 +40,9 @@ class TouchedYearMonthTest {
 
     @Test
     void twoMonths() {
-        this.organizationBuilder = new OrganizationBuilder(pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY, FEBRUARY))));
+        this.organizationBuilder =
+                new OrganizationBuilder(
+                        pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY, FEBRUARY))));
         CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
         Set<Month> exp = EnumSet.of(JANUARY, FEBRUARY);
         Set<Month> act = fetcher.touchedMonths(year);
@@ -47,11 +50,13 @@ class TouchedYearMonthTest {
     }
 
     private Predicate<Entry> filterEntry(Set<Month> months) {
-        return entry
-                -> organizationBuilder.getEventManager().getEvent(entry.getEventId())
-                .map(Event::getDate)
-                .filter(date -> date.getYear() == year.getValue())
-                .filter(date -> months.contains(date.getMonth()))
-                .isPresent();
+        return entry ->
+                organizationBuilder
+                        .getEventManager()
+                        .getEvent(entry.getEventId())
+                        .map(Event::getDate)
+                        .filter(date -> date.getYear() == year.getValue())
+                        .filter(date -> months.contains(date.getMonth()))
+                        .isPresent();
     }
 }

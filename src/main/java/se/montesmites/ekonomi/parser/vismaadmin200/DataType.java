@@ -12,22 +12,23 @@ import static java.util.Arrays.copyOfRange;
 
 public interface DataType<T> {
 
-    DataType<byte[]> BYTE_ARRAY = (chunk, start, length) -> {
+    DataType<byte[]> BYTE_ARRAY =
+            (chunk, start, length) -> {
         if (chunk.getBytes().length >= start + length) {
             return Optional.of(copyOfRange(chunk.getBytes(), start, start + length));
         } else {
             return Optional.empty();
         }
-    };
+            };
 
-    DataType<String> STRING = new DataType<>() {
+    DataType<String> STRING =
+            new DataType<>() {
 
-        private final static String ENCODING = "Cp1252";
+                private static final String ENCODING = "Cp1252";
 
         @Override
         public Optional<String> read(ByteChunk chunk, int start, int length) {
-            return BYTE_ARRAY.read(chunk, start, length)
-                    .map(this::asString);
+            return BYTE_ARRAY.read(chunk, start, length).map(this::asString);
         }
 
         private String asString(byte[] bytes) {
@@ -37,16 +38,17 @@ public interface DataType<T> {
                 throw new RuntimeException(e);
             }
         }
-    };
+            };
 
-    DataType<LocalDate> DATE = new DataType<>() {
+    DataType<LocalDate> DATE =
+            new DataType<>() {
 
-        private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern(
-                "yyyyMMdd");
+                private final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
 
         @Override
         public Optional<LocalDate> read(final ByteChunk chunk, int start, int length) {
-            return STRING.read(chunk, start, length)
+            return STRING
+                    .read(chunk, start, length)
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
                     .map(s -> parseDate(chunk, s));
@@ -59,20 +61,26 @@ public interface DataType<T> {
                 throw new RuntimeException(chunk.toString(), e);
             }
         }
-    };
+            };
 
-    DataType<Integer> INTEGER = (chunk, start, length) -> STRING.read(chunk, start, length)
-            .map(String::trim)
-            .filter(s -> !s.isEmpty())
-            .map(Integer::parseInt);
+    DataType<Integer> INTEGER =
+            (chunk, start, length) ->
+                    STRING
+                            .read(chunk, start, length)
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .map(Integer::parseInt);
 
-    DataType<Long> LONG = (chunk, start, length) -> STRING.read(chunk, start, length)
-            .map(String::trim)
-            .filter(s -> !s.isEmpty())
-            .map(Long::parseLong);
+    DataType<Long> LONG =
+            (chunk, start, length) ->
+                    STRING
+                            .read(chunk, start, length)
+                            .map(String::trim)
+                            .filter(s -> !s.isEmpty())
+                            .map(Long::parseLong);
 
-    DataType<Currency> CURRENCY = (chunk, start, length) -> LONG.read(chunk, start, length)
-            .map(Currency::new);
+    DataType<Currency> CURRENCY =
+            (chunk, start, length) -> LONG.read(chunk, start, length).map(Currency::new);
 
     Optional<T> read(ByteChunk chunk, int start, int length);
 }

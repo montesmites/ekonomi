@@ -1,14 +1,15 @@
 package se.montesmites.ekonomi.model.tuple;
 
-import java.time.YearMonth;
-import java.util.Objects;
 import se.montesmites.ekonomi.model.AccountId;
 
+import java.time.YearMonth;
+import java.util.Objects;
+
 public class YearMonthAccountIdTuple {
-    
+
     private final YearMonth yearMonth;
     private final AccountId accountId;
-    
+
     public YearMonthAccountIdTuple(YearMonth yearMonth, AccountId accountId) {
         this.yearMonth = yearMonth;
         this.accountId = accountId;

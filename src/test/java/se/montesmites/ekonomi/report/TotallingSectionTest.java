@@ -18,7 +18,7 @@ import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class TotallingSectionTest {
-    private final static String TOTALLING_SECTION_TITLE = "CHECKSUM";
+    private static final String TOTALLING_SECTION_TITLE = "CHECKSUM";
 
     @OrganizationInjector
     private Organization organization;
@@ -30,37 +30,61 @@ class TotallingSectionTest {
     @BeforeEach
     void before() {
         this.fetcher = new CashflowDataFetcher(this.organization);
-        section1 = Section.of(() -> "Section 1", SHORT_MONTHS_HEADER, () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)), () -> () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
-        section2 = Section.of(() -> "Section 2", SHORT_MONTHS_HEADER, () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)), () -> () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
+        section1 =
+                Section.of(
+                        () -> "Section 1",
+                        SHORT_MONTHS_HEADER,
+                        () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)),
+                        () -> () -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
+        section2 =
+                Section.of(
+                        () -> "Section 2",
+                        SHORT_MONTHS_HEADER,
+                        () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)),
+                        () -> () -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
         totallingSection = new TotallingSection(TOTALLING_SECTION_TITLE, List.of(section1, section2));
     }
 
     @Test
     void assertTitle() {
-        Assertions.assertEquals(TOTALLING_SECTION_TITLE, totallingSection.header().stream().findFirst().orElseThrow().format(DESCRIPTION));
+        Assertions.assertEquals(
+                TOTALLING_SECTION_TITLE,
+                totallingSection.header().stream().findFirst().orElseThrow().format(DESCRIPTION));
     }
 
     @Test
     void assertNoBodyRows() {
-        Assertions.assertEquals(0, totallingSection.streamBody().count()
-        );
+        Assertions.assertEquals(0, totallingSection.streamBody().count());
     }
 
     @Test
     void assertTotals() {
-        Column.streamMonths().forEach(month -> Assertions.assertEquals(
-                expectedMonthlyTotal(month),
-                totallingSection.streamFooter()
-                                .findFirst().orElseThrow()
-                                .asRowWithAmounts().orElseThrow()
-                                .getMonthlyAmount(month),
-                month.name())
-        );
+        Column.streamMonths()
+              .forEach(
+                      month ->
+                              Assertions.assertEquals(
+                                      expectedMonthlyTotal(month),
+                                      totallingSection
+                                              .streamFooter()
+                                              .findFirst()
+                                              .orElseThrow()
+                                              .asRowWithAmounts()
+                                              .orElseThrow()
+                                              .getMonthlyAmount(month),
+                                      month.name()));
     }
 
     private Currency expectedMonthlyTotal(Column month) {
         return Stream.of(section1, section2)
-                     .map(section -> section.streamFooter().findFirst().orElseThrow().asRowWithAmounts().orElseThrow().getMonthlyAmount(month))
+                     .map(
+                             section ->
+                                     section
+                                             .streamFooter()
+                                             .findFirst()
+                                             .orElseThrow()
+                                             .asRowWithAmounts()
+                                             .orElseThrow()
+                                             .getMonthlyAmount(month))
                      .reduce(new Currency(0), Currency::add);
     }
 }

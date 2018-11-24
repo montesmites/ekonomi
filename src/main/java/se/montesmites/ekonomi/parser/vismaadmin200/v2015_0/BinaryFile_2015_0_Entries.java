@@ -15,17 +15,19 @@ public class BinaryFile_2015_0_Entries extends BinaryFile_2015_0<Entry> {
     BinaryFile_2015_0_Entries() {
         super("VERRAD.DBF", 642, 162);
     }
+
     private final Field<String> YEARID = new Field<>("yearid", STRING, 0, 1);
     private final Field<String> SERIES = new Field<>("series", STRING, 150, 1);
     private final Field<String> FLAGS = new Field<>("flags", STRING, 1, 4);
     private final Field<String> ACCOUNT = new Field<>("account", STRING, 24, 4);
     private final Field<Currency> AMOUNT = new Field<>("mnt", CURRENCY, 28, 14);
-    private final Field<Integer> ID = new Field<>("id", INTEGER, 5, 7) {
+    private final Field<Integer> ID =
+            new Field<>("id", INTEGER, 5, 7) {
         @Override
         public boolean filter(Record record) {
             return super.filter(record) && ID.extract(record) > 0;
         }
-    };
+            };
 
     @Override
     public boolean filter(Record record) {

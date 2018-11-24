@@ -11,18 +11,18 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     Currency getMonthlyAmount(Column column);
 
     default Currency getYearlyTotal() {
-        return Column.streamMonths()
-                .map(this::getMonthlyAmount)
-                .reduce(new Currency(0), Currency::add);
+        return Column.streamMonths().map(this::getMonthlyAmount).reduce(new Currency(0), Currency::add);
     }
-    
+
     default Currency getAverage() {
-        double avg = months().get()
-                .map(Column::valueOf)
-                .map(this::getMonthlyAmount)
-                .mapToLong(Currency::getAmount)
-                .average()
-                .orElse(0);
+        double avg =
+                months()
+                        .get()
+                        .map(Column::valueOf)
+                        .map(this::getMonthlyAmount)
+                        .mapToLong(Currency::getAmount)
+                        .average()
+                        .orElse(0);
         return new Currency(Math.round(avg));
     }
 

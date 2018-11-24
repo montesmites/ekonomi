@@ -27,10 +27,8 @@ public enum EntryAggregateExpectedElements {
                             tuple(yearId, 3740, -5),
                             tuple(yearId, 3960, 1),
                             tuple(yearId, 6570, 8000),
-                            tuple(yearId, 7510, -309000))
-            );
+                            tuple(yearId, 7510, -309000)));
         }
-
     },
     BY_YEARMONTH_201201 {
         @Override
@@ -76,23 +74,20 @@ public enum EntryAggregateExpectedElements {
                             tuple(yearId, 7399, -413700),
                             tuple(yearId, 7510, 3220693),
                             tuple(yearId, 7519, 229645),
-                            tuple(yearId, 7690, 9600)
-                    )
-            );
+                            tuple(yearId, 7690, 9600)));
         }
-
     };
 
     public abstract Map<AccountId, Currency> getAggregate(YearId yearId);
 
     private static AccountIdAmountTuple tuple(YearId yearId, int account, long amount) {
         return new AccountIdAmountTuple(
-                new AccountId(yearId, Integer.toString(account)),
-                new Currency(amount));
+                new AccountId(yearId, Integer.toString(account)), new Currency(amount));
     }
 
     private static Map<AccountId, Currency> asMap(List<AccountIdAmountTuple> tuples) {
-        return tuples.stream().collect(toMap(AccountIdAmountTuple::getAccountId, AccountIdAmountTuple::getAmount));
-
+        return tuples
+                .stream()
+                .collect(toMap(AccountIdAmountTuple::getAccountId, AccountIdAmountTuple::getAmount));
     }
 }

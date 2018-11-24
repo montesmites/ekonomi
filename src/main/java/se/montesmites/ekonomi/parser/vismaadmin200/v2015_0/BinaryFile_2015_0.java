@@ -8,11 +8,11 @@ import java.util.List;
 
 public abstract class BinaryFile_2015_0<T> implements BinaryFile_VismaAdmin200<T> {
 
-    public final static BinaryFile_2015_0_Years YEARS = new BinaryFile_2015_0_Years();
-    public final static BinaryFile_2015_0_Accounts ACCOUNTS = new BinaryFile_2015_0_Accounts();
-    public final static BinaryFile_2015_0_Events EVENTS = new BinaryFile_2015_0_Events();
-    public final static BinaryFile_2015_0_Entries ENTRIES = new BinaryFile_2015_0_Entries();
-    public final static BinaryFile_2015_0_Balances BALANCES = new BinaryFile_2015_0_Balances();
+    public static final BinaryFile_2015_0_Years YEARS = new BinaryFile_2015_0_Years();
+    public static final BinaryFile_2015_0_Accounts ACCOUNTS = new BinaryFile_2015_0_Accounts();
+    public static final BinaryFile_2015_0_Events EVENTS = new BinaryFile_2015_0_Events();
+    public static final BinaryFile_2015_0_Entries ENTRIES = new BinaryFile_2015_0_Entries();
+    public static final BinaryFile_2015_0_Balances BALANCES = new BinaryFile_2015_0_Balances();
 
     public static List<BinaryFile_2015_0<?>> values() {
         return List.of(ACCOUNTS, BALANCES, ENTRIES, EVENTS, YEARS);

@@ -21,8 +21,8 @@ public class Messages {
         }
     }
 
-    private final static Locale LOCALE = Locale.getDefault();
-    private final static ResourceBundle MESSAGES = ResourceBundle.getBundle("i18n.messages", LOCALE);
+    private static final Locale LOCALE = Locale.getDefault();
+    private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("i18n.messages", LOCALE);
 
     public static String get(Message message) {
         return MESSAGES.getString(message.key);

@@ -19,7 +19,7 @@ import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 @ExtendWith(DefaultTestDataExtension.class)
 class CashflowReport_OneSection_OneRow_Test {
-    private final static String DEN_LOPANDE_VERKSAMHETEN = "Den löpande verksamheten";
+    private static final String DEN_LOPANDE_VERKSAMHETEN = "Den löpande verksamheten";
 
     private final Year year = Year.of(2012);
 
@@ -36,7 +36,8 @@ class CashflowReport_OneSection_OneRow_Test {
         this.report = new CashflowReport(fetcher, year, this::sections);
         this.groups = List.of(BOKFORT_RESULTAT);
         var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
-        this.section = Section.of(() -> DEN_LOPANDE_VERKSAMHETEN, SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows);
+        this.section =
+                Section.of(() -> DEN_LOPANDE_VERKSAMHETEN, SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows);
     }
 
     private Stream<Section> sections() {

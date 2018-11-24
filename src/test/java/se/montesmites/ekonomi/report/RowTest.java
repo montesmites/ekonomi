@@ -13,7 +13,6 @@ class RowTest {
                 () -> assertTrue(row1.isEquivalentTo(row1)),
                 () -> assertTrue(row2.isEquivalentTo(row2)),
                 () -> assertFalse(row1.isEquivalentTo(row2)),
-                () -> assertFalse(row2.isEquivalentTo(row1))
-        );
+                () -> assertFalse(row2.isEquivalentTo(row1)));
     }
 }

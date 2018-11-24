@@ -10,29 +10,30 @@ import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 public class CashflowReport {
 
     private static Stream<Row> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
-        return fetcher.streamAccountIds(year)
-                      .map(accountId
-                                   -> new DefaultRowWithAccounts(
-                              fetcher,
-                              () -> Stream.of(accountId),
-                              year,
-                              accountId.getId()));
+        return fetcher
+                .streamAccountIds(year)
+                .map(
+                        accountId ->
+                                new DefaultRowWithAccounts(
+                                        fetcher, () -> Stream.of(accountId), year, accountId.getId()));
     }
 
     private final Supplier<Stream<Section>> sections;
 
     CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
-        this(fetcher, year, ()
-                -> {
-            var bodyRows = (Supplier<Stream<Row>>) () -> bodyRows(fetcher, year);
-            return Stream.of(
-                    Section.of(
-                            () -> "Unspecified Accounts", SHORT_MONTHS_HEADER,
-                            bodyRows, () -> bodyRows));
+        this(
+                fetcher,
+                year,
+                () -> {
+                    var bodyRows = (Supplier<Stream<Row>>) () -> bodyRows(fetcher, year);
+                    return Stream.of(
+                            Section.of(
+                                    () -> "Unspecified Accounts", SHORT_MONTHS_HEADER, bodyRows, () -> bodyRows));
         });
     }
 
-    public CashflowReport(CashflowDataFetcher fetcher, java.time.Year year, Supplier<Stream<Section>> sections) {
+    public CashflowReport(
+            CashflowDataFetcher fetcher, java.time.Year year, Supplier<Stream<Section>> sections) {
         this.sections = sections;
     }
 
@@ -42,11 +43,16 @@ public class CashflowReport {
 
     public List<String> render() {
         return streamSections()
-                .flatMap(section -> section.stream()
-                                           .flatMap(row -> Column.stream()
-                                                                 .map(column -> format(row, column))
-                                                                 .collect(collectingAndThen(joining(), Stream::of)))).
-                        collect(toList());
+                .flatMap(
+                        section ->
+                                section
+                                        .stream()
+                                        .flatMap(
+                                                row ->
+                                                        Column.stream()
+                                                              .map(column -> format(row, column))
+                                                              .collect(collectingAndThen(joining(), Stream::of))))
+                .collect(toList());
     }
 
     private String format(Row row, Column column) {

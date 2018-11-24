@@ -15,12 +15,13 @@ public class BinaryFile_2015_0_Years extends BinaryFile_2015_0<Year> {
     private final Field<Integer> YEAR = new Field<>("year", INTEGER, 2, 4);
     private final Field<LocalDate> FROM = new Field<>("from", DATE, 2, 8);
     private final Field<LocalDate> TO = new Field<>("to", DATE, 10, 8);
-    private final Field<String> STATUS = new Field<>("status", STRING, 0, 1) {
+    private final Field<String> STATUS =
+            new Field<>("status", STRING, 0, 1) {
         @Override
         public boolean filter(Record record) {
             return super.filter(record) && !this.extract(record).equals("*");
         }
-    };
+            };
 
     BinaryFile_2015_0_Years() {
         super("BOKFAAR.DBF", 513, 89);

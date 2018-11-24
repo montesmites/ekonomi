@@ -13,19 +13,21 @@ public interface FooterRow extends RowWithAmounts {
 
     @Override
     default Supplier<Stream<Month>> months() {
-        return getBodyRows().get()
-                            .findAny()
-                            .flatMap(Row::asRowWithAmounts)
-                            .map(RowWithAmounts::months)
-                            .orElse(Stream::empty);
+        return getBodyRows()
+                .get()
+                .findAny()
+                .flatMap(Row::asRowWithAmounts)
+                .map(RowWithAmounts::months)
+                .orElse(Stream::empty);
     }
 
     @Override
     default Currency getMonthlyAmount(Column column) {
-        return getBodyRows().get()
-                            .map(row -> row.asRowWithAmounts().orElseThrow())
-                            .map(row -> row.getMonthlyAmount(column))
-                            .reduce(new Currency(0), Currency::add);
+        return getBodyRows()
+                .get()
+                .map(row -> row.asRowWithAmounts().orElseThrow())
+                .map(row -> row.getMonthlyAmount(column))
+                .reduce(new Currency(0), Currency::add);
     }
 
     @Override

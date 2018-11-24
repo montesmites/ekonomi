@@ -11,11 +11,7 @@ import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.*;
 import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 enum NikkaSection {
-    INKOMSTER(
-            "Inkomster",
-            List.of(LONEINBETALNINGAR,
-                    NETTOOMSATTNING_OVRIGT
-            )),
+    INKOMSTER("Inkomster", List.of(LONEINBETALNINGAR, NETTOOMSATTNING_OVRIGT)),
     BOENDE(
             "Boende",
             List.of(
@@ -24,8 +20,7 @@ enum NikkaSection {
                     BOLAN_RANTA,
                     HEMFORSAKRING,
                     EL,
-                    MOBIL_TV_BREDBAND
-            )),
+                    MOBIL_TV_BREDBAND)),
     FORNODENHETER(
             "Förnödenheter",
             List.of(
@@ -34,14 +29,8 @@ enum NikkaSection {
                     KROPP_OCH_SJAL,
                     PERSONFORSAKRINGAR,
                     AKASSA_FACK_BANK_SKATT,
-                    TRANSPORTER
-            )),
-    OVRIGT(
-            "Övrigt",
-            List.of(
-                    BOENDE_DIVERSE,
-                    NikkaAccountGroup.OVRIGT
-            )),
+                    TRANSPORTER)),
+    OVRIGT("Övrigt", List.of(BOENDE_DIVERSE, NikkaAccountGroup.OVRIGT)),
     JAMFORELSESTORANDE_POSTER(
             "Jämförelsestörande poster",
             List.of(
@@ -50,15 +39,10 @@ enum NikkaSection {
                     FINANSIELLT_NETTO,
                     INVESTERING_BOENDE,
                     EXTRAORDINART_NETTO)),
-    FORANDRING_LIKVIDA_MEDEL(
-            "Förändring likvida medel",
-            List.of(
-                    LIKVIDA_MEDEL
-            )) {
+    FORANDRING_LIKVIDA_MEDEL("Förändring likvida medel", List.of(LIKVIDA_MEDEL)) {
         @Override
         RowWithAccounts bodyRow(NikkaAccountGroup group, CashflowDataFetcher fetcher, Year year) {
-            return new DefaultRowWithAccountsWithNegatedAmounts(
-                    super.bodyRow(group, fetcher, year));
+            return new DefaultRowWithAccountsWithNegatedAmounts(super.bodyRow(group, fetcher, year));
         }
     };
 
@@ -83,7 +67,8 @@ enum NikkaSection {
         return () -> groups.stream().map(group -> bodyRow(group, fetcher, year));
     }
 
-    RowWithAccounts bodyRow(NikkaAccountGroup group, CashflowDataFetcher fetcher, java.time.Year year) {
+    RowWithAccounts bodyRow(
+            NikkaAccountGroup group, CashflowDataFetcher fetcher, java.time.Year year) {
         return group.bodyRow(fetcher, year);
     }
 }

@@ -40,8 +40,7 @@ public enum CashflowReport_AccountGroup_2012 {
             "Kortfristiga skulder",
             "2[4-9]\\d\\d",
             new Currency(950219),
-            new EnumMap<>(
-                    Column.class) {
+            new EnumMap<>(Column.class) {
                 {
                     put(JANUARY, new Currency(-1387853));
                     put(FEBRUARY, new Currency(50442848));
@@ -58,85 +57,70 @@ public enum CashflowReport_AccountGroup_2012 {
                 }
             });
 
-    private final static java.time.Year YEAR = java.time.Year.of(2012);
+    private static final java.time.Year YEAR = java.time.Year.of(2012);
 
     public static Stream<Row> bodyRowsOf(
-            CashflowDataFetcher fetcher,
-            List<CashflowReport_AccountGroup_2012> groups) {
+            CashflowDataFetcher fetcher, List<CashflowReport_AccountGroup_2012> groups) {
         return groups.stream().map(group -> group.bodyRow(fetcher));
     }
 
     public static void assertBodyRowDescriptions(
-            Section section,
-            List<CashflowReport_AccountGroup_2012> groups) {
-        final List<String> exp
-                = groups.stream().map(g -> g.description).collect(toList());
-        final List<String> act
-                = section.streamBody()
-                         .map(row -> row.format(DESCRIPTION))
-                         .collect(toList());
+            Section section, List<CashflowReport_AccountGroup_2012> groups) {
+        final List<String> exp = groups.stream().map(g -> g.description).collect(toList());
+        final List<String> act =
+                section.streamBody().map(row -> row.format(DESCRIPTION)).collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
-            String description
-                    = section.header().stream()
-                             .findFirst().orElseThrow().format(DESCRIPTION);
+            String description = section.header().stream().findFirst().orElseThrow().format(DESCRIPTION);
             final String msg = String.format(fmt, description, i);
             assertEquals(exp.get(i), act.get(i), msg);
         }
     }
 
     public static void assertMonthlyAmounts(
-            Section section,
-            List<CashflowReport_AccountGroup_2012> groups) {
-        final List<Map<Column, Currency>> expList
-                = groups.stream()
-                .map(group -> group.expectedAmounts)
-                .collect(toList());
-        final List<Map<Column, Currency>> actList
-                = section.streamBody()
-                         .map(row -> row.asRowWithAmounts().orElseThrow())
-                         .map(row -> Column.streamMonths()
-                        .map(col -> new AbstractMap.SimpleEntry<>(col,
-                                                                  row.getMonthlyAmount(col)))
-                        .collect(
-                                toMap(
-                                        Map.Entry::getKey,
-                                        Map.Entry::getValue)))
-                         .collect(toList());
+            Section section, List<CashflowReport_AccountGroup_2012> groups) {
+        final List<Map<Column, Currency>> expList =
+                groups.stream().map(group -> group.expectedAmounts).collect(toList());
+        final List<Map<Column, Currency>> actList =
+                section
+                        .streamBody()
+                        .map(row -> row.asRowWithAmounts().orElseThrow())
+                        .map(
+                                row ->
+                                        Column.streamMonths()
+                                              .map(col -> new AbstractMap.SimpleEntry<>(col, row.getMonthlyAmount(col)))
+                                              .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)))
+                        .collect(toList());
         assertEquals(expList.size(), actList.size());
         for (int i = 0; i < expList.size(); i++) {
             final int ix = i;
             final Map<Column, Currency> exp = expList.get(i);
             final Map<Column, Currency> act = actList.get(i);
-            String description
-                    = section.header().stream()
-                             .findFirst().orElseThrow().format(DESCRIPTION);
+            String description = section.header().stream().findFirst().orElseThrow().format(DESCRIPTION);
             final String fmt = "%s at %s at %s: ";
-            Column.streamMonths().forEach(
-                    column -> assertEquals(
-                            exp.get(column),
-                            act.get(column),
-                            String.format(fmt, description, column.name(), ix))
-            );
+            Column.streamMonths()
+                  .forEach(
+                          column ->
+                                  assertEquals(
+                                          exp.get(column),
+                                          act.get(column),
+                                          String.format(fmt, description, column.name(), ix)));
         }
     }
 
     public static void assertExpectedAverages(
-            Section section,
-            List<CashflowReport_AccountGroup_2012> groups) {
-        final List<Currency> exp
-                = groups.stream().map(g -> g.expectedAverage).collect(toList());
-        final List<Currency> act
-                = section.streamBody()
-                         .map(row -> row.asRowWithAmounts().orElseThrow().getAverage())
-                         .collect(toList());
+            Section section, List<CashflowReport_AccountGroup_2012> groups) {
+        final List<Currency> exp = groups.stream().map(g -> g.expectedAverage).collect(toList());
+        final List<Currency> act =
+                section
+                        .streamBody()
+                        .map(row -> row.asRowWithAmounts().orElseThrow().getAverage())
+                        .collect(toList());
         assertEquals(exp.size(), act.size());
         for (int i = 0; i < exp.size(); i++) {
             String fmt = "%s at %d";
-            String description
-                    = section.header().stream()
-                             .findFirst().orElseThrow().format(DESCRIPTION);
+            String description = section.header().stream().findFirst().orElseThrow().format(DESCRIPTION);
             String msg = String.format(fmt, description, i);
             assertEquals(exp.get(i), act.get(i), msg);
         }
@@ -160,16 +144,12 @@ public enum CashflowReport_AccountGroup_2012 {
 
     private RowWithAccounts bodyRow(CashflowDataFetcher fetcher) {
         final AccountFilter filter = new AccountFilterByRegex(regex);
-        List<AccountId> accountIds
-                = filter
-                .filter(fetcher.streamAccountIds(YEAR))
-                .distinct()
-                .sorted(comparing(AccountId::getId))
-                .collect(toList());
-        return new DefaultRowWithAccounts(
-                fetcher,
-                accountIds::stream,
-                YEAR,
-                description);
+        List<AccountId> accountIds =
+                filter
+                        .filter(fetcher.streamAccountIds(YEAR))
+                        .distinct()
+                        .sorted(comparing(AccountId::getId))
+                        .collect(toList());
+        return new DefaultRowWithAccounts(fetcher, accountIds::stream, YEAR, description);
     }
 }
