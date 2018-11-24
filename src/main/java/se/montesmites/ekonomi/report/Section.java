@@ -11,9 +11,7 @@ public interface Section {
   }
 
   static Section of(
-      Header header,
-      Supplier<Stream<Row>> bodyRows,
-      Optional<RowAggregator> rowAggregator) {
+      Header header, Supplier<Stream<Row>> bodyRows, Optional<RowAggregator> rowAggregator) {
     return new Section() {
       @Override
       public Header header() {
@@ -28,20 +26,6 @@ public interface Section {
       @Override
       public Footer footer() {
         return rowAggregator.map(Footer::of).orElse(Footer.empty());
-      }
-    };
-  }
-
-  static Section of(Supplier<Stream<Row>> rows) {
-    return new Section() {
-      @Override
-      public Stream<Row> streamAfterSection() {
-        return Stream.empty();
-      }
-
-      @Override
-      public Stream<Row> stream() {
-        return rows.get();
       }
     };
   }
