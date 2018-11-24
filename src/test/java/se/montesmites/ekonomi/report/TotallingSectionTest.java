@@ -37,7 +37,7 @@ class TotallingSectionTest {
 
     @Test
     void assertTitle() {
-        Assertions.assertEquals(TOTALLING_SECTION_TITLE, totallingSection.streamTitle().findFirst().orElseThrow().format(DESCRIPTION));
+        Assertions.assertEquals(TOTALLING_SECTION_TITLE, totallingSection.header().stream().findFirst().orElseThrow().format(DESCRIPTION));
     }
 
     @Test

@@ -2,7 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import java.util.stream.Stream;
 
-interface Header {
+public interface Header {
     static Header empty() {
         return Stream::empty;
     }

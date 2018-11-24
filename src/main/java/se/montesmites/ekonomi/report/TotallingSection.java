@@ -17,13 +17,8 @@ public class TotallingSection implements Section {
     }
 
     @Override
-    public Stream<Row> streamTitle() {
-        return Stream.of((TitleRow) () -> title);
-    }
-
-    @Override
-    public Stream<Row> streamHeader() {
-        return Stream.of((HeaderRow) () -> HEADER_TYPE_SHORT_MONTHS);
+    public Header header() {
+        return Header.of(() -> title).add((HeaderRow) () -> HEADER_TYPE_SHORT_MONTHS);
     }
 
     @Override

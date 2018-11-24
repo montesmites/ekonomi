@@ -16,7 +16,7 @@ public class CompactSectionDecorator implements SectionDecorator {
     }
 
     private Row createRow(Section section) {
-        var title = section.streamTitle().findFirst().orElseThrow();
+        var title = section.header().stream().findFirst().orElseThrow();
         var total = section.streamFooter().findFirst().orElseThrow();
         return new RowWithGranularFormatters() {
             @Override
