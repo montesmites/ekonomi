@@ -1,9 +1,9 @@
 package se.montesmites.ekonomi.report;
 
-import se.montesmites.ekonomi.i18n.Messages;
-
 import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_AVERAGE;
 import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_TOTAL;
+
+import se.montesmites.ekonomi.i18n.Messages;
 
 public interface HeaderRow extends RowWithGranularFormatters {
   HeaderRow SHORT_MONTHS_HEADER = column -> Messages.getShortMonth(column.getMonth().orElseThrow());

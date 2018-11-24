@@ -1,38 +1,38 @@
 package se.montesmites.ekonomi.report.xml;
 
-import se.montesmites.ekonomi.report.SectionDecorator;
-
 import java.util.ArrayList;
 import java.util.List;
+import se.montesmites.ekonomi.report.SectionDecorator;
 
 public class XmlSectionBuilder {
-    private final String description;
-    private final List<SectionDecorator> decorators;
-    private final List<XmlRowBuilder> bodyRowBuilders;
 
-    XmlSectionBuilder(String description) {
-        this.description = description;
-        this.decorators = new ArrayList<>();
-        this.bodyRowBuilders = new ArrayList<>();
-    }
+  private final String description;
+  private final List<SectionDecorator> decorators;
+  private final List<XmlRowBuilder> bodyRowBuilders;
 
-    public String getDescription() {
-        return description;
-    }
+  XmlSectionBuilder(String description) {
+    this.description = description;
+    this.decorators = new ArrayList<>();
+    this.bodyRowBuilders = new ArrayList<>();
+  }
 
-    void addBodyRowBuilder(XmlRowBuilder rowBuilder) {
-        this.bodyRowBuilders.add(rowBuilder);
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    List<XmlRowBuilder> getBodyRowBuilders() {
-        return bodyRowBuilders;
-    }
+  void addBodyRowBuilder(XmlRowBuilder rowBuilder) {
+    this.bodyRowBuilders.add(rowBuilder);
+  }
 
-    List<SectionDecorator> getDecorators() {
-        return decorators;
-    }
+  List<XmlRowBuilder> getBodyRowBuilders() {
+    return bodyRowBuilders;
+  }
 
-    void addSectionDecorator(SectionDecorator decorator) {
-        this.decorators.add(decorator);
-    }
+  List<SectionDecorator> getDecorators() {
+    return decorators;
+  }
+
+  void addSectionDecorator(SectionDecorator decorator) {
+    this.decorators.add(decorator);
+  }
 }

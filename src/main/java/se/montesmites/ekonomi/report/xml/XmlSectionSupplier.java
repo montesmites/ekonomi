@@ -4,5 +4,6 @@ import java.util.function.Function;
 
 @FunctionalInterface
 public interface XmlSectionSupplier {
-    XmlSection get(Function<String, XmlSection> sections);
+
+  XmlSection get(Function<String, XmlSection> sections);
 }

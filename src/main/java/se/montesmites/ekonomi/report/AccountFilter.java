@@ -1,9 +1,9 @@
 package se.montesmites.ekonomi.report;
 
+import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 
-import java.util.stream.Stream;
-
 public interface AccountFilter {
-    Stream<AccountId> filter(Stream<AccountId> accountIds);
+
+  Stream<AccountId> filter(Stream<AccountId> accountIds);
 }

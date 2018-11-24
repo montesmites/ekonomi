@@ -7,6 +7,6 @@
 //
 
 @javax.xml.bind.annotation.XmlSchema(
-        namespace = "se/montesmites/ekonomi/report-definition",
-        elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+    namespace = "se/montesmites/ekonomi/report-definition",
+    elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package se.montesmites.ekonomi.jaxb.report_definition;

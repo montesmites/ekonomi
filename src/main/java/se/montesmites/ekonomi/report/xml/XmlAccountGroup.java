@@ -1,47 +1,47 @@
 package se.montesmites.ekonomi.report.xml;
 
+import java.util.function.Function;
+import javax.xml.bind.annotation.XmlAttribute;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import java.util.function.Function;
-
 public class XmlAccountGroup implements XmlAccountGroupSupplier {
-    private String id;
-    private String description;
-    private String regex;
 
-    @XmlAttribute
-    public String getId() {
-        return id;
-    }
+  private String id;
+  private String description;
+  private String regex;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  @XmlAttribute
+  public String getId() {
+    return id;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String getRegex() {
-        return regex;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public void setRegex(String regex) {
-        this.regex = regex;
-    }
+  public String getRegex() {
+    return regex;
+  }
 
-    XmlRowBuilder toRowBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
-        return new XmlRowBuilder(fetcher, new AccountFilterByRegex(regex), year, description);
-    }
+  public void setRegex(String regex) {
+    this.regex = regex;
+  }
 
-    @Override
-    public XmlAccountGroup get(Function<String, XmlAccountGroup> accountGroups) {
-        return this;
-    }
+  XmlRowBuilder toRowBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
+    return new XmlRowBuilder(fetcher, new AccountFilterByRegex(regex), year, description);
+  }
+
+  @Override
+  public XmlAccountGroup get(Function<String, XmlAccountGroup> accountGroups) {
+    return this;
+  }
 }

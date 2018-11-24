@@ -1,32 +1,32 @@
 package se.montesmites.ekonomi.report.xml;
 
+import java.util.List;
 import se.montesmites.ekonomi.report.SectionDecorator;
 
-import java.util.List;
-
 class _SectionDefinition4Test {
-    private final String description;
-    private final List<Class<? extends SectionDecorator>> decorators;
-    private final List<_RowDefinition4Test> rows;
 
-    _SectionDefinition4Test(
-            String description,
-            List<Class<? extends SectionDecorator>> decorators,
-            List<_RowDefinition4Test> rows) {
-        this.description = description;
-        this.decorators = decorators;
-        this.rows = rows;
-    }
+  private final String description;
+  private final List<Class<? extends SectionDecorator>> decorators;
+  private final List<_RowDefinition4Test> rows;
 
-    public String getDescription() {
-        return description;
-    }
+  _SectionDefinition4Test(
+      String description,
+      List<Class<? extends SectionDecorator>> decorators,
+      List<_RowDefinition4Test> rows) {
+    this.description = description;
+    this.decorators = decorators;
+    this.rows = rows;
+  }
 
-    public List<Class<? extends SectionDecorator>> getDecorators() {
-        return decorators;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    List<_RowDefinition4Test> getRows() {
-        return rows;
-    }
+  public List<Class<? extends SectionDecorator>> getDecorators() {
+    return decorators;
+  }
+
+  List<_RowDefinition4Test> getRows() {
+    return rows;
+  }
 }

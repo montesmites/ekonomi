@@ -1,24 +1,25 @@
 package se.montesmites.ekonomi.report.xml;
 
-import javax.xml.bind.annotation.XmlAttribute;
 import java.util.function.Function;
+import javax.xml.bind.annotation.XmlAttribute;
 
 class XmlSectionRef extends XmlSectionCommonJAXB implements XmlSectionSupplier {
-    private String id;
 
-    @XmlAttribute
-    public String getId() {
-        return id;
-    }
+  private String id;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  @XmlAttribute
+  public String getId() {
+    return id;
+  }
 
-    @Override
-    public XmlSection get(Function<String, XmlSection> sections) {
-        var section = sections.apply(id);
-        section.getDecorators().addAll(getDecorators());
-        return section;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  @Override
+  public XmlSection get(Function<String, XmlSection> sections) {
+    var section = sections.apply(id);
+    section.getDecorators().addAll(getDecorators());
+    return section;
+  }
 }

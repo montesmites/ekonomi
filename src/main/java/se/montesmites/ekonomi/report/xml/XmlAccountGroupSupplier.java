@@ -4,5 +4,6 @@ import java.util.function.Function;
 
 @FunctionalInterface
 public interface XmlAccountGroupSupplier {
-    XmlAccountGroup get(Function<String, XmlAccountGroup> accountGroups);
+
+  XmlAccountGroup get(Function<String, XmlAccountGroup> accountGroups);
 }

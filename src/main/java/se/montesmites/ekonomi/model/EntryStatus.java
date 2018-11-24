@@ -5,69 +5,70 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class EntryStatus {
-    public enum Status {
-        ACTIVE,
-        PASSIVE
-    }
 
-    public static Optional<EntryStatus> parse(String flags) {
-        if (flags.length() == 4) {
-            return eventify(flags);
-        } else {
-            return Optional.empty();
-        }
-    }
+  public enum Status {
+    ACTIVE,
+    PASSIVE
+  }
 
-    private static Optional<EntryStatus> eventify(String flags) {
-        var entryStatusFlags = EntryStatusFlags.ENTRY_STATUS_FLAGS.get(flags);
-        if (entryStatusFlags != null) {
-            return Optional.of(entryStatusFlags.getStatus());
-        } else {
-            return Optional.empty();
-        }
+  public static Optional<EntryStatus> parse(String flags) {
+    if (flags.length() == 4) {
+      return eventify(flags);
+    } else {
+      return Optional.empty();
     }
+  }
 
-    private final Status status;
-    private final List<EntryEvent> events;
-
-    public EntryStatus(Status status, EntryEvent... events) {
-        this(status, List.of(events));
+  private static Optional<EntryStatus> eventify(String flags) {
+    var entryStatusFlags = EntryStatusFlags.ENTRY_STATUS_FLAGS.get(flags);
+    if (entryStatusFlags != null) {
+      return Optional.of(entryStatusFlags.getStatus());
+    } else {
+      return Optional.empty();
     }
+  }
 
-    private EntryStatus(Status status, List<EntryEvent> events) {
-        this.status = status;
-        this.events = events;
-    }
+  private final Status status;
+  private final List<EntryEvent> events;
 
-    public Status getStatus() {
-        return status;
-    }
+  public EntryStatus(Status status, EntryEvent... events) {
+    this(status, List.of(events));
+  }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 29 * hash + Objects.hashCode(this.status);
-        hash = 29 * hash + Objects.hashCode(this.events);
-        return hash;
-    }
+  private EntryStatus(Status status, List<EntryEvent> events) {
+    this.status = status;
+    this.events = events;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final EntryStatus other = (EntryStatus) obj;
-        return this.status == other.status && Objects.equals(this.events, other.events);
-    }
+  public Status getStatus() {
+    return status;
+  }
 
-    @Override
-    public String toString() {
-        return "EntryStatus{" + "status=" + status + ", events=" + events + '}';
+  @Override
+  public int hashCode() {
+    int hash = 5;
+    hash = 29 * hash + Objects.hashCode(this.status);
+    hash = 29 * hash + Objects.hashCode(this.events);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final EntryStatus other = (EntryStatus) obj;
+    return this.status == other.status && Objects.equals(this.events, other.events);
+  }
+
+  @Override
+  public String toString() {
+    return "EntryStatus{" + "status=" + status + ", events=" + events + '}';
+  }
 }

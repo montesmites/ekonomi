@@ -22,80 +22,59 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ObjectFactory {
 
-    /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes
-     * for package: se.montesmites.ekonomi.report_definition
-     */
-    public ObjectFactory() {
-    }
+  /**
+   * Create a new ObjectFactory that can be used to create new instances of schema derived classes
+   * for package: se.montesmites.ekonomi.report_definition
+   */
+  public ObjectFactory() {}
 
-    /**
-     * Create an instance of {@link SectionRef }
-     */
-    public SectionRef createSectionRef() {
-        return new SectionRef();
-    }
+  /** Create an instance of {@link SectionRef } */
+  public SectionRef createSectionRef() {
+    return new SectionRef();
+  }
 
-    /**
-     * Create an instance of {@link AccountGroupRef }
-     */
-    public AccountGroupRef createAccountGroupRef() {
-        return new AccountGroupRef();
-    }
+  /** Create an instance of {@link AccountGroupRef } */
+  public AccountGroupRef createAccountGroupRef() {
+    return new AccountGroupRef();
+  }
 
-    /**
-     * Create an instance of {@link Report }
-     */
-    public Report createReport() {
-        return new Report();
-    }
+  /** Create an instance of {@link Report } */
+  public Report createReport() {
+    return new Report();
+  }
 
-    /**
-     * Create an instance of {@link Section }
-     */
-    public Section createSection() {
-        return new Section();
-    }
+  /** Create an instance of {@link Section } */
+  public Section createSection() {
+    return new Section();
+  }
 
-    /**
-     * Create an instance of {@link AccountGroup }
-     */
-    public AccountGroup createAccountGroup() {
-        return new AccountGroup();
-    }
+  /** Create an instance of {@link AccountGroup } */
+  public AccountGroup createAccountGroup() {
+    return new AccountGroup();
+  }
 
-    /**
-     * Create an instance of {@link SectionRef.CompactSection }
-     */
-    public SectionRef.CompactSection createSectionRefCompactSection() {
-        return new SectionRef.CompactSection();
-    }
+  /** Create an instance of {@link SectionRef.CompactSection } */
+  public SectionRef.CompactSection createSectionRefCompactSection() {
+    return new SectionRef.CompactSection();
+  }
 
-    /**
-     * Create an instance of {@link SectionRef.TotallingSection }
-     */
-    public SectionRef.TotallingSection createSectionRefTotallingSection() {
-        return new SectionRef.TotallingSection();
-    }
+  /** Create an instance of {@link SectionRef.TotallingSection } */
+  public SectionRef.TotallingSection createSectionRefTotallingSection() {
+    return new SectionRef.TotallingSection();
+  }
 
-    /**
-     * Create an instance of {@link SectionRef.NegatedSection }
-     */
-    public SectionRef.NegatedSection createSectionRefNegatedSection() {
-        return new SectionRef.NegatedSection();
-    }
+  /** Create an instance of {@link SectionRef.NegatedSection } */
+  public SectionRef.NegatedSection createSectionRefNegatedSection() {
+    return new SectionRef.NegatedSection();
+  }
 
-    /**
-     * Create an instance of {@link SectionRef.AccumulatingSection }
-     */
-    public SectionRef.AccumulatingSection createSectionRefAccumulatingSection() {
-        return new SectionRef.AccumulatingSection();
-    }
+  /** Create an instance of {@link SectionRef.AccumulatingSection } */
+  public SectionRef.AccumulatingSection createSectionRefAccumulatingSection() {
+    return new SectionRef.AccumulatingSection();
+  }
 
-    /**
-     * Create an instance of {@link Definition }
-     */
-    public Definition createDefinition() {
-        return new Definition();
-    }
+  /** Create an instance of {@link Definition } */
+  public Definition createDefinition() {
+    return new Definition();
+  }
 }

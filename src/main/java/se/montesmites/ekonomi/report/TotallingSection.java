@@ -1,49 +1,49 @@
 package se.montesmites.ekonomi.report;
 
+import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
-
 public class TotallingSection implements Section {
 
-    private final String title;
-    private final List<Section> sections;
+  private final String title;
+  private final List<Section> sections;
 
-    public TotallingSection(String title, List<Section> sections) {
-        this.title = title;
-        this.sections = sections;
-    }
+  public TotallingSection(String title, List<Section> sections) {
+    this.title = title;
+    this.sections = sections;
+  }
 
-    @Override
-    public Header header() {
-        return Header.of(() -> title).add((HeaderRow) SHORT_MONTHS_HEADER);
-    }
+  @Override
+  public Header header() {
+    return Header.of(() -> title).add((HeaderRow) SHORT_MONTHS_HEADER);
+  }
 
-    @Override
-    public Stream<Row> streamFooter() {
-        return Stream.<Row>builder().add(streamSectionRows()).add(Row.empty()).build();
-    }
+  @Override
+  public Stream<Row> streamFooter() {
+    return Stream.<Row>builder().add(streamSectionRows()).add(Row.empty()).build();
+  }
 
-    private FooterRow streamSectionRows() {
-        return () -> () -> sections.stream().flatMap(streamWrappedBody());
-    }
+  private FooterRow streamSectionRows() {
+    return () -> () -> sections.stream().flatMap(streamWrappedBody());
+  }
 
-    private Function<Section, Stream<? extends Row>> streamWrappedBody() {
-        return (Section section) -> section.streamBody().flatMap(wrapRow(section));
-    }
+  private Function<Section, Stream<? extends Row>> streamWrappedBody() {
+    return (Section section) -> section.streamBody().flatMap(wrapRow(section));
+  }
 
-    private Function<Row, Stream<? extends Row>> wrapRow(Section section) {
-        return row -> Stream.of(wrapSectionRow(section, row));
-    }
+  private Function<Row, Stream<? extends Row>> wrapRow(Section section) {
+    return row -> Stream.of(wrapSectionRow(section, row));
+  }
 
-    protected Row wrapSectionRow(Section section, Row row) {
-        return row;
-    }
+  protected Row wrapSectionRow(Section section, Row row) {
+    return row;
+  }
 
-    @Override
-    public Stream<Row> streamBody() {
-        return Stream.empty();
-    }
+  @Override
+  public Stream<Row> streamBody() {
+    return Stream.empty();
+  }
 }

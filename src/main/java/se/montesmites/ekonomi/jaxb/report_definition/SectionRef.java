@@ -8,7 +8,12 @@
 
 package se.montesmites.ekonomi.jaxb.report_definition;
 
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * Java class for anonymous complex type.
@@ -61,189 +66,185 @@ import javax.xml.bind.annotation.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-        name = "",
-        propOrder = {"compactSection", "totallingSection", "negatedSection", "accumulatingSection"})
+    name = "",
+    propOrder = {"compactSection", "totallingSection", "negatedSection", "accumulatingSection"})
 @XmlRootElement(name = "section-ref")
 public class SectionRef {
 
-    @XmlElement(name = "compact-section")
-    protected SectionRef.CompactSection compactSection;
+  @XmlElement(name = "compact-section")
+  protected SectionRef.CompactSection compactSection;
 
-    @XmlElement(name = "totalling-section")
-    protected SectionRef.TotallingSection totallingSection;
+  @XmlElement(name = "totalling-section")
+  protected SectionRef.TotallingSection totallingSection;
 
-    @XmlElement(name = "negated-section")
-    protected SectionRef.NegatedSection negatedSection;
+  @XmlElement(name = "negated-section")
+  protected SectionRef.NegatedSection negatedSection;
 
-    @XmlElement(name = "accumulating-section")
-    protected SectionRef.AccumulatingSection accumulatingSection;
+  @XmlElement(name = "accumulating-section")
+  protected SectionRef.AccumulatingSection accumulatingSection;
 
-    @XmlAttribute(name = "id")
-    protected String id;
+  @XmlAttribute(name = "id")
+  protected String id;
 
-    /**
-     * Gets the value of the compactSection property.
-     *
-     * @return possible object is {@link SectionRef.CompactSection }
-     */
-    public SectionRef.CompactSection getCompactSection() {
-        return compactSection;
-    }
+  /**
+   * Gets the value of the compactSection property.
+   *
+   * @return possible object is {@link SectionRef.CompactSection }
+   */
+  public SectionRef.CompactSection getCompactSection() {
+    return compactSection;
+  }
 
-    /**
-     * Sets the value of the compactSection property.
-     *
-     * @param value allowed object is {@link SectionRef.CompactSection }
-     */
-    public void setCompactSection(SectionRef.CompactSection value) {
-        this.compactSection = value;
-    }
+  /**
+   * Sets the value of the compactSection property.
+   *
+   * @param value allowed object is {@link SectionRef.CompactSection }
+   */
+  public void setCompactSection(SectionRef.CompactSection value) {
+    this.compactSection = value;
+  }
 
-    /**
-     * Gets the value of the totallingSection property.
-     *
-     * @return possible object is {@link SectionRef.TotallingSection }
-     */
-    public SectionRef.TotallingSection getTotallingSection() {
-        return totallingSection;
-    }
+  /**
+   * Gets the value of the totallingSection property.
+   *
+   * @return possible object is {@link SectionRef.TotallingSection }
+   */
+  public SectionRef.TotallingSection getTotallingSection() {
+    return totallingSection;
+  }
 
-    /**
-     * Sets the value of the totallingSection property.
-     *
-     * @param value allowed object is {@link SectionRef.TotallingSection }
-     */
-    public void setTotallingSection(SectionRef.TotallingSection value) {
-        this.totallingSection = value;
-    }
+  /**
+   * Sets the value of the totallingSection property.
+   *
+   * @param value allowed object is {@link SectionRef.TotallingSection }
+   */
+  public void setTotallingSection(SectionRef.TotallingSection value) {
+    this.totallingSection = value;
+  }
 
-    /**
-     * Gets the value of the negatedSection property.
-     *
-     * @return possible object is {@link SectionRef.NegatedSection }
-     */
-    public SectionRef.NegatedSection getNegatedSection() {
-        return negatedSection;
-    }
+  /**
+   * Gets the value of the negatedSection property.
+   *
+   * @return possible object is {@link SectionRef.NegatedSection }
+   */
+  public SectionRef.NegatedSection getNegatedSection() {
+    return negatedSection;
+  }
 
-    /**
-     * Sets the value of the negatedSection property.
-     *
-     * @param value allowed object is {@link SectionRef.NegatedSection }
-     */
-    public void setNegatedSection(SectionRef.NegatedSection value) {
-        this.negatedSection = value;
-    }
+  /**
+   * Sets the value of the negatedSection property.
+   *
+   * @param value allowed object is {@link SectionRef.NegatedSection }
+   */
+  public void setNegatedSection(SectionRef.NegatedSection value) {
+    this.negatedSection = value;
+  }
 
-    /**
-     * Gets the value of the accumulatingSection property.
-     *
-     * @return possible object is {@link SectionRef.AccumulatingSection }
-     */
-    public SectionRef.AccumulatingSection getAccumulatingSection() {
-        return accumulatingSection;
-    }
+  /**
+   * Gets the value of the accumulatingSection property.
+   *
+   * @return possible object is {@link SectionRef.AccumulatingSection }
+   */
+  public SectionRef.AccumulatingSection getAccumulatingSection() {
+    return accumulatingSection;
+  }
 
-    /**
-     * Sets the value of the accumulatingSection property.
-     *
-     * @param value allowed object is {@link SectionRef.AccumulatingSection }
-     */
-    public void setAccumulatingSection(SectionRef.AccumulatingSection value) {
-        this.accumulatingSection = value;
-    }
+  /**
+   * Sets the value of the accumulatingSection property.
+   *
+   * @param value allowed object is {@link SectionRef.AccumulatingSection }
+   */
+  public void setAccumulatingSection(SectionRef.AccumulatingSection value) {
+    this.accumulatingSection = value;
+  }
 
-    /**
-     * Gets the value of the id property.
-     *
-     * @return possible object is {@link String }
-     */
-    public String getId() {
-        return id;
-    }
+  /**
+   * Gets the value of the id property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getId() {
+    return id;
+  }
 
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value allowed object is {@link String }
-     */
-    public void setId(String value) {
-        this.id = value;
-    }
+  /**
+   * Sets the value of the id property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setId(String value) {
+    this.id = value;
+  }
 
-    /**
-     * Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class AccumulatingSection {
-    }
+  /**
+   * Java class for anonymous complex type.
+   *
+   * <p>The following schema fragment specifies the expected content contained within this class.
+   *
+   * <pre>
+   * &lt;complexType>
+   *   &lt;complexContent>
+   *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+   *     &lt;/restriction>
+   *   &lt;/complexContent>
+   * &lt;/complexType>
+   * </pre>
+   */
+  @XmlAccessorType(XmlAccessType.FIELD)
+  @XmlType(name = "")
+  public static class AccumulatingSection {}
 
-    /**
-     * Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class CompactSection {
-    }
+  /**
+   * Java class for anonymous complex type.
+   *
+   * <p>The following schema fragment specifies the expected content contained within this class.
+   *
+   * <pre>
+   * &lt;complexType>
+   *   &lt;complexContent>
+   *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+   *     &lt;/restriction>
+   *   &lt;/complexContent>
+   * &lt;/complexType>
+   * </pre>
+   */
+  @XmlAccessorType(XmlAccessType.FIELD)
+  @XmlType(name = "")
+  public static class CompactSection {}
 
-    /**
-     * Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class NegatedSection {
-    }
+  /**
+   * Java class for anonymous complex type.
+   *
+   * <p>The following schema fragment specifies the expected content contained within this class.
+   *
+   * <pre>
+   * &lt;complexType>
+   *   &lt;complexContent>
+   *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+   *     &lt;/restriction>
+   *   &lt;/complexContent>
+   * &lt;/complexType>
+   * </pre>
+   */
+  @XmlAccessorType(XmlAccessType.FIELD)
+  @XmlType(name = "")
+  public static class NegatedSection {}
 
-    /**
-     * Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     */
-    @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "")
-    public static class TotallingSection {
-    }
+  /**
+   * Java class for anonymous complex type.
+   *
+   * <p>The following schema fragment specifies the expected content contained within this class.
+   *
+   * <pre>
+   * &lt;complexType>
+   *   &lt;complexContent>
+   *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+   *     &lt;/restriction>
+   *   &lt;/complexContent>
+   * &lt;/complexType>
+   * </pre>
+   */
+  @XmlAccessorType(XmlAccessType.FIELD)
+  @XmlType(name = "")
+  public static class TotallingSection {}
 }

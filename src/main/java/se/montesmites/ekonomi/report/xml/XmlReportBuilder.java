@@ -1,48 +1,48 @@
 package se.montesmites.ekonomi.report.xml;
 
-import se.montesmites.ekonomi.organization.Organization;
-
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import se.montesmites.ekonomi.organization.Organization;
 
 public class XmlReportBuilder {
-    private final Organization organization;
-    private final java.time.Year year;
-    private final List<XmlSection> xmlSections;
-    private final List<XmlSectionBuilder> sectionBuilders;
-    private final String description;
 
-    XmlReportBuilder(
-            Organization organization, Year year, String description, List<XmlSection> xmlSections) {
-        this.organization = organization;
-        this.year = year;
-        this.description = description;
-        this.xmlSections = xmlSections;
-        this.sectionBuilders = new ArrayList<>();
-    }
+  private final Organization organization;
+  private final java.time.Year year;
+  private final List<XmlSection> xmlSections;
+  private final List<XmlSectionBuilder> sectionBuilders;
+  private final String description;
 
-    public Organization getOrganization() {
-        return organization;
-    }
+  XmlReportBuilder(
+      Organization organization, Year year, String description, List<XmlSection> xmlSections) {
+    this.organization = organization;
+    this.year = year;
+    this.description = description;
+    this.xmlSections = xmlSections;
+    this.sectionBuilders = new ArrayList<>();
+  }
 
-    public Year getYear() {
-        return year;
-    }
+  public Organization getOrganization() {
+    return organization;
+  }
 
-    void addSectionBuilder(XmlSectionBuilder sectionBuilder) {
-        this.sectionBuilders.add(sectionBuilder);
-    }
+  public Year getYear() {
+    return year;
+  }
 
-    List<XmlSectionBuilder> getSectionBuilders() {
-        return sectionBuilders;
-    }
+  void addSectionBuilder(XmlSectionBuilder sectionBuilder) {
+    this.sectionBuilders.add(sectionBuilder);
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  List<XmlSectionBuilder> getSectionBuilders() {
+    return sectionBuilders;
+  }
 
-    public List<XmlSection> getXmlSections() {
-        return xmlSections;
-    }
+  public String getDescription() {
+    return description;
+  }
+
+  public List<XmlSection> getXmlSections() {
+    return xmlSections;
+  }
 }
