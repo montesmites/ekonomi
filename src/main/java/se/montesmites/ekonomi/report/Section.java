@@ -64,7 +64,7 @@ public interface Section {
     }
 
     default Stream<Row> streamAfterSection() {
-        return Stream.of(new EmptyRow());
+        return Stream.of(Row.empty());
     }
 
     default Stream<Row> stream() {

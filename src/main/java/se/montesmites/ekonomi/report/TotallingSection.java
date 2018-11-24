@@ -23,7 +23,7 @@ public class TotallingSection implements Section {
 
     @Override
     public Stream<Row> streamFooter() {
-        return Stream.<Row>builder().add(streamSectionRows()).add(new EmptyRow()).build();
+        return Stream.<Row>builder().add(streamSectionRows()).add(Row.empty()).build();
     }
 
     private FooterRow streamSectionRows() {

@@ -5,6 +5,10 @@ import java.util.function.Predicate;
 
 @FunctionalInterface
 public interface Row {
+    static Row empty() {
+        return column -> "";
+    }
+
     String format(Column column);
 
     default Optional<RowWithAmounts> asRowWithAmounts() {

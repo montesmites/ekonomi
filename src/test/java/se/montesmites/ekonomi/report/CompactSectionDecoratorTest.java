@@ -23,7 +23,7 @@ class CompactSectionDecoratorTest {
         var expectedSection =
                 new _Section4TestUtil()
                         .addBodyRowWithAmounts(title.toUpperCase(), values::get)
-                        .add(new EmptyRow());
+                        .add(Row.empty());
         expectedSection.assertIsEqualTo(actualSection);
     }
 }
