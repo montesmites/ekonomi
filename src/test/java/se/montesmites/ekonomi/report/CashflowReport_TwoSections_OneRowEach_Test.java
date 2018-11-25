@@ -12,8 +12,6 @@ import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 import java.time.Year;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,8 +43,9 @@ class CashflowReport_TwoSections_OneRowEach_Test {
 
   private Map.Entry<Section, List<CashflowReport_AccountGroup_2012>> section(
       String title, List<CashflowReport_AccountGroup_2012> groups) {
-    var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
-    var section = Section.of(Header.of(() -> title).add(SHORT_MONTHS_HEADER), bodyRows);
+    var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
+    var body = Body.of(() -> bodyRowsOf(fetcher, groups));
+    var section = Section.of(header, body);
     return Map.entry(section, groups);
   }
 

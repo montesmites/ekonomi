@@ -9,7 +9,7 @@ public interface Body {
     return Stream::empty;
   }
 
-  static Body of(Supplier<Stream<RowWithAmounts>> rowWithAmounts) {
+  static Body of(Supplier<Stream<? extends RowWithAmounts>> rowWithAmounts) {
     return rowWithAmounts::get;
   }
 
@@ -21,5 +21,5 @@ public interface Body {
     return () -> Stream.concat(this.stream(), Stream.of(rowWithAmounts));
   }
 
-  Stream<RowWithAmounts> stream();
+  Stream<? extends RowWithAmounts> stream();
 }

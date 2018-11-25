@@ -27,20 +27,20 @@ public class TotallingSection implements Section {
         RowAggregator.of(() -> sections.stream().flatMap(streamWrappedBody())).aggregate());
   }
 
-  private Function<Section, Stream<? extends Row>> streamWrappedBody() {
-    return (Section section) -> section.streamBody().flatMap(wrapRow(section));
+  private Function<Section, Stream<RowWithAmounts>> streamWrappedBody() {
+    return (Section section) -> section.body().stream().flatMap(wrapRow(section));
   }
 
-  private Function<Row, Stream<? extends Row>> wrapRow(Section section) {
+  private Function<RowWithAmounts, Stream<RowWithAmounts>> wrapRow(Section section) {
     return row -> Stream.of(wrapSectionRow(section, row));
   }
 
-  protected Row wrapSectionRow(Section section, Row row) {
+  protected RowWithAmounts wrapSectionRow(Section section, RowWithAmounts row) {
     return row;
   }
 
   @Override
-  public Stream<Row> streamBody() {
-    return Stream.empty();
+  public Body body() {
+    return Body.empty();
   }
 }

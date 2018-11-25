@@ -11,7 +11,6 @@ import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.time.Year;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,9 +37,10 @@ class CashflowReport_OneSection_TwoRows_Test {
     this.fetcher = new CashflowDataFetcher(this.organization);
     this.report = new CashflowReport(fetcher, year, this::sections);
     this.groups = List.of(BOKFORT_RESULTAT, KORTFRISTIGA_SKULDER);
-    var bodyRows = (Supplier<Stream<Row>>) () -> bodyRowsOf(fetcher, groups);
+    var header = Header.of(() -> DEN_LOPANDE_VERKSAMHETEN).add(SHORT_MONTHS_HEADER);
+    var body = Body.of(() -> bodyRowsOf(fetcher, groups));
     this.section =
-        Section.of(Header.of(() -> DEN_LOPANDE_VERKSAMHETEN).add(SHORT_MONTHS_HEADER), bodyRows);
+        Section.of(header, body);
   }
 
   private Stream<Section> sections() {

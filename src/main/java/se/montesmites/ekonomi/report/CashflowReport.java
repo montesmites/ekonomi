@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class CashflowReport {
 
-  private static Stream<Row> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
+  private static Stream<RowWithAmounts> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
     return fetcher
         .streamAccountIds(year)
         .map(
@@ -27,10 +27,9 @@ public class CashflowReport {
         fetcher,
         year,
         () -> {
-          var bodyRows = (Supplier<Stream<Row>>) () -> bodyRows(fetcher, year);
-          return Stream.of(
-              Section.of(
-                  Header.of(() -> "Unspecified Accounts").add(SHORT_MONTHS_HEADER), bodyRows));
+          var header = Header.of(() -> "Unspecified Accounts").add(SHORT_MONTHS_HEADER);
+          var body = Body.of(() -> bodyRows(fetcher, year));
+          return Stream.of(Section.of(header, body));
         });
   }
 

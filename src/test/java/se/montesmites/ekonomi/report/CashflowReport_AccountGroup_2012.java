@@ -70,7 +70,7 @@ public enum CashflowReport_AccountGroup_2012 {
 
   private static final java.time.Year YEAR = java.time.Year.of(2012);
 
-  public static Stream<Row> bodyRowsOf(
+  public static Stream<RowWithAmounts> bodyRowsOf(
       CashflowDataFetcher fetcher, List<CashflowReport_AccountGroup_2012> groups) {
     return groups.stream().map(group -> group.bodyRow(fetcher));
   }
@@ -79,7 +79,7 @@ public enum CashflowReport_AccountGroup_2012 {
       Section section, List<CashflowReport_AccountGroup_2012> groups) {
     final List<String> exp = groups.stream().map(g -> g.description).collect(toList());
     final List<String> act =
-        section.streamBody().map(row -> row.format(DESCRIPTION)).collect(toList());
+        section.body().stream().map(row -> row.format(DESCRIPTION)).collect(toList());
     assertEquals(exp.size(), act.size());
     for (int i = 0; i < exp.size(); i++) {
       String fmt = "%s at %d";
@@ -95,7 +95,7 @@ public enum CashflowReport_AccountGroup_2012 {
         groups.stream().map(group -> group.expectedAmounts).collect(toList());
     final List<Map<Column, Currency>> actList =
         section
-            .streamBody()
+            .body().stream()
             .map(row -> row.asRowWithAmounts().orElseThrow())
             .map(
                 row ->
@@ -125,7 +125,7 @@ public enum CashflowReport_AccountGroup_2012 {
     final List<Currency> exp = groups.stream().map(g -> g.expectedAverage).collect(toList());
     final List<Currency> act =
         section
-            .streamBody()
+            .body().stream()
             .map(row -> row.asRowWithAmounts().orElseThrow().getAverage())
             .collect(toList());
     assertEquals(exp.size(), act.size());

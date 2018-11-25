@@ -1,17 +1,16 @@
 package se.montesmites.ekonomi.report;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public interface Section {
 
-  static Section of(Header header, Supplier<Stream<Row>> bodyRows) {
-    return Section.of(header, bodyRows, Optional.of(RowAggregator.of(bodyRows)));
+  static Section of(Header header, Body body) {
+    return Section.of(header, body, Optional.of(RowAggregator.of(body::stream)));
   }
 
   static Section of(
-      Header header, Supplier<Stream<Row>> bodyRows, Optional<RowAggregator> rowAggregator) {
+      Header header, Body body, Optional<RowAggregator> rowAggregator) {
     return new Section() {
       @Override
       public Header header() {
@@ -19,8 +18,8 @@ public interface Section {
       }
 
       @Override
-      public Stream<Row> streamBody() {
-        return bodyRows.get();
+      public Body body() {
+        return body;
       }
 
       @Override
@@ -38,8 +37,8 @@ public interface Section {
     return Header.empty();
   }
 
-  default Stream<Row> streamBody() {
-    return Stream.empty();
+  default Body body() {
+    return Body.empty();
   }
 
   default Footer footer() {
@@ -54,7 +53,7 @@ public interface Section {
     Stream.Builder<Row> sb = Stream.builder();
     streamBeforeSection().forEach(sb::add);
     header().stream().forEach(sb::add);
-    streamBody().forEach(sb::add);
+    body().stream().forEach(sb::add);
     footer().stream().forEach(sb::add);
     streamAfterSection().forEach(sb::add);
     return sb.build();

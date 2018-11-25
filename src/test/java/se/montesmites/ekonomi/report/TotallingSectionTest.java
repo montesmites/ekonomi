@@ -51,7 +51,7 @@ class TotallingSectionTest {
 
   @Test
   void assertNoBodyRows() {
-    Assertions.assertEquals(0, totallingSection.streamBody().count());
+    Assertions.assertEquals(0, totallingSection.body().stream().count());
   }
 
   @Test

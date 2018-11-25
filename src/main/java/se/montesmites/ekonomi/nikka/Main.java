@@ -25,7 +25,7 @@ import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.CompactSectionDecorator;
 import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
-import se.montesmites.ekonomi.report.Row;
+import se.montesmites.ekonomi.report.RowWithAmounts;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.TotallingSection;
 
@@ -66,7 +66,7 @@ class Main {
                 JAMFORELSESTORANDE_POSTER,
                 FORANDRING_LIKVIDA_MEDEL)) {
           @Override
-          public Row wrapSectionRow(Section section, Row row) {
+          public RowWithAmounts wrapSectionRow(Section section, RowWithAmounts row) {
             if (sectionEqualsForandringLikvidaMedel(section)) {
               return new DefaultRowWithAccountsWithNegatedAmounts(
                   row.asRowWithAccounts().orElseThrow());
