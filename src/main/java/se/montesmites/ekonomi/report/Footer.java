@@ -12,14 +12,6 @@ public interface Footer {
     return () -> Stream.of(row);
   }
 
-  static Footer of(Body body) {
-    return Footer.of(RowAggregator.of(body::stream));
-  }
-
-  static Footer of(RowAggregator rowAggregator) {
-    return () -> Stream.of(rowAggregator.aggregate());
-  }
-
   default Footer add(Row row) {
     return () -> Stream.concat(this.stream(), Stream.of(row));
   }

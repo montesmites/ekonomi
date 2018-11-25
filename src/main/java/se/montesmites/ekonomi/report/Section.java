@@ -31,13 +31,10 @@ public interface Section {
     };
   }
 
-  static Section compact(String description, RowAggregator aggregator) {
-    var merger =
-        RowMerger.template(aggregator.aggregate()).add(DESCRIPTION, TitleRow.of(description));
-    var header = Header.empty();
-    var body = Body.empty();
+  static Section compact(String description, Body body) {
+    var merger = RowMerger.template(body.aggregate()).add(DESCRIPTION, TitleRow.of(description));
     var footer = Footer.of(merger.merge());
-    return Section.of(header, body, footer);
+    return Section.of(Header.empty(), Body.empty(), footer);
   }
 
   Header header();

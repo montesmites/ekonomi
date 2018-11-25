@@ -23,8 +23,7 @@ public class TotallingSection implements Section {
 
   @Override
   public Footer footer() {
-    return Footer.of(
-        RowAggregator.of(() -> sections.stream().flatMap(streamWrappedBody())).aggregate());
+    return Footer.of(Body.of(() -> sections.stream().flatMap(streamWrappedBody())).aggregate());
   }
 
   private Function<Section, Stream<RowWithAmounts>> streamWrappedBody() {

@@ -16,7 +16,7 @@ class CompactSectionDecoratorTest {
         Column.streamMonths().collect(toMap(month -> month, month -> Currency.of(month.ordinal())));
     var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
     var body = Body.of(() -> Stream.of(new DefaultRowWithAmounts(title, values::get)));
-    var footer = Footer.of(body);
+    var footer = Footer.of(body.aggregate());
     var section = Section.of(header, body, footer);
     var decorator = new CompactSectionDecorator();
     var actualSection = decorator.decorate(section);

@@ -33,10 +33,10 @@ class TotallingSectionTest {
     this.fetcher = new CashflowDataFetcher(this.organization);
     var header1 = Header.of(() -> "Section 1").add(SHORT_MONTHS_HEADER);
     var body1 = Body.of(() -> bodyRowsOf(fetcher, List.of(BOKFORT_RESULTAT)));
-    var footer1 = Footer.of(body1);
+    var footer1 = Footer.of(body1.aggregate());
     var header2 = Header.of(() -> "Section 2").add(SHORT_MONTHS_HEADER);
     var body2 = Body.of(() -> bodyRowsOf(fetcher, List.of(KORTFRISTIGA_SKULDER)));
-    var footer2 = Footer.of(body2);
+    var footer2 = Footer.of(body2.aggregate());
     section1 = Section.of(header1, body1, footer1);
     section2 = Section.of(header2, body2, footer2);
     totallingSection = new TotallingSection(TOTALLING_SECTION_TITLE, List.of(section1, section2));

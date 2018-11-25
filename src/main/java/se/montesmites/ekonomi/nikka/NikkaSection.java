@@ -87,7 +87,7 @@ enum NikkaSection {
   Section section(CashflowDataFetcher fetcher, java.time.Year year) {
     var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
     var body = Body.of(bodyRows(fetcher, year));
-    var footer = Footer.of(body);
+    var footer = Footer.of(body.aggregate());
     return Section.of(header, body, footer);
   }
 

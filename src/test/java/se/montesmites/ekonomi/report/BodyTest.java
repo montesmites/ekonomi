@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -47,6 +49,20 @@ class BodyTest {
     var exp = List.of(row1, row2);
     var act = body.stream().collect(toList());
     assertBodys(exp, act);
+  }
+
+  @Test
+  void aggregate() {
+    var row1 = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
+    var body = Body.of(() -> Stream.of(row1, row2));
+    var exp =
+        RowMerger.template(
+            RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100 + column.ordinal())))
+            .add(DESCRIPTION, Row.empty())
+            .merge();
+    var act = body.aggregate();
+    assertTrue(act.isEquivalentTo(exp));
   }
 
   private void assertBodys(List<? extends Row> exp, List<? extends Row> act) {

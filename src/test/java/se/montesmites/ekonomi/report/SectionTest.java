@@ -24,7 +24,7 @@ class SectionTest {
   void stream() {
     var header = Header.of(() -> "title");
     var body = Body.of(RowWithAmounts.of(column -> Currency.of(column.ordinal())));
-    var footer = Footer.of(body);
+    var footer = Footer.of(body.aggregate());
     var exp =
         Stream.of(header.stream(), body.stream(), footer.stream())
             .flatMap(row -> row)
@@ -42,7 +42,7 @@ class SectionTest {
   void of() {
     var header = Header.of(() -> "title");
     var body = Body.of(RowWithAmounts.of(column -> Currency.of(column.ordinal())));
-    var footer = Footer.of(body);
+    var footer = Footer.of(body.aggregate());
     var exp =
         new Section() {
           @Override
@@ -68,13 +68,13 @@ class SectionTest {
   void compact() {
     var description = "DESCRIPTION";
     var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
-    var aggregator = RowAggregator.of(() -> Stream.of(row));
+    var body = Body.of(() -> Stream.of(row));
     var exp =
         Section.of(
             Header.empty(),
             Body.empty(),
             Footer.of(Row.of(column -> column == DESCRIPTION ? description : row.format(column))));
-    var act = Section.compact(description, aggregator);
+    var act = Section.compact(description, body);
     assertTrue(act.isEquivalentTo(exp));
   }
 }

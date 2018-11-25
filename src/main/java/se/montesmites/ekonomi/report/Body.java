@@ -1,7 +1,9 @@
 package se.montesmites.ekonomi.report;
 
+import java.time.Month;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import se.montesmites.ekonomi.model.Currency;
 
 public interface Body {
 
@@ -22,4 +24,23 @@ public interface Body {
   }
 
   Stream<? extends RowWithAmounts> stream();
+
+  default RowWithAmounts aggregate() {
+    return new RowWithAmounts() {
+      @Override
+      public Supplier<Stream<Month>> months() {
+        return stream()
+            .findAny()
+            .map(RowWithAmounts::months)
+            .orElse(Stream::empty);
+      }
+
+      @Override
+      public Currency getMonthlyAmount(Column column) {
+        return stream()
+            .map(row -> row.getMonthlyAmount(column))
+            .reduce(new Currency(0), Currency::add);
+      }
+    };
+  }
 }
