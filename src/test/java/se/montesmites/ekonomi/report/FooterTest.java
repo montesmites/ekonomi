@@ -40,6 +40,16 @@ class FooterTest {
     assertFooters(exp, act);
   }
 
+  @Test
+  void body() {
+    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var body = Body.of(() -> Stream.of(row));
+    var footer = Footer.of(body);
+    var exp = List.of(Row.of(row::format));
+    var act = footer.stream().collect(toList());
+    assertFooters(exp, act);
+  }
+
   private void assertFooters(List<? extends Row> exp, List<? extends Row> act) {
     assertAll(
         () -> assertEquals(exp.size(), act.size()),

@@ -30,7 +30,8 @@ public class CashflowReport {
         () -> {
           var header = Header.of(() -> "Unspecified Accounts").add(SHORT_MONTHS_HEADER);
           var body = Body.of(() -> bodyRows(fetcher, year));
-          return Stream.of(Section.of(header, body));
+          var footer = Footer.of(body);
+          return Stream.of(Section.of(header, body, footer));
         });
   }
 

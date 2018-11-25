@@ -45,7 +45,8 @@ class CashflowReport_TwoSections_OneRowEach_Test {
       String title, List<CashflowReport_AccountGroup_2012> groups) {
     var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
-    var section = Section.of(header, body);
+    var footer = Footer.of(body);
+    var section = Section.of(header, body, footer);
     return Map.entry(section, groups);
   }
 

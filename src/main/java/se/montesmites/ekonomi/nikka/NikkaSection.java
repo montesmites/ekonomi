@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
+import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.RowWithAccounts;
 import se.montesmites.ekonomi.report.RowWithAmounts;
@@ -86,7 +87,8 @@ enum NikkaSection {
   Section section(CashflowDataFetcher fetcher, java.time.Year year) {
     var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
     var body = Body.of(bodyRows(fetcher, year));
-    return Section.of(header, body);
+    var footer = Footer.of(body);
+    return Section.of(header, body, footer);
   }
 
   private Supplier<Stream<? extends RowWithAmounts>> bodyRows(CashflowDataFetcher fetcher,

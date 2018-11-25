@@ -4,18 +4,11 @@ import static se.montesmites.ekonomi.report.Column.AVERAGE;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 import static se.montesmites.ekonomi.report.Column.TOTAL;
 
-import java.util.stream.Stream;
-
 public class CompactSectionDecorator implements SectionDecorator {
 
   @Override
   public Section decorate(Section section) {
-    return new Section() {
-      @Override
-      public Stream<Row> stream() {
-        return Stream.of(createRow(section));
-      }
-    };
+    return Section.of(Header.empty(), Body.empty(), Footer.of(createRow(section)));
   }
 
   private Row createRow(Section section) {

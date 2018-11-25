@@ -1,16 +1,17 @@
 package se.montesmites.ekonomi.report;
 
-import java.util.Optional;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.IntStream.range;
+
 import java.util.stream.Stream;
 
 public interface Section {
 
-  static Section of(Header header, Body body) {
-    return Section.of(header, body, Optional.of(RowAggregator.of(body::stream)));
+  static Section empty() {
+    return Section.of(Header.empty(), Body.empty(), Footer.empty());
   }
 
-  static Section of(
-      Header header, Body body, Optional<RowAggregator> rowAggregator) {
+  static Section of(Header header, Body body, Footer footer) {
     return new Section() {
       @Override
       public Header header() {
@@ -24,22 +25,16 @@ public interface Section {
 
       @Override
       public Footer footer() {
-        return rowAggregator.map(Footer::of).orElse(Footer.empty());
+        return footer;
       }
     };
   }
 
-  default Header header() {
-    return Header.empty();
-  }
+  Header header();
 
-  default Body body() {
-    return Body.empty();
-  }
+  Body body();
 
-  default Footer footer() {
-    return Footer.empty();
-  }
+  Footer footer();
 
   default Stream<Row> stream() {
     Stream.Builder<Row> sb = Stream.builder();
@@ -47,5 +42,12 @@ public interface Section {
     body().stream().forEach(sb::add);
     footer().stream().forEach(sb::add);
     return sb.build();
+  }
+
+  default boolean isEquivalentTo(Section that) {
+    var these = this.stream().collect(toList());
+    var those = that.stream().collect(toList());
+    return these.size() == those.size()
+        && range(0, these.size()).allMatch(i -> these.get(i).isEquivalentTo(those.get(i)));
   }
 }
