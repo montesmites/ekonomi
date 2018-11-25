@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.util.stream.Stream;
 
@@ -28,6 +29,15 @@ public interface Section {
         return footer;
       }
     };
+  }
+
+  static Section compact(String description, RowAggregator aggregator) {
+    var merger =
+        RowMerger.template(aggregator.aggregate()).add(DESCRIPTION, TitleRow.of(description));
+    var header = Header.empty();
+    var body = Body.empty();
+    var footer = Footer.of(merger.merge());
+    return Section.of(header, body, footer);
   }
 
   Header header();

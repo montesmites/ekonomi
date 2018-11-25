@@ -5,6 +5,7 @@ import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -60,6 +61,20 @@ class SectionTest {
           }
         };
     var act = Section.of(header, body, footer);
+    assertTrue(act.isEquivalentTo(exp));
+  }
+
+  @Test
+  void compact() {
+    var description = "DESCRIPTION";
+    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var aggregator = RowAggregator.of(() -> Stream.of(row));
+    var exp =
+        Section.of(
+            Header.empty(),
+            Body.empty(),
+            Footer.of(Row.of(column -> column == DESCRIPTION ? description : row.format(column))));
+    var act = Section.compact(description, aggregator);
     assertTrue(act.isEquivalentTo(exp));
   }
 }
