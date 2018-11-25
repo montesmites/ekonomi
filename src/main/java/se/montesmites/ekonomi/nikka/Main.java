@@ -23,7 +23,6 @@ import se.montesmites.ekonomi.report.AccumulatingNegatedRow;
 import se.montesmites.ekonomi.report.AccumulatingSection;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
-import se.montesmites.ekonomi.report.CompactSectionDecorator;
 import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
 import se.montesmites.ekonomi.report.RowWithAmounts;
 import se.montesmites.ekonomi.report.Section;
@@ -50,13 +49,15 @@ class Main {
   }
 
   private CashflowReport generateCashflowReport(Year year) {
+    var foreJamforelsestorandePosterDescription = "Före jämförelsestörande poster";
     var foreJamforelsestorandePoster =
         new TotallingSection(
-            "Före jämförelsestörande poster",
+            foreJamforelsestorandePosterDescription,
             sections(year, INKOMSTER, BOENDE, FORNODENHETER, OVRIGT));
+    var kontrollsummaDescription = "Kontrollsumma";
     var total =
         new TotallingSection(
-            "Kontrollsumma",
+            kontrollsummaDescription,
             sections(
                 year,
                 INKOMSTER,
@@ -107,10 +108,12 @@ class Main {
                 s(year, BOENDE),
                 s(year, FORNODENHETER),
                 s(year, OVRIGT),
-                new CompactSectionDecorator().decorate(foreJamforelsestorandePoster),
+                Section.compact(foreJamforelsestorandePosterDescription,
+                    foreJamforelsestorandePoster.body()),
                 s(year, JAMFORELSESTORANDE_POSTER),
-                new CompactSectionDecorator().decorate(s(year, FORANDRING_LIKVIDA_MEDEL)),
-                new CompactSectionDecorator().decorate(total),
+                Section.compact(FORANDRING_LIKVIDA_MEDEL.getTitle(),
+                    s(year, FORANDRING_LIKVIDA_MEDEL).body()),
+                Section.compact(kontrollsummaDescription, total.body()),
                 accumulation));
   }
 

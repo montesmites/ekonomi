@@ -56,7 +56,6 @@ public class XmlSection extends XmlSectionCommonJAXB implements XmlSectionSuppli
     accountGroups
         .map(group -> group.toRowBuilder(fetcher, year))
         .forEach(builder::addBodyRowBuilder);
-    getDecorators().forEach(builder::addSectionDecorator);
     return builder;
   }
 

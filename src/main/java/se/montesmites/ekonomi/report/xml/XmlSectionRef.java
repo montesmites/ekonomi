@@ -19,7 +19,6 @@ class XmlSectionRef extends XmlSectionCommonJAXB implements XmlSectionSupplier {
   @Override
   public XmlSection get(Function<String, XmlSection> sections) {
     var section = sections.apply(id);
-    section.getDecorators().addAll(getDecorators());
     return section;
   }
 }
