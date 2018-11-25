@@ -32,7 +32,7 @@ class HeaderTest {
   @Test
   void headerRow() {
     var header = Header.of(SHORT_MONTHS_HEADER);
-    var exp = List.of((HeaderRow) SHORT_MONTHS_HEADER);
+    var exp = List.of(SHORT_MONTHS_HEADER);
     var act = header.stream().collect(toList());
     assertHeaders(exp, act);
   }
@@ -40,8 +40,8 @@ class HeaderTest {
   @Test
   void bothTitleAndHeader() {
     var title = "title";
-    var header = Header.of(() -> title).add((HeaderRow) SHORT_MONTHS_HEADER);
-    var exp = List.of((TitleRow) () -> title, (HeaderRow) SHORT_MONTHS_HEADER);
+    var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
+    var exp = List.of((TitleRow) () -> title, SHORT_MONTHS_HEADER);
     var act = header.stream().collect(toList());
     assertHeaders(exp, act);
   }
@@ -50,9 +50,8 @@ class HeaderTest {
   void combineTitleAndHeader() {
     var titleRow = (TitleRow) () -> "title";
     var headerRow = (HeaderRow) SHORT_MONTHS_HEADER;
-    var combined = RowMerger.template(headerRow).add(DESCRIPTION, titleRow).merge();
-    var header = Header.of(combined);
-    var exp = List.of(combined);
+    var header = Header.of(headerRow.merge(DESCRIPTION, titleRow));
+    var exp = List.of(headerRow.merge(DESCRIPTION, titleRow));
     var act = header.stream().collect(toList());
     assertHeaders(exp, act);
   }

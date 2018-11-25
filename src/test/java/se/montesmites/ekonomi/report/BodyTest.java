@@ -57,10 +57,8 @@ class BodyTest {
     var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp =
-        RowMerger.template(
-            RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100 + column.ordinal())))
-            .add(DESCRIPTION, Row.empty())
-            .merge();
+        RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100 + column.ordinal()))
+            .merge(DESCRIPTION, Row.empty());
     var act = body.aggregate();
     assertTrue(act.isEquivalentTo(exp));
   }

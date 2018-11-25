@@ -32,4 +32,8 @@ public interface Row {
   private Predicate<Column> columnIsEquivalentPredicate(Row that) {
     return column -> this.format(column).equals(that.format(column));
   }
+
+  default Row merge(Column column, Row row) {
+    return col -> col == column ? row.format(col) : this.format(col);
+  }
 }

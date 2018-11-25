@@ -32,8 +32,7 @@ public interface Section {
   }
 
   static Section compact(String description, Body body) {
-    var merger = RowMerger.template(body.aggregate()).add(DESCRIPTION, TitleRow.of(description));
-    var footer = Footer.of(merger.merge());
+    var footer = Footer.of(body.aggregate().merge(DESCRIPTION, TitleRow.of(description)));
     return Section.of(Header.empty(), Body.empty(), footer);
   }
 
