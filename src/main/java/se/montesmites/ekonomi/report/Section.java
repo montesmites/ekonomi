@@ -29,10 +29,6 @@ public interface Section {
     };
   }
 
-  default Stream<Row> streamBeforeSection() {
-    return Stream.empty();
-  }
-
   default Header header() {
     return Header.empty();
   }
@@ -45,17 +41,11 @@ public interface Section {
     return Footer.empty();
   }
 
-  default Stream<Row> streamAfterSection() {
-    return Stream.of(Row.empty());
-  }
-
   default Stream<Row> stream() {
     Stream.Builder<Row> sb = Stream.builder();
-    streamBeforeSection().forEach(sb::add);
     header().stream().forEach(sb::add);
     body().stream().forEach(sb::add);
     footer().stream().forEach(sb::add);
-    streamAfterSection().forEach(sb::add);
     return sb.build();
   }
 }

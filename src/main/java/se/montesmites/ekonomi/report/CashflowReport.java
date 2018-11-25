@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -43,17 +44,22 @@ public class CashflowReport {
   }
 
   public List<String> render() {
-    return streamSections()
-        .flatMap(
-            section ->
-                section
-                    .stream()
-                    .flatMap(
-                        row ->
-                            Column.stream()
-                                .map(column -> format(row, column))
-                                .collect(collectingAndThen(joining(), Stream::of))))
-        .collect(toList());
+    return renderSections();
+  }
+
+  private List<String> renderSections() {
+    return streamSections().flatMap(streamSectionRows()).collect(toList());
+  }
+
+  private Function<Section, Stream<? extends String>> streamSectionRows() {
+    return section -> Stream.concat(section.stream(), Stream.of(Row.empty())).flatMap(renderRow());
+  }
+
+  private Function<Row, Stream<? extends String>> renderRow() {
+    return row ->
+        Column.stream()
+            .map(column -> format(row, column))
+            .collect(collectingAndThen(joining(), Stream::of));
   }
 
   private String format(Row row, Column column) {

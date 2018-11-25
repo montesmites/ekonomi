@@ -13,7 +13,7 @@ public class CompactSectionDecorator implements SectionDecorator {
     return new Section() {
       @Override
       public Stream<Row> stream() {
-        return Stream.of(createRow(section), Row.empty());
+        return Stream.of(createRow(section));
       }
     };
   }
