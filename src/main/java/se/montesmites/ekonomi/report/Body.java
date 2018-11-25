@@ -43,4 +43,8 @@ public interface Body {
       }
     };
   }
+
+  default Body concat(Body body) {
+    return Body.of(() -> Stream.concat(this.stream(), body.stream()));
+  }
 }
