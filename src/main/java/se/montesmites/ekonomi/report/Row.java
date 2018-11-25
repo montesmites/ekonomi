@@ -21,10 +21,6 @@ public interface Row {
     return Optional.empty();
   }
 
-  default Optional<RowWithAccounts> asRowWithAccounts() {
-    return Optional.empty();
-  }
-
   default boolean isEquivalentTo(Row that) {
     return Column.stream().allMatch(columnIsEquivalentPredicate(that));
   }

@@ -12,12 +12,12 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 
-public class AccumulatingNegatedRow implements RowWithAccounts {
+public class AccumulatingNegatedRow implements RowWithAmounts {
 
   private final CashflowDataFetcher fetcher;
   private final Supplier<Stream<AccountId>> accountIds;
   private final java.time.Year year;
-  private final RowWithAccounts monthlyNetAmounts;
+  private final RowWithAmounts monthlyNetAmounts;
   private final Map<Column, Currency> amounts;
 
   public AccumulatingNegatedRow(
@@ -34,11 +34,6 @@ public class AccumulatingNegatedRow implements RowWithAccounts {
   @Override
   public String formatDescription() {
     return getBalance().format();
-  }
-
-  @Override
-  public Supplier<Stream<AccountId>> getAccountIds() {
-    return accountIds;
   }
 
   @Override

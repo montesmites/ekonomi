@@ -70,7 +70,7 @@ class Main {
           public RowWithAmounts wrapSectionRow(Section section, RowWithAmounts row) {
             if (sectionEqualsForandringLikvidaMedel(section)) {
               return new DefaultRowWithAccountsWithNegatedAmounts(
-                  row.asRowWithAccounts().orElseThrow());
+                  row.asRowWithAmounts().orElseThrow());
             } else {
               return row;
             }

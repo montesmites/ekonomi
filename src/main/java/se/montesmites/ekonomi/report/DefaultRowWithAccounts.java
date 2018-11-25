@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
-public class DefaultRowWithAccounts implements RowWithAccounts {
+public class DefaultRowWithAccounts implements RowWithAmounts {
 
   private final CashflowDataFetcher fetcher;
   private final Supplier<Stream<AccountId>> accountIds;
@@ -37,11 +37,6 @@ public class DefaultRowWithAccounts implements RowWithAccounts {
   @Override
   public String formatDescription() {
     return getDescription();
-  }
-
-  @Override
-  public Supplier<Stream<AccountId>> getAccountIds() {
-    return accountIds;
   }
 
   @Override

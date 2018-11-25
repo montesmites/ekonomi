@@ -4,7 +4,7 @@ import se.montesmites.ekonomi.report.AccountFilter;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.DefaultRowWithAccounts;
-import se.montesmites.ekonomi.report.RowWithAccounts;
+import se.montesmites.ekonomi.report.RowWithAmounts;
 
 enum NikkaAccountGroup {
   LONEINBETALNINGAR("Löner och arvoden", "(30|36)\\d\\d"),
@@ -38,7 +38,7 @@ enum NikkaAccountGroup {
     this.regex = regex;
   }
 
-  RowWithAccounts bodyRow(CashflowDataFetcher fetcher, java.time.Year year) {
+  RowWithAmounts bodyRow(CashflowDataFetcher fetcher, java.time.Year year) {
     final AccountFilter filter = new AccountFilterByRegex(regex);
     return new DefaultRowWithAccounts(
         fetcher, () -> filter.filter(fetcher.streamAccountIds(year)), year, description);

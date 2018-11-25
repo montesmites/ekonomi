@@ -153,7 +153,7 @@ public enum CashflowReport_AccountGroup_2012 {
     this.expectedAverage = expectedAverage;
   }
 
-  private RowWithAccounts bodyRow(CashflowDataFetcher fetcher) {
+  private RowWithAmounts bodyRow(CashflowDataFetcher fetcher) {
     final AccountFilter filter = new AccountFilterByRegex(regex);
     List<AccountId> accountIds =
         filter

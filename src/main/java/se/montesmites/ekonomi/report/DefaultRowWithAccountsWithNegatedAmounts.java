@@ -3,25 +3,19 @@ package se.montesmites.ekonomi.report;
 import java.time.Month;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
-public class DefaultRowWithAccountsWithNegatedAmounts implements RowWithAccounts {
+public class DefaultRowWithAccountsWithNegatedAmounts implements RowWithAmounts {
 
-  private final RowWithAccounts source;
+  private final RowWithAmounts source;
 
-  public DefaultRowWithAccountsWithNegatedAmounts(RowWithAccounts source) {
+  public DefaultRowWithAccountsWithNegatedAmounts(RowWithAmounts source) {
     this.source = source;
   }
 
   @Override
   public String formatDescription() {
     return source.formatDescription();
-  }
-
-  @Override
-  public Supplier<Stream<AccountId>> getAccountIds() {
-    return source.getAccountIds();
   }
 
   @Override
