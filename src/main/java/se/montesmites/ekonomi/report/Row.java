@@ -1,5 +1,7 @@
 package se.montesmites.ekonomi.report;
 
+import static java.util.stream.Collectors.joining;
+
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -31,5 +33,11 @@ public interface Row {
 
   default Row merge(Column column, Row row) {
     return col -> col == column ? row.format(col) : this.format(col);
+  }
+
+  default String asString() {
+    return Column.stream()
+        .map(column -> column.name() + " = " + this.format(column))
+        .collect(joining(", ", "{", "}"));
   }
 }

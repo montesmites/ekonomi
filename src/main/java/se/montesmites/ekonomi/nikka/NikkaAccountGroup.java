@@ -1,5 +1,7 @@
 package se.montesmites.ekonomi.nikka;
 
+import static java.util.stream.Collectors.toList;
+
 import se.montesmites.ekonomi.report.AccountFilter;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
@@ -41,6 +43,9 @@ enum NikkaAccountGroup {
   RowWithAmounts bodyRow(CashflowDataFetcher fetcher, java.time.Year year) {
     final AccountFilter filter = new AccountFilterByRegex(regex);
     return new DefaultRowWithAccounts(
-        fetcher, () -> filter.filter(fetcher.streamAccountIds(year)), year, description);
+        fetcher,
+        filter.filter(fetcher.streamAccountIds(year)).collect(toList()),
+        year,
+        description);
   }
 }

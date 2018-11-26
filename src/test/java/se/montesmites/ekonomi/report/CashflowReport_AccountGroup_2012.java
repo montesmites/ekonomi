@@ -95,7 +95,8 @@ public enum CashflowReport_AccountGroup_2012 {
         groups.stream().map(group -> group.expectedAmounts).collect(toList());
     final List<Map<Column, Currency>> actList =
         section
-            .body().stream()
+            .body()
+            .stream()
             .map(row -> row.asRowWithAmounts().orElseThrow())
             .map(
                 row ->
@@ -125,7 +126,8 @@ public enum CashflowReport_AccountGroup_2012 {
     final List<Currency> exp = groups.stream().map(g -> g.expectedAverage).collect(toList());
     final List<Currency> act =
         section
-            .body().stream()
+            .body()
+            .stream()
             .map(row -> row.asRowWithAmounts().orElseThrow().getAverage())
             .collect(toList());
     assertEquals(exp.size(), act.size());
@@ -155,12 +157,12 @@ public enum CashflowReport_AccountGroup_2012 {
 
   private RowWithAmounts bodyRow(CashflowDataFetcher fetcher) {
     final AccountFilter filter = new AccountFilterByRegex(regex);
-    List<AccountId> accountIds =
+    var accountIds =
         filter
             .filter(fetcher.streamAccountIds(YEAR))
             .distinct()
             .sorted(comparing(AccountId::getId))
             .collect(toList());
-    return new DefaultRowWithAccounts(fetcher, accountIds::stream, YEAR, description);
+    return new DefaultRowWithAccounts(fetcher, accountIds, YEAR, description);
   }
 }

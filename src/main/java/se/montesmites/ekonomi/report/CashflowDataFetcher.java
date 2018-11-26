@@ -94,7 +94,7 @@ public class CashflowDataFetcher {
         .sorted(comparing(AccountId::getId));
   }
 
-  Optional<Balance> fetchBalance(AccountId accountId) {
+  public Optional<Balance> fetchBalance(AccountId accountId) {
     return organization.getBalance(accountId);
   }
 

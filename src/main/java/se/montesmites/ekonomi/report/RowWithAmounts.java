@@ -1,6 +1,10 @@
 package se.montesmites.ekonomi.report;
 
+import static java.util.stream.Collectors.toCollection;
+
 import java.time.Month;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -110,6 +114,47 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
       @Override
       public String formatDescription() {
         return description;
+      }
+    };
+  }
+
+  default RowWithAmounts accumulate(Currency initial) {
+    var base = this;
+    var months = months().get().collect(toCollection(() -> EnumSet.noneOf(Month.class)));
+    var amounts = new EnumMap<Column, Currency>(Column.class);
+    Column.streamMonths()
+        .reduce(
+            initial,
+            (accumulator, column) -> {
+              if (months.contains(column.getMonth().orElseThrow())) {
+                var amount = base.getMonthlyAmount(column);
+                var columnBalance = accumulator.add(amount);
+                amounts.put(column, columnBalance);
+                return columnBalance;
+              } else {
+                return accumulator;
+              }
+            },
+            Currency::add);
+    return new RowWithAmounts() {
+      @Override
+      public Currency getMonthlyAmount(Column column) {
+        return amounts.getOrDefault(column, new Currency(0));
+      }
+
+      @Override
+      public Supplier<Stream<Month>> months() {
+        return base.months();
+      }
+
+      @Override
+      public String formatTotal() {
+        return Currency.of(0).format();
+      }
+
+      @Override
+      public String formatDescription() {
+        return initial.format();
       }
     };
   }

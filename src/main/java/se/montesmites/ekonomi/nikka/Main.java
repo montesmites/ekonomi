@@ -7,6 +7,7 @@ import static se.montesmites.ekonomi.nikka.NikkaSection.FORNODENHETER;
 import static se.montesmites.ekonomi.nikka.NikkaSection.INKOMSTER;
 import static se.montesmites.ekonomi.nikka.NikkaSection.JAMFORELSESTORANDE_POSTER;
 import static se.montesmites.ekonomi.nikka.NikkaSection.OVRIGT;
+import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,13 +17,15 @@ import java.time.Year;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Balance;
+import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
-import se.montesmites.ekonomi.report.AccumulatingNegatedRow;
-import se.montesmites.ekonomi.report.AccumulatingSection;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
+import se.montesmites.ekonomi.report.DefaultRowWithAccounts;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.Row;
@@ -49,17 +52,6 @@ class Main {
   }
 
   private CashflowReport generateCashflowReport(Year year) {
-    var accumulation =
-        AccumulatingSection.of(
-            "Ackumulerade likvida medel",
-            () ->
-                Stream.of(
-                    new AccumulatingNegatedRow(
-                        fetcher,
-                        () ->
-                            new AccountFilterByRegex("1493|19\\d\\d")
-                                .filter(fetcher.streamAccountIds(year)),
-                        year)));
     var inkomster = s(year, INKOMSTER);
     var boende = s(year, BOENDE);
     var fornodenheter = s(year, FORNODENHETER);
@@ -72,14 +64,14 @@ class Main {
                 .concat(fornodenheter.body())
                 .concat(ovrigt.body())
                 .aggregate()
-                .description("Före jämförelsestörande poster"));
+                .description("Före jämförelsestörande poster".toUpperCase()));
     var jamforelsestorandePoster = s(year, JAMFORELSESTORANDE_POSTER);
     var forandringLikvidaMedel =
         s(
             s(year, FORANDRING_LIKVIDA_MEDEL)
                 .body()
                 .aggregate()
-                .description(FORANDRING_LIKVIDA_MEDEL.getTitle()));
+                .description(FORANDRING_LIKVIDA_MEDEL.getTitle().toUpperCase()));
     var kontrollsumma =
         s(
             inkomster
@@ -88,9 +80,19 @@ class Main {
                 .concat(fornodenheter.body())
                 .concat(ovrigt.body())
                 .concat(jamforelsestorandePoster.body())
-                .concat(forandringLikvidaMedel.body().negate())
+                .concat(s(year, FORANDRING_LIKVIDA_MEDEL).body().negate())
                 .aggregate()
-                .description("Kontrollsumma"));
+                .description("Kontrollsumma".toUpperCase()));
+    var liquidFundsAccounts =
+        new AccountFilterByRegex("1493|19\\d\\d")
+            .filter(fetcher.streamAccountIds(year))
+            .collect(toList());
+    var accumulation =
+        s(
+            "Ackumulerade likvida medel",
+            new DefaultRowWithAccounts(fetcher, liquidFundsAccounts, year, "")
+                .negate()
+                .accumulate(balance(liquidFundsAccounts)));
     return new CashflowReport(
         fetcher,
         year,
@@ -119,7 +121,20 @@ class Main {
     return section.section(fetcher, year);
   }
 
-  private Section s(Row row) {
-    return Section.of(Header.empty(), Body.empty(), Footer.of(row));
+  private Section s(String title, Row footer) {
+    return Section.of(
+        Header.of(() -> title).add(SHORT_MONTHS_HEADER), Body.empty(), Footer.of(footer));
+  }
+
+  private Section s(Row footer) {
+    return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
+  }
+
+  private Currency balance(List<AccountId> accountIds) {
+    return accountIds.stream().map(this::balance).reduce(new Currency(0), Currency::add);
+  }
+
+  private Currency balance(AccountId accountId) {
+    return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(new Currency(0));
   }
 }
