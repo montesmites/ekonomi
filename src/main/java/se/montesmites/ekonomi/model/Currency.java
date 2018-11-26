@@ -36,6 +36,10 @@ public class Currency {
     return Messages.formatNumber(this);
   }
 
+  public Currency negate() {
+    return Currency.of(-this.amount);
+  }
+
   @Override
   public int hashCode() {
     int hash = 5;
