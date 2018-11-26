@@ -47,4 +47,9 @@ public interface Body {
   default Body concat(Body body) {
     return Body.of(() -> Stream.concat(this.stream(), body.stream()));
   }
+
+  default Body negate() {
+    var base = this;
+    return () -> base.stream().map(RowWithAmounts::negate);
+  }
 }

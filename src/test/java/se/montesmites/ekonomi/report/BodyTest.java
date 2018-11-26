@@ -69,6 +69,16 @@ class BodyTest {
     assertBodys(exp, act);
   }
 
+  @Test
+  void negate() {
+    var row1 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
+    var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 200));
+    var body = Body.of(() -> Stream.of(row1, row2));
+    var exp = Body.of(() -> Stream.of(row1.negate(), row2.negate()));
+    var act = body.negate();
+    assertBodys(exp, act);
+  }
+
   private void assertBodys(Body expected, Body actutal) {
     var exp = expected.stream().collect(toList());
     var act = actutal.stream().collect(toList());
