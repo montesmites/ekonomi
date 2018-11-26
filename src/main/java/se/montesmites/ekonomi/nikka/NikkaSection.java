@@ -29,7 +29,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.RowWithAmounts;
@@ -67,7 +66,7 @@ enum NikkaSection {
   FORANDRING_LIKVIDA_MEDEL("Förändring likvida medel", List.of(LIKVIDA_MEDEL)) {
     @Override
     RowWithAmounts bodyRow(NikkaAccountGroup group, CashflowDataFetcher fetcher, Year year) {
-      return new DefaultRowWithAccountsWithNegatedAmounts(super.bodyRow(group, fetcher, year));
+      return super.bodyRow(group, fetcher, year).negate();
     }
   };
 

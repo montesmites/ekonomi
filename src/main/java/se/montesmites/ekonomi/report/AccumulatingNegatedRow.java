@@ -25,9 +25,7 @@ public class AccumulatingNegatedRow implements RowWithAmounts {
     this.fetcher = fetcher;
     this.accountIds = accountIds;
     this.year = year;
-    this.monthlyNetAmounts =
-        new DefaultRowWithAccountsWithNegatedAmounts(
-            new DefaultRowWithAccounts(fetcher, accountIds, year, ""));
+    this.monthlyNetAmounts = new DefaultRowWithAccounts(fetcher, accountIds, year, "").negate();
     this.amounts = getAmounts();
   }
 

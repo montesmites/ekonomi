@@ -23,7 +23,6 @@ import se.montesmites.ekonomi.report.AccumulatingNegatedRow;
 import se.montesmites.ekonomi.report.AccumulatingSection;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
-import se.montesmites.ekonomi.report.DefaultRowWithAccountsWithNegatedAmounts;
 import se.montesmites.ekonomi.report.RowWithAmounts;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.TotallingSection;
@@ -69,8 +68,7 @@ class Main {
           @Override
           public RowWithAmounts wrapSectionRow(Section section, RowWithAmounts row) {
             if (sectionEqualsForandringLikvidaMedel(section)) {
-              return new DefaultRowWithAccountsWithNegatedAmounts(
-                  row.asRowWithAmounts().orElseThrow());
+              return row.asRowWithAmounts().orElseThrow().negate();
             } else {
               return row;
             }
@@ -108,11 +106,11 @@ class Main {
                 s(year, BOENDE),
                 s(year, FORNODENHETER),
                 s(year, OVRIGT),
-                Section.compact(foreJamforelsestorandePosterDescription,
-                    foreJamforelsestorandePoster.body()),
+                Section.compact(
+                    foreJamforelsestorandePosterDescription, foreJamforelsestorandePoster.body()),
                 s(year, JAMFORELSESTORANDE_POSTER),
-                Section.compact(FORANDRING_LIKVIDA_MEDEL.getTitle(),
-                    s(year, FORANDRING_LIKVIDA_MEDEL).body()),
+                Section.compact(
+                    FORANDRING_LIKVIDA_MEDEL.getTitle(), s(year, FORANDRING_LIKVIDA_MEDEL).body()),
                 Section.compact(kontrollsummaDescription, total.body()),
                 accumulation));
   }
