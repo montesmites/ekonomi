@@ -65,8 +65,8 @@ class RowWithAmountsTest {
     var row =
         RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100))
             .withMonths(() -> Column.streamMonths().map(column -> column.getMonth().orElseThrow()));
-    var exp = Column.streamMonths().map(column -> column.getMonth().orElseThrow())
-        .collect(toList());
+    var exp =
+        Column.streamMonths().map(column -> column.getMonth().orElseThrow()).collect(toList());
     var act = row.months().get().collect(toList());
     assertEquals(exp, act);
   }
@@ -84,5 +84,13 @@ class RowWithAmountsTest {
     var exp = RowWithAmounts.empty();
     var act = RowWithAmounts.empty().asRowWithAmounts().orElseThrow();
     assertTrue(act.isEquivalentTo(exp));
+  }
+
+  @Test
+  void negate() {
+    var neutral = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
+    var negated = RowWithAmounts.of(column -> Currency.of(-column.ordinal() * 100));
+    var act = neutral.negate();
+    assertTrue(act.isEquivalentTo(negated));
   }
 }

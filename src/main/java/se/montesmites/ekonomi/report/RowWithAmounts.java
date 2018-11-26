@@ -73,4 +73,24 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
   default Optional<RowWithAmounts> asRowWithAmounts() {
     return Optional.of(this);
   }
+
+  default RowWithAmounts negate() {
+    var base = this;
+    return new RowWithAmounts() {
+      @Override
+      public String formatDescription() {
+        return base.formatDescription();
+      }
+
+      @Override
+      public Currency getMonthlyAmount(Column column) {
+        return base.getMonthlyAmount(column).negate();
+      }
+
+      @Override
+      public Supplier<Stream<Month>> months() {
+        return base.months();
+      }
+    };
+  }
 }
