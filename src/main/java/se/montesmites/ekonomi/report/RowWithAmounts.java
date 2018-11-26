@@ -17,6 +17,21 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     return amounts::apply;
   }
 
+  default RowWithAmounts withMonths(Supplier<Stream<Month>> months) {
+    var base = this;
+    return new RowWithAmounts() {
+      @Override
+      public Currency getMonthlyAmount(Column column) {
+        return base.getMonthlyAmount(column);
+      }
+
+      @Override
+      public Supplier<Stream<Month>> months() {
+        return months;
+      }
+    };
+  }
+
   Currency getMonthlyAmount(Column column);
 
   default Currency getYearlyTotal() {
