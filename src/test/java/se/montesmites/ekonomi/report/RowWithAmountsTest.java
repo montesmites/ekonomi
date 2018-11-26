@@ -3,8 +3,10 @@ package se.montesmites.ekonomi.report;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -92,5 +94,15 @@ class RowWithAmountsTest {
     var negated = RowWithAmounts.of(column -> Currency.of(-column.ordinal() * 100));
     var act = neutral.negate();
     assertTrue(act.isEquivalentTo(negated));
+  }
+
+  @Test
+  void description() {
+    var description = "DESCRIPTION";
+    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var body = Body.of(() -> Stream.of(row));
+    var exp = Row.of(column -> column == DESCRIPTION ? description : row.format(column));
+    var act = row.description(description);
+    assertTrue(act.isEquivalentTo(exp));
   }
 }

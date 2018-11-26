@@ -93,4 +93,24 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
       }
     };
   }
+
+  default RowWithAmounts description(String description) {
+    var base = this;
+    return new RowWithAmounts() {
+      @Override
+      public Currency getMonthlyAmount(Column column) {
+        return base.getMonthlyAmount(column);
+      }
+
+      @Override
+      public Supplier<Stream<Month>> months() {
+        return base.months();
+      }
+
+      @Override
+      public String formatDescription() {
+        return description;
+      }
+    };
+  }
 }

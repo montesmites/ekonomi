@@ -20,8 +20,12 @@ import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccumulatingNegatedRow;
 import se.montesmites.ekonomi.report.AccumulatingSection;
+import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
+import se.montesmites.ekonomi.report.Footer;
+import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 
 class Main {
@@ -60,35 +64,47 @@ class Main {
     var boende = s(year, BOENDE);
     var fornodenheter = s(year, FORNODENHETER);
     var ovrigt = s(year, OVRIGT);
+    var foreJamforelsestorandePoster =
+        s(
+            inkomster
+                .body()
+                .concat(boende.body())
+                .concat(fornodenheter.body())
+                .concat(ovrigt.body())
+                .aggregate()
+                .description("Före jämförelsestörande poster"));
     var jamforelsestorandePoster = s(year, JAMFORELSESTORANDE_POSTER);
-    var forandringLikvidaMedel = s(year, FORANDRING_LIKVIDA_MEDEL);
+    var forandringLikvidaMedel =
+        s(
+            s(year, FORANDRING_LIKVIDA_MEDEL)
+                .body()
+                .aggregate()
+                .description(FORANDRING_LIKVIDA_MEDEL.getTitle()));
+    var kontrollsumma =
+        s(
+            inkomster
+                .body()
+                .concat(boende.body())
+                .concat(fornodenheter.body())
+                .concat(ovrigt.body())
+                .concat(jamforelsestorandePoster.body())
+                .concat(forandringLikvidaMedel.body().negate())
+                .aggregate()
+                .description("Kontrollsumma"));
     return new CashflowReport(
         fetcher,
         year,
-        () -> Stream.of(
-            inkomster,
-            boende,
-            fornodenheter,
-            ovrigt,
-            Section.compact(
-                "Före jämförelsestörande poster",
-                inkomster
-                    .body()
-                    .concat(boende.body())
-                    .concat(fornodenheter.body())
-                    .concat(ovrigt.body())),
-            jamforelsestorandePoster,
-            Section.compact(FORANDRING_LIKVIDA_MEDEL.getTitle(), forandringLikvidaMedel.body()),
-            Section.compact(
-                "Kontrollsumma",
-                inkomster
-                    .body()
-                    .concat(boende.body())
-                    .concat(fornodenheter.body())
-                    .concat(ovrigt.body())
-                    .concat(jamforelsestorandePoster.body())
-                    .concat(forandringLikvidaMedel.body().negate())),
-            accumulation));
+        () ->
+            Stream.of(
+                inkomster,
+                boende,
+                fornodenheter,
+                ovrigt,
+                foreJamforelsestorandePoster,
+                jamforelsestorandePoster,
+                forandringLikvidaMedel,
+                kontrollsumma,
+                accumulation));
   }
 
   private void renderToFile(CashflowReport report, Path path) throws IOException {
@@ -101,5 +117,9 @@ class Main {
 
   private Section s(Year year, NikkaSection section) {
     return section.section(fetcher, year);
+  }
+
+  private Section s(Row row) {
+    return Section.of(Header.empty(), Body.empty(), Footer.of(row));
   }
 }

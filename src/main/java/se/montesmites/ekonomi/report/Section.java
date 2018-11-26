@@ -2,7 +2,6 @@ package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
-import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.util.stream.Stream;
 
@@ -29,11 +28,6 @@ public interface Section {
         return footer;
       }
     };
-  }
-
-  static Section compact(String description, Body body) {
-    var footer = Footer.of(body.aggregate().merge(DESCRIPTION, TitleRow.of(description)));
-    return Section.of(Header.empty(), Body.empty(), footer);
   }
 
   Header header();
