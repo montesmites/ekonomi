@@ -3,7 +3,6 @@ package se.montesmites.ekonomi.report;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.util.List;
 import java.util.function.Function;
@@ -12,31 +11,9 @@ import java.util.stream.Stream;
 
 public class CashflowReport {
 
-  private static Stream<RowWithAmounts> bodyRows(CashflowDataFetcher fetcher, java.time.Year year) {
-    return fetcher
-        .streamAccountIds(year)
-        .map(
-            accountId ->
-                fetcher.buildRowWithAmounts(
-                    Stream.of(accountId).collect(toList()), year, accountId.getId()));
-  }
-
   private final Supplier<Stream<Section>> sections;
 
-  CashflowReport(CashflowDataFetcher fetcher, java.time.Year year) {
-    this(
-        fetcher,
-        year,
-        () -> {
-          var header = Header.of(() -> "Unspecified Accounts").add(SHORT_MONTHS_HEADER);
-          var body = Body.of(() -> bodyRows(fetcher, year));
-          var footer = Footer.of(body.aggregate());
-          return Stream.of(Section.of(header, body, footer));
-        });
-  }
-
-  public CashflowReport(
-      CashflowDataFetcher fetcher, java.time.Year year, Supplier<Stream<Section>> sections) {
+  public CashflowReport(Supplier<Stream<Section>> sections) {
     this.sections = sections;
   }
 

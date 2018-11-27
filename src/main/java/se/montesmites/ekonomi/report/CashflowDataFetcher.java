@@ -52,10 +52,6 @@ public class CashflowDataFetcher {
     this.touchedMonths = touchedMonths();
   }
 
-  public Set<Month> getTouchedMonths(java.time.Year year) {
-    return touchedMonths.getOrDefault(year, emptySet());
-  }
-
   private Map<java.time.Year, Set<Month>> touchedMonths() {
     return organization
         .streamEntries()
@@ -101,10 +97,6 @@ public class CashflowDataFetcher {
 
   Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
     return getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
-  }
-
-  public EntryAggregate getEntryAggregate() {
-    return entryAggregate;
   }
 
   Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
@@ -160,7 +152,7 @@ public class CashflowDataFetcher {
             .fetchAmount(accountId, yearMonth)
             .map(Currency::getAmount)
             .map(Currency::new)
-            .map(Signedness.NEGATED_SIGN::apply)
+            .map(Currency::negate)
             .orElse(new Currency(0));
       }
     };

@@ -22,6 +22,7 @@ public class EventId {
     return id;
   }
 
+  @SuppressWarnings("unused")
   public Series getSeries() {
     return series;
   }

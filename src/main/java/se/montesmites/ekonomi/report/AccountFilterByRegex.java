@@ -16,8 +16,4 @@ public class AccountFilterByRegex implements AccountFilter {
   public Stream<AccountId> filter(Stream<AccountId> accountIds) {
     return accountIds.filter(a -> pattern.matcher(a.getId()).matches()).distinct();
   }
-
-  public Pattern getPattern() {
-    return pattern;
-  }
 }

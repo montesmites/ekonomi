@@ -21,7 +21,6 @@ import static se.montesmites.ekonomi.report.Column.TOTAL;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -115,7 +114,6 @@ class RowWithAmountsTest {
   void description() {
     var description = "DESCRIPTION";
     var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
-    var body = Body.of(() -> Stream.of(row));
     var exp = Row.of(column -> column == DESCRIPTION ? description : row.format(column));
     var act = row.description(description);
     assertTrue(act.isEquivalentTo(exp));

@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Year;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
@@ -94,8 +93,6 @@ class Main {
                 .negate()
                 .accumulate(balance(liquidFundsAccounts)));
     return new CashflowReport(
-        fetcher,
-        year,
         () ->
             Stream.of(
                 inkomster,
@@ -111,10 +108,6 @@ class Main {
 
   private void renderToFile(CashflowReport report, Path path) throws IOException {
     Files.write(path, report.render());
-  }
-
-  private List<Section> sections(Year year, NikkaSection... sections) {
-    return Arrays.stream(sections).map(section -> section.section(fetcher, year)).collect(toList());
   }
 
   private Section s(Year year, NikkaSection section) {

@@ -25,10 +25,6 @@ public enum AccountStatus {
     this.description = description;
   }
 
-  public String getDescription() {
-    return description;
-  }
-
   @Override
   public String toString() {
     return "AccountStatus{" + "description=" + description + '}';

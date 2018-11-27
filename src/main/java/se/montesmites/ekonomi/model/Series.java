@@ -10,10 +10,6 @@ public class Series {
     this.series = series;
   }
 
-  public String getSeries() {
-    return series;
-  }
-
   @Override
   public int hashCode() {
     int hash = 5;

@@ -73,6 +73,7 @@ class EntryStatusFlags {
     return flags;
   }
 
+  @SuppressWarnings("unused")
   public String getDescr() {
     return descr;
   }

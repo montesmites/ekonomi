@@ -28,10 +28,6 @@ public class Entry {
     return amount;
   }
 
-  public EntryStatus getStatus() {
-    return status;
-  }
-
   @Override
   public int hashCode() {
     int hash = 3;

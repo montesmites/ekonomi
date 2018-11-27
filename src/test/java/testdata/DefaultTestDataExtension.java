@@ -1,8 +1,6 @@
 package testdata;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -16,16 +14,13 @@ import se.montesmites.ekonomi.test.util.ResourceToFileCopier;
 public class DefaultTestDataExtension
     implements BeforeAllCallback, TestInstancePostProcessor, AfterAllCallback {
 
-  private static final String PATH_TO_BINARY_FILES =
-      "/se/montesmites/ekonomi/parser/vismaadmin200/v2015_0/";
-
   private File tempfolder;
 
   @Override
   public void beforeAll(ExtensionContext context) throws Exception {
     tempfolder = Files.createTempDirectory("defaultTestData").toFile();
-    ResourceToFileCopier copier = new ResourceToFileCopier();
-    copier.copyAll(Paths.get(tempfolder.toURI()));
+    var fileCopier = new ResourceToFileCopier();
+    fileCopier.copyAll(Paths.get(tempfolder.toURI()));
   }
 
   @Override
@@ -35,21 +30,21 @@ public class DefaultTestDataExtension
     }
   }
 
-  private void recursiveDelete(File file) {
-    File[] files = file.listFiles();
+  private void recursiveDelete(File directory) {
+    var files = directory.listFiles();
     if (files != null) {
-      for (File each : files) {
-        recursiveDelete(each);
+      for (var file : files) {
+        recursiveDelete(file);
       }
     }
-    file.delete();
+    directory.delete();
   }
 
   @Override
   public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
     try {
-      for (Field field : testInstance.getClass().getDeclaredFields()) {
-        for (Annotation annotation : field.getAnnotations()) {
+      for (var field : testInstance.getClass().getDeclaredFields()) {
+        for (var annotation : field.getAnnotations()) {
           if (annotation.annotationType() == OrganizationInjector.class) {
             field.setAccessible(true);
             field.set(testInstance, new OrganizationBuilder(tempfolder.toPath()).build());

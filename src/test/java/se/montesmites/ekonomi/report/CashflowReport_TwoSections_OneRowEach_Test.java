@@ -32,7 +32,7 @@ class CashflowReport_TwoSections_OneRowEach_Test {
   void before() {
     this.fetcher = new CashflowDataFetcher(this.organization);
     this.report =
-        new CashflowReport(fetcher, year, () -> sections().stream().map(Map.Entry::getKey));
+        new CashflowReport(() -> sections().stream().map(Map.Entry::getKey));
   }
 
   private List<Map.Entry<Section, List<CashflowReport_AccountGroup_2012>>> sections() {

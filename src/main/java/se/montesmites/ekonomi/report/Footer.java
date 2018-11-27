@@ -12,9 +12,5 @@ public interface Footer {
     return () -> Stream.of(row);
   }
 
-  default Footer add(Row row) {
-    return () -> Stream.concat(this.stream(), Stream.of(row));
-  }
-
   Stream<Row> stream();
 }

@@ -1,7 +1,6 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.Month;
-import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -49,9 +48,5 @@ public enum Column {
 
   public Optional<Month> getMonth() {
     return month;
-  }
-
-  public Optional<YearMonth> asYearMonth(java.time.Year year) {
-    return month.map(m -> YearMonth.of(year.getValue(), m));
   }
 }
