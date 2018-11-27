@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
@@ -126,5 +127,42 @@ public class CashflowDataFetcher {
         .entrySet()
         .stream()
         .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
+  }
+
+  public RowWithAmounts buildRowWithAmounts(
+      List<AccountId> accountIds, java.time.Year year, String description) {
+    var fetcher = this;
+    return new RowWithAmounts() {
+      @Override
+      public Supplier<Stream<Month>> months() {
+        return () -> fetcher.touchedMonths(year).stream();
+      }
+
+      @Override
+      public String formatDescription() {
+        return description;
+      }
+
+      @Override
+      public Currency getMonthlyAmount(Column column) {
+        return accountIds
+            .stream()
+            .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
+            .reduce(new Currency(0), Currency::add);
+      }
+
+      private Currency getMonthlyAmount(AccountId accountId, Month month) {
+        return getMonthlyAmount(accountId, YearMonth.of(year.getValue(), month));
+      }
+
+      private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
+        return fetcher
+            .fetchAmount(accountId, yearMonth)
+            .map(Currency::getAmount)
+            .map(Currency::new)
+            .map(Signedness.NEGATED_SIGN::apply)
+            .orElse(new Currency(0));
+      }
+    };
   }
 }

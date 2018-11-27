@@ -25,7 +25,6 @@ import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
-import se.montesmites.ekonomi.report.DefaultRowWithAccounts;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.Row;
@@ -90,7 +89,8 @@ class Main {
     var accumulation =
         s(
             "Ackumulerade likvida medel",
-            new DefaultRowWithAccounts(fetcher, liquidFundsAccounts, year, "")
+            fetcher
+                .buildRowWithAmounts(liquidFundsAccounts, year, "")
                 .negate()
                 .accumulate(balance(liquidFundsAccounts)));
     return new CashflowReport(

@@ -17,8 +17,8 @@ public class CashflowReport {
         .streamAccountIds(year)
         .map(
             accountId ->
-                new DefaultRowWithAccounts(
-                    fetcher, Stream.of(accountId).collect(toList()), year, accountId.getId()));
+                fetcher.buildRowWithAmounts(
+                    Stream.of(accountId).collect(toList()), year, accountId.getId()));
   }
 
   private final Supplier<Stream<Section>> sections;

@@ -19,7 +19,7 @@ class _Section4TestUtil {
 
   _Section4TestUtil addBodyRowWithAmounts(
       String description, Function<Column, Currency> monthlyAmounts) {
-    this.rows.add(new DefaultRowWithAmounts(description, monthlyAmounts));
+    this.rows.add(RowWithAmounts.of(monthlyAmounts).description(description));
     return this;
   }
 

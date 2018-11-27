@@ -163,6 +163,6 @@ public enum CashflowReport_AccountGroup_2012 {
             .distinct()
             .sorted(comparing(AccountId::getId))
             .collect(toList());
-    return new DefaultRowWithAccounts(fetcher, accountIds, YEAR, description);
+    return fetcher.buildRowWithAmounts(accountIds, YEAR, description);
   }
 }
