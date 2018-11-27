@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toCollection;
 import java.time.Month;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -120,22 +121,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
 
   default RowWithAmounts accumulate(Currency initial) {
     var base = this;
-    var months = months().get().collect(toCollection(() -> EnumSet.noneOf(Month.class)));
-    var amounts = new EnumMap<Column, Currency>(Column.class);
-    Column.streamMonths()
-        .reduce(
-            initial,
-            (accumulator, column) -> {
-              if (months.contains(column.getMonth().orElseThrow())) {
-                var amount = base.getMonthlyAmount(column);
-                var columnBalance = accumulator.add(amount);
-                amounts.put(column, columnBalance);
-                return columnBalance;
-              } else {
-                return accumulator;
-              }
-            },
-            Currency::add);
+    var amounts = doAccumulate(initial);
     return new RowWithAmounts() {
       @Override
       public Currency getMonthlyAmount(Column column) {
@@ -157,5 +143,26 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
         return initial.format();
       }
     };
+  }
+
+  private Map<Column, Currency> doAccumulate(Currency initial) {
+    var base = this;
+    var months = months().get().collect(toCollection(() -> EnumSet.noneOf(Month.class)));
+    var amounts = new EnumMap<Column, Currency>(Column.class);
+    Column.streamMonths()
+        .reduce(
+            initial,
+            (accumulator, column) -> {
+              if (months.contains(column.getMonth().orElseThrow())) {
+                var amount = base.getMonthlyAmount(column);
+                var columnBalance = accumulator.add(amount);
+                amounts.put(column, columnBalance);
+                return columnBalance;
+              } else {
+                return accumulator;
+              }
+            },
+            Currency::add);
+    return amounts;
   }
 }
