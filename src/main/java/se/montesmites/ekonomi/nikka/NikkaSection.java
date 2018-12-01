@@ -23,10 +23,9 @@ import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.PERSONFORSAKRINGAR;
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.TRANSPORTER;
 import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
-import java.time.Year;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.function.UnaryOperator;
+import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.Footer;
@@ -65,8 +64,8 @@ enum NikkaSection {
           EXTRAORDINART_NETTO)),
   FORANDRING_LIKVIDA_MEDEL("Förändring likvida medel", List.of(LIKVIDA_MEDEL)) {
     @Override
-    RowWithAmounts bodyRow(NikkaAccountGroup group, CashflowDataFetcher fetcher, Year year) {
-      return super.bodyRow(group, fetcher, year).negate();
+    protected UnaryOperator<RowWithAmounts> getPostProcessor() {
+      return RowWithAmounts::negate;
     }
   };
 
@@ -84,18 +83,24 @@ enum NikkaSection {
 
   Section section(CashflowDataFetcher fetcher, java.time.Year year) {
     var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
-    var body = Body.of(bodyRows(fetcher, year));
+    var body =
+        Body.of(
+            () ->
+                groups
+                    .stream()
+                    .map(
+                        group ->
+                            getPostProcessor()
+                                .apply(
+                                    fetcher.buildRowWithAmounts(
+                                        AccountFilterByRegex.of(group.getRegex()),
+                                        year,
+                                        group.getDescription()))));
     var footer = Footer.of(body.aggregate());
     return Section.of(header, body, footer);
   }
 
-  private Supplier<Stream<? extends RowWithAmounts>> bodyRows(CashflowDataFetcher fetcher,
-      Year year) {
-    return () -> groups.stream().map(group -> bodyRow(group, fetcher, year));
-  }
-
-  RowWithAmounts bodyRow(
-      NikkaAccountGroup group, CashflowDataFetcher fetcher, java.time.Year year) {
-    return group.bodyRow(fetcher, year);
+  protected UnaryOperator<RowWithAmounts> getPostProcessor() {
+    return row -> row;
   }
 }

@@ -130,7 +130,7 @@ public class CashflowDataFetcher {
     return new RowWithAmounts() {
       @Override
       public Supplier<Stream<Month>> months() {
-        return () -> fetcher.touchedMonths(year).stream();
+        return () -> fetcher.touchedMonths(year).stream().sorted();
       }
 
       @Override
