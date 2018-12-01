@@ -1,6 +1,5 @@
 package se.montesmites.ekonomi.nikka;
 
-import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.nikka.NikkaSection.BOENDE;
 import static se.montesmites.ekonomi.nikka.NikkaSection.FORANDRING_LIKVIDA_MEDEL;
 import static se.montesmites.ekonomi.nikka.NikkaSection.FORNODENHETER;
@@ -14,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Year;
-import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
@@ -81,17 +80,14 @@ class Main {
                 .concat(s(year, FORANDRING_LIKVIDA_MEDEL).body().negate())
                 .aggregate()
                 .description("Kontrollsumma".toUpperCase()));
-    var liquidFundsAccounts =
-        new AccountFilterByRegex("1493|19\\d\\d")
-            .filter(fetcher.streamAccountIds(year))
-            .collect(toList());
+    var liquidFundsAccounts = AccountFilterByRegex.of("1493|19\\d\\d");
     var accumulation =
         s(
             "Ackumulerade likvida medel",
             fetcher
                 .buildRowWithAmounts(liquidFundsAccounts, year, "")
                 .negate()
-                .accumulate(balance(liquidFundsAccounts)));
+                .accumulate(balance(year, liquidFundsAccounts)));
     return new CashflowReport(
         () ->
             Stream.of(
@@ -123,8 +119,11 @@ class Main {
     return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
   }
 
-  private Currency balance(List<AccountId> accountIds) {
-    return accountIds.stream().map(this::balance).reduce(new Currency(0), Currency::add);
+  private Currency balance(Year year, Predicate<AccountId> filter) {
+    return fetcher
+        .streamAccountIds(year, filter)
+        .map(this::balance)
+        .reduce(new Currency(0), Currency::add);
   }
 
   private Currency balance(AccountId accountId) {

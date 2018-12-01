@@ -9,16 +9,12 @@ import static se.montesmites.ekonomi.test.util.EntryAggregateExpectedElements.BY
 
 import java.time.Month;
 import java.time.YearMonth;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Balance;
-import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 import se.montesmites.ekonomi.organization.Organization;
@@ -40,8 +36,8 @@ class CashflowDataFetcherTest {
 
   @Test
   void assertAccountIds() {
-    final YearId yearId = new YearId("C");
-    final List<AccountId> expAccountIds =
+    var yearId = new YearId("C");
+    var expAccountIds =
         Stream.of(
                 1221, 1229, 1400, 1510, 1650, 1710, 1910, 1920, 1930, 1940, 2091, 2098, 2099, 2440,
                 2510, 2611, 2615, 2641, 2645, 2650, 2710, 2732, 2920, 2921, 2940, 2941, 2995, 3041,
@@ -53,34 +49,34 @@ class CashflowDataFetcherTest {
             .map(id -> Integer.toString(id))
             .map(id -> new AccountId(yearId, id))
             .collect(toList());
-    final List<AccountId> actAccountIds = fetcher.streamAccountIds(year).collect(toList());
+    var actAccountIds = fetcher.streamAccountIds(year, __ -> true).collect(toList());
     assertEquals(expAccountIds, actAccountIds);
   }
 
   @Test
   void assertYearMonthColumns() {
     fetcher
-        .streamAccountIds(year)
+        .streamAccountIds(year, __ -> true)
         .forEach(
             accountId -> yearMonths().forEach(ym -> assertAccountYearMonthAmount(accountId, ym)));
   }
 
   @Test
   void assertBalances() {
-    fetcher.streamAccountIds(year).forEach(this::assertBalance);
+    fetcher.streamAccountIds(year, __ -> true).forEach(this::assertBalance);
   }
 
   @Test
   void readAccountAmount_byYearMonth_2012January() {
-    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
-    YearMonth yearMonth = YearMonth.of(2012, Month.JANUARY);
-    Map<AccountId, Currency> actAmounts =
+    var yearId = organization.getYear(java.time.Year.of(2012)).orElseThrow().getYearId();
+    var yearMonth = YearMonth.of(2012, Month.JANUARY);
+    var actAmounts =
         fetcher
             .getAccountIdAmountTuples(yearMonth)
-            .get()
+            .orElseThrow()
             .stream()
             .collect(toMap(AccountIdAmountTuple::getAccountId, AccountIdAmountTuple::getAmount));
-    Map<AccountId, Currency> expAmounts = BY_YEARMONTH_201201.getAggregate(yearId);
+    var expAmounts = BY_YEARMONTH_201201.getAggregate(yearId);
     mapEqualityAssertion(expAmounts, actAmounts);
   }
 
@@ -94,19 +90,19 @@ class CashflowDataFetcherTest {
   }
 
   private void assertAccountYearMonthAmount(AccountId accountId, YearMonth yearMonth) {
-    final Optional<Currency> exp =
+    var exp =
         fetcher.getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
-    final Optional<Currency> act = fetcher.fetchAmount(accountId, yearMonth);
-    String fmt = "%s (%s)";
-    String msg = String.format(fmt, accountId.getId(), yearMonth);
+    var act = fetcher.fetchAmount(accountId, yearMonth);
+    var fmt = "%s (%s)";
+    var msg = String.format(fmt, accountId.getId(), yearMonth);
     assertEquals(exp, act, msg);
   }
 
   private void assertBalance(AccountId accountId) {
-    final Optional<Balance> exp = organization.getBalance(accountId);
-    final Optional<Balance> act = fetcher.fetchBalance(accountId);
-    String fmt = "%s";
-    String msg = String.format(fmt, accountId.getId());
+    var exp = organization.getBalance(accountId);
+    var act = fetcher.fetchBalance(accountId);
+    var fmt = "%s";
+    var msg = String.format(fmt, accountId.getId());
     assertEquals(exp, act, msg);
   }
 

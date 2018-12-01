@@ -37,7 +37,7 @@ public class XmlAccountGroup implements XmlAccountGroupSupplier {
   }
 
   XmlRowBuilder toRowBuilder(CashflowDataFetcher fetcher, java.time.Year year) {
-    return new XmlRowBuilder(fetcher, new AccountFilterByRegex(regex), year, description);
+    return new XmlRowBuilder(fetcher, AccountFilterByRegex.of(regex), year, description);
   }
 
   @Override

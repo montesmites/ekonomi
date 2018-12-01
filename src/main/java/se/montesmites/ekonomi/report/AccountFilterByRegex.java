@@ -1,19 +1,23 @@
 package se.montesmites.ekonomi.report;
 
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 
-public class AccountFilterByRegex implements AccountFilter {
+public class AccountFilterByRegex implements Predicate<AccountId> {
+
+  public static AccountFilterByRegex of(String regex) {
+    return new AccountFilterByRegex(regex);
+  }
 
   private final Pattern pattern;
 
-  public AccountFilterByRegex(String regex) {
+  private AccountFilterByRegex(String regex) {
     this.pattern = Pattern.compile(regex);
   }
 
   @Override
-  public Stream<AccountId> filter(Stream<AccountId> accountIds) {
-    return accountIds.filter(a -> pattern.matcher(a.getId()).matches()).distinct();
+  public boolean test(AccountId accountId) {
+    return pattern.matcher(accountId.getId()).matches();
   }
 }

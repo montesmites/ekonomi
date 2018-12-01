@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
@@ -80,13 +81,14 @@ public class CashflowDataFetcher {
     return touchedMonths.getOrDefault(year, emptySet());
   }
 
-  public Stream<AccountId> streamAccountIds(java.time.Year year) {
+  public Stream<AccountId> streamAccountIds(java.time.Year year, Predicate<AccountId> filter) {
     return entryAggregate
         .getAggregate()
         .entrySet()
         .stream()
         .filter(e -> e.getKey().getYearMonth().getYear() == year.getValue())
         .map(e -> e.getKey().getAccountId())
+        .filter(filter)
         .distinct()
         .sorted(comparing(AccountId::getId));
   }
@@ -122,7 +124,8 @@ public class CashflowDataFetcher {
   }
 
   public RowWithAmounts buildRowWithAmounts(
-      List<AccountId> accountIds, java.time.Year year, String description) {
+      Predicate<AccountId> filter, java.time.Year year, String description) {
+    var accountIds = this.streamAccountIds(year, filter).collect(toList());
     var fetcher = this;
     return new RowWithAmounts() {
       @Override

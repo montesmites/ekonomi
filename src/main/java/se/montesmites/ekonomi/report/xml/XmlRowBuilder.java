@@ -1,17 +1,18 @@
 package se.montesmites.ekonomi.report.xml;
 
 import java.time.Year;
-import se.montesmites.ekonomi.report.AccountFilter;
+import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 
 public class XmlRowBuilder {
 
   private final CashflowDataFetcher fetcher;
-  private final AccountFilter filter;
+  private final AccountFilterByRegex filter;
   private final java.time.Year year;
   private final String description;
 
-  XmlRowBuilder(CashflowDataFetcher fetcher, AccountFilter filter, Year year, String description) {
+  XmlRowBuilder(CashflowDataFetcher fetcher, AccountFilterByRegex filter, Year year,
+      String description) {
     this.fetcher = fetcher;
     this.filter = filter;
     this.year = year;
@@ -22,7 +23,7 @@ public class XmlRowBuilder {
     return fetcher;
   }
 
-  public AccountFilter getFilter() {
+  public AccountFilterByRegex getFilter() {
     return filter;
   }
 
