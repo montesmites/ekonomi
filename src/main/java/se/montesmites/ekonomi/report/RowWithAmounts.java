@@ -1,10 +1,7 @@
 package se.montesmites.ekonomi.report;
 
-import static java.util.stream.Collectors.toCollection;
-
 import java.time.Month;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -147,22 +144,16 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
 
   private Map<Column, Currency> doAccumulate(Currency initial) {
     var base = this;
-    var months = months().get().collect(toCollection(() -> EnumSet.noneOf(Month.class)));
     var amounts = new EnumMap<Column, Currency>(Column.class);
-    Column.streamMonths()
+    months()
+        .get()
+        .map(Column::valueOf)
         .reduce(
             initial,
-            (accumulator, column) -> {
-              if (months.contains(column.getMonth().orElseThrow())) {
-                var amount = base.getMonthlyAmount(column);
-                var columnBalance = accumulator.add(amount);
-                amounts.put(column, columnBalance);
-                return columnBalance;
-              } else {
-                return accumulator;
-              }
-            },
+            (accumulator, column) ->
+                amounts.merge(
+                    column, accumulator.add(base.getMonthlyAmount(column)), Currency::add),
             Currency::add);
-    return amounts;
+    return Map.copyOf(amounts);
   }
 }
