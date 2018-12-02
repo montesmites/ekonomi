@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -62,11 +63,30 @@ class ReportBuilderTest {
   }
 
   @Test
-  void buildSection() {
+  void buildSection_title_accountGroups() {
     var builder = new ReportBuilder(fetcher, YEAR);
     var act = builder.buildSection(TITLE, List.of(ACCOUNT_GROUP));
     assertEquals(
         new CashflowReport(() -> Stream.of(TEMPLATE_SECTION)).render(),
         new CashflowReport(() -> Stream.of(act)).render());
+  }
+
+  @Test
+  void buildSection_title_footerRow() {
+    var builder = new ReportBuilder(fetcher, YEAR);
+    var header = Header.of(() -> TITLE).add(SHORT_MONTHS_HEADER);
+    var footer = (RowWithAmounts) column -> Currency.of(column.ordinal() * 100);
+    var exp = Section.of(header, Body.empty(), Footer.of(footer));
+    var act = builder.buildSection(TITLE, footer);
+    assertTrue(act.isEquivalentTo(exp));
+  }
+
+  @Test
+  void buildSection_footerRow() {
+    var builder = new ReportBuilder(fetcher, YEAR);
+    var footer = (RowWithAmounts) column -> Currency.of(column.ordinal() * 100);
+    var exp = Section.of(Header.empty(), Body.empty(), Footer.of(footer));
+    var act = builder.buildSection(footer);
+    assertTrue(act.isEquivalentTo(exp));
   }
 }

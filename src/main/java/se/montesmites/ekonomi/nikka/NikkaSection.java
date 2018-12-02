@@ -26,7 +26,9 @@ import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.TRANSPORTER;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.ReportBuilder;
 import se.montesmites.ekonomi.report.RowWithAmounts;
+import se.montesmites.ekonomi.report.Section;
 
 enum NikkaSection {
   INKOMSTER("Inkomster", List.of(LONEINBETALNINGAR, NETTOOMSATTNING_OVRIGT)),
@@ -82,5 +84,9 @@ enum NikkaSection {
 
   protected UnaryOperator<RowWithAmounts> getPostProcessor() {
     return row -> row;
+  }
+
+  Section toSection(ReportBuilder reportBuilder) {
+    return reportBuilder.buildSection(this.getTitle(), this.getGroups());
   }
 }

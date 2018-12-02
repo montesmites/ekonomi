@@ -6,7 +6,6 @@ import static se.montesmites.ekonomi.nikka.NikkaSection.FORNODENHETER;
 import static se.montesmites.ekonomi.nikka.NikkaSection.INKOMSTER;
 import static se.montesmites.ekonomi.nikka.NikkaSection.JAMFORELSESTORANDE_POSTER;
 import static se.montesmites.ekonomi.nikka.NikkaSection.OVRIGT;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,14 +20,10 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
-import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
-import se.montesmites.ekonomi.report.Footer;
-import se.montesmites.ekonomi.report.Header;
-import se.montesmites.ekonomi.report.Row;
+import se.montesmites.ekonomi.report.ReportBuilder;
 import se.montesmites.ekonomi.report.RowWithAmounts;
-import se.montesmites.ekonomi.report.Section;
 
 class Main {
 
@@ -51,12 +46,13 @@ class Main {
   }
 
   private CashflowReport generateCashflowReport(Year year) {
-    var inkomster = s(year, INKOMSTER);
-    var boende = s(year, BOENDE);
-    var fornodenheter = s(year, FORNODENHETER);
-    var ovrigt = s(year, OVRIGT);
+    var reportBuilder = new ReportBuilder(fetcher, year);
+    var inkomster = INKOMSTER.toSection(reportBuilder);
+    var boende = BOENDE.toSection(reportBuilder);
+    var fornodenheter = FORNODENHETER.toSection(reportBuilder);
+    var ovrigt = OVRIGT.toSection(reportBuilder);
     var foreJamforelsestorandePoster =
-        s(
+        reportBuilder.buildSection(
             inkomster
                 .body()
                 .concat(boende.body())
@@ -64,27 +60,28 @@ class Main {
                 .concat(ovrigt.body())
                 .aggregate()
                 .description("Före jämförelsestörande poster".toUpperCase()));
-    var jamforelsestorandePoster = s(year, JAMFORELSESTORANDE_POSTER);
+    var jamforelsestorandePoster = JAMFORELSESTORANDE_POSTER.toSection(reportBuilder);
     var forandringLikvidaMedel =
-        s(
-            s(year, FORANDRING_LIKVIDA_MEDEL)
+        reportBuilder.buildSection(
+            FORANDRING_LIKVIDA_MEDEL
+                .toSection(reportBuilder)
                 .body()
                 .aggregate()
                 .description(FORANDRING_LIKVIDA_MEDEL.getTitle().toUpperCase()));
     var kontrollsumma =
-        s(
+        reportBuilder.buildSection(
             inkomster
                 .body()
                 .concat(boende.body())
                 .concat(fornodenheter.body())
                 .concat(ovrigt.body())
                 .concat(jamforelsestorandePoster.body())
-                .concat(s(year, FORANDRING_LIKVIDA_MEDEL).body().negate())
+                .concat(FORANDRING_LIKVIDA_MEDEL.toSection(reportBuilder).body().negate())
                 .aggregate()
                 .description("Kontrollsumma".toUpperCase()));
     var liquidFundsAccountsRegex = "1493|19\\d\\d";
     var accumulation =
-        s(
+        reportBuilder.buildSection(
             "Ackumulerade likvida medel",
             fetcher
                 .reportBuilderOf(year)
@@ -108,19 +105,6 @@ class Main {
 
   private void renderToFile(CashflowReport report, Path path) throws IOException {
     Files.write(path, report.render());
-  }
-
-  private Section s(Year year, NikkaSection section) {
-    return fetcher.reportBuilderOf(year).buildSection(section.getTitle(), section.getGroups());
-  }
-
-  private Section s(String title, Row footer) {
-    return Section.of(
-        Header.of(() -> title).add(SHORT_MONTHS_HEADER), Body.empty(), Footer.of(footer));
-  }
-
-  private Section s(Row footer) {
-    return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
   }
 
   private Currency balance(Year year, Predicate<AccountId> filter) {

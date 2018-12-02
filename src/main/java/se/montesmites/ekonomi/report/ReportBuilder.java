@@ -17,7 +17,7 @@ public class ReportBuilder {
   private final CashflowDataFetcher fetcher;
   private final java.time.Year year;
 
-  ReportBuilder(CashflowDataFetcher fetcher, Year year) {
+  public ReportBuilder(CashflowDataFetcher fetcher, Year year) {
     this.fetcher = fetcher;
     this.year = year;
   }
@@ -72,5 +72,14 @@ public class ReportBuilder {
                     .map(this::buildRowWithAmounts));
     var footer = Footer.of(body.aggregate());
     return Section.of(header, body, footer);
+  }
+
+  public Section buildSection(String title, Row footer) {
+    return Section.of(
+        Header.of(() -> title).add(SHORT_MONTHS_HEADER), Body.empty(), Footer.of(footer));
+  }
+
+  public Section buildSection(Row footer) {
+    return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
   }
 }
