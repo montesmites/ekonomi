@@ -1,6 +1,8 @@
 package se.montesmites.ekonomi.nikka;
 
-enum NikkaAccountGroup {
+import se.montesmites.ekonomi.report.AccountGroup;
+
+enum NikkaAccountGroup implements AccountGroup {
   LONEINBETALNINGAR("Löner och arvoden", "(30|36)\\d\\d"),
   NETTOOMSATTNING_OVRIGT("Nettoomsättning övrigt", "3([1-5]|[7-9])\\d\\d"),
   DAGLIGVAROR("Dagligvaror", "40\\d\\d"),
@@ -32,11 +34,11 @@ enum NikkaAccountGroup {
     this.regex = regex;
   }
 
-  public String getDescription() {
+  public String description() {
     return description;
   }
 
-  public String getRegex() {
+  public String regex() {
     return regex;
   }
 }

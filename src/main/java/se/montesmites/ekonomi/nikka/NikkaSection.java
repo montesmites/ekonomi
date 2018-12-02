@@ -93,9 +93,9 @@ enum NikkaSection {
                             getPostProcessor()
                                 .apply(
                                     fetcher.buildRowWithAmounts(
-                                        AccountFilterByRegex.of(group.getRegex()),
+                                        AccountFilterByRegex.of(group.regex()),
                                         year,
-                                        group.getDescription()))));
+                                        group.description()))));
     var footer = Footer.of(body.aggregate());
     return Section.of(header, body, footer);
   }
