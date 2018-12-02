@@ -20,6 +20,7 @@
 
         <junit.version>5.0.2</junit.version>
         <junit.platform.surefire.provider.version>1.0.2</junit.platform.surefire.provider.version>
+      <mockito-core.version>2.23.4</mockito-core.version>
     </properties>
     <dependencies>
         <dependency>
@@ -59,8 +60,20 @@
             <groupId>org.apiguardian</groupId>
             <artifactId>apiguardian-api</artifactId>
             <version>1.0.0</version>
-            <scope>test</scope>
+          <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito-core.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>${mockito-core.version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
     <build>
         <plugins>

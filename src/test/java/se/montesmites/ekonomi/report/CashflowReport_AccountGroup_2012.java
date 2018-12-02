@@ -76,8 +76,7 @@ public enum CashflowReport_AccountGroup_2012 {
   public static void assertBodyRowDescriptions(
       Section section, List<CashflowReport_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.description).collect(toList());
-    var act =
-        section.body().stream().map(row -> row.format(DESCRIPTION)).collect(toList());
+    var act = section.body().stream().map(row -> row.format(DESCRIPTION)).collect(toList());
     assertEquals(exp.size(), act.size());
     for (var i = 0; i < exp.size(); i++) {
       var fmt = "%s at %d";
@@ -89,8 +88,7 @@ public enum CashflowReport_AccountGroup_2012 {
 
   public static void assertMonthlyAmounts(
       Section section, List<CashflowReport_AccountGroup_2012> groups) {
-    var expList =
-        groups.stream().map(group -> group.expectedAmounts).collect(toList());
+    var expList = groups.stream().map(group -> group.expectedAmounts).collect(toList());
     var actList =
         section
             .body()
@@ -154,6 +152,6 @@ public enum CashflowReport_AccountGroup_2012 {
   }
 
   private RowWithAmounts bodyRow(CashflowDataFetcher fetcher) {
-    return fetcher.buildRowWithAmounts(AccountFilterByRegex.of(regex), YEAR, description);
+    return fetcher.reportBuilderOf(YEAR).buildRowWithAmounts(AccountGroup.of(description, regex));
   }
 }

@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.nikka;
 
+import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.AKASSA_FACK_BANK_SKATT;
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.AMORTERING_FREDSGATAN_13;
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.BOENDE_DIVERSE;
@@ -21,17 +22,11 @@ import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.MOBIL_TV_BREDBAND;
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.NETTOOMSATTNING_OVRIGT;
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.PERSONFORSAKRINGAR;
 import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.TRANSPORTER;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
-import se.montesmites.ekonomi.report.AccountFilterByRegex;
-import se.montesmites.ekonomi.report.Body;
-import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.Footer;
-import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.RowWithAmounts;
-import se.montesmites.ekonomi.report.Section;
 
 enum NikkaSection {
   INKOMSTER("Inkomster", List.of(LONEINBETALNINGAR, NETTOOMSATTNING_OVRIGT)),
@@ -70,9 +65,9 @@ enum NikkaSection {
   };
 
   private final String title;
-  private final List<NikkaAccountGroup> groups;
+  private final List<AccountGroup> groups;
 
-  NikkaSection(String title, List<NikkaAccountGroup> groups) {
+  NikkaSection(String title, List<AccountGroup> groups) {
     this.title = title;
     this.groups = groups;
   }
@@ -81,23 +76,8 @@ enum NikkaSection {
     return title;
   }
 
-  Section section(CashflowDataFetcher fetcher, java.time.Year year) {
-    var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
-    var body =
-        Body.of(
-            () ->
-                groups
-                    .stream()
-                    .map(
-                        group ->
-                            getPostProcessor()
-                                .apply(
-                                    fetcher.buildRowWithAmounts(
-                                        AccountFilterByRegex.of(group.regex()),
-                                        year,
-                                        group.description()))));
-    var footer = Footer.of(body.aggregate());
-    return Section.of(header, body, footer);
+  public List<AccountGroup> getGroups() {
+    return groups.stream().map(group -> group.postProcessor(getPostProcessor())).collect(toList());
   }
 
   protected UnaryOperator<RowWithAmounts> getPostProcessor() {

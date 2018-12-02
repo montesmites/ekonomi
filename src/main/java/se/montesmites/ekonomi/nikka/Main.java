@@ -20,12 +20,14 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
+import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.Row;
+import se.montesmites.ekonomi.report.RowWithAmounts;
 import se.montesmites.ekonomi.report.Section;
 
 class Main {
@@ -80,14 +82,16 @@ class Main {
                 .concat(s(year, FORANDRING_LIKVIDA_MEDEL).body().negate())
                 .aggregate()
                 .description("Kontrollsumma".toUpperCase()));
-    var liquidFundsAccounts = AccountFilterByRegex.of("1493|19\\d\\d");
+    var liquidFundsAccountsRegex = "1493|19\\d\\d";
     var accumulation =
         s(
             "Ackumulerade likvida medel",
             fetcher
-                .buildRowWithAmounts(liquidFundsAccounts, year, "")
-                .negate()
-                .accumulate(balance(year, liquidFundsAccounts)));
+                .reportBuilderOf(year)
+                .buildRowWithAmounts(
+                    AccountGroup.of("", liquidFundsAccountsRegex)
+                        .postProcessor(RowWithAmounts::negate))
+                .accumulate(balance(year, AccountFilterByRegex.of(liquidFundsAccountsRegex))));
     return new CashflowReport(
         () ->
             Stream.of(
@@ -107,7 +111,7 @@ class Main {
   }
 
   private Section s(Year year, NikkaSection section) {
-    return section.section(fetcher, year);
+    return fetcher.reportBuilderOf(year).buildSection(section.getTitle(), section.getGroups());
   }
 
   private Section s(String title, Row footer) {

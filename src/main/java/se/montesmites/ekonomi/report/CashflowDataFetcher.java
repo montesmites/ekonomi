@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
@@ -123,41 +122,7 @@ public class CashflowDataFetcher {
         .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
   }
 
-  public RowWithAmounts buildRowWithAmounts(
-      Predicate<AccountId> filter, java.time.Year year, String description) {
-    var accountIds = this.streamAccountIds(year, filter).collect(toList());
-    var fetcher = this;
-    return new RowWithAmounts() {
-      @Override
-      public Supplier<Stream<Month>> months() {
-        return () -> fetcher.touchedMonths(year).stream().sorted();
-      }
-
-      @Override
-      public String formatDescription() {
-        return description;
-      }
-
-      @Override
-      public Currency getMonthlyAmount(Column column) {
-        return accountIds
-            .stream()
-            .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
-            .reduce(new Currency(0), Currency::add);
-      }
-
-      private Currency getMonthlyAmount(AccountId accountId, Month month) {
-        return getMonthlyAmount(accountId, YearMonth.of(year.getValue(), month));
-      }
-
-      private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
-        return fetcher
-            .fetchAmount(accountId, yearMonth)
-            .map(Currency::getAmount)
-            .map(Currency::new)
-            .map(Currency::negate)
-            .orElse(new Currency(0));
-      }
-    };
+  public ReportBuilder reportBuilderOf(java.time.Year year) {
+    return new ReportBuilder(this, year);
   }
 }
