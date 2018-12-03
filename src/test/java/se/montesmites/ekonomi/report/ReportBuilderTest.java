@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.report;
 
+import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,6 +12,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -72,13 +74,34 @@ class ReportBuilderTest {
   }
 
   @Test
-  void buildSection_title_footerRow() {
+  void buildSection_title_accountGroup() {
     var builder = new ReportBuilder(fetcher, YEAR);
     var header = Header.of(() -> TITLE).add(SHORT_MONTHS_HEADER);
-    var footer = (RowWithAmounts) column -> Currency.of(column.ordinal() * 100);
+    var footer =
+        (Row)
+            column ->
+                Map.ofEntries(
+                    entry(Column.DESCRIPTION, Currency.of(0).format()),
+                    entry(Column.JANUARY, Currency.of(100).format()),
+                    entry(Column.FEBRUARY, Currency.of(300).format()),
+                    entry(Column.MARCH, Currency.of(600).format()),
+                    entry(Column.APRIL, Currency.of(1000).format()),
+                    entry(Column.MAY, Currency.of(1500).format()),
+                    entry(Column.JUNE, Currency.of(2100).format()),
+                    entry(Column.JULY, Currency.of(2800).format()),
+                    entry(Column.AUGUST, Currency.of(3600).format()),
+                    entry(Column.SEPTEMBER, Currency.of(4500).format()),
+                    entry(Column.OCTOBER, Currency.of(5500).format()),
+                    entry(Column.NOVEMBER, Currency.of(6600).format()),
+                    entry(Column.DECEMBER, Currency.of(7800).format()),
+                    entry(Column.TOTAL, Currency.of(0).format()),
+                    entry(Column.AVERAGE, Currency.of(3033).format()))
+                    .get(column);
     var exp = Section.of(header, Body.empty(), Footer.of(footer));
-    var act = builder.buildSection(TITLE, footer);
-    assertTrue(act.isEquivalentTo(exp));
+    var act = builder.buildSectionWithAcculumatingFooter(TITLE, ACCOUNT_GROUP);
+    assertEquals(
+        new CashflowReport(() -> Stream.of(exp)).render(),
+        new CashflowReport(() -> Stream.of(act)).render());
   }
 
   @Test

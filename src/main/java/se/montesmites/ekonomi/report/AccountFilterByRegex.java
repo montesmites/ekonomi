@@ -6,6 +6,10 @@ import se.montesmites.ekonomi.model.AccountId;
 
 public class AccountFilterByRegex implements Predicate<AccountId> {
 
+  public static AccountFilterByRegex of(AccountGroup accountGroup) {
+    return AccountFilterByRegex.of(accountGroup.regex());
+  }
+
   public static AccountFilterByRegex of(String regex) {
     return new AccountFilterByRegex(regex);
   }

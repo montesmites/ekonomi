@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.toSet;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
@@ -23,6 +24,16 @@ class AccountFilterByRegexTest {
   private static final AccountId ACCOUNT_ID_3700 = new AccountId(yearId, "3700");
   private static final AccountId ACCOUNT_ID_3800 = new AccountId(yearId, "3800");
   private static final AccountId ACCOUNT_ID_3900 = new AccountId(yearId, "3900");
+
+  @Test
+  void of_accountGroup() {
+    var regex = "3([1-5]|[7-9])\\d\\d";
+    var description = "account-group";
+    var accountGroup = AccountGroup.of(description, regex);
+    assertAll(
+        () -> assertEquals(description, accountGroup.description()),
+        () -> assertEquals(regex, accountGroup.regex()));
+  }
 
   @Test
   void test() {

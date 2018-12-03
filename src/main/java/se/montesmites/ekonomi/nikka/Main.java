@@ -12,13 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Year;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Balance;
-import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
-import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
@@ -79,16 +74,10 @@ class Main {
                 .concat(FORANDRING_LIKVIDA_MEDEL.toSection(reportBuilder).body().negate())
                 .aggregate()
                 .description("Kontrollsumma".toUpperCase()));
-    var liquidFundsAccountsRegex = "1493|19\\d\\d";
     var accumulation =
-        reportBuilder.buildSection(
+        reportBuilder.buildSectionWithAcculumatingFooter(
             "Ackumulerade likvida medel",
-            fetcher
-                .reportBuilderOf(year)
-                .buildRowWithAmounts(
-                    AccountGroup.of("", liquidFundsAccountsRegex)
-                        .postProcessor(RowWithAmounts::negate))
-                .accumulate(balance(year, AccountFilterByRegex.of(liquidFundsAccountsRegex))));
+            AccountGroup.of("", "1493|19\\d\\d").postProcessor(RowWithAmounts::negate));
     return new CashflowReport(
         () ->
             Stream.of(
@@ -105,16 +94,5 @@ class Main {
 
   private void renderToFile(CashflowReport report, Path path) throws IOException {
     Files.write(path, report.render());
-  }
-
-  private Currency balance(Year year, Predicate<AccountId> filter) {
-    return fetcher
-        .streamAccountIds(year, filter)
-        .map(this::balance)
-        .reduce(new Currency(0), Currency::add);
-  }
-
-  private Currency balance(AccountId accountId) {
-    return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(new Currency(0));
   }
 }
