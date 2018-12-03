@@ -79,7 +79,7 @@ public interface DataType<T> {
               .map(Long::parseLong);
 
   DataType<Currency> CURRENCY =
-      (chunk, start, length) -> LONG.read(chunk, start, length).map(Currency::new);
+      (chunk, start, length) -> LONG.read(chunk, start, length).map(Currency::of);
 
   Optional<T> read(ByteChunk chunk, int start, int length);
 }

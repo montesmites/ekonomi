@@ -39,7 +39,7 @@ class RowWithAmountsTest {
 
   @Test
   void empty() {
-    var exp = RowWithAmounts.of(__ -> Currency.of(0));
+    var exp = RowWithAmounts.of(__ -> Currency.zero());
     var act = RowWithAmounts.empty();
     assertTrue(act.isEquivalentTo(exp));
   }

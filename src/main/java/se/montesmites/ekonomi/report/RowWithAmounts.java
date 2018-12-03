@@ -12,7 +12,7 @@ import se.montesmites.ekonomi.model.Currency;
 public interface RowWithAmounts extends RowWithGranularFormatters {
 
   static RowWithAmounts empty() {
-    return column -> Currency.of(0);
+    return column -> Currency.zero();
   }
 
   static RowWithAmounts of(Function<Column, Currency> amounts) {
@@ -37,7 +37,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
   Currency getMonthlyAmount(Column column);
 
   default Currency getYearlyTotal() {
-    return Column.streamMonths().map(this::getMonthlyAmount).reduce(new Currency(0), Currency::add);
+    return Column.streamMonths().map(this::getMonthlyAmount).reduce(Currency.zero(), Currency::add);
   }
 
   default Currency getAverage() {
@@ -49,7 +49,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
             .mapToLong(Currency::getAmount)
             .average()
             .orElse(0);
-    return new Currency(Math.round(average));
+    return Currency.of(Math.round(average));
   }
 
   default Supplier<Stream<Month>> months() {
@@ -122,7 +122,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     return new RowWithAmounts() {
       @Override
       public Currency getMonthlyAmount(Column column) {
-        return amounts.getOrDefault(column, new Currency(0));
+        return amounts.getOrDefault(column, Currency.zero());
       }
 
       @Override
@@ -132,7 +132,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
 
       @Override
       public String formatTotal() {
-        return Currency.of(0).format();
+        return Currency.zero().format();
       }
 
       @Override

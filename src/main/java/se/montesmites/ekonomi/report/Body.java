@@ -39,7 +39,7 @@ public interface Body {
       public Currency getMonthlyAmount(Column column) {
         return stream()
             .map(row -> row.getMonthlyAmount(column))
-            .reduce(new Currency(0), Currency::add);
+            .reduce(Currency.zero(), Currency::add);
       }
     };
   }

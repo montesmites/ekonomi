@@ -81,7 +81,7 @@ public enum EntryAggregateExpectedElements {
 
   private static AccountIdAmountTuple tuple(YearId yearId, int account, long amount) {
     return new AccountIdAmountTuple(
-        new AccountId(yearId, Integer.toString(account)), new Currency(amount));
+        new AccountId(yearId, Integer.toString(account)), Currency.of(amount));
   }
 
   private static Map<AccountId, Currency> asMap(List<AccountIdAmountTuple> tuples) {

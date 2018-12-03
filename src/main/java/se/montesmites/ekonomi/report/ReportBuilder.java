@@ -46,7 +46,7 @@ public class ReportBuilder {
             return accountIds
                 .stream()
                 .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
-                .reduce(new Currency(0), Currency::add);
+                .reduce(Currency.zero(), Currency::add);
           }
 
           private Currency getMonthlyAmount(AccountId accountId, Month month) {
@@ -57,9 +57,9 @@ public class ReportBuilder {
             return fetcher
                 .fetchAmount(accountId, yearMonth)
                 .map(Currency::getAmount)
-                .map(Currency::new)
+                .map(Currency::of)
                 .map(Currency::negate)
-                .orElse(new Currency(0));
+                .orElse(Currency.zero());
           }
         };
     return accountGroup.postProcessor().apply(row);
@@ -89,10 +89,10 @@ public class ReportBuilder {
     return fetcher
         .streamAccountIds(year, filter)
         .map(this::balance)
-        .reduce(new Currency(0), Currency::add);
+        .reduce(Currency.zero(), Currency::add);
   }
 
   private Currency balance(AccountId accountId) {
-    return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(new Currency(0));
+    return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(Currency.zero());
   }
 }

@@ -125,6 +125,6 @@ class OrganizationTest {
   }
 
   private Currency currency(long amount) {
-    return new Currency(amount);
+    return Currency.of(amount);
   }
 }

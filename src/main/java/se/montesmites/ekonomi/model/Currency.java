@@ -4,6 +4,10 @@ import se.montesmites.ekonomi.i18n.Messages;
 
 public class Currency {
 
+  public static Currency zero() {
+    return new Currency(0);
+  }
+
   public static Currency of(long amount) {
     return new Currency(amount);
   }
@@ -12,12 +16,12 @@ public class Currency {
   private final double divisor = Math.pow(10, decimals);
   private final long amount;
 
-  public Currency(long amount) {
+  private Currency(long amount) {
     this.amount = amount;
   }
 
   public Currency add(Currency that) {
-    return new Currency(this.amount + that.amount);
+    return Currency.of(this.amount + that.amount);
   }
 
   public long getAmount() {
