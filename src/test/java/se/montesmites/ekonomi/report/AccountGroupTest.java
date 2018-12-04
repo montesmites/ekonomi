@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -11,7 +12,8 @@ class AccountGroupTest {
 
   private static final String DESCRIPTION = "description";
   private static final String REGEX = "regex";
-  private static final RowWithAmounts ROW = column -> Currency.of(column.ordinal() * 100);
+  private static final RowWithAmounts ROW =
+      column -> Optional.of(Currency.of(column.ordinal() * 100));
 
   @Test
   void of() {

@@ -7,6 +7,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -42,11 +43,12 @@ public class ReportBuilder {
           }
 
           @Override
-          public Currency getMonthlyAmount(Column column) {
-            return accountIds
-                .stream()
-                .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
-                .reduce(Currency.zero(), Currency::add);
+          public Optional<Currency> getMonthlyAmount(Column column) {
+            return Optional.of(
+                accountIds
+                    .stream()
+                    .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
+                    .reduce(Currency.zero(), Currency::add));
           }
 
           private Currency getMonthlyAmount(AccountId accountId, Month month) {

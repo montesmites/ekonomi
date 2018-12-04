@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.Month;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
@@ -29,17 +30,17 @@ public interface Body {
     return new RowWithAmounts() {
       @Override
       public Supplier<Stream<Month>> months() {
-        return stream()
-            .findAny()
-            .map(RowWithAmounts::months)
-            .orElse(Stream::empty);
+        return stream().findAny().map(RowWithAmounts::months).orElse(Stream::empty);
       }
 
       @Override
-      public Currency getMonthlyAmount(Column column) {
-        return stream()
-            .map(row -> row.getMonthlyAmount(column))
-            .reduce(Currency.zero(), Currency::add);
+      public Optional<Currency> getMonthlyAmount(Column column) {
+        return Optional.of(
+            stream()
+                .map(row -> row.getMonthlyAmount(column))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .reduce(Currency.zero(), Currency::add));
       }
     };
   }

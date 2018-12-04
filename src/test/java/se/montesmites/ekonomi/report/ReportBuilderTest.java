@@ -32,7 +32,7 @@ class ReportBuilderTest {
   private static final YearId YEAR_ID = new YearId("YearId");
   private static final AccountId ACCOUNT_ID = new AccountId(YEAR_ID, REGEX);
   private static final RowWithAmounts TEMPLATE_ROW =
-      ((RowWithAmounts) column -> Currency.of(column.ordinal() * 100))
+      ((RowWithAmounts) column -> Optional.of(Currency.of(column.ordinal() * 100)))
           .withMonths(() -> Set.of(Month.values()).stream())
           .description(DESCRIPTION);
   private static final Header TEMPLATE_HEADER = Header.of(() -> TITLE).add(SHORT_MONTHS_HEADER);
@@ -53,7 +53,8 @@ class ReportBuilderTest {
             answer -> {
               var yearMonth = (YearMonth) answer.getArgument(1);
               var column = Column.valueOf(yearMonth.getMonth());
-              return Optional.of(TEMPLATE_ROW.getMonthlyAmount(column).negate());
+              return Optional.of(
+                  TEMPLATE_ROW.getMonthlyAmount(column).orElse(Currency.zero()).negate());
             });
   }
 
@@ -107,7 +108,7 @@ class ReportBuilderTest {
   @Test
   void buildSection_footerRow() {
     var builder = new ReportBuilder(fetcher, YEAR);
-    var footer = (RowWithAmounts) column -> Currency.of(column.ordinal() * 100);
+    var footer = (RowWithAmounts) column -> Optional.of(Currency.of(column.ordinal() * 100));
     var exp = Section.of(Header.empty(), Body.empty(), Footer.of(footer));
     var act = builder.buildSection(footer);
     assertTrue(act.isEquivalentTo(exp));

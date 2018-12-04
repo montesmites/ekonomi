@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -21,7 +22,7 @@ class FooterTest {
 
   @Test
   void of() {
-    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var footer = Footer.of(row);
     var exp = List.of(Row.of(row::format));
     var act = footer.stream().collect(toList());

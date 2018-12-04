@@ -21,6 +21,7 @@ import static se.montesmites.ekonomi.report.Column.TOTAL;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -28,7 +29,7 @@ class RowWithAmountsTest {
 
   @Test
   void of() {
-    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var exp =
         Column.streamMonths()
             .map(column -> Currency.of(column.ordinal()).format())
@@ -39,14 +40,14 @@ class RowWithAmountsTest {
 
   @Test
   void empty() {
-    var exp = RowWithAmounts.of(__ -> Currency.zero());
+    var exp = RowWithAmounts.of(__ -> Optional.of(Currency.zero()));
     var act = RowWithAmounts.empty();
     assertTrue(act.isEquivalentTo(exp));
   }
 
   @Test
   void formatMonth() {
-    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var exp =
         Column.streamMonths()
             .map(column -> Currency.of(column.ordinal()).format())
@@ -57,7 +58,7 @@ class RowWithAmountsTest {
 
   @Test
   void getYearlyTotal_formatTotal() {
-    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var sum = Column.streamMonths().mapToInt(Column::ordinal).sum();
     var exp = Currency.of(sum).format();
     var act = row.formatTotal();
@@ -67,7 +68,7 @@ class RowWithAmountsTest {
   @Test
   void getAverage_formatAverage() {
     var row =
-        RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100))
+        RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)))
             .withMonths(() -> Column.streamMonths().map(column -> column.getMonth().orElseThrow()));
     var avg =
         Column.streamMonths().mapToInt(column -> column.ordinal() * 100).average().orElseThrow();
@@ -79,7 +80,7 @@ class RowWithAmountsTest {
   @Test
   void withMonths() {
     var row =
-        RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100))
+        RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)))
             .withMonths(() -> Column.streamMonths().map(column -> column.getMonth().orElseThrow()));
     var exp =
         Column.streamMonths().map(column -> column.getMonth().orElseThrow()).collect(toList());
@@ -104,8 +105,10 @@ class RowWithAmountsTest {
 
   @Test
   void negate() {
-    var neutral = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
-    var negated = RowWithAmounts.of(column -> Currency.of(-column.ordinal() * 100));
+    var neutral = RowWithAmounts.of(column -> Optional
+        .of(Currency.of(column.ordinal() * 100)));
+    var negated = RowWithAmounts.of(column -> Optional
+        .of(Currency.of(-column.ordinal() * 100)));
     var act = neutral.negate();
     assertTrue(act.isEquivalentTo(negated));
   }
@@ -113,7 +116,7 @@ class RowWithAmountsTest {
   @Test
   void description() {
     var description = "DESCRIPTION";
-    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var exp = Row.of(column -> column == DESCRIPTION ? description : row.format(column));
     var act = row.description(description);
     assertTrue(act.isEquivalentTo(exp));
@@ -123,12 +126,12 @@ class RowWithAmountsTest {
   void accumulate() {
     var initial = Currency.of(100);
     var row =
-        RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100))
+        RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)))
             .withMonths(() -> Column.streamMonths().map(column -> column.getMonth().orElseThrow()));
     var exp =
         RowWithAmounts.of(
             column ->
-                Map.ofEntries(
+                Optional.ofNullable(Map.ofEntries(
                     entry(JANUARY, Currency.of(200)),
                     entry(FEBRUARY, Currency.of(400)),
                     entry(MARCH, Currency.of(700)),
@@ -141,7 +144,7 @@ class RowWithAmountsTest {
                     entry(OCTOBER, Currency.of(5600)),
                     entry(NOVEMBER, Currency.of(6700)),
                     entry(DECEMBER, Currency.of(7900)))
-                    .getOrDefault(column, Currency.of(0)))
+                    .getOrDefault(column, Currency.of(0))))
             .withMonths(() -> Column.streamMonths().map(column -> column.getMonth().orElseThrow()))
             .description(initial.format())
             .merge(TOTAL, RowWithAmounts.empty());

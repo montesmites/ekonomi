@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
@@ -22,7 +23,7 @@ class SectionTest {
   @Test
   void stream() {
     var header = Header.of(() -> "title");
-    var body = Body.of(RowWithAmounts.of(column -> Currency.of(column.ordinal())));
+    var body = Body.of(RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal()))));
     var footer = Footer.of(body.aggregate());
     var exp =
         Stream.of(header.stream(), body.stream(), footer.stream())
@@ -40,7 +41,7 @@ class SectionTest {
   @Test
   void of() {
     var header = Header.of(() -> "title");
-    var body = Body.of(RowWithAmounts.of(column -> Currency.of(column.ordinal())));
+    var body = Body.of(RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal()))));
     var footer = Footer.of(body.aggregate());
     var exp =
         new Section() {

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
@@ -22,7 +23,7 @@ class BodyTest {
 
   @Test
   void oneRowWithAmounts() {
-    var row = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
+    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var exp = Body.of(row);
     var act = Body.of(row);
     assertBodys(exp, act);
@@ -30,8 +31,8 @@ class BodyTest {
 
   @Test
   void twoRowsWithAmounts() {
-    var row1 = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
-    var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
+    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
+    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
     var exp = Body.of(() -> Stream.of(row1, row2));
     var act = Body.of(row1).add(row2);
     assertBodys(exp, act);
@@ -39,8 +40,8 @@ class BodyTest {
 
   @Test
   void streamOfRowsWithAmounts() {
-    var row1 = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
-    var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
+    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
+    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
     var exp = Body.of(() -> Stream.of(row1, row2));
     var act = Body.of(() -> Stream.of(row1, row2));
     assertBodys(exp, act);
@@ -48,11 +49,12 @@ class BodyTest {
 
   @Test
   void aggregate() {
-    var row1 = RowWithAmounts.of(column -> Currency.of(column.ordinal()));
-    var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
+    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
+    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp =
-        RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100 + column.ordinal()))
+        RowWithAmounts.of(
+            column -> Optional.of(Currency.of(column.ordinal() * 100 + column.ordinal())))
             .merge(DESCRIPTION, Row.empty());
     var act = body.aggregate();
     assertTrue(act.isEquivalentTo(exp));
@@ -60,10 +62,10 @@ class BodyTest {
 
   @Test
   void concat() {
-    var row1 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
-    var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 200));
-    var row3 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 300));
-    var row4 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 400));
+    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
+    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 200)));
+    var row3 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 300)));
+    var row4 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 400)));
     var exp = Body.of(() -> Stream.of(row1, row2, row3, row4));
     var act = Body.of(() -> Stream.of(row1, row2)).concat(Body.of(() -> Stream.of(row3, row4)));
     assertBodys(exp, act);
@@ -71,8 +73,8 @@ class BodyTest {
 
   @Test
   void negate() {
-    var row1 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 100));
-    var row2 = RowWithAmounts.of(column -> Currency.of(column.ordinal() * 200));
+    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
+    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 200)));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp = Body.of(() -> Stream.of(row1.negate(), row2.negate()));
     var act = body.negate();

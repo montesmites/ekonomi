@@ -12,10 +12,10 @@ import se.montesmites.ekonomi.model.Currency;
 public interface RowWithAmounts extends RowWithGranularFormatters {
 
   static RowWithAmounts empty() {
-    return column -> Currency.zero();
+    return column -> Optional.of(Currency.zero());
   }
 
-  static RowWithAmounts of(Function<Column, Currency> amounts) {
+  static RowWithAmounts of(Function<Column, Optional<Currency>> amounts) {
     return amounts::apply;
   }
 
@@ -23,7 +23,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     var base = this;
     return new RowWithAmounts() {
       @Override
-      public Currency getMonthlyAmount(Column column) {
+      public Optional<Currency> getMonthlyAmount(Column column) {
         return base.getMonthlyAmount(column);
       }
 
@@ -34,10 +34,14 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     };
   }
 
-  Currency getMonthlyAmount(Column column);
+  Optional<Currency> getMonthlyAmount(Column column);
 
   default Currency getYearlyTotal() {
-    return Column.streamMonths().map(this::getMonthlyAmount).reduce(Currency.zero(), Currency::add);
+    return Column.streamMonths()
+        .map(this::getMonthlyAmount)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .reduce(Currency.zero(), Currency::add);
   }
 
   default Currency getAverage() {
@@ -46,6 +50,8 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
             .get()
             .map(Column::valueOf)
             .map(this::getMonthlyAmount)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .mapToLong(Currency::getAmount)
             .average()
             .orElse(0);
@@ -58,7 +64,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
 
   @Override
   default String formatMonth(Column column) {
-    return getMonthlyAmount(column).format();
+    return getMonthlyAmount(column).orElse(Currency.zero()).format();
   }
 
   @Override
@@ -85,8 +91,8 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
       }
 
       @Override
-      public Currency getMonthlyAmount(Column column) {
-        return base.getMonthlyAmount(column).negate();
+      public Optional<Currency> getMonthlyAmount(Column column) {
+        return base.getMonthlyAmount(column).map(Currency::negate);
       }
 
       @Override
@@ -100,7 +106,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     var base = this;
     return new RowWithAmounts() {
       @Override
-      public Currency getMonthlyAmount(Column column) {
+      public Optional<Currency> getMonthlyAmount(Column column) {
         return base.getMonthlyAmount(column);
       }
 
@@ -121,8 +127,8 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     var amounts = doAccumulate(initial);
     return new RowWithAmounts() {
       @Override
-      public Currency getMonthlyAmount(Column column) {
-        return amounts.getOrDefault(column, Currency.zero());
+      public Optional<Currency> getMonthlyAmount(Column column) {
+        return Optional.ofNullable(amounts.get(column));
       }
 
       @Override
@@ -148,11 +154,14 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     months()
         .get()
         .map(Column::valueOf)
+        .filter(column -> base.getMonthlyAmount(column).isPresent())
         .reduce(
             initial,
             (accumulator, column) ->
                 amounts.merge(
-                    column, accumulator.add(base.getMonthlyAmount(column)), Currency::add),
+                    column,
+                    accumulator.add(base.getMonthlyAmount(column).orElse(Currency.zero())),
+                    Currency::add),
             Currency::add);
     return Map.copyOf(amounts);
   }

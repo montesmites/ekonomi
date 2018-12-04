@@ -21,6 +21,7 @@ import java.util.AbstractMap;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -88,7 +89,8 @@ public enum CashflowReport_AccountGroup_2012 {
 
   public static void assertMonthlyAmounts(
       Section section, List<CashflowReport_AccountGroup_2012> groups) {
-    var expList = groups.stream().map(group -> group.expectedAmounts).collect(toList());
+    var expList =
+        groups.stream().map(group -> group.expectedAmounts).collect(toList());
     var actList =
         section
             .body()
@@ -111,7 +113,7 @@ public enum CashflowReport_AccountGroup_2012 {
           .forEach(
               column ->
                   assertEquals(
-                      exp.get(column),
+                      Optional.of(exp.get(column)),
                       act.get(column),
                       String.format(fmt, description, column.name(), ix)));
     }
