@@ -1,14 +1,12 @@
 package se.montesmites.ekonomi.report;
 
-import java.time.Month;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
 
+@FunctionalInterface
 public interface RowWithAmounts extends RowWithGranularFormatters {
 
   static RowWithAmounts empty() {
@@ -19,19 +17,8 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
     return amounts::apply;
   }
 
-  default RowWithAmounts withMonths(Supplier<Stream<Month>> months) {
-    var base = this;
-    return new RowWithAmounts() {
-      @Override
-      public Optional<Currency> getMonthlyAmount(Column column) {
-        return base.getMonthlyAmount(column);
-      }
-
-      @Override
-      public Supplier<Stream<Month>> months() {
-        return months;
-      }
-    };
+  static RowWithAmounts of(Map<Column, Currency> amounts) {
+    return column -> Optional.ofNullable(amounts.get(column));
   }
 
   Optional<Currency> getMonthlyAmount(Column column);
@@ -46,9 +33,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
 
   default Currency getAverage() {
     var average =
-        months()
-            .get()
-            .map(Column::valueOf)
+        Column.streamMonths()
             .map(this::getMonthlyAmount)
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -56,10 +41,6 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
             .average()
             .orElse(0);
     return Currency.of(Math.round(average));
-  }
-
-  default Supplier<Stream<Month>> months() {
-    return Stream::empty;
   }
 
   @Override
@@ -94,11 +75,6 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
       public Optional<Currency> getMonthlyAmount(Column column) {
         return base.getMonthlyAmount(column).map(Currency::negate);
       }
-
-      @Override
-      public Supplier<Stream<Month>> months() {
-        return base.months();
-      }
     };
   }
 
@@ -111,11 +87,6 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
       }
 
       @Override
-      public Supplier<Stream<Month>> months() {
-        return base.months();
-      }
-
-      @Override
       public String formatDescription() {
         return description;
       }
@@ -123,17 +94,11 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
   }
 
   default RowWithAmounts accumulate(Currency initial) {
-    var base = this;
     var amounts = doAccumulate(initial);
     return new RowWithAmounts() {
       @Override
       public Optional<Currency> getMonthlyAmount(Column column) {
         return Optional.ofNullable(amounts.get(column));
-      }
-
-      @Override
-      public Supplier<Stream<Month>> months() {
-        return base.months();
       }
 
       @Override
@@ -151,9 +116,7 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
   private Map<Column, Currency> doAccumulate(Currency initial) {
     var base = this;
     var amounts = new EnumMap<Column, Currency>(Column.class);
-    months()
-        .get()
-        .map(Column::valueOf)
+    Column.streamMonths()
         .filter(column -> base.getMonthlyAmount(column).isPresent())
         .reduce(
             initial,

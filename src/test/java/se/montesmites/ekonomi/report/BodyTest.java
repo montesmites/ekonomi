@@ -1,12 +1,17 @@
 package se.montesmites.ekonomi.report;
 
+import static java.util.Map.entry;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
+import static se.montesmites.ekonomi.report.Column.FEBRUARY;
+import static se.montesmites.ekonomi.report.Column.JANUARY;
+import static se.montesmites.ekonomi.report.Column.MARCH;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -55,6 +60,32 @@ class BodyTest {
     var exp =
         RowWithAmounts.of(
             column -> Optional.of(Currency.of(column.ordinal() * 100 + column.ordinal())))
+            .merge(DESCRIPTION, Row.empty());
+    var act = body.aggregate();
+    assertTrue(act.isEquivalentTo(exp));
+  }
+
+  @Test
+  void aggregate_threeMonths() {
+    var row1 =
+        RowWithAmounts.of(
+            Map.ofEntries(
+                entry(JANUARY, Currency.of(1000)),
+                entry(FEBRUARY, Currency.of(2000)),
+                entry(MARCH, Currency.of(3000))));
+    var row2 =
+        RowWithAmounts.of(
+            Map.ofEntries(
+                entry(JANUARY, Currency.of(100)),
+                entry(FEBRUARY, Currency.of(200)),
+                entry(MARCH, Currency.of(300))));
+    var body = Body.of(() -> Stream.of(row1, row2));
+    var exp =
+        RowWithAmounts.of(
+            Map.ofEntries(
+                entry(JANUARY, Currency.of(1100)),
+                entry(FEBRUARY, Currency.of(2200)),
+                entry(MARCH, Currency.of(3300))))
             .merge(DESCRIPTION, Row.empty());
     var act = body.aggregate();
     assertTrue(act.isEquivalentTo(exp));

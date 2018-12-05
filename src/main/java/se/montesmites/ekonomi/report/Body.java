@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
-import java.time.Month;
+import static java.util.stream.Collectors.toList;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -27,21 +28,15 @@ public interface Body {
   Stream<? extends RowWithAmounts> stream();
 
   default RowWithAmounts aggregate() {
-    return new RowWithAmounts() {
-      @Override
-      public Supplier<Stream<Month>> months() {
-        return stream().findAny().map(RowWithAmounts::months).orElse(Stream::empty);
-      }
-
-      @Override
-      public Optional<Currency> getMonthlyAmount(Column column) {
-        return Optional.of(
-            stream()
-                .map(row -> row.getMonthlyAmount(column))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .reduce(Currency.zero(), Currency::add));
-      }
+    return column -> {
+      var amounts =
+          stream()
+              .map(row -> row.getMonthlyAmount(column))
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .collect(toList());
+      var sum = amounts.stream().reduce(Currency.zero(), Currency::add);
+      return amounts.isEmpty() ? Optional.empty() : Optional.of(sum);
     };
   }
 

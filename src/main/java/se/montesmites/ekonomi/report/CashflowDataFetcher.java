@@ -80,7 +80,7 @@ public class CashflowDataFetcher {
     return touchedMonths.getOrDefault(year, emptySet());
   }
 
-  public Stream<AccountId> streamAccountIds(java.time.Year year, Predicate<AccountId> filter) {
+  Stream<AccountId> streamAccountIds(java.time.Year year, Predicate<AccountId> filter) {
     return entryAggregate
         .getAggregate()
         .entrySet()
@@ -92,7 +92,7 @@ public class CashflowDataFetcher {
         .sorted(comparing(AccountId::getId));
   }
 
-  public Optional<Balance> fetchBalance(AccountId accountId) {
+  Optional<Balance> fetchBalance(AccountId accountId) {
     return organization.getBalance(accountId);
   }
 
@@ -122,7 +122,7 @@ public class CashflowDataFetcher {
         .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
   }
 
-  public ReportBuilder reportBuilderOf(java.time.Year year) {
+  ReportBuilder reportBuilderOf(java.time.Year year) {
     return new ReportBuilder(this, year);
   }
 }

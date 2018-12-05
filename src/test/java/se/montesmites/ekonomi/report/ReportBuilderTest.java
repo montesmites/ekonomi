@@ -1,5 +1,8 @@
 package se.montesmites.ekonomi.report;
 
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
+import static java.time.Month.MARCH;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +36,6 @@ class ReportBuilderTest {
   private static final AccountId ACCOUNT_ID = new AccountId(YEAR_ID, REGEX);
   private static final RowWithAmounts TEMPLATE_ROW =
       ((RowWithAmounts) column -> Optional.of(Currency.of(column.ordinal() * 100)))
-          .withMonths(() -> Set.of(Month.values()).stream())
           .description(DESCRIPTION);
   private static final Header TEMPLATE_HEADER = Header.of(() -> TITLE).add(SHORT_MONTHS_HEADER);
   private static final Body TEMPLATE_BODY = Body.of(TEMPLATE_ROW);
@@ -63,6 +65,27 @@ class ReportBuilderTest {
     var builder = new ReportBuilder(fetcher, YEAR);
     var act = builder.buildRowWithAmounts(ACCOUNT_GROUP);
     assertEquals(TEMPLATE_ROW.asString(), act.asString());
+  }
+
+  @Test
+  void buildRowWithAmounts_average_threMonths() {
+    var fetcher = mock(CashflowDataFetcher.class);
+    when(fetcher.streamAccountIds(any(), any())).then(answer -> Stream.of(ACCOUNT_ID));
+    when(fetcher.touchedMonths(YEAR)).then(answer -> Set.of(JANUARY, FEBRUARY, MARCH));
+    when(fetcher.fetchAmount(any(), any()))
+        .thenAnswer(
+            answer -> {
+              var yearMonth = (YearMonth) answer.getArgument(1);
+              var year = Year.of(yearMonth.getYear());
+              var month = yearMonth.getMonth();
+              return fetcher.touchedMonths(year).contains(month) ? Optional.of(Currency.of(-100))
+                  : Optional.empty();
+            });
+    var builder = new ReportBuilder(fetcher, YEAR);
+    var row = builder.buildRowWithAmounts(ACCOUNT_GROUP);
+    var exp = Currency.of(100);
+    var act = row.getAverage();
+    assertEquals(exp, act);
   }
 
   @Test

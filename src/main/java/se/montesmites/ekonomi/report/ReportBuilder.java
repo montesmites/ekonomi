@@ -3,14 +3,12 @@ package se.montesmites.ekonomi.report;
 import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
-import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
@@ -33,35 +31,32 @@ public class ReportBuilder {
     var row =
         new RowWithAmounts() {
           @Override
-          public Supplier<Stream<Month>> months() {
-            return () -> fetcher.touchedMonths(year).stream().sorted();
-          }
-
-          @Override
           public String formatDescription() {
             return accountGroup.description();
           }
 
           @Override
           public Optional<Currency> getMonthlyAmount(Column column) {
-            return Optional.of(
-                accountIds
-                    .stream()
-                    .map(acc -> getMonthlyAmount(acc, column.getMonth().get()))
-                    .reduce(Currency.zero(), Currency::add));
-          }
-
-          private Currency getMonthlyAmount(AccountId accountId, Month month) {
-            return getMonthlyAmount(accountId, YearMonth.of(year.getValue(), month));
-          }
-
-          private Currency getMonthlyAmount(AccountId accountId, YearMonth yearMonth) {
-            return fetcher
-                .fetchAmount(accountId, yearMonth)
-                .map(Currency::getAmount)
-                .map(Currency::of)
-                .map(Currency::negate)
-                .orElse(Currency.zero());
+            var yearMonth = YearMonth.of(year.getValue(), column.getMonth().orElseThrow());
+            var year = Year.of(yearMonth.getYear());
+            var month = yearMonth.getMonth();
+            var sum =
+                (Supplier<Currency>)
+                    () ->
+                        accountIds
+                            .stream()
+                            .map(
+                                accountId ->
+                                    fetcher
+                                        .fetchAmount(accountId, yearMonth)
+                                        .map(Currency::getAmount)
+                                        .map(Currency::of)
+                                        .map(Currency::negate)
+                                        .orElse(Currency.zero()))
+                            .reduce(Currency.zero(), Currency::add);
+            return fetcher.touchedMonths(year).contains(month)
+                ? Optional.of(sum.get())
+                : Optional.empty();
           }
         };
     return accountGroup.postProcessor().apply(row);
