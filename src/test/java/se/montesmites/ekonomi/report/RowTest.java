@@ -1,13 +1,56 @@
 package se.montesmites.ekonomi.report;
 
+import static java.util.Map.entry;
+import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static se.montesmites.ekonomi.report.Column.AVERAGE;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
+import static se.montesmites.ekonomi.report.Column.TOTAL;
 
+import java.util.Map;
 import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.model.Currency;
 
 class RowTest {
+
+  @Test
+  void empty() {
+    var row = Row.empty();
+    var exp = ((Row) column -> "").asString();
+    var act = row.asString();
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void of_function() {
+    var row = Row.of(column -> Currency.of(column.ordinal() * 100).format());
+    var exp = ((Row) column -> Currency.of(column.ordinal() * 100).format()).asString();
+    var act = row.asString();
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void of_mapWithAllColumns() {
+    var map = Column.stream().collect(toMap(column -> column, Column::name));
+    var row = Row.of(map);
+    var exp = Row.of(map::get).asString();
+    var act = row.asString();
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void of_mapWithSomeEmptyColumns() {
+    var map =
+        Map.ofEntries(
+            entry(DESCRIPTION, "description"), entry(AVERAGE, "average"), entry(TOTAL, "total"));
+    var row = Row.of(map);
+    var exp = Row.of(column -> map.getOrDefault(column, "")).asString();
+    var act = row.asString();
+    assertEquals(exp, act);
+  }
 
   @Test
   void isEquivalentTo() {

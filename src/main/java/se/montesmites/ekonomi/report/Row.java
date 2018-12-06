@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.joining;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -13,8 +14,12 @@ public interface Row {
     return column -> "";
   }
 
-  static Row of(Function<Column, String> formattedValues) {
-    return formattedValues::apply;
+  static Row of(Map<Column, String> values) {
+    return Row.of(column -> values.getOrDefault(column, ""));
+  }
+
+  static Row of(Function<Column, String> values) {
+    return values::apply;
   }
 
   String format(Column column);
@@ -39,5 +44,9 @@ public interface Row {
     return Column.stream()
         .map(column -> column.name() + " = " + this.format(column))
         .collect(joining(", ", "{", "}"));
+  }
+
+  default String formatDescription() {
+    return "";
   }
 }

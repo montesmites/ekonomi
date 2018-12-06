@@ -16,10 +16,6 @@ public interface RowWithGranularFormatters extends Row {
     }
   }
 
-  default String formatDescription() {
-    return "";
-  }
-
   default String formatTotal() {
     return "";
   }
