@@ -36,7 +36,7 @@ class CashflowReport_OneSection_OneRow_Test {
     this.fetcher = new CashflowDataFetcher(this.organization);
     this.report = new CashflowReport(this::sections);
     this.groups = List.of(BOKFORT_RESULTAT);
-    var header = Header.of(() -> DEN_LOPANDE_VERKSAMHETEN).add(SHORT_MONTHS_HEADER);
+    var header = Header.of(Row.title(DEN_LOPANDE_VERKSAMHETEN)).add(SHORT_MONTHS_HEADER);
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
     var footer = Footer.of(body.aggregate());
     this.section = Section.of(header, body, footer);

@@ -12,10 +12,6 @@ public interface Header {
     return () -> Stream.of(row);
   }
 
-  static Header of(TitleRow titleRow) {
-    return () -> Stream.of(titleRow);
-  }
-
   static Header of(HeaderRow headerRow) {
     return () -> Stream.of(headerRow);
   }

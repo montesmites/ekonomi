@@ -9,7 +9,6 @@ import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bod
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
-import java.time.Year;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,8 +23,6 @@ class CashflowReport_OneSection_TwoRows_Test {
 
   private static final String DEN_LOPANDE_VERKSAMHETEN = "Den löpande verksamheten";
 
-  private final Year year = Year.of(2012);
-
   @OrganizationInjector private Organization organization;
   private CashflowDataFetcher fetcher;
   private CashflowReport report;
@@ -37,7 +34,7 @@ class CashflowReport_OneSection_TwoRows_Test {
     this.fetcher = new CashflowDataFetcher(this.organization);
     this.report = new CashflowReport(this::sections);
     this.groups = List.of(BOKFORT_RESULTAT, KORTFRISTIGA_SKULDER);
-    var header = Header.of(() -> DEN_LOPANDE_VERKSAMHETEN).add(SHORT_MONTHS_HEADER);
+    var header = Header.of(Row.title(DEN_LOPANDE_VERKSAMHETEN)).add(SHORT_MONTHS_HEADER);
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
     var footer = Footer.of(body.aggregate());
     this.section = Section.of(header, body, footer);

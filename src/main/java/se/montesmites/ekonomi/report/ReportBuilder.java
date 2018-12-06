@@ -63,14 +63,16 @@ public class ReportBuilder {
   }
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
-    var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
+    var header =
+        Header.of(Row.title(title)).add(SHORT_MONTHS_HEADER);
     var body = Body.of(() -> accountGroups.stream().map(this::buildRowWithAmounts));
     var footer = Footer.of(body.aggregate());
     return Section.of(header, body, footer);
   }
 
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
-    var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
+    var header =
+        Header.of(Row.title(title)).add(SHORT_MONTHS_HEADER);
     var footer =
         Footer.of(
             this.buildRowWithAmounts(accountGroup)

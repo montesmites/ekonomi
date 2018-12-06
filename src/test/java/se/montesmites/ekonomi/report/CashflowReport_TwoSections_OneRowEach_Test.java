@@ -9,7 +9,6 @@ import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.ass
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bodyRowsOf;
 import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
-import java.time.Year;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,8 +21,6 @@ import testdata.OrganizationInjector;
 @ExtendWith(DefaultTestDataExtension.class)
 class CashflowReport_TwoSections_OneRowEach_Test {
 
-  private final Year year = Year.of(2012);
-
   @OrganizationInjector private Organization organization;
   private CashflowDataFetcher fetcher;
   private CashflowReport report;
@@ -31,8 +28,7 @@ class CashflowReport_TwoSections_OneRowEach_Test {
   @BeforeEach
   void before() {
     this.fetcher = new CashflowDataFetcher(this.organization);
-    this.report =
-        new CashflowReport(() -> sections().stream().map(Map.Entry::getKey));
+    this.report = new CashflowReport(() -> sections().stream().map(Map.Entry::getKey));
   }
 
   private List<Map.Entry<Section, List<CashflowReport_AccountGroup_2012>>> sections() {
@@ -43,7 +39,8 @@ class CashflowReport_TwoSections_OneRowEach_Test {
 
   private Map.Entry<Section, List<CashflowReport_AccountGroup_2012>> section(
       String title, List<CashflowReport_AccountGroup_2012> groups) {
-    var header = Header.of(() -> title).add(SHORT_MONTHS_HEADER);
+    var header =
+        Header.of(Row.title(title)).add(SHORT_MONTHS_HEADER);
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
     var footer = Footer.of(body.aggregate());
     var section = Section.of(header, body, footer);

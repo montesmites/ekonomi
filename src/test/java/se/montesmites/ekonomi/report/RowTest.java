@@ -53,6 +53,14 @@ class RowTest {
   }
 
   @Test
+  void title() {
+    var title = "title";
+    var exp = Row.of(Map.of(DESCRIPTION, title.toUpperCase())).asString();
+    var act = Row.title(title).asString();
+    assertEquals(exp, act);
+  }
+
+  @Test
   void isEquivalentTo() {
     var row1 = (Row) column -> column.name() + "_1";
     var row2 = (Row) column -> column.name() + "_2";

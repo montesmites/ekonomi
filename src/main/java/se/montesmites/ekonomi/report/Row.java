@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.joining;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +13,10 @@ public interface Row {
 
   static Row empty() {
     return column -> "";
+  }
+
+  static Row title(String title) {
+    return Row.of(Map.of(DESCRIPTION, title.toUpperCase()));
   }
 
   static Row of(Map<Column, String> values) {

@@ -5,7 +5,9 @@ import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ class SectionTest {
 
   @Test
   void stream() {
-    var header = Header.of(() -> "title");
+    var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
     var body = Body.of(RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal()))));
     var footer = Footer.of(body.aggregate());
     var exp =
@@ -40,7 +42,7 @@ class SectionTest {
 
   @Test
   void of() {
-    var header = Header.of(() -> "title");
+    var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
     var body = Body.of(RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal()))));
     var footer = Footer.of(body.aggregate());
     var exp =

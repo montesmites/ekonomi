@@ -1,14 +1,26 @@
 package se.montesmites.ekonomi.report;
 
-import static java.time.Month.FEBRUARY;
-import static java.time.Month.JANUARY;
-import static java.time.Month.MARCH;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static se.montesmites.ekonomi.report.Column.APRIL;
+import static se.montesmites.ekonomi.report.Column.AUGUST;
+import static se.montesmites.ekonomi.report.Column.AVERAGE;
+import static se.montesmites.ekonomi.report.Column.DECEMBER;
+import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
+import static se.montesmites.ekonomi.report.Column.FEBRUARY;
+import static se.montesmites.ekonomi.report.Column.JANUARY;
+import static se.montesmites.ekonomi.report.Column.JULY;
+import static se.montesmites.ekonomi.report.Column.JUNE;
+import static se.montesmites.ekonomi.report.Column.MARCH;
+import static se.montesmites.ekonomi.report.Column.MAY;
+import static se.montesmites.ekonomi.report.Column.NOVEMBER;
+import static se.montesmites.ekonomi.report.Column.OCTOBER;
+import static se.montesmites.ekonomi.report.Column.SEPTEMBER;
+import static se.montesmites.ekonomi.report.Column.TOTAL;
 import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.time.Month;
@@ -28,16 +40,17 @@ import se.montesmites.ekonomi.model.YearId;
 class ReportBuilderTest {
 
   private static final String TITLE = "title";
-  private static final String DESCRIPTION = "description";
+  private static final String DESCRIPTION_TEXT = "description";
   private static final String REGEX = "regex";
-  private static final AccountGroup ACCOUNT_GROUP = AccountGroup.of(DESCRIPTION, REGEX);
+  private static final AccountGroup ACCOUNT_GROUP = AccountGroup.of(DESCRIPTION_TEXT, REGEX);
   private static final Year YEAR = Year.of(2018);
   private static final YearId YEAR_ID = new YearId("YearId");
   private static final AccountId ACCOUNT_ID = new AccountId(YEAR_ID, REGEX);
   private static final RowWithAmounts TEMPLATE_ROW =
       ((RowWithAmounts) column -> Optional.of(Currency.of(column.ordinal() * 100)))
-          .description(DESCRIPTION);
-  private static final Header TEMPLATE_HEADER = Header.of(() -> TITLE).add(SHORT_MONTHS_HEADER);
+          .description(DESCRIPTION_TEXT);
+  private static final Header TEMPLATE_HEADER =
+      Header.of(Row.title(TITLE)).add(SHORT_MONTHS_HEADER);
   private static final Body TEMPLATE_BODY = Body.of(TEMPLATE_ROW);
   private static final Footer TEMPLATE_FOOTER = Footer.of(TEMPLATE_BODY.aggregate());
   private static final Section TEMPLATE_SECTION =
@@ -71,14 +84,16 @@ class ReportBuilderTest {
   void buildRowWithAmounts_average_threMonths() {
     var fetcher = mock(CashflowDataFetcher.class);
     when(fetcher.streamAccountIds(any(), any())).then(answer -> Stream.of(ACCOUNT_ID));
-    when(fetcher.touchedMonths(YEAR)).then(answer -> Set.of(JANUARY, FEBRUARY, MARCH));
+    when(fetcher.touchedMonths(YEAR))
+        .then(answer -> Set.of(Month.JANUARY, Month.FEBRUARY, Month.MARCH));
     when(fetcher.fetchAmount(any(), any()))
         .thenAnswer(
             answer -> {
               var yearMonth = (YearMonth) answer.getArgument(1);
               var year = Year.of(yearMonth.getYear());
               var month = yearMonth.getMonth();
-              return fetcher.touchedMonths(year).contains(month) ? Optional.of(Currency.of(-100))
+              return fetcher.touchedMonths(year).contains(month)
+                  ? Optional.of(Currency.of(-100))
                   : Optional.empty();
             });
     var builder = new ReportBuilder(fetcher, YEAR);
@@ -100,26 +115,27 @@ class ReportBuilderTest {
   @Test
   void buildSection_title_accountGroup() {
     var builder = new ReportBuilder(fetcher, YEAR);
-    var header = Header.of(() -> TITLE).add(SHORT_MONTHS_HEADER);
+    var header =
+        Header.of(Row.title(TITLE)).add(SHORT_MONTHS_HEADER);
     var footer =
         (Row)
             column ->
                 Map.ofEntries(
-                    entry(Column.DESCRIPTION, Currency.of(0).format()),
-                    entry(Column.JANUARY, Currency.of(100).format()),
-                    entry(Column.FEBRUARY, Currency.of(300).format()),
-                    entry(Column.MARCH, Currency.of(600).format()),
-                    entry(Column.APRIL, Currency.of(1000).format()),
-                    entry(Column.MAY, Currency.of(1500).format()),
-                    entry(Column.JUNE, Currency.of(2100).format()),
-                    entry(Column.JULY, Currency.of(2800).format()),
-                    entry(Column.AUGUST, Currency.of(3600).format()),
-                    entry(Column.SEPTEMBER, Currency.of(4500).format()),
-                    entry(Column.OCTOBER, Currency.of(5500).format()),
-                    entry(Column.NOVEMBER, Currency.of(6600).format()),
-                    entry(Column.DECEMBER, Currency.of(7800).format()),
-                    entry(Column.TOTAL, Currency.of(0).format()),
-                    entry(Column.AVERAGE, Currency.of(3033).format()))
+                    entry(DESCRIPTION, Currency.of(0).format()),
+                    entry(JANUARY, Currency.of(100).format()),
+                    entry(FEBRUARY, Currency.of(300).format()),
+                    entry(MARCH, Currency.of(600).format()),
+                    entry(APRIL, Currency.of(1000).format()),
+                    entry(MAY, Currency.of(1500).format()),
+                    entry(JUNE, Currency.of(2100).format()),
+                    entry(JULY, Currency.of(2800).format()),
+                    entry(AUGUST, Currency.of(3600).format()),
+                    entry(SEPTEMBER, Currency.of(4500).format()),
+                    entry(OCTOBER, Currency.of(5500).format()),
+                    entry(NOVEMBER, Currency.of(6600).format()),
+                    entry(DECEMBER, Currency.of(7800).format()),
+                    entry(TOTAL, Currency.of(0).format()),
+                    entry(AVERAGE, Currency.of(3033).format()))
                     .get(column);
     var exp = Section.of(header, Body.empty(), Footer.of(footer));
     var act = builder.buildSectionWithAcculumatingFooter(TITLE, ACCOUNT_GROUP);
