@@ -1,7 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.toList;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
+import static se.montesmites.ekonomi.report.Row.SHORT_MONTHS;
 
 import java.time.Year;
 import java.time.YearMonth;
@@ -63,16 +63,14 @@ public class ReportBuilder {
   }
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
-    var header =
-        Header.of(Row.title(title)).add(SHORT_MONTHS_HEADER);
+    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS));
     var body = Body.of(() -> accountGroups.stream().map(this::buildRowWithAmounts));
     var footer = Footer.of(body.aggregate());
     return Section.of(header, body, footer);
   }
 
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
-    var header =
-        Header.of(Row.title(title)).add(SHORT_MONTHS_HEADER);
+    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS));
     var footer =
         Footer.of(
             this.buildRowWithAmounts(accountGroup)

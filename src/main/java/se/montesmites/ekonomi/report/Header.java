@@ -12,10 +12,6 @@ public interface Header {
     return () -> Stream.of(row);
   }
 
-  static Header of(HeaderRow headerRow) {
-    return () -> Stream.of(headerRow);
-  }
-
   default Header add(Row row) {
     return () -> Stream.concat(this.stream(), Stream.of(row));
   }

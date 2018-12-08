@@ -6,12 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_AVERAGE;
+import static se.montesmites.ekonomi.i18n.Messages.Message.HEADER_ROW_TOTAL;
 import static se.montesmites.ekonomi.report.Column.AVERAGE;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 import static se.montesmites.ekonomi.report.Column.TOTAL;
+import static se.montesmites.ekonomi.report.Row.SHORT_MONTHS;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.i18n.Messages;
 import se.montesmites.ekonomi.model.Currency;
 
 class RowTest {
@@ -57,6 +61,27 @@ class RowTest {
     var title = "title";
     var exp = Row.of(Map.of(DESCRIPTION, title.toUpperCase())).asString();
     var act = Row.title(title).asString();
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void of_descriptionWithMonths() {
+    var description = "description";
+    var average = Messages.get(HEADER_ROW_AVERAGE);
+    var total = Messages.get(HEADER_ROW_TOTAL);
+    var map =
+        Map.ofEntries(
+            entry(DESCRIPTION, description), entry(AVERAGE, average), entry(TOTAL, total));
+    var row = Row.descriptionWithMonths(description, SHORT_MONTHS);
+    var exp =
+        Row.of(
+            column ->
+                column
+                    .getMonth()
+                    .map(Messages::getShortMonth)
+                    .orElse(map.getOrDefault(column, "")))
+            .asString();
+    var act = row.asString();
     assertEquals(exp, act);
   }
 

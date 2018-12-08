@@ -4,11 +4,9 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
+import static se.montesmites.ekonomi.report.Row.SHORT_MONTHS;
 
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class HeaderTest {
@@ -22,27 +20,21 @@ class HeaderTest {
   }
 
   @Test
-  void headerRow() {
-    var header = Header.of(SHORT_MONTHS_HEADER);
-    var exp = List.of(SHORT_MONTHS_HEADER);
+  void oneRow() {
+    var title = Row.title("title");
+    var header = Header.of(title);
+    var exp = List.of(title);
     var act = header.stream().collect(toList());
     assertHeaders(exp, act);
   }
 
   @Test
-  void bothTitleAndHeader() {
-    var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE"))).add(SHORT_MONTHS_HEADER);
-    var exp = List.of(Row.of(Map.of(DESCRIPTION, "TITLE")), SHORT_MONTHS_HEADER);
-    var act = header.stream().collect(toList());
-    assertHeaders(exp, act);
-  }
-
-  @Test
-  void combineTitleAndHeader() {
-    var titleRow = Row.of(Map.of(DESCRIPTION, "TITLE"));
-    var headerRow = (HeaderRow) SHORT_MONTHS_HEADER;
-    var header = Header.of(headerRow.merge(DESCRIPTION, titleRow));
-    var exp = List.of(headerRow.merge(DESCRIPTION, titleRow));
+  void twoRows() {
+    var title = Row.title("title");
+    var description = "description";
+    var descriptionWithMonths = Row.descriptionWithMonths(description, SHORT_MONTHS);
+    var header = Header.of(title).add(descriptionWithMonths);
+    var exp = List.of(title, descriptionWithMonths);
     var act = header.stream().collect(toList());
     assertHeaders(exp, act);
   }

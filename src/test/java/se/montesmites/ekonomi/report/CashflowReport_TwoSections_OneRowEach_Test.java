@@ -7,7 +7,6 @@ import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.ass
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertExpectedAverages;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertMonthlyAmounts;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bodyRowsOf;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.util.List;
 import java.util.Map;
@@ -39,8 +38,7 @@ class CashflowReport_TwoSections_OneRowEach_Test {
 
   private Map.Entry<Section, List<CashflowReport_AccountGroup_2012>> section(
       String title, List<CashflowReport_AccountGroup_2012> groups) {
-    var header =
-        Header.of(Row.title(title)).add(SHORT_MONTHS_HEADER);
+    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
     var footer = Footer.of(body.aggregate());
     var section = Section.of(header, body, footer);

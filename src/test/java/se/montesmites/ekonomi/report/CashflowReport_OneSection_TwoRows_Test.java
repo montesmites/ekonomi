@@ -7,7 +7,6 @@ import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.ass
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertMonthlyAmounts;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bodyRowsOf;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -34,7 +33,9 @@ class CashflowReport_OneSection_TwoRows_Test {
     this.fetcher = new CashflowDataFetcher(this.organization);
     this.report = new CashflowReport(this::sections);
     this.groups = List.of(BOKFORT_RESULTAT, KORTFRISTIGA_SKULDER);
-    var header = Header.of(Row.title(DEN_LOPANDE_VERKSAMHETEN)).add(SHORT_MONTHS_HEADER);
+    var header =
+        Header.of(Row.title(DEN_LOPANDE_VERKSAMHETEN))
+            .add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
     var footer = Footer.of(body.aggregate());
     this.section = Section.of(header, body, footer);

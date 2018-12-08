@@ -21,7 +21,6 @@ import static se.montesmites.ekonomi.report.Column.NOVEMBER;
 import static se.montesmites.ekonomi.report.Column.OCTOBER;
 import static se.montesmites.ekonomi.report.Column.SEPTEMBER;
 import static se.montesmites.ekonomi.report.Column.TOTAL;
-import static se.montesmites.ekonomi.report.HeaderRow.SHORT_MONTHS_HEADER;
 
 import java.time.Month;
 import java.time.Year;
@@ -50,7 +49,7 @@ class ReportBuilderTest {
       ((RowWithAmounts) column -> Optional.of(Currency.of(column.ordinal() * 100)))
           .description(DESCRIPTION_TEXT);
   private static final Header TEMPLATE_HEADER =
-      Header.of(Row.title(TITLE)).add(SHORT_MONTHS_HEADER);
+      Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
   private static final Body TEMPLATE_BODY = Body.of(TEMPLATE_ROW);
   private static final Footer TEMPLATE_FOOTER = Footer.of(TEMPLATE_BODY.aggregate());
   private static final Section TEMPLATE_SECTION =
@@ -115,8 +114,7 @@ class ReportBuilderTest {
   @Test
   void buildSection_title_accountGroup() {
     var builder = new ReportBuilder(fetcher, YEAR);
-    var header =
-        Header.of(Row.title(TITLE)).add(SHORT_MONTHS_HEADER);
+    var header = Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var footer =
         (Row)
             column ->
