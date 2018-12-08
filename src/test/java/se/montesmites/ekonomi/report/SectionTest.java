@@ -25,10 +25,10 @@ class SectionTest {
   @Test
   void stream() {
     var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
-    var body = Body.of(RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal()))));
-    var footer = Footer.of(body.aggregate());
+    var body = Body.of(AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal()))));
+    var footer = Footer.of(body.aggregate("").asRow());
     var exp =
-        Stream.of(header.stream(), body.stream(), footer.stream())
+        Stream.of(header.stream(), body.stream().map(AmountsProvider::asRow), footer.stream())
             .flatMap(row -> row)
             .collect(toList());
     var act = Section.of(header, body, footer).stream().collect(toList());
@@ -37,14 +37,16 @@ class SectionTest {
         () ->
             range(0, exp.size())
                 .forEach(
-                    i -> assertTrue(exp.get(i).isEquivalentTo(act.get(i)), Integer.toString(i))));
+                    i ->
+                        assertEquals(
+                            exp.get(i).asString(), act.get(i).asString(), Integer.toString(i))));
   }
 
   @Test
   void of() {
     var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
-    var body = Body.of(RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal()))));
-    var footer = Footer.of(body.aggregate());
+    var body = Body.of(AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal()))));
+    var footer = Footer.of(body.aggregate("").asRow());
     var exp =
         new Section() {
           @Override

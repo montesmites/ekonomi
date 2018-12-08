@@ -45,13 +45,23 @@ class ReportBuilderTest {
   private static final Year YEAR = Year.of(2018);
   private static final YearId YEAR_ID = new YearId("YearId");
   private static final AccountId ACCOUNT_ID = new AccountId(YEAR_ID, REGEX);
-  private static final RowWithAmounts TEMPLATE_ROW =
-      ((RowWithAmounts) column -> Optional.of(Currency.of(column.ordinal() * 100)))
-          .description(DESCRIPTION_TEXT);
+  private static final AmountsProvider TEMPLATE_AMOUNTS_PROVIDER =
+      new AmountsProvider() {
+        @Override
+        public Optional<Currency> getMonthlyAmount(Month month) {
+          return Optional.of(Currency.of((month.ordinal() + 1) * 100));
+        }
+
+        @Override
+        public String formatDescription() {
+          return DESCRIPTION_TEXT;
+        }
+      };
   private static final Header TEMPLATE_HEADER =
       Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
-  private static final Body TEMPLATE_BODY = Body.of(TEMPLATE_ROW);
-  private static final Footer TEMPLATE_FOOTER = Footer.of(TEMPLATE_BODY.aggregate());
+  private static final Body TEMPLATE_BODY = Body.of(TEMPLATE_AMOUNTS_PROVIDER);
+  private static final Footer TEMPLATE_FOOTER =
+      Footer.of(TEMPLATE_BODY.aggregate("").asRow());
   private static final Section TEMPLATE_SECTION =
       Section.of(TEMPLATE_HEADER, TEMPLATE_BODY, TEMPLATE_FOOTER);
 
@@ -66,21 +76,23 @@ class ReportBuilderTest {
         .thenAnswer(
             answer -> {
               var yearMonth = (YearMonth) answer.getArgument(1);
-              var column = Column.valueOf(yearMonth.getMonth());
               return Optional.of(
-                  TEMPLATE_ROW.getMonthlyAmount(column).orElse(Currency.zero()).negate());
+                  TEMPLATE_AMOUNTS_PROVIDER
+                      .getMonthlyAmount(yearMonth.getMonth())
+                      .orElse(Currency.zero())
+                      .negate());
             });
   }
 
   @Test
   void buildRowWithAmounts() {
     var builder = new ReportBuilder(fetcher, YEAR);
-    var act = builder.buildRowWithAmounts(ACCOUNT_GROUP);
-    assertEquals(TEMPLATE_ROW.asString(), act.asString());
+    var act = builder.buildAmountsProvider(ACCOUNT_GROUP);
+    assertEquals(TEMPLATE_AMOUNTS_PROVIDER.asRow().asString(), act.asRow().asString());
   }
 
   @Test
-  void buildRowWithAmounts_average_threMonths() {
+  void buildRowWithAmounts_average_threeMonths() {
     var fetcher = mock(CashflowDataFetcher.class);
     when(fetcher.streamAccountIds(any(), any())).then(answer -> Stream.of(ACCOUNT_ID));
     when(fetcher.touchedMonths(YEAR))
@@ -96,10 +108,10 @@ class ReportBuilderTest {
                   : Optional.empty();
             });
     var builder = new ReportBuilder(fetcher, YEAR);
-    var row = builder.buildRowWithAmounts(ACCOUNT_GROUP);
+    var row = builder.buildAmountsProvider(ACCOUNT_GROUP);
     var exp = Currency.of(100);
     var act = row.getAverage();
-    assertEquals(exp, act);
+    assertEquals(exp, act.orElseThrow());
   }
 
   @Test
@@ -145,7 +157,9 @@ class ReportBuilderTest {
   @Test
   void buildSection_footerRow() {
     var builder = new ReportBuilder(fetcher, YEAR);
-    var footer = (RowWithAmounts) column -> Optional.of(Currency.of(column.ordinal() * 100));
+    var amountsProvider =
+        AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var footer = amountsProvider.asRow();
     var exp = Section.of(Header.empty(), Body.empty(), Footer.of(footer));
     var act = builder.buildSection(footer);
     assertTrue(act.isEquivalentTo(exp));

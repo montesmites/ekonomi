@@ -15,10 +15,10 @@ import java.time.Year;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.ReportBuilder;
-import se.montesmites.ekonomi.report.RowWithAmounts;
 
 class Main {
 
@@ -53,16 +53,16 @@ class Main {
                 .concat(boende.body())
                 .concat(fornodenheter.body())
                 .concat(ovrigt.body())
-                .aggregate()
-                .description("Före jämförelsestörande poster".toUpperCase()));
+                .aggregate("Före jämförelsestörande poster".toUpperCase())
+                .asRow());
     var jamforelsestorandePoster = JAMFORELSESTORANDE_POSTER.toSection(reportBuilder);
     var forandringLikvidaMedel =
         reportBuilder.buildSection(
             FORANDRING_LIKVIDA_MEDEL
                 .toSection(reportBuilder)
                 .body()
-                .aggregate()
-                .description(FORANDRING_LIKVIDA_MEDEL.getTitle().toUpperCase()));
+                .aggregate(FORANDRING_LIKVIDA_MEDEL.getTitle().toUpperCase())
+                .asRow());
     var kontrollsumma =
         reportBuilder.buildSection(
             inkomster
@@ -72,12 +72,12 @@ class Main {
                 .concat(ovrigt.body())
                 .concat(jamforelsestorandePoster.body())
                 .concat(FORANDRING_LIKVIDA_MEDEL.toSection(reportBuilder).body().negate())
-                .aggregate()
-                .description("Kontrollsumma".toUpperCase()));
+                .aggregate("Kontrollsumma".toUpperCase())
+                .asRow());
     var accumulation =
         reportBuilder.buildSectionWithAcculumatingFooter(
             "Ackumulerade likvida medel",
-            AccountGroup.of("", "1493|19\\d\\d").postProcessor(RowWithAmounts::negate));
+            AccountGroup.of("", "1493|19\\d\\d").postProcessor(AmountsProvider::negate));
     return new CashflowReport(
         () ->
             Stream.of(

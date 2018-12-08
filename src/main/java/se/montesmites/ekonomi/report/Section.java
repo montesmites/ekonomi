@@ -39,7 +39,7 @@ public interface Section {
   default Stream<Row> stream() {
     Stream.Builder<Row> sb = Stream.builder();
     header().stream().forEach(sb::add);
-    body().stream().forEach(sb::add);
+    body().stream().map(AmountsProvider::asRow).forEach(sb::add);
     footer().stream().forEach(sb::add);
     return sb.build();
   }

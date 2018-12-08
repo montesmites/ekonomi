@@ -10,7 +10,6 @@ import static se.montesmites.ekonomi.report.Column.TOTAL;
 
 import java.time.Month;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import se.montesmites.ekonomi.i18n.Messages;
@@ -49,10 +48,6 @@ public interface Row {
 
   String format(Column column);
 
-  default Optional<RowWithAmounts> asRowWithAmounts() {
-    return Optional.empty();
-  }
-
   default boolean isEquivalentTo(Row that) {
     return Column.stream().allMatch(columnIsEquivalentPredicate(that));
   }
@@ -69,9 +64,5 @@ public interface Row {
     return Column.stream()
         .map(column -> column.name() + " = " + this.format(column))
         .collect(joining(", ", "{", "}"));
-  }
-
-  default String formatDescription() {
-    return "";
   }
 }

@@ -1,24 +1,25 @@
 package se.montesmites.ekonomi.report;
 
+import static java.time.Month.APRIL;
+import static java.time.Month.AUGUST;
+import static java.time.Month.DECEMBER;
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
+import static java.time.Month.JULY;
+import static java.time.Month.JUNE;
+import static java.time.Month.MARCH;
+import static java.time.Month.MAY;
+import static java.time.Month.NOVEMBER;
+import static java.time.Month.OCTOBER;
+import static java.time.Month.SEPTEMBER;
+import static java.util.Arrays.stream;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static se.montesmites.ekonomi.report.Column.APRIL;
-import static se.montesmites.ekonomi.report.Column.AUGUST;
-import static se.montesmites.ekonomi.report.Column.DECEMBER;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
-import static se.montesmites.ekonomi.report.Column.FEBRUARY;
-import static se.montesmites.ekonomi.report.Column.JANUARY;
-import static se.montesmites.ekonomi.report.Column.JULY;
-import static se.montesmites.ekonomi.report.Column.JUNE;
-import static se.montesmites.ekonomi.report.Column.MARCH;
-import static se.montesmites.ekonomi.report.Column.MAY;
-import static se.montesmites.ekonomi.report.Column.NOVEMBER;
-import static se.montesmites.ekonomi.report.Column.OCTOBER;
-import static se.montesmites.ekonomi.report.Column.SEPTEMBER;
-import static se.montesmites.ekonomi.report.Column.TOTAL;
 
+import java.time.Month;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -28,12 +29,12 @@ class RowWithAmountsTest {
 
   @Test
   void of_function() {
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
+    var row = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
     var exp =
-        Column.streamMonths()
-            .map(column -> Optional.of(Currency.of(column.ordinal())))
+        stream(Month.values())
+            .map(month -> Optional.of(Currency.of(month.ordinal())))
             .collect(toList());
-    var act = Column.streamMonths().map(row::getMonthlyAmount).collect(toList());
+    var act = stream(Month.values()).map(row::getMonthlyAmount).collect(toList());
     assertEquals(exp, act);
   }
 
@@ -45,39 +46,40 @@ class RowWithAmountsTest {
             entry(FEBRUARY, Currency.of(100)),
             entry(MARCH, Currency.of(100)));
     var exp =
-        RowWithAmounts.of(
-            column ->
+        AmountsProvider.of(
+            month ->
                 Map.ofEntries(
                     entry(JANUARY, Optional.of(Currency.of(100))),
                     entry(FEBRUARY, Optional.of(Currency.of(100))),
                     entry(MARCH, Optional.of(Currency.of(100))))
-                    .getOrDefault(column, Optional.empty()));
-    var act = RowWithAmounts.of(amounts);
+                    .getOrDefault(month, Optional.empty()));
+    var act = AmountsProvider.of(amounts);
     assertTrue(act.isEquivalentTo(exp));
   }
 
   @Test
   void empty() {
-    var exp = RowWithAmounts.of(__ -> Optional.of(Currency.zero()));
-    var act = RowWithAmounts.empty();
+    var exp = AmountsProvider.of(__ -> Optional.of(Currency.zero()));
+    var act = AmountsProvider.empty();
     assertTrue(act.isEquivalentTo(exp));
   }
 
   @Test
   void getYearlyTotal() {
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
-    var sum = Column.streamMonths().mapToInt(Column::ordinal).sum();
-    var exp = Currency.of(sum);
+    var row = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var sum = stream(Month.values()).mapToInt(Month::ordinal).sum();
+    var exp = Optional.of(Currency.of(sum));
     var act = row.getYearlyTotal();
     assertEquals(exp, act);
   }
 
   @Test
   void getAverage() {
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
+    var row = AmountsProvider.of(month -> Optional.of(Currency.of((month.ordinal() + 1) * 100)));
     var avg =
-        Column.streamMonths().mapToInt(column -> column.ordinal() * 100).average().orElseThrow();
-    var exp = Currency.of((int) avg);
+        stream(Month.values()).mapToInt(month -> (month.ordinal() + 1) * 100).average()
+            .orElseThrow();
+    var exp = Optional.of(Currency.of((int) avg));
     var act = row.getAverage();
     assertEquals(exp, act);
   }
@@ -89,23 +91,16 @@ class RowWithAmountsTest {
             entry(JANUARY, Currency.of(100)),
             entry(FEBRUARY, Currency.of(100)),
             entry(MARCH, Currency.of(100)));
-    var row = RowWithAmounts.of(amounts);
-    var exp = Currency.of(100);
+    var row = AmountsProvider.of(amounts);
+    var exp = Optional.of(Currency.of(100));
     var act = row.getAverage();
     assertEquals(exp, act);
   }
 
   @Test
-  void asRowWithAmounts() {
-    var exp = RowWithAmounts.empty();
-    var act = RowWithAmounts.empty().asRowWithAmounts().orElseThrow();
-    assertTrue(act.isEquivalentTo(exp));
-  }
-
-  @Test
   void negate() {
-    var neutral = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
-    var negated = RowWithAmounts.of(column -> Optional.of(Currency.of(-column.ordinal() * 100)));
+    var neutral = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var negated = AmountsProvider.of(month -> Optional.of(Currency.of(-month.ordinal() * 100)));
     var act = neutral.negate();
     assertTrue(act.isEquivalentTo(negated));
   }
@@ -113,37 +108,65 @@ class RowWithAmountsTest {
   @Test
   void description() {
     var description = "DESCRIPTION";
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
-    var exp = Row.of(column -> column == DESCRIPTION ? description : row.format(column));
-    var act = row.description(description);
-    assertTrue(act.isEquivalentTo(exp));
+    var amountsProvider =
+        new AmountsProvider() {
+          @Override
+          public Optional<Currency> getMonthlyAmount(Month month) {
+            return Optional.of(Currency.zero());
+          }
+
+          @Override
+          public String formatDescription() {
+            return description;
+          }
+        };
+    var row = amountsProvider.asRow();
+    var exp =
+        Row.of(
+            column ->
+                Map.ofEntries(entry(DESCRIPTION, description))
+                    .getOrDefault(column, Currency.zero().format()))
+            .asString();
+    var act = row.asString();
+    assertEquals(exp, act);
   }
 
   @Test
   void accumulate() {
-    var initial = Currency.of(100);
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
+    var initialBalance = Currency.of(100);
+    var expectedAmounts =
+        Map.ofEntries(
+            entry(JANUARY, Currency.of(200)),
+            entry(FEBRUARY, Currency.of(400)),
+            entry(MARCH, Currency.of(700)),
+            entry(APRIL, Currency.of(1100)),
+            entry(MAY, Currency.of(1600)),
+            entry(JUNE, Currency.of(2200)),
+            entry(JULY, Currency.of(2900)),
+            entry(AUGUST, Currency.of(3700)),
+            entry(SEPTEMBER, Currency.of(4600)),
+            entry(OCTOBER, Currency.of(5600)),
+            entry(NOVEMBER, Currency.of(6700)),
+            entry(DECEMBER, Currency.of(7900)));
     var exp =
-        RowWithAmounts.of(
-            column ->
-                Optional.ofNullable(
-                    Map.ofEntries(
-                        entry(JANUARY, Currency.of(200)),
-                        entry(FEBRUARY, Currency.of(400)),
-                        entry(MARCH, Currency.of(700)),
-                        entry(APRIL, Currency.of(1100)),
-                        entry(MAY, Currency.of(1600)),
-                        entry(JUNE, Currency.of(2200)),
-                        entry(JULY, Currency.of(2900)),
-                        entry(AUGUST, Currency.of(3700)),
-                        entry(SEPTEMBER, Currency.of(4600)),
-                        entry(OCTOBER, Currency.of(5600)),
-                        entry(NOVEMBER, Currency.of(6700)),
-                        entry(DECEMBER, Currency.of(7900)))
-                        .getOrDefault(column, Currency.of(0))))
-            .description(initial.format())
-            .merge(TOTAL, RowWithAmounts.empty());
-    var act = row.accumulate(initial);
-    assertEquals(exp.asString(), act.asString());
+        new AmountsProvider() {
+          @Override
+          public Optional<Currency> getMonthlyAmount(Month month) {
+            return Optional.of(expectedAmounts.get(month));
+          }
+
+          @Override
+          public String formatDescription() {
+            return initialBalance.format();
+          }
+
+          @Override
+          public Optional<Currency> getYearlyTotal() {
+            return Optional.empty();
+          }
+        };
+    var row = AmountsProvider.of(month -> Optional.of(Currency.of((month.ordinal() + 1) * 100)));
+    var act = row.accumulate(initialBalance);
+    assertEquals(exp.asRow().asString(), act.asRow().asString());
   }
 }

@@ -1,15 +1,14 @@
 package se.montesmites.ekonomi.report;
 
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
+import static java.time.Month.MARCH;
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
-import static se.montesmites.ekonomi.report.Column.FEBRUARY;
-import static se.montesmites.ekonomi.report.Column.JANUARY;
-import static se.montesmites.ekonomi.report.Column.MARCH;
 
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +27,7 @@ class BodyTest {
 
   @Test
   void oneRowWithAmounts() {
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
+    var row = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
     var exp = Body.of(row);
     var act = Body.of(row);
     assertBodys(exp, act);
@@ -36,8 +35,8 @@ class BodyTest {
 
   @Test
   void twoRowsWithAmounts() {
-    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
-    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var exp = Body.of(() -> Stream.of(row1, row2));
     var act = Body.of(row1).add(row2);
     assertBodys(exp, act);
@@ -45,8 +44,8 @@ class BodyTest {
 
   @Test
   void streamOfRowsWithAmounts() {
-    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
-    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var exp = Body.of(() -> Stream.of(row1, row2));
     var act = Body.of(() -> Stream.of(row1, row2));
     assertBodys(exp, act);
@@ -54,49 +53,47 @@ class BodyTest {
 
   @Test
   void aggregate() {
-    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
-    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp =
-        RowWithAmounts.of(
-            column -> Optional.of(Currency.of(column.ordinal() * 100 + column.ordinal())))
-            .merge(DESCRIPTION, Row.empty());
-    var act = body.aggregate();
+        AmountsProvider.of(
+            month -> Optional.of(Currency.of(month.ordinal() * 100 + month.ordinal())));
+    var act = body.aggregate("");
     assertTrue(act.isEquivalentTo(exp));
   }
 
   @Test
   void aggregate_threeMonths() {
     var row1 =
-        RowWithAmounts.of(
+        AmountsProvider.of(
             Map.ofEntries(
                 entry(JANUARY, Currency.of(1000)),
                 entry(FEBRUARY, Currency.of(2000)),
                 entry(MARCH, Currency.of(3000))));
     var row2 =
-        RowWithAmounts.of(
+        AmountsProvider.of(
             Map.ofEntries(
                 entry(JANUARY, Currency.of(100)),
                 entry(FEBRUARY, Currency.of(200)),
                 entry(MARCH, Currency.of(300))));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp =
-        RowWithAmounts.of(
+        AmountsProvider.of(
             Map.ofEntries(
                 entry(JANUARY, Currency.of(1100)),
                 entry(FEBRUARY, Currency.of(2200)),
-                entry(MARCH, Currency.of(3300))))
-            .merge(DESCRIPTION, Row.empty());
-    var act = body.aggregate();
+                entry(MARCH, Currency.of(3300))));
+    var act = body.aggregate("");
     assertTrue(act.isEquivalentTo(exp));
   }
 
   @Test
   void concat() {
-    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
-    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 200)));
-    var row3 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 300)));
-    var row4 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 400)));
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var row4 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 400)));
     var exp = Body.of(() -> Stream.of(row1, row2, row3, row4));
     var act = Body.of(() -> Stream.of(row1, row2)).concat(Body.of(() -> Stream.of(row3, row4)));
     assertBodys(exp, act);
@@ -104,8 +101,8 @@ class BodyTest {
 
   @Test
   void negate() {
-    var row1 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
-    var row2 = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp = Body.of(() -> Stream.of(row1.negate(), row2.negate()));
     var act = body.negate();

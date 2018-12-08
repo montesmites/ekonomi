@@ -36,7 +36,7 @@ class CashflowReport_OneSection_OneRow_Test {
         Header.of(Row.title(DEN_LOPANDE_VERKSAMHETEN))
             .add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
-    var footer = Footer.of(body.aggregate());
+    var footer = Footer.of(body.aggregate("").asRow());
     this.section = Section.of(header, body, footer);
   }
 

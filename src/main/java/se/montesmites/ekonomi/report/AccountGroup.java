@@ -22,11 +22,11 @@ public interface AccountGroup {
 
   String regex();
 
-  default UnaryOperator<RowWithAmounts> postProcessor() {
+  default UnaryOperator<AmountsProvider> postProcessor() {
     return row -> row;
   }
 
-  default AccountGroup postProcessor(UnaryOperator<RowWithAmounts> postProcessor) {
+  default AccountGroup postProcessor(UnaryOperator<AmountsProvider> postProcessor) {
     var base = this;
     return new AccountGroup() {
       @Override
@@ -40,7 +40,7 @@ public interface AccountGroup {
       }
 
       @Override
-      public UnaryOperator<RowWithAmounts> postProcessor() {
+      public UnaryOperator<AmountsProvider> postProcessor() {
         return postProcessor;
       }
     };

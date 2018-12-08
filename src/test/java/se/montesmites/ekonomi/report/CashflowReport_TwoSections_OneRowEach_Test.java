@@ -5,6 +5,7 @@ import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.BOK
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.KORTFRISTIGA_SKULDER;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertBodyRowDescriptions;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertExpectedAverages;
+import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertExpectedTotals;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.assertMonthlyAmounts;
 import static se.montesmites.ekonomi.report.CashflowReport_AccountGroup_2012.bodyRowsOf;
 
@@ -40,7 +41,7 @@ class CashflowReport_TwoSections_OneRowEach_Test {
       String title, List<CashflowReport_AccountGroup_2012> groups) {
     var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
-    var footer = Footer.of(body.aggregate());
+    var footer = Footer.of(body.aggregate("").asRow());
     var section = Section.of(header, body, footer);
     return Map.entry(section, groups);
   }
@@ -63,5 +64,10 @@ class CashflowReport_TwoSections_OneRowEach_Test {
   @Test
   void testAverage() {
     sections().forEach(section -> assertExpectedAverages(section.getKey(), section.getValue()));
+  }
+
+  @Test
+  void testTotal() {
+    sections().forEach(section -> assertExpectedTotals(section.getKey(), section.getValue()));
   }
 }

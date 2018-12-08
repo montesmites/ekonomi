@@ -26,8 +26,8 @@ import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.TRANSPORTER;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.ReportBuilder;
-import se.montesmites.ekonomi.report.RowWithAmounts;
 import se.montesmites.ekonomi.report.Section;
 
 enum NikkaSection {
@@ -61,8 +61,8 @@ enum NikkaSection {
           EXTRAORDINART_NETTO)),
   FORANDRING_LIKVIDA_MEDEL("Förändring likvida medel", List.of(LIKVIDA_MEDEL)) {
     @Override
-    protected UnaryOperator<RowWithAmounts> getPostProcessor() {
-      return RowWithAmounts::negate;
+    protected UnaryOperator<AmountsProvider> getPostProcessor() {
+      return AmountsProvider::negate;
     }
   };
 
@@ -82,7 +82,7 @@ enum NikkaSection {
     return groups.stream().map(group -> group.postProcessor(getPostProcessor())).collect(toList());
   }
 
-  protected UnaryOperator<RowWithAmounts> getPostProcessor() {
+  protected UnaryOperator<AmountsProvider> getPostProcessor() {
     return row -> row;
   }
 

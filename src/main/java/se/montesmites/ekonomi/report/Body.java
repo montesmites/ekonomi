@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.toList;
 
+import java.time.Month;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -13,30 +14,38 @@ public interface Body {
     return Stream::empty;
   }
 
-  static Body of(Supplier<Stream<? extends RowWithAmounts>> rowWithAmounts) {
+  static Body of(Supplier<Stream<? extends AmountsProvider>> rowWithAmounts) {
     return rowWithAmounts::get;
   }
 
-  static Body of(RowWithAmounts rowWithAmounts) {
+  static Body of(AmountsProvider rowWithAmounts) {
     return () -> Stream.of(rowWithAmounts);
   }
 
-  default Body add(RowWithAmounts rowWithAmounts) {
+  default Body add(AmountsProvider rowWithAmounts) {
     return () -> Stream.concat(this.stream(), Stream.of(rowWithAmounts));
   }
 
-  Stream<? extends RowWithAmounts> stream();
+  Stream<? extends AmountsProvider> stream();
 
-  default RowWithAmounts aggregate() {
-    return column -> {
-      var amounts =
-          stream()
-              .map(row -> row.getMonthlyAmount(column))
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .collect(toList());
-      var sum = amounts.stream().reduce(Currency.zero(), Currency::add);
-      return amounts.isEmpty() ? Optional.empty() : Optional.of(sum);
+  default AmountsProvider aggregate(String description) {
+    return new AmountsProvider() {
+      @Override
+      public Optional<Currency> getMonthlyAmount(Month month) {
+        var amounts =
+            Body.this.stream()
+                .map(row -> row.getMonthlyAmount(month))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(toList());
+        var sum = amounts.stream().reduce(Currency.zero(), Currency::add);
+        return amounts.isEmpty() ? Optional.empty() : Optional.of(sum);
+      }
+
+      @Override
+      public String formatDescription() {
+        return description;
+      }
     };
   }
 
@@ -46,6 +55,6 @@ public interface Body {
 
   default Body negate() {
     var base = this;
-    return () -> base.stream().map(RowWithAmounts::negate);
+    return () -> base.stream().map(AmountsProvider::negate);
   }
 }

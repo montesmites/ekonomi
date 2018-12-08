@@ -3,6 +3,7 @@ package se.montesmites.ekonomi.report;
 import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.report.Row.SHORT_MONTHS;
 
+import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.List;
@@ -23,23 +24,17 @@ public class ReportBuilder {
     this.year = year;
   }
 
-  RowWithAmounts buildRowWithAmounts(AccountGroup accountGroup) {
+  AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
     var accountIds =
         fetcher
             .streamAccountIds(year, AccountFilterByRegex.of(accountGroup.regex()))
             .collect(toList());
     var row =
-        new RowWithAmounts() {
+        new AmountsProvider() {
           @Override
-          public String formatDescription() {
-            return accountGroup.description();
-          }
-
-          @Override
-          public Optional<Currency> getMonthlyAmount(Column column) {
-            var yearMonth = YearMonth.of(year.getValue(), column.getMonth().orElseThrow());
+          public Optional<Currency> getMonthlyAmount(Month month) {
+            var yearMonth = YearMonth.of(year.getValue(), month);
             var year = Year.of(yearMonth.getYear());
-            var month = yearMonth.getMonth();
             var sum =
                 (Supplier<Currency>)
                     () ->
@@ -58,23 +53,30 @@ public class ReportBuilder {
                 ? Optional.of(sum.get())
                 : Optional.empty();
           }
+
+          @Override
+          public String formatDescription() {
+            return accountGroup.description();
+          }
         };
     return accountGroup.postProcessor().apply(row);
   }
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
     var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS));
-    var body = Body.of(() -> accountGroups.stream().map(this::buildRowWithAmounts));
-    var footer = Footer.of(body.aggregate());
+    var body = Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider));
+    var footer = Footer.of(body.aggregate("").asRow());
     return Section.of(header, body, footer);
   }
 
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
     var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS));
+    var initialBalance = balance(year, AccountFilterByRegex.of(accountGroup));
     var footer =
         Footer.of(
-            this.buildRowWithAmounts(accountGroup)
-                .accumulate(balance(year, AccountFilterByRegex.of(accountGroup))));
+            this.buildAmountsProvider(accountGroup)
+                .accumulate(initialBalance)
+                .asRow());
     return Section.of(header, Body.empty(), footer);
   }
 

@@ -22,7 +22,8 @@ class FooterTest {
 
   @Test
   void of() {
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
+    var amountsProvider = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row = amountsProvider.asRow();
     var footer = Footer.of(row);
     var exp = List.of(Row.of(row::format));
     var act = footer.stream().collect(toList());
