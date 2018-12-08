@@ -31,9 +31,9 @@ class RowWithAmountsTest {
     var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var exp =
         Column.streamMonths()
-            .map(column -> Currency.of(column.ordinal()).format())
+            .map(column -> Optional.of(Currency.of(column.ordinal())))
             .collect(toList());
-    var act = Column.streamMonths().map(row::formatMonth).collect(toList());
+    var act = Column.streamMonths().map(row::getMonthlyAmount).collect(toList());
     assertEquals(exp, act);
   }
 
@@ -64,32 +64,21 @@ class RowWithAmountsTest {
   }
 
   @Test
-  void formatMonth() {
-    var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
-    var exp =
-        Column.streamMonths()
-            .map(column -> Currency.of(column.ordinal()).format())
-            .collect(toList());
-    var act = Column.streamMonths().map(row::formatMonth).collect(toList());
-    assertEquals(exp, act);
-  }
-
-  @Test
-  void getYearlyTotal_formatTotal() {
+  void getYearlyTotal() {
     var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal())));
     var sum = Column.streamMonths().mapToInt(Column::ordinal).sum();
-    var exp = Currency.of(sum).format();
-    var act = row.formatTotal();
+    var exp = Currency.of(sum);
+    var act = row.getYearlyTotal();
     assertEquals(exp, act);
   }
 
   @Test
-  void getAverage_formatAverage() {
+  void getAverage() {
     var row = RowWithAmounts.of(column -> Optional.of(Currency.of(column.ordinal() * 100)));
     var avg =
         Column.streamMonths().mapToInt(column -> column.ordinal() * 100).average().orElseThrow();
-    var exp = Currency.of((int) avg).format();
-    var act = row.formatAverage();
+    var exp = Currency.of((int) avg);
+    var act = row.getAverage();
     assertEquals(exp, act);
   }
 

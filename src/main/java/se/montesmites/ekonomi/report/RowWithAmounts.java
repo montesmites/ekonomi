@@ -7,7 +7,7 @@ import java.util.function.Function;
 import se.montesmites.ekonomi.model.Currency;
 
 @FunctionalInterface
-public interface RowWithAmounts extends RowWithGranularFormatters {
+public interface RowWithAmounts extends Row {
 
   static RowWithAmounts empty() {
     return column -> Optional.of(Currency.zero());
@@ -22,6 +22,20 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
   }
 
   Optional<Currency> getMonthlyAmount(Column column);
+
+  @Override
+  default String format(Column column) {
+    switch (column.getColumnType()) {
+      case DESCRIPTION:
+        return formatDescription();
+      case TOTAL:
+        return getYearlyTotal().format();
+      case AVERAGE:
+        return getAverage().format();
+      default:
+        return getMonthlyAmount(column).orElse(Currency.zero()).format();
+    }
+  }
 
   default Currency getYearlyTotal() {
     return Column.streamMonths()
@@ -41,21 +55,6 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
             .average()
             .orElse(0);
     return Currency.of(Math.round(average));
-  }
-
-  @Override
-  default String formatMonth(Column column) {
-    return getMonthlyAmount(column).orElse(Currency.zero()).format();
-  }
-
-  @Override
-  default String formatTotal() {
-    return getYearlyTotal().format();
-  }
-
-  @Override
-  default String formatAverage() {
-    return getAverage().format();
   }
 
   @Override
@@ -102,8 +101,8 @@ public interface RowWithAmounts extends RowWithGranularFormatters {
       }
 
       @Override
-      public String formatTotal() {
-        return Currency.zero().format();
+      public Currency getYearlyTotal() {
+        return Currency.zero();
       }
 
       @Override
