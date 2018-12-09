@@ -1,27 +1,6 @@
 package se.montesmites.ekonomi.nikka;
 
 import static java.util.stream.Collectors.toList;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.AKASSA_FACK_BANK_SKATT;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.AMORTERING_FREDSGATAN_13;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.BOENDE_DIVERSE;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.BOLAN_RANTA;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.DAGLIGVAROR;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.EL;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.EXTRAORDINART_NETTO;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.FINANSIELLT_NETTO;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.HEMFORSAKRING;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.INVESTERING_BOENDE;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.KLADER_OCH_SKOR;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.KORTFRISTIGT_NETTO;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.KROPP_OCH_SJAL;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.LANGSIKTIGT_NETTO;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.LIKVIDA_MEDEL;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.LONEINBETALNINGAR;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.MANADSAVGIFT;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.MOBIL_TV_BREDBAND;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.NETTOOMSATTNING_OVRIGT;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.PERSONFORSAKRINGAR;
-import static se.montesmites.ekonomi.nikka.NikkaAccountGroup.TRANSPORTER;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -31,35 +10,44 @@ import se.montesmites.ekonomi.report.ReportBuilder;
 import se.montesmites.ekonomi.report.Section;
 
 enum NikkaSection {
-  INKOMSTER("Inkomster", List.of(LONEINBETALNINGAR, NETTOOMSATTNING_OVRIGT)),
+  INKOMSTER(
+      "Inkomster",
+      List.of(
+          AccountGroup.of("Löner och arvoden", "(30|36)\\d\\d"),
+          AccountGroup.of("Nettoomsättning övrigt", "3([1-5]|[7-9])\\d\\d"))),
   BOENDE(
       "Boende",
       List.of(
-          MANADSAVGIFT,
-          AMORTERING_FREDSGATAN_13,
-          BOLAN_RANTA,
-          HEMFORSAKRING,
-          EL,
-          MOBIL_TV_BREDBAND)),
+          AccountGroup.of("Månadsavgift m.m.", "501\\d"),
+          AccountGroup.of("Amortering Fredsgatan 13", "2353"),
+          AccountGroup.of("Bolån ränta och liknande", "84[019]\\d"),
+          AccountGroup.of("Hemförsäkring", "5081"),
+          AccountGroup.of("El (förbrukning och nät)", "502\\d"),
+          AccountGroup.of("Mobil, tv, bredband", "51\\d\\d"))),
   FORNODENHETER(
       "Förnödenheter",
       List.of(
-          DAGLIGVAROR,
-          KLADER_OCH_SKOR,
-          KROPP_OCH_SJAL,
-          PERSONFORSAKRINGAR,
-          AKASSA_FACK_BANK_SKATT,
-          TRANSPORTER)),
-  OVRIGT("Övrigt", List.of(BOENDE_DIVERSE, NikkaAccountGroup.OVRIGT)),
+          AccountGroup.of("Dagligvaror", "40\\d\\d"),
+          AccountGroup.of("Kläder och skor", "41\\d\\d"),
+          AccountGroup.of("Kropp och själ", "42\\d\\d"),
+          AccountGroup.of("Personförsäkringar", "43\\d\\d"),
+          AccountGroup.of("A-kassa, fack, bank, skatt", "4[4-7]\\d\\d"),
+          AccountGroup.of("Transporter", "56\\d\\d"))),
+  OVRIGT(
+      "Övrigt",
+      List.of(
+          AccountGroup.of("Boende diverse", "5060|5[458]\\d\\d"),
+          AccountGroup.of("Övrigt", "(4[89]|[67]\\d)\\d\\d"))),
   JAMFORELSESTORANDE_POSTER(
       "Jämförelsestörande poster",
       List.of(
-          KORTFRISTIGT_NETTO,
-          LANGSIKTIGT_NETTO,
-          FINANSIELLT_NETTO,
-          INVESTERING_BOENDE,
-          EXTRAORDINART_NETTO)),
-  FORANDRING_LIKVIDA_MEDEL("Förändring likvida medel", List.of(LIKVIDA_MEDEL)) {
+          AccountGroup.of("Kortfristigt netto", "(1[5-8]|2[4-9])\\d\\d"),
+          AccountGroup.of("Långfristigt netto", "(8[56]\\d\\d)|(10\\d\\d|13[456]\\d)"),
+          AccountGroup.of("Finansiellt netto", "(83\\d\\d)|(84[2-8]\\d)"),
+          AccountGroup.of("Investering boende", "11\\d\\d"),
+          AccountGroup.of("Extraordinärt netto", "87\\d\\d"))),
+  FORANDRING_LIKVIDA_MEDEL(
+      "Förändring likvida medel", List.of(AccountGroup.of("Likvida medel", "1493|19\\d\\d"))) {
     @Override
     protected UnaryOperator<AmountsProvider> getPostProcessor() {
       return AmountsProvider::negate;
