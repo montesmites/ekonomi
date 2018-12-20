@@ -50,4 +50,12 @@ public interface Section {
     return these.size() == those.size()
         && range(0, these.size()).allMatch(i -> these.get(i).isEquivalentTo(those.get(i)));
   }
+
+  default String asString(String delimiter) {
+    return header().asString(delimiter)
+        + delimiter
+        + body().asString(delimiter)
+        + delimiter
+        + footer().asString(delimiter);
+  }
 }

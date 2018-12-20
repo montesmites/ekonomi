@@ -1,8 +1,10 @@
 package se.montesmites.ekonomi.report;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 import java.time.Month;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -22,6 +24,10 @@ public interface Body {
     return () -> Stream.of(rowWithAmounts);
   }
 
+  static Body of(List<AmountsProvider> amountsProviders) {
+    return amountsProviders::stream;
+  }
+
   default Body add(AmountsProvider rowWithAmounts) {
     return () -> Stream.concat(this.stream(), Stream.of(rowWithAmounts));
   }
@@ -33,7 +39,8 @@ public interface Body {
       @Override
       public Optional<Currency> getMonthlyAmount(Month month) {
         var amounts =
-            Body.this.stream()
+            Body.this
+                .stream()
                 .map(row -> row.getMonthlyAmount(month))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -56,5 +63,9 @@ public interface Body {
   default Body negate() {
     var base = this;
     return () -> base.stream().map(AmountsProvider::negate);
+  }
+
+  default String asString(String delimiter) {
+    return stream().map(AmountsProvider::asRow).map(Row::asString).collect(joining(delimiter));
   }
 }

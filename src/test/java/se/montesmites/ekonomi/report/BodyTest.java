@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -49,6 +50,15 @@ class BodyTest {
     var exp = Body.of(() -> Stream.of(row1, row2));
     var act = Body.of(() -> Stream.of(row1, row2));
     assertBodys(exp, act);
+  }
+
+  @Test
+  void of_list() {
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var exp = List.of(row1, row2);
+    var act = Body.of(List.of(row1, row2)).stream().collect(toList());
+    assertEquals(exp, act);
   }
 
   @Test
@@ -117,5 +127,14 @@ class BodyTest {
         () ->
             assertAll(
                 () -> range(0, exp.size()).forEach(i -> exp.get(i).isEquivalentTo(act.get(i)))));
+  }
+
+  @Test
+  void asString() {
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var exp = row1.asRow().asString() + "\n" + row2.asRow().asString();
+    var act = Body.of(List.of(row1, row2)).asString("\n");
+    assertEquals(exp, act);
   }
 }

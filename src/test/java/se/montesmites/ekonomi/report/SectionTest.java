@@ -67,4 +67,20 @@ class SectionTest {
     var act = Section.of(header, body, footer);
     assertTrue(act.isEquivalentTo(exp));
   }
+
+  @Test
+  void asString() {
+    var delimiter = "\n";
+    var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
+    var body = Body.of(AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal()))));
+    var footer = Footer.of(body.aggregate("").asRow());
+    var exp =
+        header.asString(delimiter)
+            + delimiter
+            + body.asString(delimiter)
+            + delimiter
+            + footer.asString(delimiter);
+    var act = Section.of(header, body, footer).asString(delimiter);
+    assertEquals(exp, act);
+  }
 }
