@@ -15,6 +15,8 @@ import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.ReportBuilder;
+import se.montesmites.ekonomi.report.Row;
+import se.montesmites.ekonomi.report.Section;
 
 class Main {
 
@@ -29,6 +31,7 @@ class Main {
   }
 
   private final CashflowDataFetcher fetcher;
+  private ReportBuilder reportBuilder;
 
   private Main() {
     var path = Paths.get("C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
@@ -37,15 +40,15 @@ class Main {
   }
 
   private CashflowReport generateCashflowReport(Year year) {
-    var reportBuilder = new ReportBuilder(fetcher, year);
+    this.reportBuilder = new ReportBuilder(fetcher, year);
     var inkomster =
-        reportBuilder.buildSection(
+        this.buildSection(
             "Inkomster",
             List.of(
                 AccountGroup.of("Löner och arvoden", "(30|36)\\d\\d"),
                 AccountGroup.of("Nettoomsättning övrigt", "3([1-5]|[7-9])\\d\\d")));
     var boende =
-        reportBuilder.buildSection(
+        this.buildSection(
             "Boende",
             List.of(
                 AccountGroup.of("Månadsavgift m.m.", "501\\d"),
@@ -55,7 +58,7 @@ class Main {
                 AccountGroup.of("El (förbrukning och nät)", "502\\d"),
                 AccountGroup.of("Mobil, tv, bredband", "51\\d\\d")));
     var fornodenheter =
-        reportBuilder.buildSection(
+        this.buildSection(
             "Förnödenheter",
             List.of(
                 AccountGroup.of("Dagligvaror", "40\\d\\d"),
@@ -65,13 +68,13 @@ class Main {
                 AccountGroup.of("A-kassa, fack, bank, skatt", "4[4-7]\\d\\d"),
                 AccountGroup.of("Transporter", "56\\d\\d")));
     var ovrigt =
-        reportBuilder.buildSection(
+        this.buildSection(
             "Övrigt",
             List.of(
                 AccountGroup.of("Boende diverse", "5060|5[458]\\d\\d"),
                 AccountGroup.of("Övrigt", "(4[89]|[67]\\d)\\d\\d")));
     var foreJamforelsestorandePoster =
-        reportBuilder.buildSection(
+        this.buildSection(
             inkomster
                 .body()
                 .concat(boende.body())
@@ -80,7 +83,7 @@ class Main {
                 .aggregate("Före jämförelsestörande poster".toUpperCase())
                 .asRow());
     var jamforelsestorandePoster =
-        reportBuilder.buildSection(
+        this.buildSection(
             "Jämförelsestörande poster",
             List.of(
                 AccountGroup.of("Kortfristigt netto", "(1[5-8]|2[4-9])\\d\\d"),
@@ -89,14 +92,14 @@ class Main {
                 AccountGroup.of("Investering boende", "11\\d\\d"),
                 AccountGroup.of("Extraordinärt netto", "87\\d\\d")));
     var forandringLikvidaMedel =
-        reportBuilder.buildSection(
+        this.buildSection(
             FORANDRING_LIKVIDA_MEDEL
                 .toSection(reportBuilder)
                 .body()
                 .aggregate(FORANDRING_LIKVIDA_MEDEL.getTitle().toUpperCase())
                 .asRow());
     var kontrollsumma =
-        reportBuilder.buildSection(
+        this.buildSection(
             inkomster
                 .body()
                 .concat(boende.body())
@@ -107,7 +110,7 @@ class Main {
                 .aggregate("Kontrollsumma".toUpperCase())
                 .asRow());
     var accumulation =
-        reportBuilder.buildSectionWithAcculumatingFooter(
+        this.buildSectionWithAcculumatingFooter(
             "Ackumulerade likvida medel",
             AccountGroup.of("", "1493|19\\d\\d").postProcessor(AmountsProvider::negate));
     return new CashflowReport(
@@ -126,5 +129,17 @@ class Main {
 
   private void renderToFile(CashflowReport report, Path path) throws IOException {
     Files.write(path, report.render());
+  }
+
+  private Section buildSection(String title, List<AccountGroup> accountGroups) {
+    return this.reportBuilder.buildSection(title, accountGroups);
+  }
+
+  private Section buildSection(Row footer) {
+    return this.reportBuilder.buildSection(footer);
+  }
+
+  private Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
+    return this.reportBuilder.buildSectionWithAcculumatingFooter(title, accountGroup);
   }
 }
