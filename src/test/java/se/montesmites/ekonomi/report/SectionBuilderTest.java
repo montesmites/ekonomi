@@ -38,4 +38,18 @@ class SectionBuilderTest {
     var act = sectionBuilder.footer(footer).getFooter().asString("\n");
     assertEquals(exp, act);
   }
+
+  @Test
+  void section() {
+    var title = Row.title("title");
+    var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var sectionBuilder = new SectionBuilder();
+    var header = Header.of(title);
+    var body = Body.of(List.of(body1, body2));
+    var footer = Footer.of(title);
+    var exp = Section.of(header, body, footer).asString("\n");
+    var act = sectionBuilder.header(header).body(body).footer(footer).section().asString("\n");
+    assertEquals(exp, act);
+  }
 }

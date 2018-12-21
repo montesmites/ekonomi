@@ -32,4 +32,8 @@ public class SectionBuilder {
   public Footer getFooter() {
     return footer;
   }
+
+  public Section section() {
+    return Section.of(header, body, footer);
+  }
 }
