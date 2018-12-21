@@ -2,7 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -155,13 +155,8 @@ class ReportBuilderTest {
   }
 
   @Test
-  void buildSection_footerRow() {
-    var builder = new ReportBuilder(fetcher, YEAR);
-    var amountsProvider =
-        AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var footer = amountsProvider.asRow();
-    var exp = Section.of(Header.empty(), Body.empty(), Footer.of(footer));
-    var act = builder.buildSection(footer);
-    assertTrue(act.isEquivalentTo(exp));
+  void section() {
+    var reportBuilder = new ReportBuilder(fetcher, YEAR);
+    assertNotNull(reportBuilder.section());
   }
 }

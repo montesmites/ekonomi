@@ -80,10 +80,6 @@ public class ReportBuilder {
     return Section.of(header, Body.empty(), footer);
   }
 
-  public Section buildSection(Row footer) {
-    return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
-  }
-
   private Currency balance(Year year, Predicate<AccountId> filter) {
     return fetcher
         .streamAccountIds(year, filter)
@@ -93,5 +89,9 @@ public class ReportBuilder {
 
   private Currency balance(AccountId accountId) {
     return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(Currency.zero());
+  }
+
+  public SectionBuilder section() {
+    return new SectionBuilder();
   }
 }
