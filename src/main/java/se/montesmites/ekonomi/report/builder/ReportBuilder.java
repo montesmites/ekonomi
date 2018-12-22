@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.report;
+package se.montesmites.ekonomi.report.builder;
 
 import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.report.Row.SHORT_MONTHS;
@@ -13,6 +13,15 @@ import java.util.function.Supplier;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.report.AccountFilterByRegex;
+import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.AmountsProvider;
+import se.montesmites.ekonomi.report.Body;
+import se.montesmites.ekonomi.report.CashflowDataFetcher;
+import se.montesmites.ekonomi.report.Footer;
+import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.Row;
+import se.montesmites.ekonomi.report.Section;
 
 public class ReportBuilder {
 
@@ -24,7 +33,7 @@ public class ReportBuilder {
     this.year = year;
   }
 
-  AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
+  public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
     var accountIds =
         fetcher
             .streamAccountIds(year, AccountFilterByRegex.of(accountGroup.regex()))

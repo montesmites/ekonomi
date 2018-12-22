@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsProvider;
-import se.montesmites.ekonomi.report.ReportBuilder;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 enum NikkaSection {
   FORANDRING_LIKVIDA_MEDEL(

@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.report;
+package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,11 +30,21 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
+import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.AmountsProvider;
+import se.montesmites.ekonomi.report.Body;
+import se.montesmites.ekonomi.report.CashflowDataFetcher;
+import se.montesmites.ekonomi.report.CashflowReport;
+import se.montesmites.ekonomi.report.Footer;
+import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.Row;
+import se.montesmites.ekonomi.report.Section;
 
 class ReportBuilderTest {
 
@@ -118,7 +128,7 @@ class ReportBuilderTest {
   void buildSection_title_accountGroups() {
     var builder = new ReportBuilder(fetcher, YEAR);
     var act = builder.buildSection(TITLE, List.of(ACCOUNT_GROUP));
-    assertEquals(
+    Assertions.assertEquals(
         new CashflowReport(() -> Stream.of(TEMPLATE_SECTION)).render(),
         new CashflowReport(() -> Stream.of(act)).render());
   }

@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.report;
+package se.montesmites.ekonomi.report.builder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.report.AmountsProvider;
+import se.montesmites.ekonomi.report.Body;
+import se.montesmites.ekonomi.report.Footer;
+import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.Row;
+import se.montesmites.ekonomi.report.Section;
 
 class SectionBuilderTest {
 

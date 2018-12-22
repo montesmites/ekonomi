@@ -15,9 +15,9 @@ import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.Footer;
-import se.montesmites.ekonomi.report.ReportBuilder;
 import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 class Main {
 

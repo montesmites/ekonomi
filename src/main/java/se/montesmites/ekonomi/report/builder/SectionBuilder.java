@@ -1,4 +1,9 @@
-package se.montesmites.ekonomi.report;
+package se.montesmites.ekonomi.report.builder;
+
+import se.montesmites.ekonomi.report.Body;
+import se.montesmites.ekonomi.report.Footer;
+import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.Section;
 
 public class SectionBuilder {
 
