@@ -40,8 +40,9 @@ public class BodyBuilder {
   private final Year year;
   private final AmountFetcher amountFetcher;
   private List<AccountGroup> accountGroups = new ArrayList<>();
+  private boolean isTransient = false;
 
-  public BodyBuilder(Year year, AmountFetcher amountFetcher) {
+  BodyBuilder(Year year, AmountFetcher amountFetcher) {
     this.year = year;
     this.amountFetcher = amountFetcher;
   }
@@ -51,9 +52,18 @@ public class BodyBuilder {
     return this;
   }
 
+  BodyBuilder isTransient() {
+    this.isTransient = true;
+    return this;
+  }
+
   public Body body() {
     var amountProviders = accountGroups.stream().map(this::buildAmountsProvider).collect(toList());
     return Body.of(amountProviders::stream);
+  }
+
+  boolean bodyIsTransient() {
+    return isTransient;
   }
 
   public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {

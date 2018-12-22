@@ -70,7 +70,7 @@ class SectionBuilderTest {
   }
 
   @Test
-  void section() {
+  void section_nonTransientBody() {
     var title = Row.title("title");
     var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
@@ -92,6 +92,35 @@ class SectionBuilderTest {
                 bodyBuilder()
                     .accountGroups(
                         List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222"))))
+            .footer(footer)
+            .section()
+            .asString("\n");
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void section_transientBody() {
+    var title = Row.title("title");
+    var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var sectionBuilder = new SectionBuilder();
+    var header = Header.of(title);
+    this.amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), body1),
+                entry(new AccountId(yearId, "2222"), body2)))
+            .amountFetcher();
+    var footer = Footer.of(title);
+    var exp = Section.of(header, Body.empty(), footer).asString("\n");
+    var act =
+        sectionBuilder
+            .header(new HeaderBuilder().title("title"))
+            .body(
+                bodyBuilder()
+                    .accountGroups(
+                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
+                    .isTransient())
             .footer(footer)
             .section()
             .asString("\n");

@@ -44,7 +44,7 @@ public class AmountFetcherBuilder {
     return this;
   }
 
-  private AmountFetcherBuilder balances(Map<AccountId, Optional<Balance>> balances) {
+  AmountFetcherBuilder balances(Map<AccountId, Optional<Balance>> balances) {
     this.balances = balances;
     return this;
   }

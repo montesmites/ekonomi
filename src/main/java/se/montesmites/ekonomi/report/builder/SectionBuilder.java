@@ -39,6 +39,7 @@ public class SectionBuilder {
   }
 
   public Section section() {
-    return Section.of(getHeader(), getBody(), footer);
+    return Section.of(
+        getHeader(), bodyBuilder.bodyIsTransient() ? Body.empty() : getBody(), footer);
   }
 }

@@ -61,10 +61,13 @@ public class ReportBuilder {
         .section();
   }
 
+
+  @Deprecated(forRemoval = true)
   private Currency initialBalance(AccountGroup accountGroup) {
     return balance(year, AccountFilterByRegex.of(accountGroup));
   }
 
+  @Deprecated(forRemoval = true)
   private Currency balance(Year year, Predicate<AccountId> filter) {
     return fetcher
         .streamAccountIds(year, filter)
@@ -72,6 +75,7 @@ public class ReportBuilder {
         .reduce(Currency.zero(), Currency::add);
   }
 
+  @Deprecated(forRemoval = true)
   private Currency balance(AccountId accountId) {
     return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(Currency.zero());
   }

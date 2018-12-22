@@ -2,6 +2,8 @@ package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Month;
 import java.time.Year;
@@ -30,6 +32,7 @@ class BodyBuilderTest {
     var bodyBuilder = BodyBuilder.empty();
     var exp = Body.empty();
     var act = bodyBuilder.body();
+    assertFalse(bodyBuilder.bodyIsTransient());
     assertEquals(exp.asString("\n"), act.asString("\n"));
   }
 
@@ -77,5 +80,13 @@ class BodyBuilderTest {
     var exp = Body.of(List.of(amountsProvider1, amountsProvider2));
     var act = bodyBuilder.accountGroups(accountGroups).body();
     assertEquals(exp.asString("\n"), act.asString("\n"));
+  }
+
+  @Test
+  void isTransient() {
+    var bodyBuilder = BodyBuilder.empty();
+    var exp = Body.empty();
+    var act = bodyBuilder.isTransient();
+    assertTrue(bodyBuilder.bodyIsTransient());
   }
 }
