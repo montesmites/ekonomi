@@ -29,7 +29,7 @@ import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
-public class CashflowDataFetcher {
+public class CashflowDataFetcher implements AmountFetcher {
 
   private static EntryCollector entryCollector(Organization organization) {
     return new EntryCollector(
@@ -77,10 +77,12 @@ public class CashflowDataFetcher {
     return date.getMonth();
   }
 
+  @Override
   public Set<Month> touchedMonths(java.time.Year year) {
     return touchedMonths.getOrDefault(year, emptySet());
   }
 
+  @Override
   public Stream<AccountId> streamAccountIds(java.time.Year year, Predicate<AccountId> filter) {
     return entryAggregate
         .getAggregate()
@@ -93,10 +95,12 @@ public class CashflowDataFetcher {
         .sorted(comparing(AccountId::getId));
   }
 
+  @Override
   public Optional<Balance> fetchBalance(AccountId accountId) {
     return organization.getBalance(accountId);
   }
 
+  @Override
   public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
     return getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
   }

@@ -3,9 +3,6 @@ package se.montesmites.ekonomi.report.builder;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static se.montesmites.ekonomi.report.Column.APRIL;
 import static se.montesmites.ekonomi.report.Column.AUGUST;
 import static se.montesmites.ekonomi.report.Column.AVERAGE;
@@ -29,17 +26,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.AmountFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
-import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
@@ -70,28 +69,40 @@ class ReportBuilderTest {
   private static final Header TEMPLATE_HEADER =
       Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
   private static final Body TEMPLATE_BODY = Body.of(TEMPLATE_AMOUNTS_PROVIDER);
-  private static final Footer TEMPLATE_FOOTER =
-      Footer.of(TEMPLATE_BODY.aggregate("").asRow());
+  private static final Footer TEMPLATE_FOOTER = Footer.of(TEMPLATE_BODY.aggregate("").asRow());
   private static final Section TEMPLATE_SECTION =
       Section.of(TEMPLATE_HEADER, TEMPLATE_BODY, TEMPLATE_FOOTER);
 
-  private CashflowDataFetcher fetcher;
+  private AmountFetcher fetcher;
 
   @BeforeEach
   void beforeEach() {
-    this.fetcher = mock(CashflowDataFetcher.class);
-    when(fetcher.streamAccountIds(any(), any())).then(answer -> Stream.of(ACCOUNT_ID));
-    when(fetcher.touchedMonths(YEAR)).then(answer -> Set.of(Month.values()));
-    when(fetcher.fetchAmount(any(), any()))
-        .thenAnswer(
-            answer -> {
-              var yearMonth = (YearMonth) answer.getArgument(1);
-              return Optional.of(
-                  TEMPLATE_AMOUNTS_PROVIDER
-                      .getMonthlyAmount(yearMonth.getMonth())
-                      .orElse(Currency.zero())
-                      .negate());
-            });
+    this.fetcher =
+        new AmountFetcher() {
+          @Override
+          public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
+            return Optional.of(
+                TEMPLATE_AMOUNTS_PROVIDER
+                    .getMonthlyAmount(yearMonth.getMonth())
+                    .orElse(Currency.zero())
+                    .negate());
+          }
+
+          @Override
+          public Optional<Balance> fetchBalance(AccountId accountId) {
+            return Optional.empty();
+          }
+
+          @Override
+          public Stream<AccountId> streamAccountIds(Year year, Predicate<AccountId> filter) {
+            return Stream.of(ACCOUNT_ID);
+          }
+
+          @Override
+          public Set<Month> touchedMonths(Year year) {
+            return Set.of(Month.values());
+          }
+        };
   }
 
   @Test
@@ -103,20 +114,32 @@ class ReportBuilderTest {
 
   @Test
   void buildRowWithAmounts_average_threeMonths() {
-    var fetcher = mock(CashflowDataFetcher.class);
-    when(fetcher.streamAccountIds(any(), any())).then(answer -> Stream.of(ACCOUNT_ID));
-    when(fetcher.touchedMonths(YEAR))
-        .then(answer -> Set.of(Month.JANUARY, Month.FEBRUARY, Month.MARCH));
-    when(fetcher.fetchAmount(any(), any()))
-        .thenAnswer(
-            answer -> {
-              var yearMonth = (YearMonth) answer.getArgument(1);
-              var year = Year.of(yearMonth.getYear());
-              var month = yearMonth.getMonth();
-              return fetcher.touchedMonths(year).contains(month)
-                  ? Optional.of(Currency.of(-100))
-                  : Optional.empty();
-            });
+    var fetcher =
+        new AmountFetcher() {
+          @Override
+          public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
+            var year = Year.of(yearMonth.getYear());
+            var month = yearMonth.getMonth();
+            return touchedMonths(year).contains(month)
+                ? Optional.of(Currency.of(-100))
+                : Optional.empty();
+          }
+
+          @Override
+          public Optional<Balance> fetchBalance(AccountId accountId) {
+            return Optional.empty();
+          }
+
+          @Override
+          public Stream<AccountId> streamAccountIds(Year year, Predicate<AccountId> filter) {
+            return Stream.of(ACCOUNT_ID);
+          }
+
+          @Override
+          public Set<Month> touchedMonths(Year year) {
+            return Set.of(Month.JANUARY, Month.FEBRUARY, Month.MARCH);
+          }
+        };
     var builder = new ReportBuilder(fetcher, YEAR);
     var row = builder.buildAmountsProvider(ACCOUNT_GROUP);
     var exp = Currency.of(100);

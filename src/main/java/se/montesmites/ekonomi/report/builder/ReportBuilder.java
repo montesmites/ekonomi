@@ -15,18 +15,18 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.AmountFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
-import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Section;
 
 public class ReportBuilder {
 
-  private final CashflowDataFetcher fetcher;
+  private final AmountFetcher fetcher;
   private final java.time.Year year;
 
-  public ReportBuilder(CashflowDataFetcher fetcher, Year year) {
+  public ReportBuilder(AmountFetcher fetcher, Year year) {
     this.fetcher = fetcher;
     this.year = year;
   }
