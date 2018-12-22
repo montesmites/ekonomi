@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report;
 
 import java.time.Month;
+import java.time.Year;
 import java.time.YearMonth;
 import java.util.Optional;
 import java.util.Set;
@@ -11,6 +12,30 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 
 public interface AmountFetcher {
+
+  static AmountFetcher empty() {
+    return new AmountFetcher() {
+      @Override
+      public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
+        return Optional.empty();
+      }
+
+      @Override
+      public Optional<Balance> fetchBalance(AccountId accountId) {
+        return Optional.empty();
+      }
+
+      @Override
+      public Stream<AccountId> streamAccountIds(Year year, Predicate<AccountId> filter) {
+        return Stream.empty();
+      }
+
+      @Override
+      public Set<Month> touchedMonths(Year year) {
+        return Set.of();
+      }
+    };
+  }
 
   Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth);
 
