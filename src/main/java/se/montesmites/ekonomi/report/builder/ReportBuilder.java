@@ -1,15 +1,10 @@
 package se.montesmites.ekonomi.report.builder;
 
-import static java.util.stream.Collectors.toList;
 import static se.montesmites.ekonomi.report.builder.SectionBuilder.headerBuilder;
 
-import java.time.Month;
 import java.time.Year;
-import java.time.YearMonth;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
@@ -31,42 +26,10 @@ public class ReportBuilder {
     this.year = year;
   }
 
+  @Deprecated(forRemoval = true)
   public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
-    var accountIds =
-        fetcher
-            .streamAccountIds(year, AccountFilterByRegex.of(accountGroup.regex()))
-            .collect(toList());
-    var row =
-        new AmountsProvider() {
-          @Override
-          public Optional<Currency> getMonthlyAmount(Month month) {
-            var yearMonth = YearMonth.of(year.getValue(), month);
-            var year = Year.of(yearMonth.getYear());
-            var sum =
-                (Supplier<Currency>)
-                    () ->
-                        accountIds
-                            .stream()
-                            .map(
-                                accountId ->
-                                    fetcher
-                                        .fetchAmount(accountId, yearMonth)
-                                        .map(Currency::getAmount)
-                                        .map(Currency::of)
-                                        .map(Currency::negate)
-                                        .orElse(Currency.zero()))
-                            .reduce(Currency.zero(), Currency::add);
-            return fetcher.touchedMonths(year).contains(month)
-                ? Optional.of(sum.get())
-                : Optional.empty();
-          }
-
-          @Override
-          public String formatDescription() {
-            return accountGroup.description();
-          }
-        };
-    return accountGroup.postProcessor().apply(row);
+    var bodyBuilder = new BodyBuilder(year, fetcher);
+    return bodyBuilder.buildAmountsProvider(accountGroup);
   }
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {

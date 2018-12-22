@@ -25,7 +25,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
 
-class RowWithAmountsTest {
+class AmountsProviderTest {
 
   @Test
   void of_function() {
@@ -106,20 +106,9 @@ class RowWithAmountsTest {
   }
 
   @Test
-  void description() {
+  void of_description() {
     var description = "DESCRIPTION";
-    var amountsProvider =
-        new AmountsProvider() {
-          @Override
-          public Optional<Currency> getMonthlyAmount(Month month) {
-            return Optional.of(Currency.zero());
-          }
-
-          @Override
-          public String formatDescription() {
-            return description;
-          }
-        };
+    var amountsProvider = AmountsProvider.of(description, __ -> Optional.of(Currency.zero()));
     var row = amountsProvider.asRow();
     var exp =
         Row.of(

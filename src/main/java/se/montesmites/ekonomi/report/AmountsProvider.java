@@ -29,6 +29,20 @@ public interface AmountsProvider {
     return month -> Optional.ofNullable(amounts.get(month));
   }
 
+  static AmountsProvider of(String description, Function<Month, Optional<Currency>> amounts) {
+    return new AmountsProvider() {
+      @Override
+      public Optional<Currency> getMonthlyAmount(Month month) {
+        return amounts.apply(month);
+      }
+
+      @Override
+      public String formatDescription() {
+        return description;
+      }
+    };
+  }
+
   default Row asRow() {
     var map =
         Map.ofEntries(
