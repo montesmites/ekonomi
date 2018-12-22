@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static se.montesmites.ekonomi.report.builder.SectionBuilder.headerBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,7 @@ class SectionBuilderTest {
     var sectionBuilder = new SectionBuilder();
     var header = Header.of(Row.title("title"));
     var exp = header.asString("\n");
-    var act = sectionBuilder.header(header).getHeader().asString("\n");
+    var act = sectionBuilder.header(headerBuilder().title("title")).getHeader().asString("\n");
     assertEquals(exp, act);
   }
 
@@ -55,7 +56,13 @@ class SectionBuilderTest {
     var body = Body.of(List.of(body1, body2));
     var footer = Footer.of(title);
     var exp = Section.of(header, body, footer).asString("\n");
-    var act = sectionBuilder.header(header).body(body).footer(footer).section().asString("\n");
+    var act =
+        sectionBuilder
+            .header(headerBuilder().title("title"))
+            .body(body)
+            .footer(footer)
+            .section()
+            .asString("\n");
     assertEquals(exp, act);
   }
 }

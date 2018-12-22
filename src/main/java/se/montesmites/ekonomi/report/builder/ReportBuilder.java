@@ -1,7 +1,7 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.stream.Collectors.toList;
-import static se.montesmites.ekonomi.report.Row.SHORT_MONTHS;
+import static se.montesmites.ekonomi.report.builder.SectionBuilder.headerBuilder;
 
 import java.time.Month;
 import java.time.Year;
@@ -19,8 +19,6 @@ import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.Footer;
-import se.montesmites.ekonomi.report.Header;
-import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 
 public class ReportBuilder {
@@ -73,7 +71,7 @@ public class ReportBuilder {
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
     return section()
-        .header(Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS)))
+        .header(headerBuilder().title(title).months())
         .body(Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider)))
         .footer(
             Footer.of(
@@ -85,7 +83,7 @@ public class ReportBuilder {
 
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
     return section()
-        .header(Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS)))
+        .header(headerBuilder().title(title).months())
         .footer(
             Footer.of(
                 this.buildAmountsProvider(accountGroup)

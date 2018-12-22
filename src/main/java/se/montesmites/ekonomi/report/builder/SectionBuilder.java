@@ -7,12 +7,16 @@ import se.montesmites.ekonomi.report.Section;
 
 public class SectionBuilder {
 
-  private Header header = Header.empty();
+  public static HeaderBuilder headerBuilder() {
+    return new HeaderBuilder();
+  }
+
+  private HeaderBuilder headerBuilder = new HeaderBuilder();
   private Body body = Body.empty();
   private Footer footer = Footer.empty();
 
-  public SectionBuilder header(Header header) {
-    this.header = header;
+  public SectionBuilder header(HeaderBuilder headerBuilder) {
+    this.headerBuilder = headerBuilder;
     return this;
   }
 
@@ -27,7 +31,7 @@ public class SectionBuilder {
   }
 
   public Header getHeader() {
-    return header;
+    return headerBuilder.header();
   }
 
   public Body getBody() {
@@ -39,6 +43,6 @@ public class SectionBuilder {
   }
 
   public Section section() {
-    return Section.of(header, body, footer);
+    return Section.of(getHeader(), body, footer);
   }
 }
