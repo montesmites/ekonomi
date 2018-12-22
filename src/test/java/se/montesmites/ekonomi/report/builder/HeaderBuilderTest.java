@@ -10,6 +10,14 @@ import se.montesmites.ekonomi.report.Row;
 class HeaderBuilderTest {
 
   @Test
+  void empty() {
+    var headerBuilder = new HeaderBuilder();
+    var exp = Header.empty();
+    var act = headerBuilder.header();
+    assertEquals(exp.asString("\n"), act.asString("\n"));
+  }
+
+  @Test
   void titleOnly() {
     var headerBuilder = new HeaderBuilder();
     var title = "title";
