@@ -72,21 +72,30 @@ public class ReportBuilder {
   }
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
-    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS));
-    var body = Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider));
-    var footer = Footer.of(body.aggregate("").asRow());
-    return Section.of(header, body, footer);
+    return section()
+        .header(Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS)))
+        .body(Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider)))
+        .footer(
+            Footer.of(
+                Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider))
+                    .aggregate("")
+                    .asRow()))
+        .section();
   }
 
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
-    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS));
-    var initialBalance = balance(year, AccountFilterByRegex.of(accountGroup));
-    var footer =
-        Footer.of(
-            this.buildAmountsProvider(accountGroup)
-                .accumulate(initialBalance)
-                .asRow());
-    return Section.of(header, Body.empty(), footer);
+    return section()
+        .header(Header.of(Row.title(title)).add(Row.descriptionWithMonths("", SHORT_MONTHS)))
+        .footer(
+            Footer.of(
+                this.buildAmountsProvider(accountGroup)
+                    .accumulate(initialBalance(accountGroup))
+                    .asRow()))
+        .section();
+  }
+
+  private Currency initialBalance(AccountGroup accountGroup) {
+    return balance(year, AccountFilterByRegex.of(accountGroup));
   }
 
   private Currency balance(Year year, Predicate<AccountId> filter) {
