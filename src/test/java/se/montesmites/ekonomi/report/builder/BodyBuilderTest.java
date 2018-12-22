@@ -27,7 +27,7 @@ class BodyBuilderTest {
 
   @Test
   void empty() {
-    var bodyBuilder = new BodyBuilder(null, null);
+    var bodyBuilder = BodyBuilder.empty();
     var exp = Body.empty();
     var act = bodyBuilder.body();
     assertEquals(exp.asString("\n"), act.asString("\n"));

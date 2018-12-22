@@ -1,7 +1,5 @@
 package se.montesmites.ekonomi.report.builder;
 
-import static se.montesmites.ekonomi.report.builder.SectionBuilder.headerBuilder;
-
 import java.time.Year;
 import java.util.List;
 import java.util.function.Predicate;
@@ -26,6 +24,14 @@ public class ReportBuilder {
     this.year = year;
   }
 
+  public HeaderBuilder headerBuilder() {
+    return new HeaderBuilder();
+  }
+
+  public BodyBuilder bodyBuilder() {
+    return new BodyBuilder(year, fetcher);
+  }
+
   @Deprecated(forRemoval = true)
   public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
     var bodyBuilder = new BodyBuilder(year, fetcher);
@@ -35,7 +41,7 @@ public class ReportBuilder {
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
     return section()
         .header(headerBuilder().title(title).months())
-        .body(Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider)))
+        .body(bodyBuilder().accountGroups(accountGroups))
         .footer(
             Footer.of(
                 Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider))

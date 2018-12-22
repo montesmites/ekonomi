@@ -7,6 +7,10 @@ import se.montesmites.ekonomi.report.Row;
 
 public class HeaderBuilder {
 
+  public static HeaderBuilder empty() {
+    return new HeaderBuilder();
+  }
+
   private List<Row> rows = new ArrayList<>();
 
   public HeaderBuilder title(String title) {

@@ -11,7 +11,7 @@ class HeaderBuilderTest {
 
   @Test
   void empty() {
-    var headerBuilder = new HeaderBuilder();
+    var headerBuilder = HeaderBuilder.empty();
     var exp = Header.empty();
     var act = headerBuilder.header();
     assertEquals(exp.asString("\n"), act.asString("\n"));

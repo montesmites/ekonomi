@@ -18,6 +18,25 @@ import se.montesmites.ekonomi.report.Body;
 
 public class BodyBuilder {
 
+  public static BodyBuilder empty() {
+    return new BodyBuilder(null, null) {
+      @Override
+      public BodyBuilder accountGroups(List<AccountGroup> accountGroups) {
+        return this;
+      }
+
+      @Override
+      public Body body() {
+        return Body.empty();
+      }
+
+      @Override
+      public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
+        return AmountsProvider.empty();
+      }
+    };
+  }
+
   private final Year year;
   private final AmountFetcher amountFetcher;
   private List<AccountGroup> accountGroups = new ArrayList<>();
