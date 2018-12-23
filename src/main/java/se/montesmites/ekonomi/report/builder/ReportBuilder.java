@@ -12,6 +12,8 @@ import se.montesmites.ekonomi.report.AmountFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
+import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 
 public class ReportBuilder {
@@ -24,11 +26,11 @@ public class ReportBuilder {
     this.year = year;
   }
 
-  public HeaderBuilder headerBuilder() {
+  private HeaderBuilder headerBuilder() {
     return new HeaderBuilder();
   }
 
-  public BodyBuilder bodyBuilder() {
+  private BodyBuilder bodyBuilder() {
     return new BodyBuilder(year, fetcher);
   }
 
@@ -38,36 +40,33 @@ public class ReportBuilder {
     return bodyBuilder.buildAmountsProvider(accountGroup);
   }
 
+  @Deprecated(forRemoval = true)
+  public Section footerOnly(Row footer) {
+    return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
+  }
+
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
+    var bodyBuilder = bodyBuilder().accountGroups(accountGroups);
     return section()
         .header(headerBuilder().title(title).months())
-        .body(bodyBuilder().accountGroups(accountGroups))
-        .footer(
-            Footer.of(
-                Body.of(() -> accountGroups.stream().map(this::buildAmountsProvider))
-                    .aggregate("")
-                    .asRow()))
+        .body(bodyBuilder)
+        .footer(new FooterBuilder(bodyBuilder::body).aggregateBody())
         .section();
   }
 
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
+    var bodyBuilder = bodyBuilder().accountGroups(List.of(accountGroup)).isTransient();
     return section()
         .header(headerBuilder().title(title).months())
-        .footer(
-            Footer.of(
-                this.buildAmountsProvider(accountGroup)
-                    .accumulate(initialBalance(accountGroup))
-                    .asRow()))
+        .body(bodyBuilder)
+        .footer(new FooterBuilder(bodyBuilder::body).accumulateBody(initialBalance(accountGroup)))
         .section();
   }
 
-
-  @Deprecated(forRemoval = true)
   private Currency initialBalance(AccountGroup accountGroup) {
     return balance(year, AccountFilterByRegex.of(accountGroup));
   }
 
-  @Deprecated(forRemoval = true)
   private Currency balance(Year year, Predicate<AccountId> filter) {
     return fetcher
         .streamAccountIds(year, filter)
@@ -75,7 +74,6 @@ public class ReportBuilder {
         .reduce(Currency.zero(), Currency::add);
   }
 
-  @Deprecated(forRemoval = true)
   private Currency balance(AccountId accountId) {
     return fetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(Currency.zero());
   }

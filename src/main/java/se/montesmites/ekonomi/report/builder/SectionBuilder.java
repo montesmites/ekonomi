@@ -9,7 +9,7 @@ public class SectionBuilder {
 
   private HeaderBuilder headerBuilder = HeaderBuilder.empty();
   private BodyBuilder bodyBuilder = BodyBuilder.empty();
-  private Footer footer = Footer.empty();
+  private FooterBuilder footerBuilder = FooterBuilder.empty();
 
   public SectionBuilder header(HeaderBuilder headerBuilder) {
     this.headerBuilder = headerBuilder;
@@ -21,8 +21,8 @@ public class SectionBuilder {
     return this;
   }
 
-  public SectionBuilder footer(Footer footer) {
-    this.footer = footer;
+  public SectionBuilder footer(FooterBuilder footerBuilder) {
+    this.footerBuilder = footerBuilder;
     return this;
   }
 
@@ -35,11 +35,11 @@ public class SectionBuilder {
   }
 
   public Footer getFooter() {
-    return footer;
+    return footerBuilder.footer();
   }
 
   public Section section() {
     return Section.of(
-        getHeader(), bodyBuilder.bodyIsTransient() ? Body.empty() : getBody(), footer);
+        getHeader(), bodyBuilder.bodyIsTransient() ? Body.empty() : getBody(), getFooter());
   }
 }

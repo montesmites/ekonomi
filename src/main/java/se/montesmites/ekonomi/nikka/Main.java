@@ -14,7 +14,6 @@ import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
-import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
@@ -137,7 +136,7 @@ class Main {
   }
 
   private Section buildSection(Row footer) {
-    return reportBuilder.section().footer(Footer.of(footer)).section();
+    return reportBuilder.footerOnly(footer);
   }
 
   private Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {

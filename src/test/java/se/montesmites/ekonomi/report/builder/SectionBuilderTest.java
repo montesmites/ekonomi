@@ -61,11 +61,25 @@ class SectionBuilderTest {
 
   @Test
   void footer() {
+    var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var sectionBuilder = new SectionBuilder();
-    var row = Row.title("title");
-    var footer = Footer.of(row);
-    var exp = footer.asString("\n");
-    var act = sectionBuilder.footer(footer).getFooter().asString("\n");
+    this.amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), body1),
+                entry(new AccountId(yearId, "2222"), body2)))
+            .amountFetcher();
+    var bodyBuilder =
+        bodyBuilder()
+            .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
+            .isTransient();
+    var exp = bodyBuilder.body().aggregate("").asRow().asString();
+    var act =
+        sectionBuilder
+            .footer(footerBuilder(bodyBuilder).aggregateBody())
+            .getFooter()
+            .asString("\n");
     assertEquals(exp, act);
   }
 
@@ -83,16 +97,16 @@ class SectionBuilderTest {
                 entry(new AccountId(yearId, "1111"), body1),
                 entry(new AccountId(yearId, "2222"), body2)))
             .amountFetcher();
-    var footer = Footer.of(title);
+    var footer = Footer.of(List.of(body.aggregate("").asRow()));
     var exp = Section.of(header, body, footer).asString("\n");
+    var bodyBuilder =
+        bodyBuilder()
+            .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")));
     var act =
         sectionBuilder
             .header(new HeaderBuilder().title("title"))
-            .body(
-                bodyBuilder()
-                    .accountGroups(
-                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222"))))
-            .footer(footer)
+            .body(bodyBuilder)
+            .footer(footerBuilder(bodyBuilder).aggregateBody())
             .section()
             .asString("\n");
     assertEquals(exp, act);
@@ -105,23 +119,24 @@ class SectionBuilderTest {
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var sectionBuilder = new SectionBuilder();
     var header = Header.of(title);
+    var body = Body.of(List.of(body1, body2));
     this.amountFetcher =
         AmountFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), body1),
                 entry(new AccountId(yearId, "2222"), body2)))
             .amountFetcher();
-    var footer = Footer.of(title);
+    var footer = Footer.of(List.of(body.aggregate("").asRow()));
+    var bodyBuilder =
+        bodyBuilder()
+            .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
+            .isTransient();
     var exp = Section.of(header, Body.empty(), footer).asString("\n");
     var act =
         sectionBuilder
             .header(new HeaderBuilder().title("title"))
-            .body(
-                bodyBuilder()
-                    .accountGroups(
-                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
-                    .isTransient())
-            .footer(footer)
+            .body(bodyBuilder)
+            .footer(footerBuilder(bodyBuilder).aggregateBody())
             .section()
             .asString("\n");
     assertEquals(exp, act);
@@ -129,5 +144,9 @@ class SectionBuilderTest {
 
   private BodyBuilder bodyBuilder() {
     return new BodyBuilder(year, amountFetcher);
+  }
+
+  private FooterBuilder footerBuilder(BodyBuilder bodyBuilder) {
+    return new FooterBuilder(bodyBuilder::body);
   }
 }
