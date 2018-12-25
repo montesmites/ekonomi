@@ -73,7 +73,7 @@ class SectionBuilderTest {
     var bodyBuilder =
         bodyBuilder()
             .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
-            .isTransient();
+            .dematerialize();
     var exp = bodyBuilder.body().aggregate("").asRow().asString();
     var act =
         sectionBuilder
@@ -130,7 +130,7 @@ class SectionBuilderTest {
     var bodyBuilder =
         bodyBuilder()
             .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
-            .isTransient();
+            .dematerialize();
     var exp = Section.of(header, Body.empty(), footer).asString("\n");
     var act =
         sectionBuilder

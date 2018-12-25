@@ -40,7 +40,7 @@ public class BodyBuilder {
   private final Year year;
   private final AmountFetcher amountFetcher;
   private List<AccountGroup> accountGroups = new ArrayList<>();
-  private boolean isTransient = false;
+  private boolean materialized = true;
 
   BodyBuilder(Year year, AmountFetcher amountFetcher) {
     this.year = year;
@@ -52,8 +52,8 @@ public class BodyBuilder {
     return this;
   }
 
-  BodyBuilder isTransient() {
-    this.isTransient = true;
+  BodyBuilder dematerialize() {
+    this.materialized = false;
     return this;
   }
 
@@ -62,8 +62,8 @@ public class BodyBuilder {
     return Body.of(amountProviders::stream);
   }
 
-  boolean bodyIsTransient() {
-    return isTransient;
+  boolean isMaterialized() {
+    return materialized;
   }
 
   public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {

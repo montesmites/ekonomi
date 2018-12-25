@@ -59,7 +59,7 @@ class FooterBuilderTest {
             .balances(Map.of(accountId, Optional.of(new Balance(accountId, initialBalance))))
             .amountFetcher();
     var bodyBuilder =
-        new BodyBuilder(year, amountFetcher).accountGroups(accountGroups).isTransient();
+        new BodyBuilder(year, amountFetcher).accountGroups(accountGroups).dematerialize();
     var footerBuilder = new FooterBuilder(bodyBuilder::body).accumulateBody(initialBalance);
     var exp = Footer.of(row.accumulate(initialBalance).asRow());
     var act = footerBuilder.footer();

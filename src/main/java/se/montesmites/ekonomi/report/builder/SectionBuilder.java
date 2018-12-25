@@ -40,6 +40,6 @@ public class SectionBuilder {
 
   public Section section() {
     return Section.of(
-        getHeader(), bodyBuilder.bodyIsTransient() ? Body.empty() : getBody(), getFooter());
+        getHeader(), bodyBuilder.isMaterialized() ? getBody() : Body.empty(), getFooter());
   }
 }

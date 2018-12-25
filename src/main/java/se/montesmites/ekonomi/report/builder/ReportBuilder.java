@@ -55,7 +55,7 @@ public class ReportBuilder {
   }
 
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
-    var bodyBuilder = bodyBuilder().accountGroups(List.of(accountGroup)).isTransient();
+    var bodyBuilder = bodyBuilder().accountGroups(List.of(accountGroup)).dematerialize();
     return section()
         .header(headerBuilder().title(title).months())
         .body(bodyBuilder)
