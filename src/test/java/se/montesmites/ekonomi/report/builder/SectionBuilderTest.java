@@ -24,35 +24,33 @@ class SectionBuilderTest {
 
   private final Year year = Year.now();
   private final YearId yearId = new YearId(year.toString());
-  private AmountFetcher amountFetcher = AmountFetcher.empty();
 
   @Test
   void header() {
-    var sectionBuilder = new SectionBuilder();
-    var header = Header.of(Row.title("title"));
-    var exp = header.asString("\n");
-    var act = sectionBuilder.header(new HeaderBuilder().title("title")).getHeader().asString("\n");
+    var amountFetcher = AmountFetcher.empty();
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    var exp = Header.of(Row.title("title")).asString("\n");
+    var act = sectionBuilder.header(header -> header.title("title")).getHeader().asString("\n");
     assertEquals(exp, act);
   }
 
   @Test
   void body() {
-    var sectionBuilder = new SectionBuilder();
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    this.amountFetcher =
+    var amountFetcher =
         AmountFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2)))
             .amountFetcher();
-    var body = Body.of(List.of(row1, row2));
-    var exp = body.asString("\n");
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    var exp = Body.of(List.of(row1, row2)).asString("\n");
     var act =
         sectionBuilder
             .body(
-                bodyBuilder()
-                    .accountGroups(
+                body ->
+                    body.accountGroups(
                         List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222"))))
             .getBody()
             .asString("\n");
@@ -63,23 +61,21 @@ class SectionBuilderTest {
   void footer() {
     var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var sectionBuilder = new SectionBuilder();
-    this.amountFetcher =
+    var amountFetcher =
         AmountFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), body1),
                 entry(new AccountId(yearId, "2222"), body2)))
             .amountFetcher();
-    var bodyBuilder =
-        bodyBuilder()
-            .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
-            .dematerialize();
-    var exp = bodyBuilder.body().aggregate("").asRow().asString();
-    var act =
-        sectionBuilder
-            .footer(footerBuilder(bodyBuilder).aggregateBody())
-            .getFooter()
-            .asString("\n");
+    var sectionBuilder =
+        new SectionBuilder(year, amountFetcher)
+            .body(
+                body ->
+                    body.accountGroups(
+                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
+                        .dematerialize());
+    var exp = sectionBuilder.getBody().aggregate("").asRow().asString();
+    var act = sectionBuilder.footer(FooterBuilder::aggregateBody).getFooter().asString("\n");
     assertEquals(exp, act);
   }
 
@@ -88,25 +84,24 @@ class SectionBuilderTest {
     var title = Row.title("title");
     var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var sectionBuilder = new SectionBuilder();
-    var header = Header.of(title);
-    var body = Body.of(List.of(body1, body2));
-    this.amountFetcher =
+    var expBody = Body.of(List.of(body1, body2));
+    var amountFetcher =
         AmountFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), body1),
                 entry(new AccountId(yearId, "2222"), body2)))
             .amountFetcher();
-    var footer = Footer.of(List.of(body.aggregate("").asRow()));
-    var exp = Section.of(header, body, footer).asString("\n");
-    var bodyBuilder =
-        bodyBuilder()
-            .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")));
+    var footer = Footer.of(List.of(expBody.aggregate("").asRow()));
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    var exp = Section.of(Header.of(title), expBody, footer).asString("\n");
     var act =
         sectionBuilder
-            .header(new HeaderBuilder().title("title"))
-            .body(bodyBuilder)
-            .footer(footerBuilder(bodyBuilder).aggregateBody())
+            .header(header -> header.title("title"))
+            .body(
+                body ->
+                    body.accountGroups(
+                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222"))))
+            .footer(FooterBuilder::aggregateBody)
             .section()
             .asString("\n");
     assertEquals(exp, act);
@@ -117,36 +112,27 @@ class SectionBuilderTest {
     var title = Row.title("title");
     var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var sectionBuilder = new SectionBuilder();
-    var header = Header.of(title);
-    var body = Body.of(List.of(body1, body2));
-    this.amountFetcher =
+    var expBody = Body.of(List.of(body1, body2));
+    var amountFetcher =
         AmountFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), body1),
                 entry(new AccountId(yearId, "2222"), body2)))
             .amountFetcher();
-    var footer = Footer.of(List.of(body.aggregate("").asRow()));
-    var bodyBuilder =
-        bodyBuilder()
-            .accountGroups(List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
-            .dematerialize();
-    var exp = Section.of(header, Body.empty(), footer).asString("\n");
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    var footer = Footer.of(List.of(expBody.aggregate("").asRow()));
+    var exp = Section.of(Header.of(title), Body.empty(), footer).asString("\n");
     var act =
         sectionBuilder
-            .header(new HeaderBuilder().title("title"))
-            .body(bodyBuilder)
-            .footer(footerBuilder(bodyBuilder).aggregateBody())
+            .header(header -> header.title("title"))
+            .body(
+                body ->
+                    body.accountGroups(
+                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
+                        .dematerialize())
+            .footer(FooterBuilder::aggregateBody)
             .section()
             .asString("\n");
     assertEquals(exp, act);
-  }
-
-  private BodyBuilder bodyBuilder() {
-    return new BodyBuilder(year, amountFetcher);
-  }
-
-  private FooterBuilder footerBuilder(BodyBuilder bodyBuilder) {
-    return new FooterBuilder(bodyBuilder::body);
   }
 }

@@ -1,5 +1,8 @@
 package se.montesmites.ekonomi.report.builder;
 
+import java.time.Year;
+import java.util.function.UnaryOperator;
+import se.montesmites.ekonomi.report.AmountFetcher;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
@@ -7,22 +10,28 @@ import se.montesmites.ekonomi.report.Section;
 
 public class SectionBuilder {
 
-  private HeaderBuilder headerBuilder = HeaderBuilder.empty();
-  private BodyBuilder bodyBuilder = BodyBuilder.empty();
-  private FooterBuilder footerBuilder = FooterBuilder.empty();
+  private final HeaderBuilder headerBuilder;
+  private final BodyBuilder bodyBuilder;
+  private final FooterBuilder footerBuilder;
 
-  public SectionBuilder header(HeaderBuilder headerBuilder) {
-    this.headerBuilder = headerBuilder;
+  public SectionBuilder(Year year, AmountFetcher amountFetcher) {
+    this.headerBuilder = new HeaderBuilder();
+    this.bodyBuilder = new BodyBuilder(year, amountFetcher);
+    this.footerBuilder = new FooterBuilder(this.bodyBuilder::body);
+  }
+
+  public SectionBuilder header(UnaryOperator<HeaderBuilder> header) {
+    header.apply(this.headerBuilder);
     return this;
   }
 
-  public SectionBuilder body(BodyBuilder bodyBuilder) {
-    this.bodyBuilder = bodyBuilder;
+  public SectionBuilder body(UnaryOperator<BodyBuilder> body) {
+    body.apply(this.bodyBuilder);
     return this;
   }
 
-  public SectionBuilder footer(FooterBuilder footerBuilder) {
-    this.footerBuilder = footerBuilder;
+  public SectionBuilder footer(UnaryOperator<FooterBuilder> footer) {
+    footer.apply(this.footerBuilder);
     return this;
   }
 
