@@ -204,7 +204,7 @@ class ReportBuilderTest {
   }
 
   @Test
-  void subtotal_deMaterializedBody() {
+  void subtotal_dematerializedBody() {
     var description = "description";
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
@@ -233,6 +233,57 @@ class ReportBuilderTest {
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),
             Section.of(Header.empty(), Body.empty(), Footer.empty()),
             Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotal_twoSubtotals() {
+    var description1 = "description1";
+    var description2 = "description2";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var subtotal1 =
+        AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var subtotal2 =
+        AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 600)));
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2),
+                entry(new AccountId(yearId, "3333"), row3)))
+            .amountFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountFetcher, Year.now())
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
+            .subtotal(description1)
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
+            .subtotal(description2);
+
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
+            Section.of(Header.empty(), Body.of(row3), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
