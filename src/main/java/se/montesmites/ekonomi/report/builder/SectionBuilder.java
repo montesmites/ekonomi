@@ -14,7 +14,7 @@ public class SectionBuilder {
   private final BodyBuilder bodyBuilder;
   private final FooterBuilder footerBuilder;
 
-  public SectionBuilder(Year year, AmountFetcher amountFetcher) {
+  SectionBuilder(Year year, AmountFetcher amountFetcher) {
     this.headerBuilder = new HeaderBuilder();
     this.bodyBuilder = new BodyBuilder(year, amountFetcher);
     this.footerBuilder = new FooterBuilder(this.bodyBuilder::body);

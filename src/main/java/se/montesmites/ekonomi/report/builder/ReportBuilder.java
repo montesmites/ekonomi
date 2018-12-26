@@ -9,11 +9,6 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountFetcher;
-import se.montesmites.ekonomi.report.AmountsProvider;
-import se.montesmites.ekonomi.report.Body;
-import se.montesmites.ekonomi.report.Footer;
-import se.montesmites.ekonomi.report.Header;
-import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 
 public class ReportBuilder {
@@ -24,17 +19,6 @@ public class ReportBuilder {
   public ReportBuilder(AmountFetcher amountFetcher, Year year) {
     this.amountFetcher = amountFetcher;
     this.year = year;
-  }
-
-  @Deprecated(forRemoval = true)
-  public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
-    var bodyBuilder = new BodyBuilder(year, amountFetcher);
-    return bodyBuilder.buildAmountsProvider(accountGroup);
-  }
-
-  @Deprecated(forRemoval = true)
-  public Section footerOnly(Row footer) {
-    return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
   }
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {

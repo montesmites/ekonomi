@@ -11,6 +11,10 @@ import java.util.stream.Stream;
 
 public class CashflowReport {
 
+  public static CashflowReport empty() {
+    return new CashflowReport(Stream::empty);
+  }
+
   private final Supplier<Stream<Section>> sections;
 
   public CashflowReport(Supplier<Stream<Section>> sections) {

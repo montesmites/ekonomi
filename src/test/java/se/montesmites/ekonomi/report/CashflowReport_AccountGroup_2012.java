@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 public enum CashflowReport_AccountGroup_2012 {
   BOKFORT_RESULTAT(
@@ -184,6 +185,13 @@ public enum CashflowReport_AccountGroup_2012 {
   }
 
   private AmountsProvider amountsProvider(CashflowDataFetcher fetcher) {
-    return fetcher.reportBuilderOf(YEAR).buildAmountsProvider(AccountGroup.of(description, regex));
+    final var amountsProvider = new AmountsProvider[1];
+    new ReportBuilder(fetcher, YEAR)
+        .section()
+        .body(body -> {
+          amountsProvider[0] = body.buildAmountsProvider(AccountGroup.of(description, regex));
+          return body;
+        });
+    return amountsProvider[0];
   }
 }

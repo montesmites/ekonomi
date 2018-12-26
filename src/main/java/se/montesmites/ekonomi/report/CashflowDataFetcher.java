@@ -27,7 +27,6 @@ import se.montesmites.ekonomi.model.tuple.AccountIdAmountTuple;
 import se.montesmites.ekonomi.model.tuple.AmountEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 import se.montesmites.ekonomi.organization.Organization;
-import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 public class CashflowDataFetcher implements AmountFetcher {
 
@@ -125,9 +124,5 @@ public class CashflowDataFetcher implements AmountFetcher {
         .entrySet()
         .stream()
         .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
-  }
-
-  ReportBuilder reportBuilderOf(java.time.Year year) {
-    return new ReportBuilder(this, year);
   }
 }

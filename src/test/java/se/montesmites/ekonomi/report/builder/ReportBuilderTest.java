@@ -106,48 +106,6 @@ class ReportBuilderTest {
   }
 
   @Test
-  void buildRowWithAmounts() {
-    var builder = new ReportBuilder(fetcher, YEAR);
-    var act = builder.buildAmountsProvider(ACCOUNT_GROUP);
-    assertEquals(TEMPLATE_AMOUNTS_PROVIDER.asRow().asString(), act.asRow().asString());
-  }
-
-  @Test
-  void buildRowWithAmounts_average_threeMonths() {
-    var fetcher =
-        new AmountFetcher() {
-          @Override
-          public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
-            var year = Year.of(yearMonth.getYear());
-            var month = yearMonth.getMonth();
-            return touchedMonths(year).contains(month)
-                ? Optional.of(Currency.of(-100))
-                : Optional.empty();
-          }
-
-          @Override
-          public Optional<Balance> fetchBalance(AccountId accountId) {
-            return Optional.empty();
-          }
-
-          @Override
-          public Stream<AccountId> streamAccountIds(Year year, Predicate<AccountId> filter) {
-            return Stream.of(ACCOUNT_ID);
-          }
-
-          @Override
-          public Set<Month> touchedMonths(Year year) {
-            return Set.of(Month.JANUARY, Month.FEBRUARY, Month.MARCH);
-          }
-        };
-    var builder = new ReportBuilder(fetcher, YEAR);
-    var row = builder.buildAmountsProvider(ACCOUNT_GROUP);
-    var exp = Currency.of(100);
-    var act = row.getAverage();
-    assertEquals(exp, act.orElseThrow());
-  }
-
-  @Test
   void buildSection_title_accountGroups() {
     var builder = new ReportBuilder(fetcher, YEAR);
     var act = builder.buildSection(TITLE, List.of(ACCOUNT_GROUP));
