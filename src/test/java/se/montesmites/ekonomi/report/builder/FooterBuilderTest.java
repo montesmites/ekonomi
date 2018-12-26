@@ -16,6 +16,7 @@ import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
+import se.montesmites.ekonomi.report.Row;
 
 class FooterBuilderTest {
 
@@ -27,6 +28,15 @@ class FooterBuilderTest {
     var footerBuilder = FooterBuilder.empty();
     var exp = Footer.empty();
     var act = footerBuilder.footer();
+    assertEquals(exp.asString("\n"), act.asString("\n"));
+  }
+
+  @Test
+  void add() {
+    var footerBuilder = new FooterBuilder(Body::empty);
+    var row = Row.title("title");
+    var exp = Footer.of(row);
+    var act = footerBuilder.add(row).footer();
     assertEquals(exp.asString("\n"), act.asString("\n"));
   }
 

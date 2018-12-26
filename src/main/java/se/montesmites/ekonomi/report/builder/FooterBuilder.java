@@ -52,6 +52,11 @@ public class FooterBuilder {
     return this;
   }
 
+  FooterBuilder add(Row row) {
+    this.rows.add(row);
+    return this;
+  }
+
   public Footer footer() {
     return Footer.of(rows);
   }

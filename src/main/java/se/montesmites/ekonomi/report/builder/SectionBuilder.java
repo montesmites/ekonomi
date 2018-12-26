@@ -47,6 +47,10 @@ public class SectionBuilder {
     return footerBuilder.footer();
   }
 
+  BodyBuilder getBodyBuilder() {
+    return bodyBuilder;
+  }
+
   public Section section() {
     return Section.of(
         getHeader(), bodyBuilder.isMaterialized() ? getBody() : Body.empty(), getFooter());

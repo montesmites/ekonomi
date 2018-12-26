@@ -13,6 +13,7 @@ import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountFetcher;
+import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Section;
 
 public class ReportBuilder {
@@ -72,6 +73,35 @@ public class ReportBuilder {
     var sectionBuilder = new SectionBuilder(year, amountFetcher);
     this.sections.add(sectionBuilder);
     section.apply(sectionBuilder);
+    return this;
+  }
+
+  ReportBuilder subtotal(String description) {
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    this.sections.add(sectionBuilder);
+    var aggregates =
+        List.copyOf(this.sections)
+            .stream()
+            .map(SectionBuilder::getBodyBuilder)
+            .filter(BodyBuilder::isMaterialized)
+            .map(BodyBuilder::body)
+            .map(body -> body.aggregate(""))
+            .collect(toList());
+    sectionBuilder.footer(
+        footer ->
+            footer.add(
+                AmountsProvider.of(
+                    description,
+                    month ->
+                        aggregates
+                            .stream()
+                            .map(
+                                amountsProvider ->
+                                    amountsProvider
+                                        .getMonthlyAmount(month)
+                                        .orElse(Currency.zero()))
+                            .reduce(Currency::add))
+                    .asRow()));
     return this;
   }
 

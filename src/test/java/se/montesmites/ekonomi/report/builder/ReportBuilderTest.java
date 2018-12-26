@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.Column.APRIL;
@@ -160,6 +161,87 @@ class ReportBuilderTest {
             .stream()
             .map(section -> section.asString("\n"))
             .collect(toList());
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotal_materializedBody() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountFetcher, Year.now())
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
+            .subtotal(description);
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotal_deMaterializedBody() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountFetcher, Year.now())
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(
+                        body ->
+                            body.accountGroups(List.of(AccountGroup.of("", "2222")))
+                                .dematerialize()))
+            .subtotal(description);
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
     assertEquals(exp, act);
   }
 }
