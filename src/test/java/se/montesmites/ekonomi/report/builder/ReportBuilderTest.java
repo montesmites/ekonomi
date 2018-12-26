@@ -1,8 +1,8 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static se.montesmites.ekonomi.report.Column.APRIL;
 import static se.montesmites.ekonomi.report.Column.AUGUST;
 import static se.montesmites.ekonomi.report.Column.AVERAGE;
@@ -21,22 +21,16 @@ import static se.montesmites.ekonomi.report.Column.TOTAL;
 
 import java.time.Month;
 import java.time.Year;
-import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
-import se.montesmites.ekonomi.report.AmountFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.CashflowReport;
@@ -73,41 +67,23 @@ class ReportBuilderTest {
   private static final Section TEMPLATE_SECTION =
       Section.of(TEMPLATE_HEADER, TEMPLATE_BODY, TEMPLATE_FOOTER);
 
-  private AmountFetcher fetcher;
-
-  @BeforeEach
-  void beforeEach() {
-    this.fetcher =
-        new AmountFetcher() {
-          @Override
-          public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
-            return Optional.of(
-                TEMPLATE_AMOUNTS_PROVIDER
-                    .getMonthlyAmount(yearMonth.getMonth())
-                    .orElse(Currency.zero())
-                    .negate());
-          }
-
-          @Override
-          public Optional<Balance> fetchBalance(AccountId accountId) {
-            return Optional.empty();
-          }
-
-          @Override
-          public Stream<AccountId> streamAccountIds(Year year, Predicate<AccountId> filter) {
-            return Stream.of(ACCOUNT_ID);
-          }
-
-          @Override
-          public Set<Month> touchedMonths(Year year) {
-            return Set.of(Month.values());
-          }
-        };
-  }
+  private final Year year = Year.now();
+  private final YearId yearId = new YearId(year.toString());
 
   @Test
   void buildSection_title_accountGroups() {
-    var builder = new ReportBuilder(fetcher, YEAR);
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.of(
+                ACCOUNT_ID,
+                AmountsProvider.of(
+                    month ->
+                        Optional.of(
+                            TEMPLATE_AMOUNTS_PROVIDER
+                                .getMonthlyAmount(month)
+                                .orElse(Currency.zero())))))
+            .amountFetcher();
+    var builder = new ReportBuilder(amountFetcher, YEAR);
     var act = builder.buildSection(TITLE, List.of(ACCOUNT_GROUP));
     Assertions.assertEquals(
         new CashflowReport(() -> Stream.of(TEMPLATE_SECTION)).render(),
@@ -116,7 +92,18 @@ class ReportBuilderTest {
 
   @Test
   void buildSection_title_accountGroup() {
-    var builder = new ReportBuilder(fetcher, YEAR);
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.of(
+                ACCOUNT_ID,
+                AmountsProvider.of(
+                    month ->
+                        Optional.of(
+                            TEMPLATE_AMOUNTS_PROVIDER
+                                .getMonthlyAmount(month)
+                                .orElse(Currency.zero())))))
+            .amountFetcher();
+    var builder = new ReportBuilder(amountFetcher, YEAR);
     var header = Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var footer =
         (Row)
@@ -147,7 +134,32 @@ class ReportBuilderTest {
 
   @Test
   void section() {
-    var reportBuilder = new ReportBuilder(fetcher, YEAR);
-    assertNotNull(reportBuilder.section());
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountFetcher, YEAR)
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))));
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(List.of(row1)), Footer.empty()).asString("\n"),
+            Section.of(Header.empty(), Body.of(List.of(row2)), Footer.empty()).asString("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(toList());
+    assertEquals(exp, act);
   }
 }

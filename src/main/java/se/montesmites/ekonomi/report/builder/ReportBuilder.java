@@ -1,8 +1,12 @@
 package se.montesmites.ekonomi.report.builder;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
@@ -15,10 +19,12 @@ public class ReportBuilder {
 
   private final AmountFetcher amountFetcher;
   private final java.time.Year year;
+  private final List<SectionBuilder> sections;
 
   public ReportBuilder(AmountFetcher amountFetcher, Year year) {
     this.amountFetcher = amountFetcher;
     this.year = year;
+    this.sections = new ArrayList<>();
   }
 
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
@@ -52,7 +58,19 @@ public class ReportBuilder {
     return amountFetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(Currency.zero());
   }
 
+  @Deprecated(forRemoval = true)
   public SectionBuilder section() {
     return new SectionBuilder(year, amountFetcher);
+  }
+
+  public ReportBuilder section(UnaryOperator<SectionBuilder> section) {
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    this.sections.add(sectionBuilder);
+    section.apply(sectionBuilder);
+    return this;
+  }
+
+  List<Section> getSections() {
+    return sections.stream().map(SectionBuilder::section).collect(toList());
   }
 }
