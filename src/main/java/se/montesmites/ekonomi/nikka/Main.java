@@ -17,7 +17,6 @@ import se.montesmites.ekonomi.report.CashflowDataFetcher;
 import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
-import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
@@ -34,7 +33,6 @@ class Main {
   }
 
   private final CashflowDataFetcher fetcher;
-  private ReportBuilder reportBuilder;
 
   private Main() {
     var path = Paths.get("C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
@@ -43,15 +41,15 @@ class Main {
   }
 
   private CashflowReport generateCashflowReport(Year year) {
-    this.reportBuilder = new ReportBuilder(fetcher, year);
+    var reportBuilder = new ReportBuilder(fetcher, year);
     var inkomster =
-        this.buildSection(
+        reportBuilder.buildSection(
             "Inkomster",
             List.of(
                 AccountGroup.of("Löner och arvoden", "(30|36)\\d\\d"),
                 AccountGroup.of("Nettoomsättning övrigt", "3([1-5]|[7-9])\\d\\d")));
     var boende =
-        this.buildSection(
+        reportBuilder.buildSection(
             "Boende",
             List.of(
                 AccountGroup.of("Månadsavgift m.m.", "501\\d"),
@@ -61,7 +59,7 @@ class Main {
                 AccountGroup.of("El (förbrukning och nät)", "502\\d"),
                 AccountGroup.of("Mobil, tv, bredband", "51\\d\\d")));
     var fornodenheter =
-        this.buildSection(
+        reportBuilder.buildSection(
             "Förnödenheter",
             List.of(
                 AccountGroup.of("Dagligvaror", "40\\d\\d"),
@@ -71,22 +69,25 @@ class Main {
                 AccountGroup.of("A-kassa, fack, bank, skatt", "4[4-7]\\d\\d"),
                 AccountGroup.of("Transporter", "56\\d\\d")));
     var ovrigt =
-        this.buildSection(
+        reportBuilder.buildSection(
             "Övrigt",
             List.of(
                 AccountGroup.of("Boende diverse", "5060|5[458]\\d\\d"),
                 AccountGroup.of("Övrigt", "(4[89]|[67]\\d)\\d\\d")));
     var foreJamforelsestorandePoster =
-        this.buildSection(
-            inkomster
-                .body()
-                .concat(boende.body())
-                .concat(fornodenheter.body())
-                .concat(ovrigt.body())
-                .aggregate("Före jämförelsestörande poster".toUpperCase())
-                .asRow());
+        Section.of(
+            Header.empty(),
+            Body.empty(),
+            Footer.of(
+                inkomster
+                    .body()
+                    .concat(boende.body())
+                    .concat(fornodenheter.body())
+                    .concat(ovrigt.body())
+                    .aggregate("Före jämförelsestörande poster".toUpperCase())
+                    .asRow()));
     var jamforelsestorandePoster =
-        this.buildSection(
+        reportBuilder.buildSection(
             "Jämförelsestörande poster",
             List.of(
                 AccountGroup.of("Kortfristigt netto", "(1[5-8]|2[4-9])\\d\\d"),
@@ -95,25 +96,31 @@ class Main {
                 AccountGroup.of("Investering boende", "11\\d\\d"),
                 AccountGroup.of("Extraordinärt netto", "87\\d\\d")));
     var forandringLikvidaMedel =
-        this.buildSection(
-            FORANDRING_LIKVIDA_MEDEL
-                .toSection(reportBuilder)
-                .body()
-                .aggregate(FORANDRING_LIKVIDA_MEDEL.getTitle().toUpperCase())
-                .asRow());
+        Section.of(
+            Header.empty(),
+            Body.empty(),
+            Footer.of(
+                FORANDRING_LIKVIDA_MEDEL
+                    .toSection(reportBuilder)
+                    .body()
+                    .aggregate(FORANDRING_LIKVIDA_MEDEL.getTitle().toUpperCase())
+                    .asRow()));
     var kontrollsumma =
-        this.buildSection(
-            inkomster
-                .body()
-                .concat(boende.body())
-                .concat(fornodenheter.body())
-                .concat(ovrigt.body())
-                .concat(jamforelsestorandePoster.body())
-                .concat(FORANDRING_LIKVIDA_MEDEL.toSection(reportBuilder).body().negate())
-                .aggregate("Kontrollsumma".toUpperCase())
-                .asRow());
+        Section.of(
+            Header.empty(),
+            Body.empty(),
+            Footer.of(
+                inkomster
+                    .body()
+                    .concat(boende.body())
+                    .concat(fornodenheter.body())
+                    .concat(ovrigt.body())
+                    .concat(jamforelsestorandePoster.body())
+                    .concat(FORANDRING_LIKVIDA_MEDEL.toSection(reportBuilder).body().negate())
+                    .aggregate("Kontrollsumma".toUpperCase())
+                    .asRow()));
     var accumulation =
-        this.buildSectionWithAcculumatingFooter(
+        reportBuilder.buildSectionWithAcculumatingFooter(
             "Ackumulerade likvida medel",
             AccountGroup.of("", "1493|19\\d\\d").postProcessor(AmountsProvider::negate));
     return new CashflowReport(
@@ -132,17 +139,5 @@ class Main {
 
   private void renderToFile(CashflowReport report, Path path) throws IOException {
     Files.write(path, report.render());
-  }
-
-  private Section buildSection(String title, List<AccountGroup> accountGroups) {
-    return this.reportBuilder.buildSection(title, accountGroups);
-  }
-
-  private Section buildSection(Row footer) {
-    return Section.of(Header.empty(), Body.empty(), Footer.of(footer));
-  }
-
-  private Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
-    return this.reportBuilder.buildSectionWithAcculumatingFooter(title, accountGroup);
   }
 }

@@ -27,6 +27,7 @@ public class ReportBuilder {
     this.sections = new ArrayList<>();
   }
 
+  @Deprecated(forRemoval = true)
   public Section buildSection(String title, List<AccountGroup> accountGroups) {
     return section()
         .header(header -> header.title(title).months())
@@ -35,6 +36,7 @@ public class ReportBuilder {
         .section();
   }
 
+  @Deprecated(forRemoval = true)
   public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
     return section()
         .header(header -> header.title(title).months())
@@ -43,10 +45,12 @@ public class ReportBuilder {
         .section();
   }
 
+  @Deprecated(forRemoval = true)
   private Currency initialBalance(AccountGroup accountGroup) {
     return balance(year, AccountFilterByRegex.of(accountGroup));
   }
 
+  @Deprecated(forRemoval = true)
   private Currency balance(Year year, Predicate<AccountId> filter) {
     return amountFetcher
         .streamAccountIds(year, filter)
@@ -54,6 +58,7 @@ public class ReportBuilder {
         .reduce(Currency.zero(), Currency::add);
   }
 
+  @Deprecated(forRemoval = true)
   private Currency balance(AccountId accountId) {
     return amountFetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(Currency.zero());
   }
