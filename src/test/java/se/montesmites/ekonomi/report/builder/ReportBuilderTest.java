@@ -209,7 +209,7 @@ class ReportBuilderTest {
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
     var amountFetcher =
         AmountFetcherBuilder.of(
             Map.ofEntries(

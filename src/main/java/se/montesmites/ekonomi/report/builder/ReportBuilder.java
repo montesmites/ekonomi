@@ -83,7 +83,6 @@ public class ReportBuilder {
         List.copyOf(this.sections)
             .stream()
             .map(SectionBuilder::getBodyBuilder)
-            .filter(BodyBuilder::isMaterialized)
             .map(BodyBuilder::body)
             .map(body -> body.aggregate(""))
             .collect(toList());
