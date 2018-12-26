@@ -20,6 +20,10 @@ import se.montesmites.ekonomi.report.AmountsProvider;
 
 public class AmountFetcherBuilder {
 
+  public static AmountFetcherBuilder empty() {
+    return new AmountFetcherBuilder();
+  }
+
   public static AmountFetcherBuilder of(Map<AccountId, AmountsProvider> amountsProviders) {
     var year = Year.now();
     return new AmountFetcherBuilder()

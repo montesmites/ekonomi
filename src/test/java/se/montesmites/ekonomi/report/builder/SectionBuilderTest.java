@@ -80,7 +80,7 @@ class SectionBuilderTest {
   }
 
   @Test
-  void section_nonTransientBody() {
+  void section_materializedBody() {
     var title = Row.title("title");
     var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
@@ -108,7 +108,7 @@ class SectionBuilderTest {
   }
 
   @Test
-  void section_transientBody() {
+  void section_dematerializedBody() {
     var title = Row.title("title");
     var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
