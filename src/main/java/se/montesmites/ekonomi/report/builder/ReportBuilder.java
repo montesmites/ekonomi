@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.model.AccountId;
@@ -94,11 +95,9 @@ public class ReportBuilder {
                     month ->
                         aggregates
                             .stream()
-                            .map(
-                                amountsProvider ->
-                                    amountsProvider
-                                        .getMonthlyAmount(month)
-                                        .orElse(Currency.zero()))
+                            .map(amountsProvider -> amountsProvider.getMonthlyAmount(month))
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
                             .reduce(Currency::add))
                     .asRow()));
     return this;

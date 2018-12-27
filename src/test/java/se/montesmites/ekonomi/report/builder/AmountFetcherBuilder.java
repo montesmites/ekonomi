@@ -59,7 +59,7 @@ public class AmountFetcherBuilder {
     return this;
   }
 
-  private AmountFetcherBuilder touchedMonths(Map<Year, Set<Month>> touchedMonths) {
+  AmountFetcherBuilder touchedMonths(Map<Year, Set<Month>> touchedMonths) {
     this.touchedMonths = touchedMonths;
     return this;
   }

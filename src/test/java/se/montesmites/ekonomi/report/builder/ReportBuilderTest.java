@@ -22,6 +22,7 @@ import static se.montesmites.ekonomi.report.Column.TOTAL;
 
 import java.time.Month;
 import java.time.Year;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -276,7 +277,94 @@ class ReportBuilderTest {
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
             .subtotal(description2);
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
+            Section.of(Header.empty(), Body.of(row3), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
 
+  @Test
+  void subtotal_withTwoUntouchedMonths() {
+    var touchedMonths =
+        EnumSet.of(
+            Month.JANUARY,
+            Month.FEBRUARY,
+            Month.MARCH,
+            Month.APRIL,
+            Month.MAY,
+            Month.JUNE,
+            Month.JULY,
+            Month.AUGUST,
+            Month.SEPTEMBER,
+            Month.OCTOBER);
+    var description1 = "description1";
+    var description2 = "description2";
+    var row1 =
+        AmountsProvider.of(
+            month ->
+                touchedMonths.contains(month)
+                    ? Optional.of(Currency.of(month.ordinal() * 100))
+                    : Optional.empty());
+    var row2 =
+        AmountsProvider.of(
+            month ->
+                touchedMonths.contains(month)
+                    ? Optional.of(Currency.of(month.ordinal() * 200))
+                    : Optional.empty());
+    var row3 =
+        AmountsProvider.of(
+            month ->
+                touchedMonths.contains(month)
+                    ? Optional.of(Currency.of(month.ordinal() * 300))
+                    : Optional.empty());
+    var subtotal1 =
+        AmountsProvider.of(
+            description1,
+            month ->
+                touchedMonths.contains(month)
+                    ? Optional.of(Currency.of(month.ordinal() * 300))
+                    : Optional.empty());
+    var subtotal2 =
+        AmountsProvider.of(
+            description2,
+            month ->
+                touchedMonths.contains(month)
+                    ? Optional.of(Currency.of(month.ordinal() * 600))
+                    : Optional.empty());
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2),
+                entry(new AccountId(yearId, "3333"), row3)))
+            .touchedMonths(Map.of(YEAR, touchedMonths))
+            .amountFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountFetcher, Year.now())
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
+            .subtotal(description1)
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
+            .subtotal(description2);
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),

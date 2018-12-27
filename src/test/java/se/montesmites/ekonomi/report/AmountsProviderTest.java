@@ -22,6 +22,7 @@ import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 import java.time.Month;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -93,6 +94,20 @@ class AmountsProviderTest {
             entry(MARCH, Currency.of(100)));
     var row = AmountsProvider.of(amounts);
     var exp = Optional.of(Currency.of(100));
+    var act = row.getAverage();
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void getAverage_withOptionalEmpty() {
+    var amounts =
+        (Function<Month, Optional<Currency>>)
+            month ->
+                month == Month.NOVEMBER || month == Month.DECEMBER
+                    ? Optional.empty()
+                    : Optional.of(Currency.of(month.getValue()));
+    var row = AmountsProvider.of(amounts);
+    var exp = Optional.of(Currency.of(6));
     var act = row.getAverage();
     assertEquals(exp, act);
   }
