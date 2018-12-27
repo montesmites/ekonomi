@@ -61,7 +61,7 @@ class HeaderTest {
     var row1 = Row.title("title1");
     var row2 = Row.title("title2");
     var header = Header.of(List.of(row1, row2));
-    var exp = row1.asString() + "\n" + row2.asString();
+    var exp = row1.asExtendedString() + "\n" + row2.asExtendedString();
     var act = header.asString("\n");
     assertEquals(exp, act);
   }

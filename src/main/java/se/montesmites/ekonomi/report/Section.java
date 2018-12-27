@@ -30,17 +30,35 @@ public abstract class Section {
     };
   }
 
+  private boolean closingEmptyRow = true;
+
   public abstract Header header();
 
   public abstract Body body();
 
   public abstract Footer footer();
 
+  final Section noClosingEmptyRow() {
+    return this.closingEmptyRow(false);
+  }
+
+  public final Section closingEmptyRow(boolean hasClosingEmptyRow) {
+    this.closingEmptyRow = hasClosingEmptyRow;
+    return this;
+  }
+
+  public final boolean hasClosingEmptyRow() {
+    return this.closingEmptyRow;
+  }
+
   public final Stream<Row> stream() {
     Stream.Builder<Row> sb = Stream.builder();
     header().stream().forEach(sb::add);
     body().stream().map(AmountsProvider::asRow).forEach(sb::add);
     footer().stream().forEach(sb::add);
+    if (this.hasClosingEmptyRow()) {
+      sb.add(Row.empty());
+    }
     return sb.build();
   }
 

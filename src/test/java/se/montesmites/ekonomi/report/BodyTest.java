@@ -133,7 +133,7 @@ class BodyTest {
   void asString() {
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var exp = row1.asRow().asString() + "\n" + row2.asRow().asString();
+    var exp = row1.asRow().asExtendedString() + "\n" + row2.asRow().asExtendedString();
     var act = Body.of(List.of(row1, row2)).asString("\n");
     assertEquals(exp, act);
   }

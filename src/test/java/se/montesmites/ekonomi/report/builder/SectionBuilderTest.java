@@ -1,7 +1,10 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Year;
 import java.util.List;
@@ -74,7 +77,7 @@ class SectionBuilderTest {
                     body.accountGroups(
                         List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
                         .dematerialize());
-    var exp = sectionBuilder.getBody().aggregate("").asRow().asString();
+    var exp = sectionBuilder.getBody().aggregate("").asRow().asExtendedString();
     var act = sectionBuilder.footer(FooterBuilder::aggregateBody).getFooter().asString("\n");
     assertEquals(exp, act);
   }
@@ -134,5 +137,23 @@ class SectionBuilderTest {
             .section()
             .asString("\n");
     assertEquals(exp, act);
+  }
+
+  @Test
+  void closingEmptyRow() {
+    var amountFetcher = AmountFetcher.empty();
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    assertAll(
+        () -> assertTrue(sectionBuilder.hasClosingEmptyRow()),
+        () -> assertTrue(sectionBuilder.section().hasClosingEmptyRow()));
+  }
+
+  @Test
+  void noClosingEmptyRow() {
+    var amountFetcher = AmountFetcher.empty();
+    var sectionBuilder = new SectionBuilder(year, amountFetcher).noClosingEmptyRow();
+    assertAll(
+        () -> assertFalse(sectionBuilder.hasClosingEmptyRow()),
+        () -> assertFalse(sectionBuilder.section().hasClosingEmptyRow()));
   }
 }

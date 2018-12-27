@@ -130,8 +130,8 @@ class AmountsProviderTest {
             column ->
                 Map.ofEntries(entry(DESCRIPTION, description))
                     .getOrDefault(column, Currency.zero().format()))
-            .asString();
-    var act = row.asString();
+            .asExtendedString();
+    var act = row.asExtendedString();
     assertEquals(exp, act);
   }
 
@@ -171,6 +171,6 @@ class AmountsProviderTest {
         };
     var row = AmountsProvider.of(month -> Optional.of(Currency.of((month.ordinal() + 1) * 100)));
     var act = row.accumulate(initialBalance);
-    assertEquals(exp.asRow().asString(), act.asRow().asString());
+    assertEquals(exp.asRow().asExtendedString(), act.asRow().asExtendedString());
   }
 }

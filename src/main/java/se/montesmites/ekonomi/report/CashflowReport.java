@@ -34,7 +34,7 @@ public class CashflowReport {
   }
 
   private Function<Section, Stream<? extends String>> streamSectionRows() {
-    return section -> Stream.concat(section.stream(), Stream.of(Row.empty())).flatMap(renderRow());
+    return section -> section.stream().flatMap(renderRow());
   }
 
   private Function<Row, Stream<? extends String>> renderRow() {

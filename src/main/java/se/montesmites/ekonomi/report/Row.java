@@ -34,8 +34,7 @@ public interface Row {
             entry(AVERAGE, Messages.get(HEADER_ROW_AVERAGE)),
             entry(TOTAL, Messages.get(HEADER_ROW_TOTAL)));
     return Row.of(
-        column ->
-            column.getMonth().map(formattedMonths).orElse(map.getOrDefault(column, "")));
+        column -> column.getMonth().map(formattedMonths).orElse(map.getOrDefault(column, "")));
   }
 
   static Row of(Map<Column, String> values) {
@@ -60,9 +59,13 @@ public interface Row {
     return col -> col == column ? row.format(col) : this.format(col);
   }
 
-  default String asString() {
+  default String asExtendedString() {
     return Column.stream()
         .map(column -> column.name() + " = " + this.format(column))
         .collect(joining(", ", "{", "}"));
+  }
+
+  default String asFormattedString() {
+    return Column.stream().map(this::format).collect(joining());
   }
 }

@@ -22,6 +22,6 @@ public interface Footer {
   Stream<Row> stream();
 
   default String asString(String delimiter) {
-    return stream().map(Row::asString).collect(joining(delimiter));
+    return stream().map(Row::asExtendedString).collect(joining(delimiter));
   }
 }

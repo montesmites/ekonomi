@@ -23,16 +23,16 @@ class RowTest {
   @Test
   void empty() {
     var row = Row.empty();
-    var exp = ((Row) column -> "").asString();
-    var act = row.asString();
+    var exp = ((Row) column -> "").asExtendedString();
+    var act = row.asExtendedString();
     assertEquals(exp, act);
   }
 
   @Test
   void of_function() {
     var row = Row.of(column -> Currency.of(column.ordinal() * 100).format());
-    var exp = ((Row) column -> Currency.of(column.ordinal() * 100).format()).asString();
-    var act = row.asString();
+    var exp = ((Row) column -> Currency.of(column.ordinal() * 100).format()).asExtendedString();
+    var act = row.asExtendedString();
     assertEquals(exp, act);
   }
 
@@ -40,8 +40,8 @@ class RowTest {
   void of_mapWithAllColumns() {
     var map = Column.stream().collect(toMap(column -> column, Column::name));
     var row = Row.of(map);
-    var exp = Row.of(map::get).asString();
-    var act = row.asString();
+    var exp = Row.of(map::get).asExtendedString();
+    var act = row.asExtendedString();
     assertEquals(exp, act);
   }
 
@@ -51,16 +51,16 @@ class RowTest {
         Map.ofEntries(
             entry(DESCRIPTION, "description"), entry(AVERAGE, "average"), entry(TOTAL, "total"));
     var row = Row.of(map);
-    var exp = Row.of(column -> map.getOrDefault(column, "")).asString();
-    var act = row.asString();
+    var exp = Row.of(column -> map.getOrDefault(column, "")).asExtendedString();
+    var act = row.asExtendedString();
     assertEquals(exp, act);
   }
 
   @Test
   void title() {
     var title = "title";
-    var exp = Row.of(Map.of(DESCRIPTION, title.toUpperCase())).asString();
-    var act = Row.title(title).asString();
+    var exp = Row.of(Map.of(DESCRIPTION, title.toUpperCase())).asExtendedString();
+    var act = Row.title(title).asExtendedString();
     assertEquals(exp, act);
   }
 
@@ -80,8 +80,8 @@ class RowTest {
                     .getMonth()
                     .map(Messages::getShortMonth)
                     .orElse(map.getOrDefault(column, "")))
-            .asString();
-    var act = row.asString();
+            .asExtendedString();
+    var act = row.asExtendedString();
     assertEquals(exp, act);
   }
 

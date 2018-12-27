@@ -66,6 +66,7 @@ public interface Body {
   }
 
   default String asString(String delimiter) {
-    return stream().map(AmountsProvider::asRow).map(Row::asString).collect(joining(delimiter));
+    return stream().map(AmountsProvider::asRow).map(Row::asExtendedString)
+        .collect(joining(delimiter));
   }
 }

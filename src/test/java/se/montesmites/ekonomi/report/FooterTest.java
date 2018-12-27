@@ -53,7 +53,7 @@ class FooterTest {
     var row1 = Row.title("title1");
     var row2 = Row.title("title2");
     var footer = Footer.of(List.of(row1, row2));
-    var exp = row1.asString() + "\n" + row2.asString();
+    var exp = row1.asExtendedString() + "\n" + row2.asExtendedString();
     var act = footer.asString("\n");
     assertEquals(exp, act);
   }

@@ -13,6 +13,7 @@ public class SectionBuilder {
   private final HeaderBuilder headerBuilder;
   private final BodyBuilder bodyBuilder;
   private final FooterBuilder footerBuilder;
+  private boolean closingEmptyRow = true;
 
   SectionBuilder(Year year, AmountFetcher amountFetcher) {
     this.headerBuilder = new HeaderBuilder();
@@ -35,6 +36,15 @@ public class SectionBuilder {
     return this;
   }
 
+  SectionBuilder noClosingEmptyRow() {
+    this.closingEmptyRow = false;
+    return this;
+  }
+
+  boolean hasClosingEmptyRow() {
+    return this.closingEmptyRow;
+  }
+
   public Header getHeader() {
     return headerBuilder.header();
   }
@@ -53,6 +63,7 @@ public class SectionBuilder {
 
   public Section section() {
     return Section.of(
-        getHeader(), bodyBuilder.isMaterialized() ? getBody() : Body.empty(), getFooter());
+        getHeader(), bodyBuilder.isMaterialized() ? getBody() : Body.empty(), getFooter())
+        .closingEmptyRow(closingEmptyRow);
   }
 }
