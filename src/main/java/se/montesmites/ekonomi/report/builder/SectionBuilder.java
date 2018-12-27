@@ -36,7 +36,7 @@ public class SectionBuilder {
     return this;
   }
 
-  SectionBuilder noClosingEmptyRow() {
+  public SectionBuilder noClosingEmptyRow() {
     this.closingEmptyRow = false;
     return this;
   }

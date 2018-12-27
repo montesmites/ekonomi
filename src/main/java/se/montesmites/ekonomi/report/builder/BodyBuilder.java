@@ -52,7 +52,7 @@ public class BodyBuilder {
     return this;
   }
 
-  BodyBuilder dematerialize() {
+  public BodyBuilder dematerialize() {
     this.materialized = false;
     return this;
   }

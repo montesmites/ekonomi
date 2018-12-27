@@ -108,8 +108,10 @@ public enum CashflowReport_AccountGroup_2012 {
             .map(
                 amountsProvider ->
                     stream(Month.values())
-                        .map(col -> new AbstractMap.SimpleEntry<>(col,
-                            amountsProvider.getMonthlyAmount(col)))
+                        .map(
+                            col ->
+                                new AbstractMap.SimpleEntry<>(
+                                    col, amountsProvider.getMonthlyAmount(col)))
                         .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)))
             .collect(toList());
     assertEquals(expList.size(), actList.size());
@@ -132,12 +134,7 @@ public enum CashflowReport_AccountGroup_2012 {
   public static void assertExpectedAverages(
       Section section, List<CashflowReport_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.expectedAverage).collect(toList());
-    var act =
-        section
-            .body()
-            .stream()
-            .map(AmountsProvider::getAverage)
-            .collect(toList());
+    var act = section.body().stream().map(AmountsProvider::getAverage).collect(toList());
     assertEquals(exp.size(), act.size());
     for (var i = 0; i < exp.size(); i++) {
       var fmt = "%s at %d";
@@ -150,12 +147,7 @@ public enum CashflowReport_AccountGroup_2012 {
   public static void assertExpectedTotals(
       Section section, List<CashflowReport_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.expectedTotal).collect(toList());
-    var act =
-        section
-            .body()
-            .stream()
-            .map(AmountsProvider::getYearlyTotal)
-            .collect(toList());
+    var act = section.body().stream().map(AmountsProvider::getYearlyTotal).collect(toList());
     assertEquals(exp.size(), act.size());
     for (var i = 0; i < exp.size(); i++) {
       var fmt = "%s at %d";
@@ -187,11 +179,14 @@ public enum CashflowReport_AccountGroup_2012 {
   private AmountsProvider amountsProvider(CashflowDataFetcher fetcher) {
     final var amountsProvider = new AmountsProvider[1];
     new ReportBuilder(fetcher, YEAR)
-        .section()
-        .body(body -> {
-          amountsProvider[0] = body.buildAmountsProvider(AccountGroup.of(description, regex));
-          return body;
-        });
+        .section(
+            section ->
+                section.body(
+                    body -> {
+                      amountsProvider[0] =
+                          body.buildAmountsProvider(AccountGroup.of(description, regex));
+                      return body;
+                    }));
     return amountsProvider[0];
   }
 }

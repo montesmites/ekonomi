@@ -13,7 +13,7 @@ public class FooterBuilder {
   public static FooterBuilder empty() {
     return new FooterBuilder(null) {
       @Override
-      FooterBuilder aggregateBody() {
+      public FooterBuilder aggregateBody() {
         return this;
       }
 
@@ -36,7 +36,7 @@ public class FooterBuilder {
     this.body = body;
   }
 
-  FooterBuilder aggregateBody() {
+  public FooterBuilder aggregateBody() {
     return aggregateBody("");
   }
 

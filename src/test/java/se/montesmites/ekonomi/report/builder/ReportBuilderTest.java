@@ -26,7 +26,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.AccountId;
@@ -73,7 +72,7 @@ class ReportBuilderTest {
   private final YearId yearId = new YearId(year.toString());
 
   @Test
-  void buildSection_title_accountGroups() {
+  void accountGroups() {
     var amountFetcher =
         AmountFetcherBuilder.of(
             Map.of(
@@ -85,11 +84,15 @@ class ReportBuilderTest {
                                 .getMonthlyAmount(month)
                                 .orElse(Currency.zero())))))
             .amountFetcher();
-    var builder = new ReportBuilder(amountFetcher, YEAR);
-    var act = builder.buildSection(TITLE, List.of(ACCOUNT_GROUP));
-    Assertions.assertEquals(
-        new CashflowReport(() -> Stream.of(TEMPLATE_SECTION)).render(),
-        new CashflowReport(() -> Stream.of(act)).render());
+    var exp = List.of(TEMPLATE_SECTION).stream().map(Section::asString).collect(toList());
+    var act =
+        new ReportBuilder(amountFetcher, YEAR)
+            .accountGroups(TITLE, List.of(ACCOUNT_GROUP))
+            .getSections()
+            .stream()
+            .map(Section::asString)
+            .collect(toList());
+    Assertions.assertEquals(exp, act);
   }
 
   @Test
@@ -105,7 +108,6 @@ class ReportBuilderTest {
                                 .getMonthlyAmount(month)
                                 .orElse(Currency.zero())))))
             .amountFetcher();
-    var builder = new ReportBuilder(amountFetcher, YEAR);
     var header = Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var footer =
         (Row)
@@ -127,11 +129,19 @@ class ReportBuilderTest {
                     entry(TOTAL, Currency.of(0).format()),
                     entry(AVERAGE, Currency.of(3033).format()))
                     .get(column);
-    var exp = Section.of(header, Body.empty(), Footer.of(footer));
-    var act = builder.buildSectionWithAcculumatingFooter(TITLE, ACCOUNT_GROUP);
-    assertEquals(
-        new CashflowReport(() -> Stream.of(exp)).render(),
-        new CashflowReport(() -> Stream.of(act)).render());
+    var exp =
+        List.of(Section.of(header, Body.empty(), Footer.of(footer)))
+            .stream()
+            .map(Section::asString)
+            .collect(toList());
+    var act =
+        new ReportBuilder(amountFetcher, YEAR)
+            .accumulateAccountGroups(TITLE, List.of(ACCOUNT_GROUP))
+            .getSections()
+            .stream()
+            .map(Section::asString)
+            .collect(toList());
+    assertEquals(exp, act);
   }
 
   @Test
@@ -381,6 +391,31 @@ class ReportBuilderTest {
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void report() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var amountFetcher =
+        AmountFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountFetcher, Year.now())
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
+            .subtotal(description);
+    var exp = new CashflowReport(() -> reportBuilder.getSections().stream()).render();
+    var act = reportBuilder.report().render();
     assertEquals(exp, act);
   }
 }

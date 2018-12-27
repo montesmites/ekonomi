@@ -18,7 +18,7 @@ public class HeaderBuilder {
     return this;
   }
 
-  public HeaderBuilder months() {
+  HeaderBuilder months() {
     rows.add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     return this;
   }

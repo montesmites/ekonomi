@@ -6,15 +6,14 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
+import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.Section;
 
 public class ReportBuilder {
@@ -29,45 +28,42 @@ public class ReportBuilder {
     this.sections = new ArrayList<>();
   }
 
-  @Deprecated(forRemoval = true)
-  public Section buildSection(String title, List<AccountGroup> accountGroups) {
-    return section()
+  public ReportBuilder accountGroups(String title, List<AccountGroup> accountGroups) {
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    this.sections.add(sectionBuilder);
+    sectionBuilder
         .header(header -> header.title(title).months())
         .body(body -> body.accountGroups(accountGroups))
-        .footer(FooterBuilder::aggregateBody)
-        .section();
+        .footer(FooterBuilder::aggregateBody);
+    return this;
   }
 
-  @Deprecated(forRemoval = true)
-  public Section buildSectionWithAcculumatingFooter(String title, AccountGroup accountGroup) {
-    return section()
+  public ReportBuilder accumulateAccountGroups(String title, List<AccountGroup> accountGroups) {
+    var sectionBuilder = new SectionBuilder(year, amountFetcher);
+    this.sections.add(sectionBuilder);
+    sectionBuilder
         .header(header -> header.title(title).months())
-        .body(body -> body.accountGroups(List.of(accountGroup)).dematerialize())
-        .footer(footer -> footer.accumulateBody(initialBalance(accountGroup)))
+        .body(body -> body.accountGroups(accountGroups).dematerialize())
+        .footer(
+            footer ->
+                footer.accumulateBody(
+                    accountGroups
+                        .stream()
+                        .map(
+                            accountGroup ->
+                                amountFetcher
+                                    .streamAccountIds(year, AccountFilterByRegex.of(accountGroup))
+                                    .map(
+                                        accountId ->
+                                            amountFetcher
+                                                .fetchBalance(accountId)
+                                                .map(Balance::getBalance)
+                                                .orElse(Currency.zero()))
+                                    .reduce(Currency.zero(), Currency::add))
+                        .reduce(Currency::add)
+                        .orElse(Currency.zero())))
         .section();
-  }
-
-  @Deprecated(forRemoval = true)
-  private Currency initialBalance(AccountGroup accountGroup) {
-    return balance(year, AccountFilterByRegex.of(accountGroup));
-  }
-
-  @Deprecated(forRemoval = true)
-  private Currency balance(Year year, Predicate<AccountId> filter) {
-    return amountFetcher
-        .streamAccountIds(year, filter)
-        .map(this::balance)
-        .reduce(Currency.zero(), Currency::add);
-  }
-
-  @Deprecated(forRemoval = true)
-  private Currency balance(AccountId accountId) {
-    return amountFetcher.fetchBalance(accountId).map(Balance::getBalance).orElse(Currency.zero());
-  }
-
-  @Deprecated(forRemoval = true)
-  public SectionBuilder section() {
-    return new SectionBuilder(year, amountFetcher);
+    return this;
   }
 
   public ReportBuilder section(UnaryOperator<SectionBuilder> section) {
@@ -77,7 +73,7 @@ public class ReportBuilder {
     return this;
   }
 
-  ReportBuilder subtotal(String description) {
+  public ReportBuilder subtotal(String description) {
     var sectionBuilder = new SectionBuilder(year, amountFetcher);
     this.sections.add(sectionBuilder);
     var aggregates =
@@ -105,5 +101,9 @@ public class ReportBuilder {
 
   List<Section> getSections() {
     return sections.stream().map(SectionBuilder::section).collect(toList());
+  }
+
+  public CashflowReport report() {
+    return new CashflowReport(() -> getSections().stream());
   }
 }

@@ -69,6 +69,10 @@ public abstract class Section {
         && range(0, these.size()).allMatch(i -> these.get(i).isEquivalentTo(those.get(i)));
   }
 
+  public final String asString() {
+    return asString("\n");
+  }
+
   public final String asString(String delimiter) {
     return header().asString(delimiter)
         + delimiter
