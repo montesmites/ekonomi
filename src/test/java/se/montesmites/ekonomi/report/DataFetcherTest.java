@@ -22,16 +22,16 @@ import testdata.DefaultTestDataExtension;
 import testdata.OrganizationInjector;
 
 @ExtendWith(DefaultTestDataExtension.class)
-class CashflowDataFetcherTest {
+class DataFetcherTest {
 
   private final java.time.Year year = java.time.Year.of(2012);
 
   @OrganizationInjector private Organization organization;
-  private CashflowDataFetcher fetcher;
+  private DataFetcher fetcher;
 
   @BeforeEach
   void before() {
-    this.fetcher = new CashflowDataFetcher(this.organization);
+    this.fetcher = new DataFetcher(this.organization);
   }
 
   @Test

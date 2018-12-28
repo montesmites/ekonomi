@@ -2,7 +2,7 @@ package se.montesmites.ekonomi.report.builder;
 
 import java.time.Year;
 import java.util.function.UnaryOperator;
-import se.montesmites.ekonomi.report.AmountFetcher;
+import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
@@ -15,9 +15,9 @@ public class SectionBuilder {
   private final FooterBuilder footerBuilder;
   private boolean closingEmptyRow = true;
 
-  SectionBuilder(Year year, AmountFetcher amountFetcher) {
+  SectionBuilder(Year year, AmountsFetcher amountsFetcher) {
     this.headerBuilder = new HeaderBuilder();
-    this.bodyBuilder = new BodyBuilder(year, amountFetcher);
+    this.bodyBuilder = new BodyBuilder(year, amountsFetcher);
     this.footerBuilder = new FooterBuilder(this.bodyBuilder::body);
   }
 

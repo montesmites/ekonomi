@@ -22,7 +22,7 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
-import se.montesmites.ekonomi.report.AmountFetcher;
+import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 
@@ -49,8 +49,8 @@ class BodyBuilderTest {
         AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var amountsProvider2 =
         AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var amountFetcher =
-        new AmountFetcher() {
+    var amountsFetcher =
+        new AmountsFetcher() {
           @Override
           public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
             var account = accountId.getId();
@@ -77,7 +77,7 @@ class BodyBuilderTest {
             return EnumSet.allOf(Month.class);
           }
         };
-    var bodyBuilder = new BodyBuilder(year, amountFetcher);
+    var bodyBuilder = new BodyBuilder(year, amountsFetcher);
     var exp = Body.of(List.of(amountsProvider1, amountsProvider2));
     var act = bodyBuilder.accountGroups(accountGroups).body();
     assertEquals(exp.asString("\n"), act.asString("\n"));

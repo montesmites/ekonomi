@@ -11,10 +11,10 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 
-public interface AmountFetcher {
+public interface AmountsFetcher {
 
-  static AmountFetcher empty() {
-    return new AmountFetcher() {
+  static AmountsFetcher empty() {
+    return new AmountsFetcher() {
       @Override
       public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
         return Optional.empty();

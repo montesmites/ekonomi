@@ -31,7 +31,7 @@ class TouchedYearMonthTest {
   void oneMonth() {
     this.organizationBuilder =
         new OrganizationBuilder(pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY))));
-    CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
+    DataFetcher fetcher = new DataFetcher(organizationBuilder.build());
     Set<Month> exp = EnumSet.of(JANUARY);
     Set<Month> act = fetcher.touchedMonths(year);
     assertEquals(exp, act);
@@ -42,7 +42,7 @@ class TouchedYearMonthTest {
     this.organizationBuilder =
         new OrganizationBuilder(
             pathToBinaryFiles, Filter.get(filterEntry(EnumSet.of(JANUARY, FEBRUARY))));
-    CashflowDataFetcher fetcher = new CashflowDataFetcher(organizationBuilder.build());
+    DataFetcher fetcher = new DataFetcher(organizationBuilder.build());
     Set<Month> exp = EnumSet.of(JANUARY, FEBRUARY);
     Set<Month> act = fetcher.touchedMonths(year);
     assertEquals(exp, act);

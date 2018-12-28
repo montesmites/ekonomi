@@ -45,13 +45,13 @@ class FooterBuilderTest {
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var accountGroups = List.of(AccountGroup.of("1111", "1111"), AccountGroup.of("2222", "2222"));
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2)))
-            .amountFetcher();
-    var bodyBuilder = new BodyBuilder(year, amountFetcher).accountGroups(accountGroups);
+            .amountsFetcher();
+    var bodyBuilder = new BodyBuilder(year, amountsFetcher).accountGroups(accountGroups);
     var footerBuilder = new FooterBuilder(bodyBuilder::body).aggregateBody();
     var exp = Footer.of(Body.of(List.of(row1, row2)).aggregate("").asRow());
     var act = footerBuilder.footer();
@@ -64,12 +64,12 @@ class FooterBuilderTest {
     var initialBalance = Currency.of(100);
     var accountId = new AccountId(yearId, "1111");
     var accountGroups = List.of(AccountGroup.of("1111", "1111"));
-    var amountFetcher =
-        AmountFetcherBuilder.of(Map.ofEntries(entry(accountId, row)))
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(Map.ofEntries(entry(accountId, row)))
             .balances(Map.of(accountId, Optional.of(new Balance(accountId, initialBalance))))
-            .amountFetcher();
+            .amountsFetcher();
     var bodyBuilder =
-        new BodyBuilder(year, amountFetcher).accountGroups(accountGroups).dematerialize();
+        new BodyBuilder(year, amountsFetcher).accountGroups(accountGroups).dematerialize();
     var footerBuilder = new FooterBuilder(bodyBuilder::body).accumulateBody(initialBalance);
     var exp = Footer.of(row.accumulate(initialBalance).asRow());
     var act = footerBuilder.footer();

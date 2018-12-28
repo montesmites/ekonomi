@@ -28,7 +28,7 @@ import se.montesmites.ekonomi.model.tuple.AmountEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 import se.montesmites.ekonomi.organization.Organization;
 
-public class CashflowDataFetcher implements AmountFetcher {
+public class DataFetcher implements AmountsFetcher {
 
   private static EntryCollector entryCollector(Organization organization) {
     return new EntryCollector(
@@ -46,7 +46,7 @@ public class CashflowDataFetcher implements AmountFetcher {
 
   private final Map<java.time.Year, Set<Month>> touchedMonths;
 
-  public CashflowDataFetcher(Organization organization) {
+  public DataFetcher(Organization organization) {
     this.organization = organization;
     this.entryAggregate = organization.streamEntries().collect(entryCollector(organization));
     this.touchedMonths = touchedMonths();

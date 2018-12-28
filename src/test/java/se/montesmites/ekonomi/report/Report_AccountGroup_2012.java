@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
-public enum CashflowReport_AccountGroup_2012 {
+public enum Report_AccountGroup_2012 {
   BOKFORT_RESULTAT(
       "Bokfört resultat",
       "([3-7]\\d|8[1-8])\\d\\d",
@@ -75,12 +75,12 @@ public enum CashflowReport_AccountGroup_2012 {
   private static final java.time.Year YEAR = java.time.Year.of(2012);
 
   public static Stream<AmountsProvider> bodyRowsOf(
-      CashflowDataFetcher fetcher, List<CashflowReport_AccountGroup_2012> groups) {
+      DataFetcher fetcher, List<Report_AccountGroup_2012> groups) {
     return groups.stream().map(group -> group.amountsProvider(fetcher));
   }
 
   public static void assertBodyRowDescriptions(
-      Section section, List<CashflowReport_AccountGroup_2012> groups) {
+      Section section, List<Report_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.description).collect(toList());
     var act =
         section
@@ -99,7 +99,7 @@ public enum CashflowReport_AccountGroup_2012 {
   }
 
   public static void assertMonthlyAmounts(
-      Section section, List<CashflowReport_AccountGroup_2012> groups) {
+      Section section, List<Report_AccountGroup_2012> groups) {
     var expList = groups.stream().map(group -> group.expectedAmounts).collect(toList());
     var actList =
         section
@@ -132,7 +132,7 @@ public enum CashflowReport_AccountGroup_2012 {
   }
 
   public static void assertExpectedAverages(
-      Section section, List<CashflowReport_AccountGroup_2012> groups) {
+      Section section, List<Report_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.expectedAverage).collect(toList());
     var act = section.body().stream().map(AmountsProvider::getAverage).collect(toList());
     assertEquals(exp.size(), act.size());
@@ -145,7 +145,7 @@ public enum CashflowReport_AccountGroup_2012 {
   }
 
   public static void assertExpectedTotals(
-      Section section, List<CashflowReport_AccountGroup_2012> groups) {
+      Section section, List<Report_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.expectedTotal).collect(toList());
     var act = section.body().stream().map(AmountsProvider::getYearlyTotal).collect(toList());
     assertEquals(exp.size(), act.size());
@@ -163,7 +163,7 @@ public enum CashflowReport_AccountGroup_2012 {
   private final Currency expectedAverage;
   private final Currency expectedTotal;
 
-  CashflowReport_AccountGroup_2012(
+  Report_AccountGroup_2012(
       String description,
       String regex,
       Currency expectedAverage,
@@ -176,7 +176,7 @@ public enum CashflowReport_AccountGroup_2012 {
     this.expectedTotal = expectedTotal;
   }
 
-  private AmountsProvider amountsProvider(CashflowDataFetcher fetcher) {
+  private AmountsProvider amountsProvider(DataFetcher fetcher) {
     final var amountsProvider = new AmountsProvider[1];
     new ReportBuilder(fetcher, YEAR)
         .section(

@@ -34,9 +34,9 @@ import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
-import se.montesmites.ekonomi.report.CashflowReport;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
+import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
 
@@ -73,8 +73,8 @@ class ReportBuilderTest {
 
   @Test
   void accountGroups() {
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.of(
                 ACCOUNT_ID,
                 AmountsProvider.of(
@@ -83,10 +83,10 @@ class ReportBuilderTest {
                             TEMPLATE_AMOUNTS_PROVIDER
                                 .getMonthlyAmount(month)
                                 .orElse(Currency.zero())))))
-            .amountFetcher();
+            .amountsFetcher();
     var exp = List.of(TEMPLATE_SECTION).stream().map(Section::asString).collect(toList());
     var act =
-        new ReportBuilder(amountFetcher, YEAR)
+        new ReportBuilder(amountsFetcher, YEAR)
             .accountGroups(TITLE, List.of(ACCOUNT_GROUP))
             .getSections()
             .stream()
@@ -97,8 +97,8 @@ class ReportBuilderTest {
 
   @Test
   void buildSection_title_accountGroup() {
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.of(
                 ACCOUNT_ID,
                 AmountsProvider.of(
@@ -107,7 +107,7 @@ class ReportBuilderTest {
                             TEMPLATE_AMOUNTS_PROVIDER
                                 .getMonthlyAmount(month)
                                 .orElse(Currency.zero())))))
-            .amountFetcher();
+            .amountsFetcher();
     var header = Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var footer =
         (Row)
@@ -135,7 +135,7 @@ class ReportBuilderTest {
             .map(Section::asString)
             .collect(toList());
     var act =
-        new ReportBuilder(amountFetcher, YEAR)
+        new ReportBuilder(amountsFetcher, YEAR)
             .accumulateAccountGroups(TITLE, List.of(ACCOUNT_GROUP))
             .getSections()
             .stream()
@@ -148,14 +148,14 @@ class ReportBuilderTest {
   void section() {
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2)))
-            .amountFetcher();
+            .amountsFetcher();
     var reportBuilder =
-        new ReportBuilder(amountFetcher, YEAR)
+        new ReportBuilder(amountsFetcher, YEAR)
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
@@ -182,14 +182,14 @@ class ReportBuilderTest {
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var subtotal =
         AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2)))
-            .amountFetcher();
+            .amountsFetcher();
     var reportBuilder =
-        new ReportBuilder(amountFetcher, Year.now())
+        new ReportBuilder(amountsFetcher, Year.now())
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
@@ -221,14 +221,14 @@ class ReportBuilderTest {
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var subtotal =
         AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2)))
-            .amountFetcher();
+            .amountsFetcher();
     var reportBuilder =
-        new ReportBuilder(amountFetcher, Year.now())
+        new ReportBuilder(amountsFetcher, Year.now())
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
@@ -267,15 +267,15 @@ class ReportBuilderTest {
         AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 300)));
     var subtotal2 =
         AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 600)));
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2),
                 entry(new AccountId(yearId, "3333"), row3)))
-            .amountFetcher();
+            .amountsFetcher();
     var reportBuilder =
-        new ReportBuilder(amountFetcher, Year.now())
+        new ReportBuilder(amountsFetcher, Year.now())
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
@@ -354,16 +354,16 @@ class ReportBuilderTest {
                 touchedMonths.contains(month)
                     ? Optional.of(Currency.of(month.ordinal() * 600))
                     : Optional.empty());
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2),
                 entry(new AccountId(yearId, "3333"), row3)))
             .touchedMonths(Map.of(YEAR, touchedMonths))
-            .amountFetcher();
+            .amountsFetcher();
     var reportBuilder =
-        new ReportBuilder(amountFetcher, Year.now())
+        new ReportBuilder(amountsFetcher, Year.now())
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
@@ -399,14 +399,14 @@ class ReportBuilderTest {
     var description = "description";
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var amountFetcher =
-        AmountFetcherBuilder.of(
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2)))
-            .amountFetcher();
+            .amountsFetcher();
     var reportBuilder =
-        new ReportBuilder(amountFetcher, Year.now())
+        new ReportBuilder(amountsFetcher, Year.now())
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
@@ -414,7 +414,7 @@ class ReportBuilderTest {
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
             .subtotal(description);
-    var exp = new CashflowReport(() -> reportBuilder.getSections().stream()).render();
+    var exp = new Report(() -> reportBuilder.getSections().stream()).render();
     var act = reportBuilder.report().render();
     assertEquals(exp, act);
   }

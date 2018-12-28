@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
-import se.montesmites.ekonomi.report.AmountFetcher;
+import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 
@@ -38,13 +38,13 @@ public class BodyBuilder {
   }
 
   private final Year year;
-  private final AmountFetcher amountFetcher;
+  private final AmountsFetcher amountsFetcher;
   private List<AccountGroup> accountGroups = new ArrayList<>();
   private boolean materialized = true;
 
-  BodyBuilder(Year year, AmountFetcher amountFetcher) {
+  BodyBuilder(Year year, AmountsFetcher amountsFetcher) {
     this.year = year;
-    this.amountFetcher = amountFetcher;
+    this.amountsFetcher = amountsFetcher;
   }
 
   public BodyBuilder accountGroups(List<AccountGroup> accountGroups) {
@@ -68,7 +68,7 @@ public class BodyBuilder {
 
   public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
     var accountIds =
-        amountFetcher
+        amountsFetcher
             .streamAccountIds(year, AccountFilterByRegex.of(accountGroup.regex()))
             .collect(toList());
     var row =
@@ -84,14 +84,14 @@ public class BodyBuilder {
                             .stream()
                             .map(
                                 accountId ->
-                                    amountFetcher
+                                    amountsFetcher
                                         .fetchAmount(accountId, yearMonth)
                                         .map(Currency::getAmount)
                                         .map(Currency::of)
                                         .map(Currency::negate)
                                         .orElse(Currency.zero()))
                             .reduce(Currency.zero(), Currency::add);
-            return amountFetcher.touchedMonths(year).contains(month)
+            return amountsFetcher.touchedMonths(year).contains(month)
                 ? Optional.of(sum.get())
                 : Optional.empty();
           }

@@ -9,8 +9,8 @@ import java.util.List;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsProvider;
-import se.montesmites.ekonomi.report.CashflowDataFetcher;
-import se.montesmites.ekonomi.report.CashflowReport;
+import se.montesmites.ekonomi.report.DataFetcher;
+import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 class Main {
@@ -27,15 +27,15 @@ class Main {
     main.renderToFile(report, path);
   }
 
-  private final CashflowDataFetcher fetcher;
+  private final DataFetcher fetcher;
 
   private Main() {
     var path = Paths.get("C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
     var organization = new OrganizationBuilder(path).build();
-    this.fetcher = new CashflowDataFetcher(organization);
+    this.fetcher = new DataFetcher(organization);
   }
 
-  private CashflowReport generateCashflowReport(Year year) {
+  private Report generateCashflowReport(Year year) {
     return new ReportBuilder(fetcher, year)
         .accountGroups(
             "Inkomster",
@@ -92,7 +92,7 @@ class Main {
         .report();
   }
 
-  private void renderToFile(CashflowReport report, Path path) throws IOException {
+  private void renderToFile(Report report, Path path) throws IOException {
     Files.write(path, report.render());
   }
 }

@@ -15,18 +15,18 @@ import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
-import se.montesmites.ekonomi.report.AmountFetcher;
+import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 
-public class AmountFetcherBuilder {
+public class AmountsFetcherBuilder {
 
-  public static AmountFetcherBuilder empty() {
-    return new AmountFetcherBuilder();
+  public static AmountsFetcherBuilder empty() {
+    return new AmountsFetcherBuilder();
   }
 
-  public static AmountFetcherBuilder of(Map<AccountId, AmountsProvider> amountsProviders) {
+  public static AmountsFetcherBuilder of(Map<AccountId, AmountsProvider> amountsProviders) {
     var year = Year.now();
-    return new AmountFetcherBuilder()
+    return new AmountsFetcherBuilder()
         .accountIds(Map.of(year, new ArrayList<>(amountsProviders.keySet())))
         .amounts(
             (accountId, yearMonth) ->
@@ -43,29 +43,29 @@ public class AmountFetcherBuilder {
       (__, ___) -> Optional.empty();
   private Map<Year, Set<Month>> touchedMonths = Map.of();
 
-  private AmountFetcherBuilder accountIds(Map<Year, List<AccountId>> accountIds) {
+  private AmountsFetcherBuilder accountIds(Map<Year, List<AccountId>> accountIds) {
     this.accountIds = accountIds;
     return this;
   }
 
-  AmountFetcherBuilder balances(Map<AccountId, Optional<Balance>> balances) {
+  AmountsFetcherBuilder balances(Map<AccountId, Optional<Balance>> balances) {
     this.balances = balances;
     return this;
   }
 
-  private AmountFetcherBuilder amounts(
+  private AmountsFetcherBuilder amounts(
       BiFunction<AccountId, YearMonth, Optional<Currency>> amounts) {
     this.amounts = amounts;
     return this;
   }
 
-  AmountFetcherBuilder touchedMonths(Map<Year, Set<Month>> touchedMonths) {
+  AmountsFetcherBuilder touchedMonths(Map<Year, Set<Month>> touchedMonths) {
     this.touchedMonths = touchedMonths;
     return this;
   }
 
-  AmountFetcher amountFetcher() {
-    return new AmountFetcher() {
+  AmountsFetcher amountsFetcher() {
+    return new AmountsFetcher() {
       @Override
       public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
         return amounts.apply(accountId, yearMonth);

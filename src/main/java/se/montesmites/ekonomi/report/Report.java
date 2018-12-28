@@ -9,15 +9,15 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class CashflowReport {
+public class Report {
 
-  public static CashflowReport empty() {
-    return new CashflowReport(Stream::empty);
+  public static Report empty() {
+    return new Report(Stream::empty);
   }
 
   private final Supplier<Stream<Section>> sections;
 
-  public CashflowReport(Supplier<Stream<Section>> sections) {
+  public Report(Supplier<Stream<Section>> sections) {
     this.sections = sections;
   }
 
