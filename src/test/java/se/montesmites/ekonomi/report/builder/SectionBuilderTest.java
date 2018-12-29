@@ -10,6 +10,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
@@ -22,6 +23,7 @@ import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.Tag;
 
 class SectionBuilderTest {
 
@@ -155,5 +157,25 @@ class SectionBuilderTest {
     assertAll(
         () -> assertFalse(sectionBuilder.hasClosingEmptyRow()),
         () -> assertFalse(sectionBuilder.section().hasClosingEmptyRow()));
+  }
+
+  @Test
+  void tagDefault() {
+    var tags = Set.of();
+    var amountsFetcher = AmountsFetcher.empty();
+    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
+    assertAll(
+        () -> assertEquals(tags, sectionBuilder.getTags()),
+        () -> assertEquals(tags, sectionBuilder.section().getTags()));
+  }
+
+  @Test
+  void tagExplicit() {
+    var tag = Tag.of("explicit-tag");
+    var amountsFetcher = AmountsFetcher.empty();
+    var sectionBuilder = new SectionBuilder(year, amountsFetcher).tag(tag);
+    assertAll(
+        () -> assertEquals(Set.of(tag), sectionBuilder.getTags()),
+        () -> assertEquals(Set.of(tag), sectionBuilder.section().getTags()));
   }
 }

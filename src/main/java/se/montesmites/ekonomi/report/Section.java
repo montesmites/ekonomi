@@ -3,6 +3,9 @@ package se.montesmites.ekonomi.report;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public abstract class Section {
@@ -30,6 +33,7 @@ public abstract class Section {
     };
   }
 
+  private Set<Tag> tags = new HashSet<>();
   private boolean closingEmptyRow = true;
 
   public abstract Header header();
@@ -45,6 +49,20 @@ public abstract class Section {
   public final Section closingEmptyRow(boolean hasClosingEmptyRow) {
     this.closingEmptyRow = hasClosingEmptyRow;
     return this;
+  }
+
+  final Section tag(Tag tag) {
+    this.tags.add(tag);
+    return this;
+  }
+
+  public final Section tags(Collection<Tag> tags) {
+    this.tags.addAll(tags);
+    return this;
+  }
+
+  public final Set<Tag> getTags() {
+    return Set.copyOf(this.tags);
   }
 
   public final boolean hasClosingEmptyRow() {

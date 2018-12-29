@@ -10,6 +10,7 @@ import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Currency;
@@ -100,5 +101,19 @@ class SectionTest {
   void noClosingEmptyRow() {
     var section = Section.empty().noClosingEmptyRow();
     assertFalse(section.hasClosingEmptyRow());
+  }
+
+  @Test
+  void tagDefault() {
+    var tags = Set.of();
+    var section = Section.empty();
+    assertEquals(tags, section.getTags());
+  }
+
+  @Test
+  void tagExplicit() {
+    var tag = Tag.of("explicit-tag");
+    var section = Section.empty().tag(tag);
+    assertEquals(Set.of(tag), section.getTags());
   }
 }
