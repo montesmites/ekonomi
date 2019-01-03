@@ -1,7 +1,6 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.Column.APRIL;
@@ -22,7 +21,6 @@ import static se.montesmites.ekonomi.report.Column.TOTAL;
 
 import java.time.Month;
 import java.time.Year;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,9 +44,6 @@ class ReportBuilderTest {
   private static final String DESCRIPTION_TEXT = "description";
   private static final String REGEX = "regex";
   private static final AccountGroup ACCOUNT_GROUP = AccountGroup.of(DESCRIPTION_TEXT, REGEX);
-  private static final Year YEAR = Year.of(2018);
-  private static final YearId YEAR_ID = new YearId("YearId");
-  private static final AccountId ACCOUNT_ID = new AccountId(YEAR_ID, REGEX);
   private static final AmountsProvider TEMPLATE_AMOUNTS_PROVIDER =
       new AmountsProvider() {
         @Override
@@ -70,13 +65,14 @@ class ReportBuilderTest {
 
   private final Year year = Year.now();
   private final YearId yearId = new YearId(year.toString());
+  private final AccountId accountId = new AccountId(yearId, REGEX);
 
   @Test
   void accountGroups() {
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.of(
-                ACCOUNT_ID,
+                accountId,
                 AmountsProvider.of(
                     month ->
                         Optional.of(
@@ -86,7 +82,7 @@ class ReportBuilderTest {
             .amountsFetcher();
     var exp = List.of(TEMPLATE_SECTION).stream().map(Section::asString).collect(toList());
     var act =
-        new ReportBuilder(amountsFetcher, YEAR)
+        new ReportBuilder(amountsFetcher, year)
             .accountGroups(TITLE, List.of(ACCOUNT_GROUP))
             .getSections()
             .stream()
@@ -100,7 +96,7 @@ class ReportBuilderTest {
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.of(
-                ACCOUNT_ID,
+                accountId,
                 AmountsProvider.of(
                     month ->
                         Optional.of(
@@ -135,7 +131,7 @@ class ReportBuilderTest {
             .map(Section::asString)
             .collect(toList());
     var act =
-        new ReportBuilder(amountsFetcher, YEAR)
+        new ReportBuilder(amountsFetcher, year)
             .accumulateAccountGroups(TITLE, List.of(ACCOUNT_GROUP))
             .getSections()
             .stream()
@@ -155,7 +151,7 @@ class ReportBuilderTest {
                 entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var reportBuilder =
-        new ReportBuilder(amountsFetcher, YEAR)
+        new ReportBuilder(amountsFetcher, year)
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
@@ -172,225 +168,6 @@ class ReportBuilderTest {
             .stream()
             .map(section -> section.asString("\n"))
             .collect(toList());
-    assertEquals(exp, act);
-  }
-
-  @Test
-  void subtotal_materializedBody() {
-    var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var amountsFetcher =
-        AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
-            .amountsFetcher();
-    var reportBuilder =
-        new ReportBuilder(amountsFetcher, Year.now())
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description);
-    var exp =
-        List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
-    var act =
-        reportBuilder
-            .getSections()
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
-    assertEquals(exp, act);
-  }
-
-  @Test
-  void subtotal_dematerializedBody() {
-    var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var amountsFetcher =
-        AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
-            .amountsFetcher();
-    var reportBuilder =
-        new ReportBuilder(amountsFetcher, Year.now())
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
-            .section(
-                section ->
-                    section.body(
-                        body ->
-                            body.accountGroups(List.of(AccountGroup.of("", "2222")))
-                                .dematerialize()))
-            .subtotal(description);
-    var exp =
-        List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
-    var act =
-        reportBuilder
-            .getSections()
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
-    assertEquals(exp, act);
-  }
-
-  @Test
-  void subtotal_twoSubtotals() {
-    var description1 = "description1";
-    var description2 = "description2";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var subtotal1 =
-        AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var subtotal2 =
-        AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 600)));
-    var amountsFetcher =
-        AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2),
-                entry(new AccountId(yearId, "3333"), row3)))
-            .amountsFetcher();
-    var reportBuilder =
-        new ReportBuilder(amountsFetcher, Year.now())
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description1)
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
-            .subtotal(description2);
-    var exp =
-        List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
-            Section.of(Header.empty(), Body.of(row3), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
-    var act =
-        reportBuilder
-            .getSections()
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
-    assertEquals(exp, act);
-  }
-
-  @Test
-  void subtotal_withTwoUntouchedMonths() {
-    var touchedMonths =
-        EnumSet.of(
-            Month.JANUARY,
-            Month.FEBRUARY,
-            Month.MARCH,
-            Month.APRIL,
-            Month.MAY,
-            Month.JUNE,
-            Month.JULY,
-            Month.AUGUST,
-            Month.SEPTEMBER,
-            Month.OCTOBER);
-    var description1 = "description1";
-    var description2 = "description2";
-    var row1 =
-        AmountsProvider.of(
-            month ->
-                touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 100))
-                    : Optional.empty());
-    var row2 =
-        AmountsProvider.of(
-            month ->
-                touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 200))
-                    : Optional.empty());
-    var row3 =
-        AmountsProvider.of(
-            month ->
-                touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 300))
-                    : Optional.empty());
-    var subtotal1 =
-        AmountsProvider.of(
-            description1,
-            month ->
-                touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 300))
-                    : Optional.empty());
-    var subtotal2 =
-        AmountsProvider.of(
-            description2,
-            month ->
-                touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 600))
-                    : Optional.empty());
-    var amountsFetcher =
-        AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2),
-                entry(new AccountId(yearId, "3333"), row3)))
-            .touchedMonths(Map.of(YEAR, touchedMonths))
-            .amountsFetcher();
-    var reportBuilder =
-        new ReportBuilder(amountsFetcher, Year.now())
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description1)
-            .section(
-                section ->
-                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
-            .subtotal(description2);
-    var exp =
-        List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
-            Section.of(Header.empty(), Body.of(row3), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
-    var act =
-        reportBuilder
-            .getSections()
-            .stream()
-            .map(section -> section.asString("\n"))
-            .collect(joining("\n"));
     assertEquals(exp, act);
   }
 
