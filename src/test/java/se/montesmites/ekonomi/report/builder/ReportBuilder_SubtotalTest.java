@@ -49,7 +49,7 @@ class ReportBuilder_SubtotalTest {
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description);
+            .subtotal(description, TagFilter.any());
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),
@@ -91,7 +91,7 @@ class ReportBuilder_SubtotalTest {
                         body ->
                             body.accountGroups(List.of(AccountGroup.of("", "2222")))
                                 .dematerialize()))
-            .subtotal(description);
+            .subtotal(description, TagFilter.any());
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),
@@ -135,11 +135,11 @@ class ReportBuilder_SubtotalTest {
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description1)
+            .subtotal(description1, TagFilter.any())
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
-            .subtotal(description2);
+            .subtotal(description2, TagFilter.any());
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),
@@ -223,11 +223,11 @@ class ReportBuilder_SubtotalTest {
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description1)
+            .subtotal(description1, TagFilter.any())
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
-            .subtotal(description2);
+            .subtotal(description2, TagFilter.any());
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),
@@ -259,7 +259,8 @@ class ReportBuilder_SubtotalTest {
                 entry(new AccountId(yearId, "1111"), row1),
                 entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
-    var reportBuilder = new ReportBuilder(amountsFetcher, year).subtotal(description);
+    var reportBuilder = new ReportBuilder(amountsFetcher, year)
+        .subtotal(description, TagFilter.any());
     var exp =
         List.of(Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
             .stream()
@@ -300,7 +301,7 @@ class ReportBuilder_SubtotalTest {
                     section
                         .body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222"))))
                         .tag(tag1))
-            .subtotal(description);
+            .subtotal(description, TagFilter.any());
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),
@@ -345,7 +346,7 @@ class ReportBuilder_SubtotalTest {
                     section
                         .body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222"))))
                         .tag(tag2))
-            .subtotal(description);
+            .subtotal(description, TagFilter.any());
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),

@@ -11,6 +11,7 @@ import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.DataFetcher;
 import se.montesmites.ekonomi.report.Report;
+import se.montesmites.ekonomi.report.TagFilter;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 class Main {
@@ -65,7 +66,7 @@ class Main {
             List.of(
                 AccountGroup.of("Boende diverse", "5060|5[458]\\d\\d"),
                 AccountGroup.of("Övrigt", "(4[89]|[67]\\d)\\d\\d")))
-        .subtotal("Före jämförelsestörande poster".toUpperCase())
+        .subtotal("Före jämförelsestörande poster".toUpperCase(), TagFilter.any())
         .accountGroups(
             "Jämförelsestörande poster",
             List.of(
@@ -74,7 +75,7 @@ class Main {
                 AccountGroup.of("Finansiellt netto", "(83\\d\\d)|(84[2-8]\\d)"),
                 AccountGroup.of("Investering boende", "11\\d\\d"),
                 AccountGroup.of("Extraordinärt netto", "87\\d\\d")))
-        .subtotal("Förändring likvida medel".toUpperCase())
+        .subtotal("Förändring likvida medel".toUpperCase(), TagFilter.any())
         .section(
             section ->
                 section
@@ -84,7 +85,7 @@ class Main {
                                 List.of(AccountGroup.of("Likvida medel", LIKVIDA_MEDEL_REGEX)))
                                 .dematerialize())
                     .noClosingEmptyRow())
-        .subtotal("Kontrollsumma".toUpperCase())
+        .subtotal("Kontrollsumma".toUpperCase(), TagFilter.any())
         .accumulateAccountGroups(
             "Ackumulerade likvida medel",
             List.of(

@@ -37,6 +37,7 @@ import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.TagFilter;
 
 class ReportBuilderTest {
 
@@ -190,7 +191,7 @@ class ReportBuilderTest {
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description);
+            .subtotal(description, TagFilter.any());
     var exp = new Report(() -> reportBuilder.getSections().stream()).render();
     var act = reportBuilder.report().render();
     assertEquals(exp, act);
