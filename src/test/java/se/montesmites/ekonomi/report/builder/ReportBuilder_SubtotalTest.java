@@ -20,6 +20,8 @@ import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.Tag;
+import se.montesmites.ekonomi.report.TagFilter;
 
 class ReportBuilder_SubtotalTest {
 
@@ -233,6 +235,223 @@ class ReportBuilder_SubtotalTest {
             Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
             Section.of(Header.empty(), Body.of(row3), Footer.empty()),
             Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotal_noSections() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal = AmountsProvider.of(description, __ -> Optional.of(Currency.zero()));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var reportBuilder = new ReportBuilder(amountsFetcher, year).subtotal(description);
+    var exp =
+        List.of(Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotalForAnyTag_twoSectionsWithSameTag() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var tag1 = Tag.of("tag1");
+    var reportBuilder =
+        new ReportBuilder(amountsFetcher, Year.now())
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111"))))
+                        .tag(tag1))
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222"))))
+                        .tag(tag1))
+            .subtotal(description);
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotalForAnyTag_twoSectionsWithDifferentTags() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var tag1 = Tag.of("tag1");
+    var tag2 = Tag.of("tag2");
+    var reportBuilder =
+        new ReportBuilder(amountsFetcher, Year.now())
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111"))))
+                        .tag(tag1))
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222"))))
+                        .tag(tag2))
+            .subtotal(description);
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotalForOneTag_twoSectionsWithDifferentTags() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var tag1 = Tag.of("tag1");
+    var tag2 = Tag.of("tag2");
+    var reportBuilder =
+        new ReportBuilder(amountsFetcher, Year.now())
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111"))))
+                        .tag(tag1))
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222"))))
+                        .tag(tag2))
+            .subtotal(description, TagFilter.isEqualTo(tag1));
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void subtotalOnceForEachTagAndOnceForBoth_twoSectionsWithDifferentTags() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal1 =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var subtotal2 =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal3 =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var tag1 = Tag.of("tag1");
+    var tag2 = Tag.of("tag2");
+    var tag3 = Tag.of("tag3");
+    var reportBuilder =
+        new ReportBuilder(amountsFetcher, Year.now())
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111"))))
+                        .tag(tag1)
+                        .tag(tag3))
+            .subtotal(description, TagFilter.isEqualTo(tag1))
+            .section(
+                section ->
+                    section
+                        .body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222"))))
+                        .tag(tag2)
+                        .tag(tag3))
+            .subtotal(description, TagFilter.isEqualTo(tag2))
+            .subtotal(description, TagFilter.isEqualTo(tag3));
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal3.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));

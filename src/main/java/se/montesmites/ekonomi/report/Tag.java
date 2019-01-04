@@ -12,6 +12,10 @@ public class Tag {
     this.tag = tag;
   }
 
+  public String getTag() {
+    return tag;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
