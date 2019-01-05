@@ -43,7 +43,7 @@ public class ReportBuilder {
   }
 
   public ReportBuilder accountGroups(String title, List<AccountGroup> accountGroups) {
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
+    var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
     sectionBuilder
         .header(header -> header.title(title).months())
@@ -54,7 +54,7 @@ public class ReportBuilder {
 
   public ReportBuilder accounts(
       String title, String regex, UnaryOperator<AmountsProvider> amountsProviderProcessor) {
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
+    var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
     var accounts =
         amountsFetcher
@@ -81,7 +81,7 @@ public class ReportBuilder {
   }
 
   public ReportBuilder accumulateAccountGroups(String title, List<AccountGroup> accountGroups) {
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
+    var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
     sectionBuilder
         .header(header -> header.title(title).months())
@@ -114,14 +114,14 @@ public class ReportBuilder {
   }
 
   public ReportBuilder section(UnaryOperator<SectionBuilder> section) {
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher).tags(tags);
+    var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
     section.apply(sectionBuilder);
     return this;
   }
 
   public ReportBuilder subtotal(String description, TagFilter tagFilter) {
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
+    var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
     var aggregates =
         List.copyOf(this.sections)
@@ -153,5 +153,9 @@ public class ReportBuilder {
 
   public Report report() {
     return new Report(() -> getSections().stream());
+  }
+
+  private SectionBuilder sectionBuilder() {
+    return new SectionBuilder(year, amountsFetcher).tags(this.tags);
   }
 }

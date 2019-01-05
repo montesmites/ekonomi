@@ -6,11 +6,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Year;
 import java.util.List;
+import java.util.Set;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.DataFetcher;
 import se.montesmites.ekonomi.report.Report;
+import se.montesmites.ekonomi.report.Tag;
 import se.montesmites.ekonomi.report.TagFilter;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
@@ -109,11 +111,13 @@ class Main {
 
   private Report generateResultReport(Year year) {
     return new ReportBuilder(dataFetcher, dataFetcher, year)
+        .tags(Set.of(Tag.of("Bruttoresultat")))
         .accounts("Intäkter", "3\\d\\d\\d", AmountsProvider::self)
         .accounts("Förnödenheter", "4\\d\\d\\d", AmountsProvider::self)
-        .accounts("Boende", "5\\d\\d\\d", AmountsProvider::self)
-        .accounts("Övriga kostnader", "[67]\\d\\d\\d", AmountsProvider::self)
+        .accounts("Boende", "50\\d\\d", AmountsProvider::self)
+        .accounts("Övriga kostnader", "(5[1-9]|[67]\\d)\\d\\d", AmountsProvider::self)
         .accounts("Finansiellt netto", "8[3456]\\d\\d", AmountsProvider::self)
+        .subtotal("Bruttoresultat".toUpperCase(), TagFilter.isEqualTo(Tag.of("Bruttoresultat")))
         .accounts("Extraordinärt netto", "87\\d\\d", AmountsProvider::self)
         .subtotal("Beräknat resultat".toUpperCase(), TagFilter.any())
         .section(
