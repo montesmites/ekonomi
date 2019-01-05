@@ -20,6 +20,11 @@ class Main {
 
   public static void main(String[] args) throws Exception {
     var year = Year.of(2018);
+    cashflowReport(year);
+    resultReport(year);
+  }
+
+  private static void cashflowReport(Year year) throws Exception {
     var fmt = "c:/temp/nikka/Kassaflöde %d.txt";
     var fileName = String.format(fmt, year.getValue());
     var path = Paths.get(fileName);
@@ -28,16 +33,25 @@ class Main {
     main.renderToFile(report, path);
   }
 
-  private final DataFetcher fetcher;
+  private static void resultReport(Year year) throws Exception {
+    var fmt = "c:/temp/nikka/Resultaträkning %d.txt";
+    var fileName = String.format(fmt, year.getValue());
+    var path = Paths.get(fileName);
+    var main = new Main();
+    var report = main.generateResultReport(year);
+    main.renderToFile(report, path);
+  }
+
+  private final DataFetcher dataFetcher;
 
   private Main() {
     var path = Paths.get("C:\\ProgramData\\SPCS\\SPCS Administration\\Företag\\nikka");
     var organization = new OrganizationBuilder(path).build();
-    this.fetcher = new DataFetcher(organization);
+    this.dataFetcher = new DataFetcher(organization);
   }
 
   private Report generateCashflowReport(Year year) {
-    return new ReportBuilder(fetcher, year)
+    return new ReportBuilder(dataFetcher, year)
         .accountGroups(
             "Inkomster",
             List.of(
@@ -90,6 +104,33 @@ class Main {
             "Ackumulerade likvida medel",
             List.of(
                 AccountGroup.of("", LIKVIDA_MEDEL_REGEX).postProcessor(AmountsProvider::negate)))
+        .report();
+  }
+
+  private Report generateResultReport(Year year) {
+    return new ReportBuilder(dataFetcher, dataFetcher, year)
+        .accounts("Intäkter", "3\\d\\d\\d", AmountsProvider::self)
+        .accounts("Förnödenheter", "4\\d\\d\\d", AmountsProvider::self)
+        .accounts("Boende", "5\\d\\d\\d", AmountsProvider::self)
+        .accounts("Övriga kostnader", "[67]\\d\\d\\d", AmountsProvider::self)
+        .accounts("Finansiellt netto", "8[3456]\\d\\d", AmountsProvider::self)
+        .accounts("Extraordinärt netto", "87\\d\\d", AmountsProvider::self)
+        .subtotal("Beräknat resultat".toUpperCase(), TagFilter.any())
+        .section(
+            section ->
+                section
+                    .body(
+                        body ->
+                            body.accountGroups(
+                                List.of(
+                                    AccountGroup.of("Kontrollsumma", "([3-7]\\d|8[1-7])\\d\\d")
+                                        .postProcessor(AmountsProvider::negate)))
+                                .dematerialize())
+                    .noClosingEmptyRow())
+        .subtotal("Kontrollsumma".toUpperCase(), TagFilter.any())
+        .accumulateAccountGroups(
+            "Ackumulerat resultat",
+            List.of(AccountGroup.of("Kontrollsumma", "([3-7]\\d|8[1-7])\\d\\d")))
         .report();
   }
 
