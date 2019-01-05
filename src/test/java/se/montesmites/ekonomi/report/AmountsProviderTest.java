@@ -25,7 +25,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.AccountStatus;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.builder.AmountsFetcherBuilder;
@@ -88,6 +90,36 @@ class AmountsProviderTest {
             .asRow()
             .asExtendedString();
     var act = AmountsProvider.of(amountsFetcher, year, accountGroup).asRow().asExtendedString();
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void of_account() {
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var account =
+        new Account(
+            amountsFetcher
+                .streamAccountIds(year, accountId -> accountId.getId().equals("1111"))
+                .findFirst()
+                .orElseThrow(),
+            "1111",
+            AccountStatus.OPEN);
+    var exp =
+        AmountsProvider.of(account.getDescription(), row1::getMonthlyAmount)
+            .asRow()
+            .asExtendedString();
+    var act =
+        AmountsProvider.of(
+            amountsFetcher, year, account.getAccountId(), account.getDescription(), x -> x)
+            .asRow()
+            .asExtendedString();
     assertEquals(exp, act);
   }
 

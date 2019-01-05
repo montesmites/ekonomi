@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 
 public class Report {
 
+  public final static int DESCRIPTION_WIDTH = 30;
+
   public static Report empty() {
     return new Report(Stream::empty);
   }
@@ -51,7 +53,7 @@ public class Report {
   private String formatString(Column column) {
     switch (column.getColumnType()) {
       case DESCRIPTION:
-        return "%-30s";
+        return "%-" + DESCRIPTION_WIDTH + "s";
       case TOTAL:
         return "%16s";
       case AVERAGE:

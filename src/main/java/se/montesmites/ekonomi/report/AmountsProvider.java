@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -37,6 +38,22 @@ public interface AmountsProvider {
                             .map(accountId -> fetchAmount(amountsFetcher, year, month, accountId))
                             .reduce(Currency.zero(), Currency::add)));
     return accountGroup.postProcessor().apply(amountsProvider);
+  }
+
+  static AmountsProvider of(
+      AmountsFetcher amountsFetcher,
+      Year year,
+      AccountId accountId,
+      String description,
+      UnaryOperator<AmountsProvider> postProcessor) {
+    var amountsProvider =
+        AmountsProvider.of(
+            description,
+            month ->
+                !amountsFetcher.touchedMonths(year).contains(month)
+                    ? Optional.empty()
+                    : Optional.of(fetchAmount(amountsFetcher, year, month, accountId)));
+    return postProcessor.apply(amountsProvider);
   }
 
   private static Currency fetchAmount(
@@ -108,6 +125,10 @@ public interface AmountsProvider {
             .average()
             .orElse(0);
     return Optional.of(Currency.of(Math.round(average)));
+  }
+
+  default AmountsProvider self() {
+    return this;
   }
 
   default AmountsProvider negate() {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
+import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
@@ -35,6 +36,28 @@ public class ReportBuilder {
     sectionBuilder
         .header(header -> header.title(title).months())
         .body(body -> body.accountGroups(accountGroups))
+        .footer(FooterBuilder::aggregateBody);
+    return this;
+  }
+
+  public ReportBuilder accounts(
+      String title,
+      List<Account> accounts,
+      UnaryOperator<AmountsProvider> amountsProviderProcessor) {
+    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
+    this.sections.add(sectionBuilder);
+    sectionBuilder
+        .header(header -> header.title(title).months())
+        .body(
+            body ->
+                body.accounts(
+                    bodyFromAccounts ->
+                        bodyFromAccounts
+                            .accounts(accounts)
+                            .descriptionProcessor(
+                                account ->
+                                    account.getDescription().substring(0, Report.DESCRIPTION_WIDTH))
+                            .amountsProviderProcessor(amountsProviderProcessor)))
         .footer(FooterBuilder::aggregateBody);
     return this;
   }

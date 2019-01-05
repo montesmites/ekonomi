@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
@@ -28,7 +29,7 @@ public class BodyBuilder {
 
   private final Year year;
   private final AmountsFetcher amountsFetcher;
-  private List<AccountGroup> accountGroups = new ArrayList<>();
+  private List<AmountsProvider> amountsProviders = new ArrayList<>();
   private boolean materialized = true;
 
   BodyBuilder(Year year, AmountsFetcher amountsFetcher) {
@@ -37,7 +38,18 @@ public class BodyBuilder {
   }
 
   public BodyBuilder accountGroups(List<AccountGroup> accountGroups) {
-    this.accountGroups = accountGroups;
+    this.amountsProviders =
+        accountGroups
+            .stream()
+            .map(accountGroup -> AmountsProvider.of(amountsFetcher, year, accountGroup))
+            .collect(toList());
+    return this;
+  }
+
+  BodyBuilder accounts(UnaryOperator<BodyFromAccountsBuilder> body) {
+    var bodyFromAccountsBuilder = BodyFromAccountsBuilder.of(amountsFetcher, year);
+    body.apply(bodyFromAccountsBuilder);
+    this.amountsProviders = bodyFromAccountsBuilder.getAmountsProviders();
     return this;
   }
 
@@ -47,12 +59,7 @@ public class BodyBuilder {
   }
 
   public Body body() {
-    var amountProviders =
-        accountGroups
-            .stream()
-            .map(accountGroup -> AmountsProvider.of(amountsFetcher, year, accountGroup))
-            .collect(toList());
-    return Body.of(amountProviders::stream);
+    return Body.of(this.amountsProviders::stream);
   }
 
   boolean isMaterialized() {

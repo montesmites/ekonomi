@@ -19,14 +19,15 @@ import static se.montesmites.ekonomi.report.Column.OCTOBER;
 import static se.montesmites.ekonomi.report.Column.SEPTEMBER;
 import static se.montesmites.ekonomi.report.Column.TOTAL;
 
-import java.time.Month;
 import java.time.Year;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
+import se.montesmites.ekonomi.model.AccountStatus;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
@@ -41,50 +42,25 @@ import se.montesmites.ekonomi.report.TagFilter;
 
 class ReportBuilderTest {
 
-  private static final String TITLE = "title";
-  private static final String DESCRIPTION_TEXT = "description";
-  private static final String REGEX = "regex";
-  private static final AccountGroup ACCOUNT_GROUP = AccountGroup.of(DESCRIPTION_TEXT, REGEX);
-  private static final AmountsProvider TEMPLATE_AMOUNTS_PROVIDER =
-      new AmountsProvider() {
-        @Override
-        public Optional<Currency> getMonthlyAmount(Month month) {
-          return Optional.of(Currency.of((month.ordinal() + 1) * 100));
-        }
-
-        @Override
-        public String formatDescription() {
-          return DESCRIPTION_TEXT;
-        }
-      };
-  private static final Header TEMPLATE_HEADER =
-      Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
-  private static final Body TEMPLATE_BODY = Body.of(TEMPLATE_AMOUNTS_PROVIDER);
-  private static final Footer TEMPLATE_FOOTER = Footer.of(TEMPLATE_BODY.aggregate("").asRow());
-  private static final Section TEMPLATE_SECTION =
-      Section.of(TEMPLATE_HEADER, TEMPLATE_BODY, TEMPLATE_FOOTER);
-
   private final Year year = Year.now();
   private final YearId yearId = new YearId(year.toString());
-  private final AccountId accountId = new AccountId(yearId, REGEX);
 
   @Test
   void accountGroups() {
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var amountsFetcher =
-        AmountsFetcherBuilder.of(
-            Map.of(
-                accountId,
-                AmountsProvider.of(
-                    month ->
-                        Optional.of(
-                            TEMPLATE_AMOUNTS_PROVIDER
-                                .getMonthlyAmount(month)
-                                .orElse(Currency.zero())))))
+        AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), row1)))
             .amountsFetcher();
-    var exp = List.of(TEMPLATE_SECTION).stream().map(Section::asString).collect(toList());
+    var accountGroups = List.of(AccountGroup.of("", "\\d\\d\\d\\d"));
+    var title = "title";
+    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
+    var body = Body.of(row1);
+    var footer = Footer.of(body.aggregate("").asRow());
+    var section = Section.of(header, body, footer);
+    var exp = List.of(section).stream().map(Section::asString).collect(toList());
     var act =
         new ReportBuilder(amountsFetcher, year)
-            .accountGroups(TITLE, List.of(ACCOUNT_GROUP))
+            .accountGroups(title, accountGroups)
             .getSections()
             .stream()
             .map(Section::asString)
@@ -93,19 +69,57 @@ class ReportBuilderTest {
   }
 
   @Test
-  void buildSection_title_accountGroup() {
+  void accounts() {
+    var year = Year.now();
+    var yearId = new YearId(year.toString());
+    var description1 = "1111 " + "1".repeat(Report.DESCRIPTION_WIDTH - 5);
+    var description2 = "2222 " + "2".repeat(Report.DESCRIPTION_WIDTH - 5);
+    var row1 =
+        AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 =
+        AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var accountId1 = new AccountId(yearId, "1111");
+    var accountId2 = new AccountId(yearId, "2222");
+    var account1 =
+        new Account(
+            accountId1,
+            description1 + " " + description1.repeat(Report.DESCRIPTION_WIDTH * 2),
+            AccountStatus.OPEN);
+    var account2 =
+        new Account(
+            accountId2,
+            description2 + " " + description2.repeat(Report.DESCRIPTION_WIDTH * 2),
+            AccountStatus.OPEN);
+    var accounts = List.of(account1, account2);
     var amountsFetcher =
-        AmountsFetcherBuilder.of(
-            Map.of(
-                accountId,
-                AmountsProvider.of(
-                    month ->
-                        Optional.of(
-                            TEMPLATE_AMOUNTS_PROVIDER
-                                .getMonthlyAmount(month)
-                                .orElse(Currency.zero())))))
+        AmountsFetcherBuilder.of(Map.ofEntries(entry(accountId1, row1), entry(accountId2, row2)))
             .amountsFetcher();
-    var header = Header.of(Row.title(TITLE)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
+    var title = "title";
+    var reportBuilder =
+        new ReportBuilder(amountsFetcher, year).accounts(title, accounts, AmountsProvider::self);
+    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
+    var body = Body.of(List.of(row1, row2));
+    var footer = Footer.of(body.aggregate("").asRow());
+    var exp =
+        List.of(Section.of(header, body, footer)).stream().map(Section::asString).collect(toList());
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(toList());
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void accumulateAccountGroups() {
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.getValue() * 100)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), row1)))
+            .amountsFetcher();
+    var accountGroups = List.of(AccountGroup.of("", "\\d\\d\\d\\d"));
+    var title = "title";
+    var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var footer =
         (Row)
             column ->
@@ -126,14 +140,11 @@ class ReportBuilderTest {
                     entry(TOTAL, Currency.of(0).format()),
                     entry(AVERAGE, Currency.of(3033).format()))
                     .get(column);
-    var exp =
-        List.of(Section.of(header, Body.empty(), Footer.of(footer)))
-            .stream()
-            .map(Section::asString)
-            .collect(toList());
+    var section = Section.of(header, Body.empty(), Footer.of(footer));
+    var exp = List.of(section).stream().map(Section::asString).collect(toList());
     var act =
         new ReportBuilder(amountsFetcher, year)
-            .accumulateAccountGroups(TITLE, List.of(ACCOUNT_GROUP))
+            .accumulateAccountGroups(title, accountGroups)
             .getSections()
             .stream()
             .map(Section::asString)
