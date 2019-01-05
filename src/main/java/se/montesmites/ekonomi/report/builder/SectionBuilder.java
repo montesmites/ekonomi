@@ -45,6 +45,11 @@ public class SectionBuilder {
     return this;
   }
 
+  SectionBuilder tags(Set<Tag> tags) {
+    this.tags.addAll(tags);
+    return this;
+  }
+
   public SectionBuilder noClosingEmptyRow() {
     this.closingEmptyRow = false;
     return this;

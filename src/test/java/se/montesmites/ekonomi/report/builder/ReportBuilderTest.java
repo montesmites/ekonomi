@@ -23,6 +23,7 @@ import java.time.Year;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Account;
@@ -38,6 +39,7 @@ import se.montesmites.ekonomi.report.Header;
 import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.Row;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.Tag;
 import se.montesmites.ekonomi.report.TagFilter;
 
 class ReportBuilderTest {
@@ -72,12 +74,14 @@ class ReportBuilderTest {
   void accounts() {
     var year = Year.now();
     var yearId = new YearId(year.toString());
-    var description1 = "1111 " + "1".repeat(Report.DESCRIPTION_WIDTH - 5);
-    var description2 = "2222 " + "2".repeat(Report.DESCRIPTION_WIDTH - 5);
+    var description1 = "1".repeat(Report.DESCRIPTION_WIDTH - 5);
+    var description2 = "2".repeat(Report.DESCRIPTION_WIDTH - 5);
     var row1 =
-        AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of(
+            "1111 " + description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 =
-        AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+        AmountsProvider.of(
+            "2222 " + description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var accountId1 = new AccountId(yearId, "1111");
     var accountId2 = new AccountId(yearId, "2222");
     var account1 =
@@ -151,6 +155,65 @@ class ReportBuilderTest {
             .getSections()
             .stream()
             .map(Section::asString)
+            .collect(toList());
+    assertEquals(exp, act);
+  }
+
+  @Test
+  void tags() {
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var row4 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 400)));
+    var subtotal1 =
+        AmountsProvider.of("subtotal1", month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var subtotal2 =
+        AmountsProvider.of("subtotal2", month -> Optional.of(Currency.of(month.ordinal() * 700)));
+    var subtotal3 =
+        AmountsProvider.of("subtotal3", month -> Optional.of(Currency.of(month.ordinal() * 1000)));
+    var tag1 = Tag.of("tag1");
+    var tag2 = Tag.of("tag2");
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2),
+                entry(new AccountId(yearId, "3333"), row3),
+                entry(new AccountId(yearId, "4444"), row4)))
+            .amountsFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountsFetcher, year)
+            .tags(Set.of(tag1))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
+            .tags(Set.of(tag2))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "3333")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "4444")))))
+            .subtotal("subtotal1", TagFilter.isEqualTo(tag1))
+            .subtotal("subtotal2", TagFilter.isEqualTo(tag2))
+            .subtotal("subtotal3", TagFilter.any());
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()).asString("\n"),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()).asString("\n"),
+            Section.of(Header.empty(), Body.of(row3), Footer.empty()).asString("\n"),
+            Section.of(Header.empty(), Body.of(row4), Footer.empty()).asString("\n"),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())).asString("\n"),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())).asString("\n"),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal3.asRow())).asString("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
             .collect(toList());
     assertEquals(exp, act);
   }

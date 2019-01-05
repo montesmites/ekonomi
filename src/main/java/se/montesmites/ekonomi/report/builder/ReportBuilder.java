@@ -7,6 +7,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
@@ -19,6 +20,7 @@ import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.Section;
+import se.montesmites.ekonomi.report.Tag;
 import se.montesmites.ekonomi.report.TagFilter;
 
 public class ReportBuilder {
@@ -27,6 +29,7 @@ public class ReportBuilder {
   private final AmountsFetcher amountsFetcher;
   private final java.time.Year year;
   private final List<SectionBuilder> sections;
+  private Set<Tag> tags = Set.of();
 
   public ReportBuilder(AmountsFetcher amountsFetcher, Year year) {
     this(AccountsFetcher.empty(), amountsFetcher, year);
@@ -105,8 +108,13 @@ public class ReportBuilder {
     return this;
   }
 
+  public ReportBuilder tags(Set<Tag> tags) {
+    this.tags = Set.copyOf(tags);
+    return this;
+  }
+
   public ReportBuilder section(UnaryOperator<SectionBuilder> section) {
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
+    var sectionBuilder = new SectionBuilder(year, amountsFetcher).tags(tags);
     this.sections.add(sectionBuilder);
     section.apply(sectionBuilder);
     return this;
