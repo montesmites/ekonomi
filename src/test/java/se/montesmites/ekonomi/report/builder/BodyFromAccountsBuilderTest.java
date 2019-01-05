@@ -60,7 +60,7 @@ class BodyFromAccountsBuilderTest {
   }
 
   @Test
-  void accountsAndDescriptionProcessor() {
+  void accountsAndAccountDescriptor() {
     var year = Year.now();
     var yearId = new YearId(year.toString());
     var description1 = "1111";
@@ -81,7 +81,7 @@ class BodyFromAccountsBuilderTest {
     var bodyFromAccountsBuilder =
         BodyFromAccountsBuilder.of(amountsFetcher, year)
             .accounts(List.of(account1, account2))
-            .descriptionProcessor(account -> account.getDescription() + account.getDescription());
+            .accountDescriptor(account -> account.getDescription() + account.getDescription());
     var exp =
         List.of(row1, row2)
             .stream()
@@ -97,7 +97,7 @@ class BodyFromAccountsBuilderTest {
   }
 
   @Test
-  void accountsAndDescriptionProcessorAndAmountsProviderProcessor() {
+  void accountsAndAccountDescriptorAndAmountsProviderProcessor() {
     var year = Year.now();
     var yearId = new YearId(year.toString());
     var description1 = "1111";
@@ -118,7 +118,7 @@ class BodyFromAccountsBuilderTest {
     var bodyFromAccountsBuilder =
         BodyFromAccountsBuilder.of(amountsFetcher, year)
             .accounts(List.of(account1, account2))
-            .descriptionProcessor(account -> account.getDescription() + account.getDescription())
+            .accountDescriptor(account -> account.getDescription() + account.getDescription())
             .amountsProviderProcessor(AmountsProvider::negate);
     var exp =
         List.of(row1.negate(), row2.negate())

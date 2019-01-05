@@ -11,6 +11,7 @@ import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.report.AccountDescriptor;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AccountsFetcher;
@@ -49,9 +50,7 @@ public class ReportBuilder {
   }
 
   public ReportBuilder accounts(
-      String title,
-      String regex,
-      UnaryOperator<AmountsProvider> amountsProviderProcessor) {
+      String title, String regex, UnaryOperator<AmountsProvider> amountsProviderProcessor) {
     var sectionBuilder = new SectionBuilder(year, amountsFetcher);
     this.sections.add(sectionBuilder);
     var accounts =
@@ -70,9 +69,9 @@ public class ReportBuilder {
                     bodyFromAccounts ->
                         bodyFromAccounts
                             .accounts(accounts)
-                            .descriptionProcessor(
-                                account ->
-                                    account.getDescription().substring(0, Report.DESCRIPTION_WIDTH))
+                            .accountDescriptor(
+                                AccountDescriptor.accountIdConcatAccountDescriptionWithMaxLength(
+                                    Report.DESCRIPTION_WIDTH))
                             .amountsProviderProcessor(amountsProviderProcessor)))
         .footer(FooterBuilder::aggregateBody);
     return this;

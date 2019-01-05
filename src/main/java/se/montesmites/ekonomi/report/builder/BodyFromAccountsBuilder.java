@@ -4,9 +4,9 @@ import static java.util.stream.Collectors.toList;
 
 import java.time.Year;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import se.montesmites.ekonomi.model.Account;
+import se.montesmites.ekonomi.report.AccountDescriptor;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 
@@ -23,7 +23,7 @@ class BodyFromAccountsBuilder {
   private final AmountsFetcher amountsFetcher;
   private final Year year;
   private List<Account> accounts = List.of();
-  private Function<Account, String> descriptionProcessor = Account::getDescription;
+  private AccountDescriptor accountDescriptor = AccountDescriptor.accountDescription();
   private UnaryOperator<AmountsProvider> amountsProviderProcessor = x -> x;
 
   private BodyFromAccountsBuilder(AmountsFetcher amountsFetcher, Year year) {
@@ -36,9 +36,8 @@ class BodyFromAccountsBuilder {
     return this;
   }
 
-  BodyFromAccountsBuilder descriptionProcessor(
-      Function<Account, String> descriptionProcessor) {
-    this.descriptionProcessor = descriptionProcessor;
+  BodyFromAccountsBuilder accountDescriptor(AccountDescriptor accountDescriptor) {
+    this.accountDescriptor = accountDescriptor;
     return this;
   }
 
@@ -57,7 +56,7 @@ class BodyFromAccountsBuilder {
                     amountsFetcher,
                     year,
                     account.getAccountId(),
-                    descriptionProcessor.apply(account),
+                    accountDescriptor.describe(account),
                     amountsProviderProcessor))
         .collect(toList());
   }
