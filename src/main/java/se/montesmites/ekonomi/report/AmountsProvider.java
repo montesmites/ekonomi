@@ -7,11 +7,14 @@ import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 import static se.montesmites.ekonomi.report.Column.TOTAL;
 
 import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
 @FunctionalInterface
@@ -19,6 +22,31 @@ public interface AmountsProvider {
 
   static AmountsProvider empty() {
     return column -> Optional.of(Currency.zero());
+  }
+
+  static AmountsProvider of(AmountsFetcher amountsFetcher, Year year, AccountGroup accountGroup) {
+    var amountsProvider =
+        AmountsProvider.of(
+            accountGroup.description(),
+            month ->
+                !amountsFetcher.touchedMonths(year).contains(month)
+                    ? Optional.empty()
+                    : Optional.of(
+                        amountsFetcher
+                            .streamAccountIds(year, AccountFilterByRegex.of(accountGroup.regex()))
+                            .map(accountId -> fetchAmount(amountsFetcher, year, month, accountId))
+                            .reduce(Currency.zero(), Currency::add)));
+    return accountGroup.postProcessor().apply(amountsProvider);
+  }
+
+  private static Currency fetchAmount(
+      AmountsFetcher amountsFetcher, Year year, Month month, AccountId accountId) {
+    return amountsFetcher
+        .fetchAmount(accountId, YearMonth.of(year.getValue(), month))
+        .map(Currency::getAmount)
+        .map(Currency::of)
+        .map(Currency::negate)
+        .orElse(Currency.zero());
   }
 
   static AmountsProvider of(Function<Month, Optional<Currency>> amounts) {
@@ -50,7 +78,8 @@ public interface AmountsProvider {
             entry(TOTAL, getYearlyTotal().orElse(Currency.zero()).format()),
             entry(AVERAGE, getAverage().orElse(Currency.zero()).format()));
     return column ->
-        map.getOrDefault(column,
+        map.getOrDefault(
+            column,
             column.getMonth().flatMap(this::getMonthlyAmount).orElse(Currency.zero()).format());
   }
 

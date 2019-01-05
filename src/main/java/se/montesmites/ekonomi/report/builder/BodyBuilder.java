@@ -2,15 +2,9 @@ package se.montesmites.ekonomi.report.builder;
 
 import static java.util.stream.Collectors.toList;
 
-import java.time.Month;
 import java.time.Year;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
-import se.montesmites.ekonomi.model.Currency;
-import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
@@ -28,11 +22,6 @@ public class BodyBuilder {
       @Override
       public Body body() {
         return Body.empty();
-      }
-
-      @Override
-      public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
-        return AmountsProvider.empty();
       }
     };
   }
@@ -58,49 +47,15 @@ public class BodyBuilder {
   }
 
   public Body body() {
-    var amountProviders = accountGroups.stream().map(this::buildAmountsProvider).collect(toList());
+    var amountProviders =
+        accountGroups
+            .stream()
+            .map(accountGroup -> AmountsProvider.of(amountsFetcher, year, accountGroup))
+            .collect(toList());
     return Body.of(amountProviders::stream);
   }
 
   boolean isMaterialized() {
     return materialized;
-  }
-
-  public AmountsProvider buildAmountsProvider(AccountGroup accountGroup) {
-    var accountIds =
-        amountsFetcher
-            .streamAccountIds(year, AccountFilterByRegex.of(accountGroup.regex()))
-            .collect(toList());
-    var row =
-        new AmountsProvider() {
-          @Override
-          public Optional<Currency> getMonthlyAmount(Month month) {
-            var yearMonth = YearMonth.of(year.getValue(), month);
-            var year = Year.of(yearMonth.getYear());
-            var sum =
-                (Supplier<Currency>)
-                    () ->
-                        accountIds
-                            .stream()
-                            .map(
-                                accountId ->
-                                    amountsFetcher
-                                        .fetchAmount(accountId, yearMonth)
-                                        .map(Currency::getAmount)
-                                        .map(Currency::of)
-                                        .map(Currency::negate)
-                                        .orElse(Currency.zero()))
-                            .reduce(Currency.zero(), Currency::add);
-            return amountsFetcher.touchedMonths(year).contains(month)
-                ? Optional.of(sum.get())
-                : Optional.empty();
-          }
-
-          @Override
-          public String formatDescription() {
-            return accountGroup.description();
-          }
-        };
-    return accountGroup.postProcessor().apply(row);
   }
 }

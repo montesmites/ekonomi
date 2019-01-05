@@ -20,13 +20,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
 import java.time.Month;
+import java.time.Year;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.model.YearId;
+import se.montesmites.ekonomi.report.builder.AmountsFetcherBuilder;
 
 class AmountsProviderTest {
+
+  private final Year year = Year.now();
+  private final YearId yearId = new YearId(year.toString());
+
+  @Test
+  void empty() {
+    var exp = AmountsProvider.of(__ -> Optional.of(Currency.zero()));
+    var act = AmountsProvider.empty();
+    assertTrue(act.isEquivalentTo(exp));
+  }
 
   @Test
   void of_function() {
@@ -59,10 +73,22 @@ class AmountsProviderTest {
   }
 
   @Test
-  void empty() {
-    var exp = AmountsProvider.of(__ -> Optional.of(Currency.zero()));
-    var act = AmountsProvider.empty();
-    assertTrue(act.isEquivalentTo(exp));
+  void of_amountsFetcher_accountGroup() {
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var accountGroup = AccountGroup.of("", "\\d\\d\\d\\d");
+    var exp =
+        AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)))
+            .asRow()
+            .asExtendedString();
+    var act = AmountsProvider.of(amountsFetcher, year, accountGroup).asRow().asExtendedString();
+    assertEquals(exp, act);
   }
 
   @Test
@@ -78,7 +104,9 @@ class AmountsProviderTest {
   void getAverage() {
     var row = AmountsProvider.of(month -> Optional.of(Currency.of((month.ordinal() + 1) * 100)));
     var avg =
-        stream(Month.values()).mapToInt(month -> (month.ordinal() + 1) * 100).average()
+        stream(Month.values())
+            .mapToInt(month -> (month.ordinal() + 1) * 100)
+            .average()
             .orElseThrow();
     var exp = Optional.of(Currency.of((int) avg));
     var act = row.getAverage();

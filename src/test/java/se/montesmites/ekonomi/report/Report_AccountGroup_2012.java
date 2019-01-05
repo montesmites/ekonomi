@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Currency;
-import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 public enum Report_AccountGroup_2012 {
   BOKFORT_RESULTAT(
@@ -76,7 +75,11 @@ public enum Report_AccountGroup_2012 {
 
   public static Stream<AmountsProvider> bodyRowsOf(
       DataFetcher fetcher, List<Report_AccountGroup_2012> groups) {
-    return groups.stream().map(group -> group.amountsProvider(fetcher));
+    return groups
+        .stream()
+        .map(
+            group ->
+                AmountsProvider.of(fetcher, YEAR, AccountGroup.of(group.description, group.regex)));
   }
 
   public static void assertBodyRowDescriptions(
@@ -98,8 +101,7 @@ public enum Report_AccountGroup_2012 {
     }
   }
 
-  public static void assertMonthlyAmounts(
-      Section section, List<Report_AccountGroup_2012> groups) {
+  public static void assertMonthlyAmounts(Section section, List<Report_AccountGroup_2012> groups) {
     var expList = groups.stream().map(group -> group.expectedAmounts).collect(toList());
     var actList =
         section
@@ -144,8 +146,7 @@ public enum Report_AccountGroup_2012 {
     }
   }
 
-  public static void assertExpectedTotals(
-      Section section, List<Report_AccountGroup_2012> groups) {
+  public static void assertExpectedTotals(Section section, List<Report_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.expectedTotal).collect(toList());
     var act = section.body().stream().map(AmountsProvider::getYearlyTotal).collect(toList());
     assertEquals(exp.size(), act.size());
@@ -174,19 +175,5 @@ public enum Report_AccountGroup_2012 {
     this.expectedAmounts = expectedAmounts;
     this.expectedAverage = expectedAverage;
     this.expectedTotal = expectedTotal;
-  }
-
-  private AmountsProvider amountsProvider(DataFetcher fetcher) {
-    final var amountsProvider = new AmountsProvider[1];
-    new ReportBuilder(fetcher, YEAR)
-        .section(
-            section ->
-                section.body(
-                    body -> {
-                      amountsProvider[0] =
-                          body.buildAmountsProvider(AccountGroup.of(description, regex));
-                      return body;
-                    }));
-    return amountsProvider[0];
   }
 }

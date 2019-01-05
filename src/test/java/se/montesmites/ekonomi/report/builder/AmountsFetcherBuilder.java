@@ -64,7 +64,7 @@ public class AmountsFetcherBuilder {
     return this;
   }
 
-  AmountsFetcher amountsFetcher() {
+  public AmountsFetcher amountsFetcher() {
     return new AmountsFetcher() {
       @Override
       public Optional<Currency> fetchAmount(AccountId accountId, YearMonth yearMonth) {
