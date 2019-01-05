@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.report.builder;
 
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import java.time.Year;
@@ -7,11 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
-import se.montesmites.ekonomi.model.Account;
+import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.AccountsFetcher;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Report;
@@ -20,11 +22,17 @@ import se.montesmites.ekonomi.report.TagFilter;
 
 public class ReportBuilder {
 
+  private final AccountsFetcher accountsFetcher;
   private final AmountsFetcher amountsFetcher;
   private final java.time.Year year;
   private final List<SectionBuilder> sections;
 
   public ReportBuilder(AmountsFetcher amountsFetcher, Year year) {
+    this(AccountsFetcher.empty(), amountsFetcher, year);
+  }
+
+  public ReportBuilder(AccountsFetcher accountsFetcher, AmountsFetcher amountsFetcher, Year year) {
+    this.accountsFetcher = accountsFetcher;
     this.amountsFetcher = amountsFetcher;
     this.year = year;
     this.sections = new ArrayList<>();
@@ -42,10 +50,18 @@ public class ReportBuilder {
 
   public ReportBuilder accounts(
       String title,
-      List<Account> accounts,
+      String regex,
       UnaryOperator<AmountsProvider> amountsProviderProcessor) {
     var sectionBuilder = new SectionBuilder(year, amountsFetcher);
     this.sections.add(sectionBuilder);
+    var accounts =
+        amountsFetcher
+            .streamAccountIds(year, AccountFilterByRegex.of(regex))
+            .sorted(comparing(AccountId::getId))
+            .map(accountsFetcher::getAccount)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(toList());
     sectionBuilder
         .header(header -> header.title(title).months())
         .body(

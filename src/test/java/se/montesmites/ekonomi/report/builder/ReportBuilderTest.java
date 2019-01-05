@@ -90,13 +90,16 @@ class ReportBuilderTest {
             accountId2,
             description2 + " " + description2.repeat(Report.DESCRIPTION_WIDTH * 2),
             AccountStatus.OPEN);
-    var accounts = List.of(account1, account2);
+    var accounts =
+        Map.ofEntries(
+            entry(accountId1, Optional.of(account1)), entry(accountId2, Optional.of(account2)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(accountId1, row1), entry(accountId2, row2)))
             .amountsFetcher();
     var title = "title";
     var reportBuilder =
-        new ReportBuilder(amountsFetcher, year).accounts(title, accounts, AmountsProvider::self);
+        new ReportBuilder(accounts::get, amountsFetcher, year)
+            .accounts(title, "\\d\\d\\d\\d", AmountsProvider::self);
     var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(List.of(row1, row2));
     var footer = Footer.of(body.aggregate("").asRow());

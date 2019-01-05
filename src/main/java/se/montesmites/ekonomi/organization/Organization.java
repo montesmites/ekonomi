@@ -69,7 +69,7 @@ public class Organization {
     return Optional.ofNullable(entriesByEventId.get(eventId));
   }
 
-  Optional<Account> getAccount(AccountId accountId) {
+  public Optional<Account> getAccount(AccountId accountId) {
     return Optional.ofNullable(accountsByAccountId.get(accountId));
   }
 

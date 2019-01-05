@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
@@ -28,7 +29,7 @@ import se.montesmites.ekonomi.model.tuple.AmountEntryListTuple;
 import se.montesmites.ekonomi.model.tuple.YearMonthAccountIdTuple;
 import se.montesmites.ekonomi.organization.Organization;
 
-public class DataFetcher implements AmountsFetcher {
+public class DataFetcher implements AccountsFetcher, AmountsFetcher {
 
   private static EntryCollector entryCollector(Organization organization) {
     return new EntryCollector(
@@ -124,5 +125,10 @@ public class DataFetcher implements AmountsFetcher {
         .entrySet()
         .stream()
         .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
+  }
+
+  @Override
+  public Optional<Account> getAccount(AccountId accountId) {
+    return organization.getAccount(accountId);
   }
 }
