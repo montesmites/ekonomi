@@ -24,6 +24,7 @@ class Main {
     var year = Year.of(2018);
     cashflowReport(year);
     resultReport(year);
+    balanceReport(year);
   }
 
   private static void cashflowReport(Year year) throws Exception {
@@ -41,6 +42,15 @@ class Main {
     var path = Paths.get(fileName);
     var main = new Main();
     var report = main.generateResultReport(year);
+    main.renderToFile(report, path);
+  }
+
+  private static void balanceReport(Year year) throws Exception {
+    var fmt = "c:/temp/nikka/Balansräkning %d.txt";
+    var fileName = String.format(fmt, year.getValue());
+    var path = Paths.get(fileName);
+    var main = new Main();
+    var report = main.generateBalanceReport(year);
     main.renderToFile(report, path);
   }
 
@@ -135,6 +145,23 @@ class Main {
         .accumulateAccountGroups(
             "Ackumulerat resultat",
             List.of(AccountGroup.of("Kontrollsumma", "([3-7]\\d|8[1-7])\\d\\d")))
+        .report();
+  }
+
+  private Report generateBalanceReport(Year year) {
+    return new ReportBuilder(dataFetcher, dataFetcher, year)
+        .accounts("Immateriella anläggningstillgångar", "10\\d\\d", AmountsProvider::self)
+        .accounts("Materiella anläggningstillgångar", "11\\d\\d", AmountsProvider::self)
+        .accounts("Finansiella anläggningstillgångar", "13\\d\\d", AmountsProvider::self)
+        .accounts("Buffertsparande", "1493", AmountsProvider::self)
+        .accounts("Fordringar", "17\\d\\d", AmountsProvider::self)
+        .accounts("Kortfristiga placeringar", "18\\d\\d", AmountsProvider::self)
+        .accounts("Kassa och bank", "19\\d\\d", AmountsProvider::self)
+        .accounts("Eget kapital", "20\\d\\d", AmountsProvider::negate)
+        .accounts("Obeskattade reserver", "21\\d\\d", AmountsProvider::negate)
+        .accounts("ROT/RUT-avdrag", "22\\d\\d", AmountsProvider::negate)
+        .accounts("Långfristiga skulder", "23\\d\\d", AmountsProvider::negate)
+        .accounts("Kortfristiga skulder", "24\\d\\d", AmountsProvider::negate)
         .report();
   }
 
