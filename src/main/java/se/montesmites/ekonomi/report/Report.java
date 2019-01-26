@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,6 +30,14 @@ public class Report {
 
   public List<String> render() {
     return renderSections();
+  }
+
+  public List<String> renderWithNoTrailingEmptyRows() {
+    var rows = new LinkedList<>(renderSections());
+    while (rows.peekLast().isEmpty() || rows.peekLast().trim().isEmpty()) {
+      rows.removeLast();
+    }
+    return List.copyOf(rows);
   }
 
   private List<String> renderSections() {

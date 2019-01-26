@@ -14,8 +14,6 @@ import se.montesmites.ekonomi.report.builder.ReportBuilder;
 @SuppressWarnings("unused")
 enum NikkaReport {
   CASHFLOW_REPORT_2018(Year.of(2018)) {
-    private static final String LIKVIDA_MEDEL_REGEX = "1493|19\\d\\d";
-
     @Override
     Report generateReport(DataFetcher dataFetcher) {
       return new ReportBuilder(dataFetcher, this.getYear())
@@ -49,10 +47,16 @@ enum NikkaReport {
                   AccountGroup.of("Övrigt", "(4[89]|[67]\\d)\\d\\d")))
           .subtotal("Före jämförelsestörande poster".toUpperCase(), TagFilter.any())
           .accountGroups(
+              "Sparande",
+              List.of(
+                  AccountGroup.of("Buffertsparande", "1493"),
+                  AccountGroup.of("Räntesparande och liknande", "134\\d"),
+                  AccountGroup.of("Aktier och fonder", "18\\d\\d")))
+          .accountGroups(
               "Jämförelsestörande poster",
               List.of(
-                  AccountGroup.of("Kortfristigt netto", "(1[5-8]|2[4-9])\\d\\d"),
-                  AccountGroup.of("Långfristigt netto", "(8[56]\\d\\d)|(10\\d\\d|13[456]\\d)"),
+                  AccountGroup.of("Kortfristigt netto", "(1[5-7]|2[4-9])\\d\\d"),
+                  AccountGroup.of("Långfristigt netto", "(8[56]\\d\\d)|(10\\d\\d|13[56]\\d)"),
                   AccountGroup.of("Finansiellt netto", "(83\\d\\d)|(84[2-8]\\d)"),
                   AccountGroup.of("Investering boende", "11\\d\\d"),
                   AccountGroup.of("Extraordinärt netto", "87\\d\\d")))
@@ -63,15 +67,13 @@ enum NikkaReport {
                       .body(
                           body ->
                               body.accountGroups(
-                                  List.of(
-                                      AccountGroup.of("Likvida medel", LIKVIDA_MEDEL_REGEX)))
+                                  List.of(AccountGroup.of("Likvida medel", "19\\d\\d")))
                                   .dematerialize())
                       .noClosingEmptyRow())
           .subtotal("Kontrollsumma".toUpperCase(), TagFilter.any())
           .accumulateAccountGroups(
               "Ackumulerade likvida medel",
-              List.of(
-                  AccountGroup.of("", LIKVIDA_MEDEL_REGEX).postProcessor(AmountsProvider::negate)))
+              List.of(AccountGroup.of("", "19\\d\\d").postProcessor(AmountsProvider::negate)))
           .report();
     }
   },

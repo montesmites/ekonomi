@@ -25,7 +25,6 @@ import se.montesmites.ekonomi.report.Report;
 class Main {
 
   private static class ArgumentCaptor {
-
     @Argument(
         alias = "f",
         description = "destination folder for generated reports",
@@ -35,7 +34,10 @@ class Main {
     @Argument(alias = "y", description = "fiscal year for reports", required = true)
     private String year;
 
-    @Argument(alias = "t", description = "comma separated list of report types to generate", required = true)
+    @Argument(
+        alias = "t",
+        description = "comma separated list of report types to generate",
+        required = true)
     private String reportTypes;
 
     private ArgumentCaptor(String[] args) {
@@ -100,9 +102,15 @@ class Main {
   }
 
   private void renderToFile(Report report, Path path) {
-    try {
+    try (var writer = Files.newBufferedWriter(path)) {
       Files.createDirectories(path.getParent());
-      Files.write(path, report.render());
+      var lines = report.renderWithNoTrailingEmptyRows();
+      for (var i = 0; i < lines.size() - 1; i++) {
+        writer.append(lines.get(i));
+        writer.newLine();
+      }
+      writer.append(lines.get(lines.size() - 1));
+      writer.flush();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
