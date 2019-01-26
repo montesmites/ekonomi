@@ -127,8 +127,8 @@ enum NikkaReport {
     }
   };
 
-  static NikkaReport of(ReportType type, Year year) {
-    return NikkaReport.valueOf(type.name() + "_" + year.getValue());
+  static NikkaReport of(ReportType reportType, Year year) {
+    return NikkaReport.valueOf(reportType.name() + "_" + year.getValue());
   }
 
   private final Year year;
