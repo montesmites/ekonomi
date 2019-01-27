@@ -9,10 +9,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>11</java.version>
+
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
     <maven.surefire.plugin.version>2.19</maven.surefire.plugin.version>
+    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
 
     <javax.activation.version>1.1.1</javax.activation.version>
     <javax.jaxb.version>2.3.0</javax.jaxb.version>
@@ -20,6 +22,9 @@
     <jaxb.resources.path>src/main/resources/xsd</jaxb.resources.path>
 
     <cli-parser.version>1.1.2</cli-parser.version>
+
+    <jaxb.generated.sources.directory>${project.build.directory}/generated-sources/jaxb
+    </jaxb.generated.sources.directory>
 
     <junit.version>5.0.2</junit.version>
     <junit.platform.surefire.provider.version>1.0.2</junit.platform.surefire.provider.version>
@@ -85,6 +90,24 @@
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>${build-helper-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${jaxb.generated.sources.directory}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -157,8 +180,11 @@
               <executable>xjc</executable>
               <arguments>
                 <argument>-d</argument>
-                <argument>${project.build.directory}/generated-sources/jaxb</argument>
+                <argument>${jaxb.generated.sources.directory}</argument>
+                <argument>-b</argument>
+                <argument>${jaxb.resources.path}/report-definition.xjb</argument>
                 <argument>${jaxb.resources.path}/report-definition.xsd</argument>
+                <argument>-extension</argument>
               </arguments>
             </configuration>
           </plugin>
