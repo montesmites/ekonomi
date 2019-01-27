@@ -1,155 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definition	xmlns="se/montesmites/ekonomi/report-definition"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="se/montesmites/ekonomi/report-definition ../../../../xsd/report-definition.xsd">
-    <report>
-        <section-ref id="inkomster"/>
-        <section-ref id="boende"/>
-        <section-ref id="förnödenheter"/>
-        <section-ref id="övrigt"/>
-        <section-ref id="före jämförelsestörande poster">
-            <compact-section/>
-            <totalling-section/>
-        </section-ref>
-        <section-ref id="jämförelsestörande poster"/>
-        <section-ref id="förändring likvida medel">
-            <compact-section/>
-            <negated-section/>
-        </section-ref>
-        <section-ref id="kontrollsumma">
-            <compact-section/>
-            <totalling-section/>
-        </section-ref>
-        <section-ref id="ackumulerade likvida medel">
-            <compact-section/>
-            <accumulating-section/>
-        </section-ref>
-    </report>
-    <section id="inkomster">
-        <description>Inkomster</description>
-        <account-group>
-            <description>Löner och arvoden</description>
-            <regex>(30|36)\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Nettoomsättning övrigt</description>
-            <regex>3([1-5]|[7-9])\d\d</regex>
-        </account-group>
-    </section>
-    <section id="boende">
-        <description>Boende</description>
-        <account-group>
-            <description>Månadsavgift m.m.</description>
-            <regex>501\d</regex>
-        </account-group>
-        <account-group>
-            <description>Amortering Fredsgatan 13</description>
-            <regex>2353</regex>
-        </account-group>
-        <account-group>
-            <description>Bolån ränta och liknande</description>
-            <regex>84[019]\d</regex>
-        </account-group>
-        <account-group>
-            <description>Hemförsäkring</description>
-            <regex>5081</regex>
-        </account-group>
-        <account-group>
-            <description>El (förbrukning och nät)</description>
-            <regex>502\d</regex>
-        </account-group>
-        <account-group>
-            <description>Mobil, tv, bredband</description>
-            <regex>51\d\d</regex>
-        </account-group>
-    </section>
-    <section id="förnödenheter">
-        <description>Förnödenheter</description>
-        <account-group>
-            <description>Dagligvaror</description>
-            <regex>40\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Kläder och skor</description>
-            <regex>41\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Kropp och själ</description>
-            <regex>42\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Personförsäkringar</description>
-            <regex>43\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>A-kassa, fack, bank, skatt</description>
-            <regex>4[4-7]\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Transporter</description>
-            <regex>56\d\d</regex>
-        </account-group>
-    </section>
-    <section id="övrigt">
+<definition xmlns="se/montesmites/ekonomi/report-definition"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="se/montesmites/ekonomi/report-definition ../../../../xsd/report-definition.xsd">
+  <report>
+    <account-groups>
+      <description>Inkomster</description>
+      <account-group>
+        <description>Löner och arvoden</description>
+        <regex>(30|36)\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Nettoomsättning övrigt</description>
+        <regex>3([1-5]|[7-9])\d\d</regex>
+      </account-group>
+    </account-groups>
+    <account-groups>
+      <description>Boende</description>
+      <account-group>
+        <description>Månadsavgift m.m.</description>
+        <regex>501\d</regex>
+      </account-group>
+      <account-group>
+        <description>Amortering Fredsgatan 13</description>
+        <regex>2353</regex>
+      </account-group>
+      <account-group>
+        <description>Bolån ränta och liknande</description>
+        <regex>84[019]\d</regex>
+      </account-group>
+      <account-group>
+        <description>Hemförsäkring</description>
+        <regex>5081</regex>
+      </account-group>
+      <account-group>
+        <description>El (förbrukning och nät)</description>
+        <regex>502\d</regex>
+      </account-group>
+      <account-group>
+        <description>Mobil, tv, bredband</description>
+        <regex>51\d\d</regex>
+      </account-group>
+    </account-groups>
+    <account-groups>
+      <description>Förnödenheter</description>
+      <account-group>
+        <description>Dagligvaror</description>
+        <regex>40\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Kläder och skor</description>
+        <regex>41\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Kropp och själ</description>
+        <regex>42\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Personförsäkringar</description>
+        <regex>43\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>A-kassa, fack, bank, skatt</description>
+        <regex>4[4-7]\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Transporter</description>
+        <regex>56\d\d</regex>
+      </account-group>
+    </account-groups>
+    <account-groups>
+      <description>Övrigt</description>
+      <account-group>
+        <description>Boende diverse</description>
+        <regex>5060|5[458]\d\d</regex>
+      </account-group>
+      <account-group>
         <description>Övrigt</description>
-        <account-group>
-            <description>Boende diverse</description>
-            <regex>5060|5[458]\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Övrigt</description>
-            <regex>(4[89]|[67]\d)\d\d</regex>
-        </account-group>
+        <regex>(4[89]|[67]\d)\d\d</regex>
+      </account-group>
+    </account-groups>
+    <subtotal>
+      <description>Före jämförelsestörande poster</description>
+    </subtotal>
+    <account-groups>
+      <description>Sparande</description>
+      <account-group>
+        <description>Buffertsparande</description>
+        <regex>1493</regex>
+      </account-group>
+      <account-group>
+        <description>Räntesparande och liknande</description>
+        <regex>134\d</regex>
+      </account-group>
+      <account-group>
+        <description>Aktier och aktiefonder</description>
+        <regex>18\d\d</regex>
+      </account-group>
+    </account-groups>
+    <account-groups>
+      <description>Jämförelsestörande poster</description>
+      <account-group>
+        <description>Kortfristigt netto</description>
+        <regex>(1[5-7]|2[4-9])\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Långfristigt netto</description>
+        <regex>(8[56]\d\d)|(10\d\d|13[56]\d)</regex>
+      </account-group>
+      <account-group>
+        <description>Finansiellt netto</description>
+        <regex>(83\d\d)|(84[2-8]\d)</regex>
+      </account-group>
+      <account-group>
+        <description>Investering boende</description>
+        <regex>11\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Extraordinärt netto</description>
+        <regex>87\d\d</regex>
+      </account-group>
+    </account-groups>
+    <subtotal>
+      <description>Förändring likvida medel</description>
+    </subtotal>
+    <section no-closing-empty-row="true">
+      <body dematerialize="true">
+        <account-groups>
+          <description/>
+          <account-group>
+            <description>Likvida medel</description>
+            <regex>19\d\d</regex>
+          </account-group>
+        </account-groups>
+      </body>
     </section>
-    <section id="jämförelsestörande poster">
-        <description>Jämförelsestörande poster</description>
-        <account-group>
-            <description>Kortfristigt netto</description>
-            <regex>(1[5-8]|2[4-9])\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Långfristigt netto</description>
-            <regex>(8[56]\d\d)|(10\d\d|13[456]\d)</regex>
-        </account-group>
-        <account-group>
-            <description>Finansiellt netto</description>
-            <regex>(83\d\d)|(84[2-8]\d)</regex>
-        </account-group>
-        <account-group>
-            <description>Investering boende</description>
-            <regex>11\d\d</regex>
-        </account-group>
-        <account-group>
-            <description>Extraordinärt netto</description>
-            <regex>87\d\d</regex>
-        </account-group>
-    </section>
-    <section id="förändring likvida medel">
-        <description>Förändring likvida medel</description>
-        <account-group-ref id="likvida medel"/>
-    </section>
-    <section id="före jämförelsestörande poster">
-        <description>Före jämförelsestörande poster</description>
-        <section-ref id="inkomster"/>
-        <section-ref id="boende"/>
-        <section-ref id="förnödenheter"/>
-        <section-ref id="övrigt"/>
-    </section>
-    <section id="kontrollsumma">
-        <description>Kontrollsumma</description>
-        <section-ref id="inkomster"/>
-        <section-ref id="boende"/>
-        <section-ref id="förnödenheter"/>
-        <section-ref id="övrigt"/>
-        <section-ref id="jämförelsestörande poster"/>
-        <section-ref id="förändring likvida medel"/>
-    </section>
-    <section id="ackumulerade likvida medel">
-        <description>Ackumulerade likvida medel</description>
-        <account-group-ref id="likvida medel"/>
-    </section>
-    <account-group id="likvida medel">
-        <description>Likvida medel</description>
-        <regex>1493|19\d\d</regex>
-    </account-group>
+    <subtotal>
+      <description>Kontrollsumma</description>
+    </subtotal>
+    <accumulate-account-groups>
+      <description>Ackumulerade likvida medel</description>
+      <account-group>
+        <description/>
+        <regex>19\d\d</regex>
+        <negate/>
+      </account-group>
+    </accumulate-account-groups>
+  </report>
 </definition>
