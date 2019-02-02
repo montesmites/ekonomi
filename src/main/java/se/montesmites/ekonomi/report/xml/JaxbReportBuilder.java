@@ -8,10 +8,12 @@ import java.time.Year;
 import javax.xml.bind.JAXBContext;
 import se.montesmites.ekonomi.jaxb.model.AccountGroups;
 import se.montesmites.ekonomi.jaxb.model.Definition;
+import se.montesmites.ekonomi.jaxb.model.Subtotal;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AccountsFetcher;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.Report;
+import se.montesmites.ekonomi.report.TagFilter;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 
 class JaxbReportBuilder {
@@ -41,6 +43,9 @@ class JaxbReportBuilder {
                     accountGroup ->
                         AccountGroup.of(accountGroup.getDescription(), accountGroup.getRegex()))
                 .collect(toList()));
+      } else if (constituent instanceof Subtotal) {
+        var subtotal = (Subtotal) constituent;
+        reportBuilder.subtotal(subtotal.getDescription(), TagFilter.any());
       }
     }
     return reportBuilder.report();
