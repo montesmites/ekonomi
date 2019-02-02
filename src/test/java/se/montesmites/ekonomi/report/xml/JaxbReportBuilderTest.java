@@ -32,7 +32,7 @@ class JaxbReportBuilderTest {
   private final YearId yearId = new YearId(String.valueOf(year.getValue()));
 
   @Test
-  void accountGroupsElement() throws Exception {
+  void accountGroupsConstituent() throws Exception {
     var path = PATH_TO_TEST_XML + "01_account-groups.xml";
     var amounts1 =
         AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
@@ -47,18 +47,20 @@ class JaxbReportBuilderTest {
             .amountsFetcher();
     var builder = new JaxbReportBuilder(Paths.get(getClass().getResource(path).toURI()));
     var report = builder.report(amountsFetcher, year);
-    var exp = List.of(
-        Section.of(
-            Header.of(
-                List.of(Row.title("1111 & 2222"), Row.descriptionWithMonths("", Row.SHORT_MONTHS))),
-            Body.of(List.of(amounts1, amounts2)),
-            Footer.of(amounts3.asRow())));
+    var exp =
+        List.of(
+            Section.of(
+                Header.of(
+                    List.of(
+                        Row.title("1111 & 2222"), Row.descriptionWithMonths("", Row.SHORT_MONTHS))),
+                Body.of(List.of(amounts1, amounts2)),
+                Footer.of(amounts3.asRow())));
     var act = report.streamSections().collect(toList());
     assertEquals(asString(exp), asString(act));
   }
 
   @Test
-  void subtotalElement() throws Exception {
+  void subtotalConstituent() throws Exception {
     var path = PATH_TO_TEST_XML + "02_subtotal.xml";
     var amounts1 =
         AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
@@ -86,6 +88,23 @@ class JaxbReportBuilderTest {
             Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())));
     var act = report.streamSections().collect(toList());
     assertEquals(asString(exp), asString(act));
+  }
+
+  @Test
+  void sectionConstituent() throws Exception {
+    var path = PATH_TO_TEST_XML + "03_section.xml";
+    var subtotal =
+        AmountsProvider.of("subtotal", month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), subtotal)))
+            .amountsFetcher();
+    var builder = new JaxbReportBuilder(Paths.get(getClass().getResource(path).toURI()));
+    var report = builder.report(amountsFetcher, year);
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())));
+    var act = report.streamSections().collect(toList());
+    assertEquals("\n" + asString(exp), asString(act));
   }
 
   private String asString(List<Section> sections) {
