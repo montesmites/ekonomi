@@ -8,6 +8,7 @@ import java.time.Year;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
 import se.montesmites.ekonomi.jaxb.model.AccountGroups;
+import se.montesmites.ekonomi.jaxb.model.AccumulateAccountGroups;
 import se.montesmites.ekonomi.jaxb.model.Body;
 import se.montesmites.ekonomi.jaxb.model.Definition;
 import se.montesmites.ekonomi.jaxb.model.Section;
@@ -48,17 +49,22 @@ class JaxbReportBuilder {
       } else if (constituent instanceof Section) {
         var section = (Section) constituent;
         reportBuilder.section(sectionBuilder -> buildSection(section, sectionBuilder));
+      } else if (constituent instanceof AccumulateAccountGroups) {
+        var accumulation = (AccumulateAccountGroups) constituent;
+        reportBuilder.accumulateAccountGroups(
+            accumulation.getDescription(), convertAccountGroups(accumulation.getAccountGroup()));
       }
     }
     return reportBuilder.report();
   }
 
   private List<AccountGroup> convertAccountGroups(AccountGroups accountGroups) {
-    return accountGroups
-        .getAccountGroup()
-        .stream()
-        .map(this::convertAccountGroup)
-        .collect(toList());
+    return convertAccountGroups(accountGroups.getAccountGroup());
+  }
+
+  private List<AccountGroup> convertAccountGroups(
+      List<se.montesmites.ekonomi.jaxb.model.AccountGroup> accountGroups) {
+    return accountGroups.stream().map(this::convertAccountGroup).collect(toList());
   }
 
   private AccountGroup convertAccountGroup(

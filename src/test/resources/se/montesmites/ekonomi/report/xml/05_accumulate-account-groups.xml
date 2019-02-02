@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definition xmlns="se/montesmites/ekonomi/report-definition"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="se/montesmites/ekonomi/report-definition ../../../../../../../main/resources/xsd/report-definition.xsd">
+  <report>
+    <accumulate-account-groups>
+      <description>accumulate</description>
+      <account-group>
+        <description/>
+        <regex>1111</regex>
+      </account-group>
+    </accumulate-account-groups>
+  </report>
+</definition>
