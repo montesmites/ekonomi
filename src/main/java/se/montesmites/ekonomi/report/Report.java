@@ -24,7 +24,7 @@ public class Report {
     this.sections = sections;
   }
 
-  Stream<Section> streamSections() {
+  public Stream<Section> streamSections() {
     return sections.get();
   }
 

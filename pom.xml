@@ -18,6 +18,7 @@
 
     <javax.activation.version>1.1.1</javax.activation.version>
     <javax.jaxb.version>2.3.0</javax.jaxb.version>
+    <javax.jaxb.impl.version>2.3.2</javax.jaxb.impl.version>
     <jaxb2-maven-plugin.version>2.3.1</jaxb2-maven-plugin.version>
     <jaxb.resources.path>src/main/resources/xsd</jaxb.resources.path>
 
@@ -44,7 +45,7 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>${javax.jaxb.version}</version>
+      <version>${javax.jaxb.impl.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>

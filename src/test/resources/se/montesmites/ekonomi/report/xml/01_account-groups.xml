@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definition xmlns="se/montesmites/ekonomi/report-definition"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="se/montesmites/ekonomi/report-definition ../../../../../../../main/resources/xsd/report-definition.xsd">
+  <report>
+    <account-groups>
+      <description>1111 &amp; 2222</description>
+      <account-group>
+        <description>1111</description>
+        <regex>1111</regex>
+      </account-group>
+      <account-group>
+        <description>2222</description>
+        <regex>2222</regex>
+      </account-group>
+    </account-groups>
+  </report>
+</definition>
