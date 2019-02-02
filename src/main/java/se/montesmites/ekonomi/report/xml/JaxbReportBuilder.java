@@ -15,6 +15,7 @@ import se.montesmites.ekonomi.jaxb.model.Subtotal;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AccountsFetcher;
 import se.montesmites.ekonomi.report.AmountsFetcher;
+import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.TagFilter;
 import se.montesmites.ekonomi.report.builder.BodyBuilder;
@@ -56,9 +57,18 @@ class JaxbReportBuilder {
     return accountGroups
         .getAccountGroup()
         .stream()
-        .map(
-            accountGroup -> AccountGroup.of(accountGroup.getDescription(), accountGroup.getRegex()))
+        .map(this::convertAccountGroup)
         .collect(toList());
+  }
+
+  private AccountGroup convertAccountGroup(
+      se.montesmites.ekonomi.jaxb.model.AccountGroup jaxbAccountGroup) {
+    var accountGroup =
+        AccountGroup.of(jaxbAccountGroup.getDescription(), jaxbAccountGroup.getRegex());
+    if (jaxbAccountGroup.getAccountGroupPostProcessor().size() > 0) {
+      accountGroup = accountGroup.postProcessor(AmountsProvider::negate);
+    }
+    return accountGroup;
   }
 
   private Definition readReportDefinition() {
