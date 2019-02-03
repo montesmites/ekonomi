@@ -4,25 +4,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Year;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 import se.montesmites.ekonomi.report.DataFetcher;
 import se.montesmites.ekonomi.report.Report;
+import se.montesmites.ekonomi.report.xml.JaxbReportBuilder;
 
 class Main {
-  public static void main(String[] args) {
-    var arguments = new ArgumentCaptor(args);
-    arguments
-        .reportTypes()
-        .get()
-        .forEach(
-            reportType -> renderReport(reportType, arguments.year(), arguments.path(reportType)));
-  }
 
-  private static void renderReport(ReportType reportType, Year year, Path path) {
+  public static void main(String[] _args) {
+    var args =
+        "-t Kassaflöde -x D:\\git\\ekonomi\\src\\main\\resources\\se\\montesmites\\ekonomi\\nikka\\nikka-cashflow-report-definition.xml -y 2018 -d C:\\temp\\nikka\\reports\\2018"
+            .split(" ");
+    var arguments = new ArgumentCaptor(args);
     var main = new Main();
-    var report = main.generateReport(reportType, year);
-    main.renderToFile(report, path);
+    var report = main.generateReport(arguments);
+    main.renderToFile(report, arguments.destinationPath());
   }
 
   private final DataFetcher dataFetcher;
@@ -33,8 +29,8 @@ class Main {
     this.dataFetcher = new DataFetcher(organization);
   }
 
-  private Report generateReport(ReportType reportType, Year year) {
-    return NikkaReport.of(reportType, year).generateReport(dataFetcher);
+  private Report generateReport(ArgumentCaptor arguments) {
+    return new JaxbReportBuilder(arguments.definitionPath()).report(dataFetcher, arguments.year());
   }
 
   private void renderToFile(Report report, Path path) {
