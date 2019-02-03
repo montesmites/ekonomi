@@ -23,15 +23,15 @@ import se.montesmites.ekonomi.report.builder.BodyBuilder;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 import se.montesmites.ekonomi.report.builder.SectionBuilder;
 
-class JaxbReportBuilder {
+public class JaxbReportBuilder {
 
   private final Path pathToXmlDefinition;
 
-  JaxbReportBuilder(Path pathToXmlDefinition) {
+  public JaxbReportBuilder(Path pathToXmlDefinition) {
     this.pathToXmlDefinition = pathToXmlDefinition;
   }
 
-  Report report(AmountsFetcher amountsFetcher, Year year) {
+  public Report report(AmountsFetcher amountsFetcher, Year year) {
     return report(AccountsFetcher.empty(), amountsFetcher, year);
   }
 
@@ -45,7 +45,7 @@ class JaxbReportBuilder {
             accountGroups.getDescription(), convertAccountGroups(accountGroups));
       } else if (constituent instanceof Subtotal) {
         var subtotal = (Subtotal) constituent;
-        reportBuilder.subtotal(subtotal.getDescription(), TagFilter.any());
+        reportBuilder.subtotal(subtotal.getDescription().toUpperCase(), TagFilter.any());
       } else if (constituent instanceof Section) {
         var section = (Section) constituent;
         reportBuilder.section(sectionBuilder -> buildSection(section, sectionBuilder));

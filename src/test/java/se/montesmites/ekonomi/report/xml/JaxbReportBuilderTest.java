@@ -81,7 +81,7 @@ class JaxbReportBuilderTest {
         AmountsProvider.of("2222", month -> Optional.of(Currency.of(month.ordinal() * 200)));
     var sum = AmountsProvider.of("", month -> Optional.of(Currency.of(month.ordinal() * 300)));
     var subtotal =
-        AmountsProvider.of("subtotal", month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of("SUBTOTAL", month -> Optional.of(Currency.of(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -107,7 +107,7 @@ class JaxbReportBuilderTest {
   void sectionConstituent() throws Exception {
     var path = PATH_TO_TEST_XML + "03_section.xml";
     var subtotal =
-        AmountsProvider.of("subtotal", month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of("SUBTOTAL", month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), subtotal)))
             .amountsFetcher();
