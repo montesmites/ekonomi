@@ -16,6 +16,7 @@ import se.montesmites.ekonomi.report.AccountDescriptor;
 import se.montesmites.ekonomi.report.AccountFilterByRegex;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AccountsFetcher;
+import se.montesmites.ekonomi.report.Aggregate;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Report;
@@ -31,7 +32,7 @@ public class ReportBuilder {
   private final List<SectionBuilder> sections;
   private Set<Tag> tags = Set.of();
 
-  public ReportBuilder(AmountsFetcher amountsFetcher, Year year) {
+  ReportBuilder(AmountsFetcher amountsFetcher, Year year) {
     this(AccountsFetcher.empty(), amountsFetcher, year);
   }
 
@@ -129,7 +130,7 @@ public class ReportBuilder {
             .filter(section -> tagFilter.test(section.getTags()))
             .map(SectionBuilder::getBodyBuilder)
             .map(BodyBuilder::body)
-            .map(body -> body.aggregate(""))
+            .map(Aggregate::of)
             .collect(toList());
     sectionBuilder.footer(
         footer ->

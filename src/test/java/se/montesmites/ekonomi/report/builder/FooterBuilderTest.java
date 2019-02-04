@@ -13,6 +13,7 @@ import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.Aggregate;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
@@ -53,7 +54,7 @@ class FooterBuilderTest {
             .amountsFetcher();
     var bodyBuilder = new BodyBuilder(year, amountsFetcher).accountGroups(accountGroups);
     var footerBuilder = new FooterBuilder(bodyBuilder::body).aggregateBody();
-    var exp = Footer.of(Body.of(List.of(row1, row2)).aggregate("").asRow());
+    var exp = Footer.of(Aggregate.of(List.of(row1, row2)).asRow());
     var act = footerBuilder.footer();
     assertEquals(exp.asString("\n"), act.asString("\n"));
   }

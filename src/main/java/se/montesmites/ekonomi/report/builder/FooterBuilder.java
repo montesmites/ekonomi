@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.report.Aggregate;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
 import se.montesmites.ekonomi.report.Row;
@@ -41,12 +42,12 @@ public class FooterBuilder {
   }
 
   private FooterBuilder aggregateBody(String description) {
-    this.rows.add(this.body.get().aggregate(description).asRow());
+    this.rows.add(Aggregate.of(description, body.get()).asRow());
     return this;
   }
 
   FooterBuilder accumulateBody(Currency initalBalance) {
-    var aggregate = this.body.get().aggregate("");
+    var aggregate = Aggregate.of(body.get());
     var accumulation = aggregate.accumulate(initalBalance);
     this.rows.add(accumulation.asRow());
     return this;

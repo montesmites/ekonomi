@@ -36,7 +36,7 @@ class Report_OneSection_OneRow_Test {
         Header.of(Row.title(DEN_LOPANDE_VERKSAMHETEN))
             .add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
-    var footer = Footer.of(body.aggregate("").asRow());
+    var footer = Footer.of(Aggregate.of(body).asRow());
     this.section = Section.of(header, body, footer);
   }
 

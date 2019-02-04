@@ -32,6 +32,7 @@ import se.montesmites.ekonomi.model.AccountStatus;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.Aggregate;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
@@ -57,7 +58,7 @@ class ReportBuilderTest {
     var title = "title";
     var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(row1);
-    var footer = Footer.of(body.aggregate("").asRow());
+    var footer = Footer.of(Aggregate.of(body).asRow());
     var section = Section.of(header, body, footer);
     var exp = List.of(section).stream().map(Section::asString).collect(toList());
     var act =
@@ -106,7 +107,7 @@ class ReportBuilderTest {
             .accounts(title, "\\d\\d\\d\\d", AmountsProvider::self);
     var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(List.of(row1, row2));
-    var footer = Footer.of(body.aggregate("").asRow());
+    var footer = Footer.of(Aggregate.of(body).asRow());
     var exp =
         List.of(Section.of(header, body, footer)).stream().map(Section::asString).collect(toList());
     var act =

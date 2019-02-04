@@ -28,7 +28,7 @@ class SectionTest {
   void stream() {
     var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
     var body = Body.of(AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal()))));
-    var footer = Footer.of(body.aggregate("").asRow());
+    var footer = Footer.of(Aggregate.of(body).asRow());
     var exp =
         Stream.of(
             header.stream(),
@@ -53,7 +53,7 @@ class SectionTest {
   void of() {
     var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
     var body = Body.of(AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal()))));
-    var footer = Footer.of(body.aggregate("").asRow());
+    var footer = Footer.of(Aggregate.of(body).asRow());
     var exp =
         new Section() {
           @Override
@@ -80,7 +80,7 @@ class SectionTest {
     var delimiter = "\n";
     var header = Header.of(Row.of(Map.of(DESCRIPTION, "TITLE")));
     var body = Body.of(AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal()))));
-    var footer = Footer.of(body.aggregate("").asRow());
+    var footer = Footer.of(Aggregate.of(body).asRow());
     var exp =
         header.asString(delimiter)
             + delimiter

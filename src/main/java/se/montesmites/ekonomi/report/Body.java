@@ -13,26 +13,30 @@ import se.montesmites.ekonomi.model.Currency;
 public interface Body {
 
   static Body empty() {
-    return Stream::empty;
+    return List::of;
   }
 
   static Body of(Supplier<Stream<? extends AmountsProvider>> rowWithAmounts) {
-    return rowWithAmounts::get;
+    return () -> rowWithAmounts.get().collect(toList());
   }
 
   static Body of(AmountsProvider rowWithAmounts) {
-    return () -> Stream.of(rowWithAmounts);
+    return () -> List.of(rowWithAmounts);
   }
 
   static Body of(List<AmountsProvider> amountsProviders) {
-    return amountsProviders::stream;
+    return () -> List.copyOf(amountsProviders);
   }
 
   default Body add(AmountsProvider rowWithAmounts) {
-    return () -> Stream.concat(this.stream(), Stream.of(rowWithAmounts));
+    return () -> Stream.concat(this.stream(), Stream.of(rowWithAmounts)).collect(toList());
   }
 
-  Stream<? extends AmountsProvider> stream();
+  default Stream<? extends AmountsProvider> stream() {
+    return rows().stream();
+  }
+
+  List<? extends AmountsProvider> rows();
 
   default AmountsProvider aggregate(String description) {
     return new AmountsProvider() {
@@ -58,11 +62,13 @@ public interface Body {
 
   default Body negate() {
     var base = this;
-    return () -> base.stream().map(AmountsProvider::negate);
+    return () -> base.stream().map(AmountsProvider::negate).collect(toList());
   }
 
   default String asString(String delimiter) {
-    return stream().map(AmountsProvider::asRow).map(Row::asExtendedString)
+    return stream()
+        .map(AmountsProvider::asRow)
+        .map(Row::asExtendedString)
         .collect(joining(delimiter));
   }
 }

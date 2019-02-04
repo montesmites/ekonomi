@@ -16,6 +16,7 @@ import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
+import se.montesmites.ekonomi.report.Aggregate;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Body;
@@ -79,7 +80,7 @@ class SectionBuilderTest {
                     body.accountGroups(
                         List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
                         .dematerialize());
-    var exp = sectionBuilder.getBody().aggregate("").asRow().asExtendedString();
+    var exp = Aggregate.of(sectionBuilder.getBody()).asRow().asExtendedString();
     var act = sectionBuilder.footer(FooterBuilder::aggregateBody).getFooter().asString("\n");
     assertEquals(exp, act);
   }
@@ -96,7 +97,7 @@ class SectionBuilderTest {
                 entry(new AccountId(yearId, "1111"), body1),
                 entry(new AccountId(yearId, "2222"), body2)))
             .amountsFetcher();
-    var footer = Footer.of(List.of(expBody.aggregate("").asRow()));
+    var footer = Footer.of(List.of(Aggregate.of(expBody).asRow()));
     var sectionBuilder = new SectionBuilder(year, amountsFetcher);
     var exp = Section.of(Header.of(title), expBody, footer).asString("\n");
     var act =
@@ -125,7 +126,7 @@ class SectionBuilderTest {
                 entry(new AccountId(yearId, "2222"), body2)))
             .amountsFetcher();
     var sectionBuilder = new SectionBuilder(year, amountsFetcher);
-    var footer = Footer.of(List.of(expBody.aggregate("").asRow()));
+    var footer = Footer.of(List.of(Aggregate.of(expBody).asRow()));
     var exp = Section.of(Header.of(title), Body.empty(), footer).asString("\n");
     var act =
         sectionBuilder

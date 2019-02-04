@@ -41,7 +41,7 @@ class Report_TwoSections_OneRowEach_Test {
       String title, List<Report_AccountGroup_2012> groups) {
     var header = Header.of(Row.title(title)).add(Row.descriptionWithMonths("", Row.SHORT_MONTHS));
     var body = Body.of(() -> bodyRowsOf(fetcher, groups));
-    var footer = Footer.of(body.aggregate("").asRow());
+    var footer = Footer.of(Aggregate.of(body).asRow());
     var section = Section.of(header, body, footer);
     return Map.entry(section, groups);
   }
