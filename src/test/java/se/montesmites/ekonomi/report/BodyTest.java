@@ -99,17 +99,6 @@ class BodyTest {
   }
 
   @Test
-  void concat() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var row4 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 400)));
-    var exp = Body.of(() -> Stream.of(row1, row2, row3, row4));
-    var act = Body.of(() -> Stream.of(row1, row2)).concat(Body.of(() -> Stream.of(row3, row4)));
-    assertBodys(exp, act);
-  }
-
-  @Test
   void negate() {
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
