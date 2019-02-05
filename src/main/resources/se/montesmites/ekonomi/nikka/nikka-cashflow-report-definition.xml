@@ -141,7 +141,7 @@
       <description>Ackumulerade likvida medel</description>
       <account-group>
         <description/>
-        <regex>19\d\d</regex>
+        <regex>1493|19\d\d</regex>
         <negate/>
       </account-group>
     </accumulate-account-groups>
