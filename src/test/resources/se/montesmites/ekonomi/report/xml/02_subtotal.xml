@@ -16,6 +16,12 @@
     </account-groups>
     <subtotal>
       <description>subtotal</description>
+      <addenda>
+        <account-group>
+          <description/>
+          <regex>3333</regex>
+        </account-group>
+      </addenda>
     </subtotal>
   </report>
 </definition>

@@ -13,6 +13,7 @@ import se.montesmites.ekonomi.jaxb.model.Body;
 import se.montesmites.ekonomi.jaxb.model.Definition;
 import se.montesmites.ekonomi.jaxb.model.Section;
 import se.montesmites.ekonomi.jaxb.model.Subtotal;
+import se.montesmites.ekonomi.jaxb.model.Subtotal.Addenda;
 import se.montesmites.ekonomi.report.AccountGroup;
 import se.montesmites.ekonomi.report.AccountsFetcher;
 import se.montesmites.ekonomi.report.AmountsFetcher;
@@ -44,7 +45,11 @@ public class JaxbReportBuilder {
             accountGroups.getDescription(), convertAccountGroups(accountGroups));
       } else if (constituent instanceof Subtotal) {
         var subtotal = (Subtotal) constituent;
-        reportBuilder.subtotal(sbttl -> sbttl.description(subtotal.getDescription().toUpperCase()));
+        reportBuilder.subtotal(
+            sbttl ->
+                sbttl
+                    .description(subtotal.getDescription().toUpperCase())
+                    .addenda(convertAddenda(subtotal.getAddenda(), amountsFetcher, year)));
       } else if (constituent instanceof Section) {
         var section = (Section) constituent;
         reportBuilder.section(sectionBuilder -> buildSection(section, sectionBuilder));
@@ -74,6 +79,20 @@ public class JaxbReportBuilder {
       accountGroup = accountGroup.postProcessor(AmountsProvider::negate);
     }
     return accountGroup;
+  }
+
+  private List<AmountsProvider> convertAddenda(
+      Addenda addenda, AmountsFetcher amountsFetcher, Year year) {
+    return addenda == null
+        ? List.of()
+        : addenda
+            .getAccountGroup()
+            .stream()
+            .flatMap(__ -> addenda.getAccountGroup().stream())
+            .map(
+                accountGroup ->
+                    AmountsProvider.of(amountsFetcher, year, convertAccountGroup(accountGroup)))
+            .collect(toList());
   }
 
   private Definition readReportDefinition() {

@@ -79,14 +79,17 @@ class JaxbReportBuilderTest {
         AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var amounts2 =
         AmountsProvider.of("2222", month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var amounts3 =
+        AmountsProvider.of("3333", month -> Optional.of(Currency.of(month.ordinal() * 300)));
     var sum = AmountsProvider.of("", month -> Optional.of(Currency.of(month.ordinal() * 300)));
     var subtotal =
-        AmountsProvider.of("SUBTOTAL", month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of("SUBTOTAL", month -> Optional.of(Currency.of(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
                 entry(new AccountId(yearId, "1111"), amounts1),
-                entry(new AccountId(yearId, "2222"), amounts2)))
+                entry(new AccountId(yearId, "2222"), amounts2),
+                entry(new AccountId(yearId, "3333"), amounts3)))
             .amountsFetcher();
     var builder = new JaxbReportBuilder(Paths.get(getClass().getResource(path).toURI()));
     var report = builder.report(amountsFetcher, year);

@@ -29,13 +29,13 @@ class SubtotalBuilderTest {
   private final YearId yearId = new YearId(year.toString());
 
   @Test
-  @Deprecated(forRemoval = true)
-  void subtotal_dematerializedBody() {
+  void subtotal_amountsProviders() {
     var description = "description";
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
     var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -47,17 +47,10 @@ class SubtotalBuilderTest {
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
-            .section(
-                section ->
-                    section.body(
-                        body ->
-                            body.accountGroups(List.of(AccountGroup.of("", "2222")))
-                                .dematerialize()))
-            .subtotal(sbttl -> sbttl.description(description));
+            .subtotal(sbttl -> sbttl.description(description).addenda(List.of(row2, row3)));
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.empty()),
             Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
