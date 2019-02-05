@@ -3,7 +3,6 @@ package se.montesmites.ekonomi.report.builder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.Aggregate;
 import se.montesmites.ekonomi.report.Body;
 import se.montesmites.ekonomi.report.Footer;
@@ -15,11 +14,6 @@ public class FooterBuilder {
     return new FooterBuilder(null) {
       @Override
       public FooterBuilder aggregateBody() {
-        return this;
-      }
-
-      @Override
-      public FooterBuilder accumulateBody(Currency initialBalance) {
         return this;
       }
 
@@ -43,13 +37,6 @@ public class FooterBuilder {
 
   private FooterBuilder aggregateBody(String description) {
     this.rows.add(Aggregate.of(description, body.get()).asRow());
-    return this;
-  }
-
-  FooterBuilder accumulateBody(Currency initalBalance) {
-    var aggregate = Aggregate.of(body.get());
-    var accumulation = aggregate.accumulate(initalBalance);
-    this.rows.add(accumulation.asRow());
     return this;
   }
 

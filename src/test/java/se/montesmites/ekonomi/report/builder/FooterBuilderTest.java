@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.AccountId;
-import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.YearId;
 import se.montesmites.ekonomi.report.AccountGroup;
@@ -55,24 +54,6 @@ class FooterBuilderTest {
     var bodyBuilder = new BodyBuilder(year, amountsFetcher).accountGroups(accountGroups);
     var footerBuilder = new FooterBuilder(bodyBuilder::body).aggregateBody();
     var exp = Footer.of(Aggregate.of(List.of(row1, row2)).asRow());
-    var act = footerBuilder.footer();
-    assertEquals(exp.asString("\n"), act.asString("\n"));
-  }
-
-  @Test
-  void accumulate() {
-    var row = AmountsProvider.of(month -> Optional.of(Currency.of((month.ordinal() + 1) * 100)));
-    var initialBalance = Currency.of(100);
-    var accountId = new AccountId(yearId, "1111");
-    var accountGroups = List.of(AccountGroup.of("1111", "1111"));
-    var amountsFetcher =
-        AmountsFetcherBuilder.of(Map.ofEntries(entry(accountId, row)))
-            .balances(Map.of(accountId, Optional.of(new Balance(accountId, initialBalance))))
-            .amountsFetcher();
-    var bodyBuilder =
-        new BodyBuilder(year, amountsFetcher).accountGroups(accountGroups).dematerialize();
-    var footerBuilder = new FooterBuilder(bodyBuilder::body).accumulateBody(initialBalance);
-    var exp = Footer.of(row.accumulate(initialBalance).asRow());
     var act = footerBuilder.footer();
     assertEquals(exp.asString("\n"), act.asString("\n"));
   }

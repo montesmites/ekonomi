@@ -84,27 +84,31 @@ public class ReportBuilder {
   public ReportBuilder accumulateAccountGroups(String title, List<AccountGroup> accountGroups) {
     var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
+    var amountsProviders =
+        accountGroups
+            .stream()
+            .map(accountGroup -> AmountsProvider.of(amountsFetcher, year, accountGroup))
+            .collect(toList());
+    var aggregate = Aggregate.of(amountsProviders);
+    var initialBalance =
+        accountGroups
+            .stream()
+            .map(
+                accountGroup ->
+                    amountsFetcher
+                        .streamAccountIds(year, AccountFilterByRegex.of(accountGroup))
+                        .map(
+                            accountId ->
+                                amountsFetcher
+                                    .fetchBalance(accountId)
+                                    .map(Balance::getBalance)
+                                    .orElse(Currency.zero()))
+                        .reduce(Currency.zero(), Currency::add))
+            .reduce(Currency::add)
+            .orElse(Currency.zero());
     sectionBuilder
         .header(header -> header.title(title).months())
-        .body(body -> body.accountGroups(accountGroups).dematerialize())
-        .footer(
-            footer ->
-                footer.accumulateBody(
-                    accountGroups
-                        .stream()
-                        .map(
-                            accountGroup ->
-                                amountsFetcher
-                                    .streamAccountIds(year, AccountFilterByRegex.of(accountGroup))
-                                    .map(
-                                        accountId ->
-                                            amountsFetcher
-                                                .fetchBalance(accountId)
-                                                .map(Balance::getBalance)
-                                                .orElse(Currency.zero()))
-                                    .reduce(Currency.zero(), Currency::add))
-                        .reduce(Currency::add)
-                        .orElse(Currency.zero())))
+        .footer(footer -> footer.add(aggregate.accumulate(initialBalance).asRow()))
         .section();
     return this;
   }
