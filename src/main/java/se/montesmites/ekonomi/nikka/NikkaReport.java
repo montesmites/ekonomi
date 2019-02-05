@@ -23,9 +23,13 @@ enum NikkaReport {
           .accounts("Boende", "50\\d\\d", AmountsProvider::self)
           .accounts("Övriga kostnader", "(5[1-9]|[67]\\d)\\d\\d", AmountsProvider::self)
           .accounts("Finansiellt netto", "8[3456]\\d\\d", AmountsProvider::self)
-          .subtotal("Bruttoresultat".toUpperCase(), TagFilter.isEqualTo(Tag.of("Bruttoresultat")))
+          .subtotal(
+              subtotal ->
+                  subtotal
+                      .description("BRUTTORESULTAT")
+                      .tagFilter(TagFilter.isEqualTo(Tag.of("Bruttoresultat"))))
           .accounts("Extraordinärt netto", "87\\d\\d", AmountsProvider::self)
-          .subtotal("Beräknat resultat".toUpperCase(), TagFilter.any())
+          .subtotal(subtotal -> subtotal.description("BERÄKNAT RESULTAT"))
           .section(
               section ->
                   section
@@ -38,7 +42,7 @@ enum NikkaReport {
                                           .postProcessor(AmountsProvider::negate)))
                                   .dematerialize())
                       .noClosingEmptyRow())
-          .subtotal("Kontrollsumma".toUpperCase(), TagFilter.any())
+          .subtotal(subtotal -> subtotal.description("KONTROLLSUMMA"))
           .accumulateAccountGroups(
               "Ackumulerat resultat",
               List.of(AccountGroup.of("Kontrollsumma", "([3-7]\\d|8[1-7])\\d\\d")))

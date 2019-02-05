@@ -18,7 +18,6 @@ import se.montesmites.ekonomi.report.AccountsFetcher;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Report;
-import se.montesmites.ekonomi.report.TagFilter;
 import se.montesmites.ekonomi.report.builder.BodyBuilder;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 import se.montesmites.ekonomi.report.builder.SectionBuilder;
@@ -45,7 +44,7 @@ public class JaxbReportBuilder {
             accountGroups.getDescription(), convertAccountGroups(accountGroups));
       } else if (constituent instanceof Subtotal) {
         var subtotal = (Subtotal) constituent;
-        reportBuilder.subtotal(subtotal.getDescription().toUpperCase(), TagFilter.any());
+        reportBuilder.subtotal(sbttl -> sbttl.description(subtotal.getDescription().toUpperCase()));
       } else if (constituent instanceof Section) {
         var section = (Section) constituent;
         reportBuilder.section(sectionBuilder -> buildSection(section, sectionBuilder));

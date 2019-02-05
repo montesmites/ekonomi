@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.Column.APRIL;
@@ -198,9 +199,9 @@ class ReportBuilderTest {
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "4444")))))
-            .subtotal("subtotal1", TagFilter.isEqualTo(tag1))
-            .subtotal("subtotal2", TagFilter.isEqualTo(tag2))
-            .subtotal("subtotal3", TagFilter.any());
+            .subtotal(sbttl -> sbttl.description("subtotal1").tagFilter(TagFilter.isEqualTo(tag1)))
+            .subtotal(sbttl -> sbttl.description("subtotal2").tagFilter(TagFilter.isEqualTo(tag2)))
+            .subtotal(sbttl -> sbttl.description("subtotal3"));
     var exp =
         List.of(
             Section.of(Header.empty(), Body.of(row1), Footer.empty()).asString("\n"),
@@ -251,6 +252,45 @@ class ReportBuilderTest {
   }
 
   @Test
+  void subtotal() {
+    var description = "description";
+    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var subtotal =
+        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var amountsFetcher =
+        AmountsFetcherBuilder.of(
+            Map.ofEntries(
+                entry(new AccountId(yearId, "1111"), row1),
+                entry(new AccountId(yearId, "2222"), row2)))
+            .amountsFetcher();
+    var reportBuilder =
+        new ReportBuilder(amountsFetcher, Year.now())
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "1111")))))
+            .section(
+                section ->
+                    section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
+            .subtotal(sbttl -> sbttl.description(description));
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    var act =
+        reportBuilder
+            .getSections()
+            .stream()
+            .map(section -> section.asString("\n"))
+            .collect(joining("\n"));
+    assertEquals(exp, act);
+  }
+
+  @Test
   void report() {
     var description = "description";
     var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
@@ -269,7 +309,7 @@ class ReportBuilderTest {
             .section(
                 section ->
                     section.body(body -> body.accountGroups(List.of(AccountGroup.of("", "2222")))))
-            .subtotal(description, TagFilter.any());
+            .subtotal(sbttl -> sbttl.description(description));
     var exp = new Report(() -> reportBuilder.getSections().stream()).render();
     var act = reportBuilder.report().render();
     assertEquals(exp, act);

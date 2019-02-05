@@ -22,7 +22,6 @@ import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.Tag;
-import se.montesmites.ekonomi.report.TagFilter;
 
 public class ReportBuilder {
 
@@ -125,30 +124,12 @@ public class ReportBuilder {
     return this;
   }
 
-  public ReportBuilder subtotal(String description, TagFilter tagFilter) {
+  public ReportBuilder subtotal(UnaryOperator<SubtotalBuilder> subtotal) {
+    var subtotalBuilder = new SubtotalBuilder(List.copyOf(this.sections));
+    subtotal.apply(subtotalBuilder);
     var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
-    var aggregates =
-        List.copyOf(this.sections)
-            .stream()
-            .filter(section -> tagFilter.test(section.getTags()))
-            .map(SectionBuilder::getBodyBuilder)
-            .map(BodyBuilder::body)
-            .map(Aggregate::of)
-            .collect(toList());
-    sectionBuilder.footer(
-        footer ->
-            footer.add(
-                AmountsProvider.of(
-                    description,
-                    month ->
-                        aggregates
-                            .stream()
-                            .map(amountsProvider -> amountsProvider.getMonthlyAmount(month))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .reduce(Currency::add))
-                    .asRow()));
+    subtotalBuilder.section(sectionBuilder);
     return this;
   }
 
