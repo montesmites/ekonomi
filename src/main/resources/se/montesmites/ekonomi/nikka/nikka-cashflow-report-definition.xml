@@ -80,7 +80,7 @@
       </account-group>
     </account-groups>
     <subtotal>
-      <description>Före jämförelsestörande poster</description>
+      <description>Netto återkommande poster</description>
     </subtotal>
     <account-groups>
       <description>Sparande</description>
@@ -121,24 +121,19 @@
       </account-group>
     </account-groups>
     <subtotal>
-      <description>Förändring likvida medel</description>
+      <description>Förändring kassa och bank</description>
     </subtotal>
-    <section no-closing-empty-row="true">
-      <body dematerialize="true">
-        <account-groups>
-          <description/>
-          <account-group>
-            <description>Likvida medel</description>
-            <regex>19\d\d</regex>
-          </account-group>
-        </account-groups>
-      </body>
-    </section>
     <subtotal>
       <description>Kontrollsumma</description>
+      <addenda>
+        <account-group>
+          <description>Likvida medel</description>
+          <regex>19\d\d</regex>
+        </account-group>
+      </addenda>
     </subtotal>
     <accumulate-account-groups>
-      <description>Ackumulerade likvida medel</description>
+      <description>Ack. likvida medel inkl. buffertsparande</description>
       <account-group>
         <description/>
         <regex>1493|19\d\d</regex>
