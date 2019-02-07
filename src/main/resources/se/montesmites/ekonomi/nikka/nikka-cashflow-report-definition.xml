@@ -9,10 +9,6 @@
         <description>Löner och arvoden</description>
         <regex>(30|36)\d\d</regex>
       </account-group>
-      <account-group>
-        <description>Nettoomsättning övrigt</description>
-        <regex>3([1-5]|[7-9])\d\d</regex>
-      </account-group>
     </account-groups>
     <account-groups>
       <description>Boende</description>
@@ -40,6 +36,10 @@
         <description>Mobil, tv, bredband</description>
         <regex>51\d\d</regex>
       </account-group>
+      <account-group>
+        <description>Boende diverse</description>
+        <regex>5060|5[458]\d\d</regex>
+      </account-group>
     </account-groups>
     <account-groups>
       <description>Förnödenheter</description>
@@ -60,19 +60,12 @@
         <regex>43\d\d</regex>
       </account-group>
       <account-group>
-        <description>A-kassa, fack, bank, skatt</description>
-        <regex>4[4-7]\d\d</regex>
+        <description>A-kassa, fack, bank</description>
+        <regex>4[4-6]\d\d</regex>
       </account-group>
       <account-group>
         <description>Transporter</description>
         <regex>56\d\d</regex>
-      </account-group>
-    </account-groups>
-    <account-groups>
-      <description>Övrigt</description>
-      <account-group>
-        <description>Boende diverse</description>
-        <regex>5060|5[458]\d\d</regex>
       </account-group>
       <account-group>
         <description>Övrigt</description>
@@ -100,6 +93,10 @@
     <account-groups>
       <description>Jämförelsestörande poster</description>
       <account-group>
+        <description>Nettoomsättning utom lön etc.</description>
+        <regex>3([1-5]|[7-9])\d\d</regex>
+      </account-group>
+      <account-group>
         <description>Kortfristigt netto</description>
         <regex>(1[5-7]|2[4-9])\d\d</regex>
       </account-group>
@@ -118,6 +115,10 @@
       <account-group>
         <description>Extraordinärt netto</description>
         <regex>87\d\d</regex>
+      </account-group>
+      <account-group>
+        <description>Skatt</description>
+        <regex>47\d\d</regex>
       </account-group>
     </account-groups>
     <subtotal>
