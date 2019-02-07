@@ -106,17 +106,11 @@ public class JaxbReportBuilder {
   }
 
   private SectionBuilder buildSection(Section section, SectionBuilder sectionBuilder) {
-    if (section.isNoClosingEmptyRow()) {
-      sectionBuilder.noClosingEmptyRow();
-    }
     var body = section.getBody();
     return sectionBuilder.body(bodyBuilder -> buildBody(body, bodyBuilder));
   }
 
   private BodyBuilder buildBody(Body body, BodyBuilder bodyBuilder) {
-    if (body.isDematerialize()) {
-      bodyBuilder.dematerialize();
-    }
     return bodyBuilder.accountGroups(convertAccountGroups(body.getAccountGroups()));
   }
 }

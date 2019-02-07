@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 
@@ -89,18 +88,6 @@ class SectionTest {
             + footer.asString(delimiter);
     var act = Section.of(header, body, footer).asString(delimiter);
     assertEquals(exp, act);
-  }
-
-  @Test
-  void closingEmptyRow() {
-    var section = Section.empty();
-    assertTrue(section.hasClosingEmptyRow());
-  }
-
-  @Test
-  void noClosingEmptyRow() {
-    var section = Section.empty().noClosingEmptyRow();
-    assertFalse(section.hasClosingEmptyRow());
   }
 
   @Test

@@ -30,7 +30,6 @@ public class BodyBuilder {
   private final Year year;
   private final AmountsFetcher amountsFetcher;
   private List<AmountsProvider> amountsProviders = new ArrayList<>();
-  private boolean materialized = true;
 
   BodyBuilder(Year year, AmountsFetcher amountsFetcher) {
     this.year = year;
@@ -53,16 +52,7 @@ public class BodyBuilder {
     return this;
   }
 
-  public BodyBuilder dematerialize() {
-    this.materialized = false;
-    return this;
-  }
-
   public Body body() {
     return Body.of(this.amountsProviders::stream);
-  }
-
-  boolean isMaterialized() {
-    return materialized;
   }
 }

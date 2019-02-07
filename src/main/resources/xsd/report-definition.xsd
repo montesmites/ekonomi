@@ -54,7 +54,6 @@
           <xs:element ref="body" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
       </xs:sequence>
-      <xs:attribute name="no-closing-empty-row" type="xs:boolean" default="false"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="account-group">
@@ -76,7 +75,6 @@
       <xs:sequence>
         <xs:element ref="account-groups"/>
       </xs:sequence>
-      <xs:attribute name="dematerialize" type="xs:boolean" default="false"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="accumulate-account-groups">

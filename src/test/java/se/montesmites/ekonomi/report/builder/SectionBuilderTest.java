@@ -3,8 +3,6 @@ package se.montesmites.ekonomi.report.builder;
 import static java.util.Map.entry;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Year;
 import java.util.List;
@@ -78,15 +76,14 @@ class SectionBuilderTest {
             .body(
                 body ->
                     body.accountGroups(
-                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
-                        .dematerialize());
+                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222"))));
     var exp = Aggregate.of(sectionBuilder.getBody()).asRow().asExtendedString();
     var act = sectionBuilder.footer(FooterBuilder::aggregateBody).getFooter().asString("\n");
     assertEquals(exp, act);
   }
 
   @Test
-  void section_materializedBody() {
+  void section() {
     var title = Row.title("title");
     var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
@@ -111,53 +108,6 @@ class SectionBuilderTest {
             .section()
             .asString("\n");
     assertEquals(exp, act);
-  }
-
-  @Test
-  void section_dematerializedBody() {
-    var title = Row.title("title");
-    var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var expBody = Body.of(List.of(body1, body2));
-    var amountsFetcher =
-        AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), body1),
-                entry(new AccountId(yearId, "2222"), body2)))
-            .amountsFetcher();
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
-    var footer = Footer.of(List.of(Aggregate.of(expBody).asRow()));
-    var exp = Section.of(Header.of(title), Body.empty(), footer).asString("\n");
-    var act =
-        sectionBuilder
-            .header(header -> header.title("title"))
-            .body(
-                body ->
-                    body.accountGroups(
-                        List.of(AccountGroup.of("", "1111"), AccountGroup.of("", "2222")))
-                        .dematerialize())
-            .footer(FooterBuilder::aggregateBody)
-            .section()
-            .asString("\n");
-    assertEquals(exp, act);
-  }
-
-  @Test
-  void closingEmptyRow() {
-    var amountsFetcher = AmountsFetcher.empty();
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher);
-    assertAll(
-        () -> assertTrue(sectionBuilder.hasClosingEmptyRow()),
-        () -> assertTrue(sectionBuilder.section().hasClosingEmptyRow()));
-  }
-
-  @Test
-  void noClosingEmptyRow() {
-    var amountsFetcher = AmountsFetcher.empty();
-    var sectionBuilder = new SectionBuilder(year, amountsFetcher).noClosingEmptyRow();
-    assertAll(
-        () -> assertFalse(sectionBuilder.hasClosingEmptyRow()),
-        () -> assertFalse(sectionBuilder.section().hasClosingEmptyRow()));
   }
 
   @Test

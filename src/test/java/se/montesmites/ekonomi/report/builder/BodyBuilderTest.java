@@ -1,10 +1,7 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Year;
 import java.util.List;
@@ -30,7 +27,6 @@ class BodyBuilderTest {
     var bodyBuilder = BodyBuilder.empty();
     var exp = Body.empty();
     var act = bodyBuilder.body();
-    assertTrue(bodyBuilder.isMaterialized());
     assertEquals(exp.asString("\n"), act.asString("\n"));
   }
 
@@ -75,15 +71,5 @@ class BodyBuilderTest {
     var exp = Body.of(List.of(row1, row2));
     var act = bodyBuilder.accounts(body -> body.accounts(List.of(account1, account2))).body();
     assertEquals(exp.asString("\n"), act.asString("\n"));
-  }
-
-  @Test
-  void isMaterialized_negated() {
-    var bodyBuilder = BodyBuilder.empty();
-    var exp = Body.empty();
-    var act = bodyBuilder.dematerialize().body();
-    assertAll(
-        () -> assertEquals(exp.asString("\n"), act.asString("\n")),
-        () -> assertFalse(bodyBuilder.isMaterialized()));
   }
 }

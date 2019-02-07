@@ -109,6 +109,8 @@ class JaxbReportBuilderTest {
   @Test
   void sectionConstituent() throws Exception {
     var path = PATH_TO_TEST_XML + "03_section.xml";
+    var amounts1 =
+        AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var subtotal =
         AmountsProvider.of("SUBTOTAL", month -> Optional.of(Currency.of(month.ordinal() * 100)));
     var amountsFetcher =
@@ -116,9 +118,12 @@ class JaxbReportBuilderTest {
             .amountsFetcher();
     var builder = new JaxbReportBuilder(Paths.get(getClass().getResource(path).toURI()));
     var report = builder.report(amountsFetcher, year);
-    var exp = List.of(Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())));
+    var exp =
+        List.of(
+            Section.of(Header.empty(), Body.of(amounts1), Footer.empty()),
+            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())));
     var act = report.streamSections().collect(toList());
-    assertEquals("\n" + asString(exp), asString(act));
+    assertEquals(asString(exp), asString(act));
   }
 
   @Test

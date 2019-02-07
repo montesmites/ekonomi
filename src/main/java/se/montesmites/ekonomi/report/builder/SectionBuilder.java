@@ -17,7 +17,6 @@ public class SectionBuilder {
   private final BodyBuilder bodyBuilder;
   private final FooterBuilder footerBuilder;
   private Set<Tag> tags = new HashSet<>();
-  private boolean closingEmptyRow = true;
 
   SectionBuilder(Year year, AmountsFetcher amountsFetcher) {
     this.headerBuilder = new HeaderBuilder();
@@ -50,17 +49,8 @@ public class SectionBuilder {
     return this;
   }
 
-  public SectionBuilder noClosingEmptyRow() {
-    this.closingEmptyRow = false;
-    return this;
-  }
-
   Set<Tag> getTags() {
     return Set.copyOf(this.tags);
-  }
-
-  boolean hasClosingEmptyRow() {
-    return this.closingEmptyRow;
   }
 
   public Header getHeader() {
@@ -80,9 +70,6 @@ public class SectionBuilder {
   }
 
   public Section section() {
-    return Section.of(
-        getHeader(), bodyBuilder.isMaterialized() ? getBody() : Body.empty(), getFooter())
-        .closingEmptyRow(closingEmptyRow)
-        .tags(tags);
+    return Section.of(getHeader(), getBody(), getFooter()).tags(tags);
   }
 }

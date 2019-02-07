@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="se/montesmites/ekonomi/report-definition ../../../../../../../main/resources/xsd/report-definition.xsd">
   <report>
-    <section no-closing-empty-row="true">
-      <body dematerialize="true">
+    <section>
+      <body>
         <account-groups>
           <description/>
           <account-group>
