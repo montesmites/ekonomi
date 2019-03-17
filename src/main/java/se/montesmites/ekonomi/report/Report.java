@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public class Report {
 
-  public final static int DESCRIPTION_WIDTH = 30;
+  public final static int DESCRIPTION_WIDTH = 31;
 
   public static Report empty() {
     return new Report(Stream::empty);

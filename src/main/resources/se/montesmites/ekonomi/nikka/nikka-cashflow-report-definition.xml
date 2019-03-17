@@ -109,8 +109,8 @@
         <regex>(83\d\d)|(84[2-8]\d)</regex>
       </account-group>
       <account-group>
-        <description>Investering boende</description>
-        <regex>11\d\d</regex>
+        <description>Investeringar och avskrivningar</description>
+        <regex>(11\d\d)|(7\d\d\d)</regex>
       </account-group>
       <account-group>
         <description>Extraordinärt netto</description>
