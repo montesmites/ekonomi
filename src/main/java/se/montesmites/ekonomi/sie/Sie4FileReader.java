@@ -20,9 +20,8 @@ class Sie4FileReader {
           .map(SieFileLine::of)
           .reduce(
               Sie4FileReaderAggregator.empty(),
-              Sie4FileReaderAggregator::accept,
+              Sie4FileReaderAggregator::aggregate,
               Sie4FileReaderAggregator::merge)
-          .finish()
           .retrieveRecords();
     } catch (IOException e) {
       throw new RuntimeException();

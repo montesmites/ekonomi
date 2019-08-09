@@ -1,90 +1,120 @@
 package se.montesmites.ekonomi.sie;
 
-import static se.montesmites.ekonomi.sie.Sie4FileReaderAggregator.AggregationStrategy.CHILD_RECORD_STRATEGY;
-import static se.montesmites.ekonomi.sie.Sie4FileReaderAggregator.AggregationStrategy.PARENT_RECORD_STRATEGY;
+import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 
-class Sie4FileReaderAggregator {
+abstract class Sie4FileReaderAggregator {
 
-  enum AggregationStrategy {
-    PARENT_RECORD_STRATEGY(
-        (aggregator, line) -> {
-          aggregator.addRecord();
-          aggregator.parent = line;
-          aggregator.children = new ArrayList<>();
-          setParentRecordStrategy(aggregator);
-        }),
-    CHILD_RECORD_STRATEGY((aggregator, line) -> aggregator.children.add(SieRecord.of(line)));
+  private static <T> List<T> append(List<T> list, T element) {
+    var res = new ArrayList<>(list);
+    res.add(element);
+    return res;
+  }
 
-    private final BiConsumer<Sie4FileReaderAggregator, SieFileLine> strategy;
+  private static <T> List<T> concat(List<T> list1, List<T> list2) {
+    var concat = new ArrayList<>(list1);
+    concat.addAll(list2);
+    return List.copyOf(concat);
+  }
 
-    AggregationStrategy(BiConsumer<Sie4FileReaderAggregator, SieFileLine> strategy) {
-      this.strategy = strategy;
+  private static final class OrphanAggregator extends Sie4FileReaderAggregator {
+
+    private final List<SieRecord> records;
+
+    private OrphanAggregator() {
+      this(List.of());
     }
 
-    final void accept(Sie4FileReaderAggregator aggregator, SieFileLine line) {
-      strategy.accept(aggregator, line);
+    private OrphanAggregator(List<SieRecord> records) {
+      this.records = List.copyOf(records);
     }
 
-    private static void setParentRecordStrategy(Sie4FileReaderAggregator aggregator) {
-      aggregator.strategy = PARENT_RECORD_STRATEGY;
+    @Override
+    Sie4FileReaderAggregator aggregate(SieFileLine line) {
+      return new ParentAggregator(records, line);
+    }
+
+    @Override
+    List<SieRecord> retrieveRecords() {
+      return List.copyOf(records);
+    }
+  }
+
+  private static final class ParentAggregator extends Sie4FileReaderAggregator {
+
+    private final List<SieRecord> records;
+    private final SieFileLine previousLine;
+
+    private ParentAggregator(List<SieRecord> records, SieFileLine previousLine) {
+      this.records = List.copyOf(records);
+      this.previousLine = requireNonNull(previousLine);
+    }
+
+    @Override
+    Sie4FileReaderAggregator aggregate(SieFileLine line) {
+      if (line.getType() == SieFileLineType.BEGIN_SUBRECORDS) {
+        return new ChildAggregator(records, line);
+      } else {
+        return new ParentAggregator(append(records, retrieveRecord()), line);
+      }
+    }
+
+    @Override
+    List<SieRecord> retrieveRecords() {
+      return append(records, retrieveRecord());
+    }
+
+    private SieRecord retrieveRecord() {
+      return SieRecord.of(previousLine);
+    }
+  }
+
+  private static final class ChildAggregator extends Sie4FileReaderAggregator {
+
+    private final List<SieRecord> records;
+    private final SieFileLine parent;
+    private final List<SieRecord> children;
+
+    private ChildAggregator(List<SieRecord> records, SieFileLine parent) {
+      this(records, parent, List.of());
+    }
+
+    private ChildAggregator(List<SieRecord> records, SieFileLine parent, List<SieRecord> children) {
+      this.records = List.copyOf(records);
+      this.parent = parent;
+      this.children = List.copyOf(children);
+    }
+
+    @Override
+    Sie4FileReaderAggregator aggregate(SieFileLine line) {
+      if (line.getType() == SieFileLineType.END_SUBRECORDS) {
+        return new OrphanAggregator(append(records, retrieveRecord()));
+      } else {
+        return new ChildAggregator(records, parent, append(children, SieRecord.of(line)));
+      }
+    }
+
+    @Override
+    List<SieRecord> retrieveRecords() {
+      return append(List.copyOf(records), retrieveRecord());
+    }
+
+    private SieRecord retrieveRecord() {
+      return SieRecord.of(parent, children);
     }
   }
 
   static Sie4FileReaderAggregator empty() {
-    return new Sie4FileReaderAggregator();
+    return new OrphanAggregator();
   }
 
-  private List<SieRecord> records = new ArrayList<>();
-  private SieFileLine parent;
-  private List<SieRecord> children;
-  private AggregationStrategy strategy = PARENT_RECORD_STRATEGY;
+  abstract Sie4FileReaderAggregator aggregate(SieFileLine line);
 
-  private Sie4FileReaderAggregator() {
-    this.children = new ArrayList<>();
-  }
-
-  private Sie4FileReaderAggregator(List<SieRecord> records) {
-    this();
-    this.records = records;
-  }
-
-  Sie4FileReaderAggregator accept(SieFileLine line) {
-    if (line.getType() == SieFileLineType.BEGIN_SUBRECORDS) {
-      this.strategy = CHILD_RECORD_STRATEGY;
-    } else if (line.getType() == SieFileLineType.END_SUBRECORDS) {
-      this.strategy = PARENT_RECORD_STRATEGY;
-    } else if (line.getType() == SieFileLineType.PROSAIC) {
-      this.strategy.accept(this, line);
-    } else {
-      throw new IllegalStateException();
-    }
-    return this;
-  }
-
-  private void addRecord() {
-    if (parent != null) {
-      records.add(SieRecord.of(parent, List.copyOf(children)));
-    }
-  }
-
-  Sie4FileReaderAggregator finish() {
-    addRecord();
-    return this;
-  }
-
-  List<SieRecord> retrieveRecords() {
-    return List.copyOf(records);
-  }
+  abstract List<SieRecord> retrieveRecords();
 
   Sie4FileReaderAggregator merge(Sie4FileReaderAggregator that) {
-    this.finish();
-    that.finish();
-    var allRecords = new ArrayList<>(this.records);
-    allRecords.addAll(that.records);
-    return new Sie4FileReaderAggregator(allRecords);
+    return new OrphanAggregator(concat(this.retrieveRecords(), that.retrieveRecords()));
   }
 }

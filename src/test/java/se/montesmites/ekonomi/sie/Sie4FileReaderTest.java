@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.sie;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,6 +27,7 @@ class Sie4FileReaderTest {
   void countDeepRecords() throws Exception {
     var reader = new Sie4FileReader();
     var records = reader.read(Paths.get(getClass().getResource(PATH_TO_SIE_FILE).toURI()));
+    System.out.println(records.stream().map(Object::toString).collect(joining("\n")));
     assertEquals(2045, records.size());
   }
 }
