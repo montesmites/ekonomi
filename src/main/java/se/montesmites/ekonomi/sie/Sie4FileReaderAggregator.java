@@ -55,7 +55,7 @@ abstract class Sie4FileReaderAggregator {
     @Override
     Sie4FileReaderAggregator aggregate(SieFileLine line) {
       if (line.getType() == SieFileLineType.BEGIN_SUBRECORDS) {
-        return new ChildAggregator(records, line);
+        return new ChildAggregator(records, previousLine);
       } else {
         return new ParentAggregator(append(records, retrieveRecord()), line);
       }
