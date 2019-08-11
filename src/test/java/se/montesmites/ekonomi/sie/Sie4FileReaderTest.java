@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.sie.file.Sie4FileReader;
+import se.montesmites.ekonomi.sie.record.SieRecord;
 
 class Sie4FileReaderTest {
 

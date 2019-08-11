@@ -1,9 +1,10 @@
-package se.montesmites.ekonomi.sie;
+package se.montesmites.ekonomi.sie.file;
 
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import se.montesmites.ekonomi.sie.record.SieRecord;
 
 abstract class Sie4FileReaderAggregator {
 

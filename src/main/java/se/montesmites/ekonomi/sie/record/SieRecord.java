@@ -1,7 +1,8 @@
-package se.montesmites.ekonomi.sie;
+package se.montesmites.ekonomi.sie.record;
 
 import java.util.Collection;
 import java.util.List;
+import se.montesmites.ekonomi.sie.file.SieFileLine;
 
 public interface SieRecord {
 

@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.sie;
+package se.montesmites.ekonomi.sie.file;
 
 public enum SieFileLineType {
   PROSAIC,
