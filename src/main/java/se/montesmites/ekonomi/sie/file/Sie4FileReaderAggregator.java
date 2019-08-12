@@ -1,24 +1,13 @@
 package se.montesmites.ekonomi.sie.file;
 
 import static java.util.Objects.requireNonNull;
+import static se.montesmites.ekonomi.sie.util.ListUtil.append;
+import static se.montesmites.ekonomi.sie.util.ListUtil.concat;
 
-import java.util.ArrayList;
 import java.util.List;
 import se.montesmites.ekonomi.sie.record.SieRecord;
 
 abstract class Sie4FileReaderAggregator {
-
-  private static <T> List<T> append(List<T> list, T element) {
-    var res = new ArrayList<>(list);
-    res.add(element);
-    return res;
-  }
-
-  private static <T> List<T> concat(List<T> list1, List<T> list2) {
-    var concat = new ArrayList<>(list1);
-    concat.addAll(list2);
-    return List.copyOf(concat);
-  }
 
   private static final class OrphanAggregator extends Sie4FileReaderAggregator {
 
