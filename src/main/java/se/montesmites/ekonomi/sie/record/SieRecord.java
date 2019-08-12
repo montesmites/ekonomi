@@ -40,7 +40,7 @@ public abstract class SieRecord {
     }
 
     @Override
-    public String recordData() {
+    public SieRecordData recordData() {
       throw new UnsupportedOperationException();
     }
   }
@@ -48,17 +48,17 @@ public abstract class SieRecord {
   public static final class ValidSieRecord extends SieRecord {
 
     public static ValidSieRecord of(
-        SieFileLine line, String label, String recorddata, List<SieRecord> subrecords) {
+        SieFileLine line, String label, SieRecordData recorddata, List<SieRecord> subrecords) {
       return new ValidSieRecord(line, label, recorddata, subrecords);
     }
 
     private final SieFileLine line;
     private final String label;
-    private final String recorddata;
+    private final SieRecordData recorddata;
     private final List<SieRecord> subrecords;
 
     private ValidSieRecord(
-        SieFileLine line, String label, String recorddata, List<SieRecord> subrecords) {
+        SieFileLine line, String label, SieRecordData recorddata, List<SieRecord> subrecords) {
       this.line = line;
       this.label = label;
       this.recorddata = recorddata;
@@ -81,7 +81,7 @@ public abstract class SieRecord {
     }
 
     @Override
-    public String recordData() {
+    public SieRecordData recordData() {
       return recorddata;
     }
   }
@@ -96,7 +96,8 @@ public abstract class SieRecord {
     if (!matcher.find()) {
       return new InvalidSieRecord(line, subrecs);
     } else {
-      return new ValidSieRecord(line, matcher.group(1), matcher.group(2), subrecs);
+      return new ValidSieRecord(
+          line, matcher.group(1), SieRecordData.of(matcher.group(2)), subrecs);
     }
   }
 
@@ -109,5 +110,5 @@ public abstract class SieRecord {
 
   public abstract String getLabel();
 
-  public abstract String recordData();
+  public abstract SieRecordData recordData();
 }
