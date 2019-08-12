@@ -2,43 +2,112 @@ package se.montesmites.ekonomi.sie.record;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 import se.montesmites.ekonomi.sie.file.SieFileLine;
 
-public interface SieRecord {
+public abstract class SieRecord {
 
-  static SieRecord of(SieFileLine line) {
+  private static final Pattern LABEL_RECORD_DATA_PATTERN =
+      Pattern.compile("\\s*#\\s*(\\w+)\\s+(.*)");
+
+  public static final class InvalidSieRecord extends SieRecord {
+
+    public static InvalidSieRecord of(SieFileLine line, List<SieRecord> subrecords) {
+      return new InvalidSieRecord(line, subrecords);
+    }
+
+    private final SieFileLine line;
+    private final List<SieRecord> subrecords;
+
+    private InvalidSieRecord(SieFileLine line, List<SieRecord> subrecords) {
+      this.line = line;
+      this.subrecords = List.copyOf(subrecords);
+    }
+
+    @Override
+    public SieFileLine getLine() {
+      return line;
+    }
+
+    @Override
+    public List<SieRecord> getSubrecords() {
+      return subrecords;
+    }
+
+    @Override
+    public String getLabel() {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public String recordData() {
+      throw new UnsupportedOperationException();
+    }
+  }
+
+  public static final class ValidSieRecord extends SieRecord {
+
+    public static ValidSieRecord of(
+        SieFileLine line, String label, String recorddata, List<SieRecord> subrecords) {
+      return new ValidSieRecord(line, label, recorddata, subrecords);
+    }
+
+    private final SieFileLine line;
+    private final String label;
+    private final String recorddata;
+    private final List<SieRecord> subrecords;
+
+    private ValidSieRecord(
+        SieFileLine line, String label, String recorddata, List<SieRecord> subrecords) {
+      this.line = line;
+      this.label = label;
+      this.recorddata = recorddata;
+      this.subrecords = List.copyOf(subrecords);
+    }
+
+    @Override
+    public SieFileLine getLine() {
+      return line;
+    }
+
+    @Override
+    public List<SieRecord> getSubrecords() {
+      return subrecords;
+    }
+
+    @Override
+    public String getLabel() {
+      return label;
+    }
+
+    @Override
+    public String recordData() {
+      return recorddata;
+    }
+  }
+
+  public static SieRecord of(SieFileLine line) {
     return SieRecord.of(line, List.of());
   }
 
-  static SieRecord of(SieFileLine line, Collection<SieRecord> subrecords) {
+  public static SieRecord of(SieFileLine line, Collection<SieRecord> subrecords) {
     var subrecs = List.copyOf(subrecords);
-    var label = line.getLine().trim().split("[ \t]+")[0].substring(1);
-    return new SieRecord() {
-      @Override
-      public SieFileLine getLine() {
-        return line;
-      }
-
-      @Override
-      public List<SieRecord> getSubrecords() {
-        return subrecs;
-      }
-
-      @Override
-      public String getLabel() {
-        return label;
-      }
-
-      @Override
-      public String toString() {
-        return String.format("SieRecord(%s, %s)", line, subrecords);
-      }
-    };
+    var matcher = LABEL_RECORD_DATA_PATTERN.matcher(line.getLine());
+    if (!matcher.find()) {
+      return new InvalidSieRecord(line, subrecs);
+    } else {
+      return new ValidSieRecord(line, matcher.group(1), matcher.group(2), subrecs);
+    }
   }
 
-  SieFileLine getLine();
+  private SieRecord() {
+  }
 
-  List<SieRecord> getSubrecords();
+  public abstract SieFileLine getLine();
 
-  String getLabel();
+  public abstract List<SieRecord> getSubrecords();
+
+  public abstract String getLabel();
+
+  public abstract String recordData();
 }
