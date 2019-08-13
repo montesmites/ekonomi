@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.sie.record;
 
 import static se.montesmites.ekonomi.sie.util.ListUtil.append;
+import static se.montesmites.ekonomi.sie.util.ListUtil.concat;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public abstract class SieRecordTokenizer {
   public static SieRecordTokenizer empty() {
     return new SieRecordTokenizer() {
       @Override
-      SieRecordTokenizer tokenize(char previous, char current) {
+      SieRecordTokenizer tokenize(char current) {
         return this;
       }
 
@@ -33,29 +34,32 @@ public abstract class SieRecordTokenizer {
   }
 
   public static SieRecordTokenizer of() {
-    return new DefaultTokenizer(List.of());
+    return new DefaultTokenizer(new StringBuilder(), List.of(), ' ');
   }
 
   private static class DefaultTokenizer extends SieRecordTokenizer {
 
-    private final StringBuilder token = new StringBuilder();
+    private final char previous;
+    private final StringBuilder token;
     private final List<SieToken> tokens;
 
-    private DefaultTokenizer(List<SieToken> tokens) {
+    private DefaultTokenizer(StringBuilder token, List<SieToken> tokens, char previous) {
+      this.token = token;
       this.tokens = tokens;
+      this.previous = previous;
     }
 
     @Override
-    public SieRecordTokenizer tokenize(char previous, char current) {
+    public SieRecordTokenizer tokenize(char current) {
       if (isWhiteSpace(current)) {
-        return new DefaultTokenizer(retrieveTokens());
+        return new DefaultTokenizer(new StringBuilder(), retrieveTokens(), current);
       } else if (isEscape(current)) {
         return this;
       } else if (isUnscapedQuote(previous, current)) {
-        return new QuotedTokenizer(tokens);
+        return new QuotedTokenizer(new StringBuilder(), tokens, current);
       } else {
         token.append(current);
-        return this;
+        return new DefaultTokenizer(token, List.copyOf(tokens), current);
       }
     }
 
@@ -75,22 +79,25 @@ public abstract class SieRecordTokenizer {
 
   private static class QuotedTokenizer extends SieRecordTokenizer {
 
-    private final StringBuilder token = new StringBuilder();
+    private final char previous;
+    private final StringBuilder token;
     private final List<SieToken> tokens;
 
-    private QuotedTokenizer(List<SieToken> tokens) {
+    private QuotedTokenizer(StringBuilder token, List<SieToken> tokens, char previous) {
+      this.token = token;
       this.tokens = tokens;
+      this.previous = previous;
     }
 
     @Override
-    SieRecordTokenizer tokenize(char previous, char current) {
+    SieRecordTokenizer tokenize(char current) {
       if (isEscape(current)) {
-        return this;
+        return new QuotedTokenizer(token, tokens, current);
       } else if (isUnscapedQuote(previous, current)) {
-        return new DefaultTokenizer(retrieveTokens());
+        return new DefaultTokenizer(new StringBuilder(), retrieveTokens(), current);
       } else {
         token.append(current);
-        return this;
+        return new QuotedTokenizer(token, List.copyOf(tokens), current);
       }
     }
 
@@ -112,18 +119,18 @@ public abstract class SieRecordTokenizer {
   }
 
   public final List<SieToken> tokenize(String text) {
-    var iter = text.chars().mapToObj(ch -> (char) ch).iterator();
-    var prevChar = ' ';
-    var tokenizer = SieRecordTokenizer.of();
-    while (iter.hasNext()) {
-      char c = iter.next();
-      tokenizer = tokenizer.tokenize(prevChar, c);
-      prevChar = c;
-    }
-    return List.copyOf(tokenizer.retrieveTokens());
+    return text.chars()
+        .mapToObj(ch -> (char) ch)
+        .reduce(SieRecordTokenizer.of(), SieRecordTokenizer::tokenize, SieRecordTokenizer::merge)
+        .retrieveTokens();
   }
 
-  abstract SieRecordTokenizer tokenize(char previous, char current);
+  abstract SieRecordTokenizer tokenize(char current);
 
   abstract List<SieToken> retrieveTokens();
+
+  private SieRecordTokenizer merge(SieRecordTokenizer that) {
+    return new DefaultTokenizer(
+        new StringBuilder(), concat(this.retrieveTokens(), that.retrieveTokens()), ' ');
+  }
 }

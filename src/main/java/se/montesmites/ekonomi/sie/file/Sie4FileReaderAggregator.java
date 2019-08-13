@@ -104,7 +104,7 @@ abstract class Sie4FileReaderAggregator {
 
   abstract List<SieRecord> retrieveRecords();
 
-  Sie4FileReaderAggregator merge(Sie4FileReaderAggregator that) {
+  final Sie4FileReaderAggregator merge(Sie4FileReaderAggregator that) {
     return new OrphanAggregator(concat(this.retrieveRecords(), that.retrieveRecords()));
   }
 }
