@@ -4,6 +4,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import se.montesmites.ekonomi.sie.file.SieFileLine;
+import se.montesmites.ekonomi.sie.record.types.TypeIB;
+import se.montesmites.ekonomi.sie.record.types.TypeKONTO;
+import se.montesmites.ekonomi.sie.record.types.TypeRAR;
+import se.montesmites.ekonomi.sie.record.types.TypeRES;
 
 public abstract class SieRecord {
 
@@ -45,47 +49,6 @@ public abstract class SieRecord {
     }
   }
 
-  public static final class ValidSieRecord extends SieRecord {
-
-    public static ValidSieRecord of(
-        SieFileLine line, String label, SieRecordData recorddata, List<SieRecord> subrecords) {
-      return new ValidSieRecord(line, label, recorddata, subrecords);
-    }
-
-    private final SieFileLine line;
-    private final String label;
-    private final SieRecordData recorddata;
-    private final List<SieRecord> subrecords;
-
-    private ValidSieRecord(
-        SieFileLine line, String label, SieRecordData recorddata, List<SieRecord> subrecords) {
-      this.line = line;
-      this.label = label;
-      this.recorddata = recorddata;
-      this.subrecords = List.copyOf(subrecords);
-    }
-
-    @Override
-    public SieFileLine getLine() {
-      return line;
-    }
-
-    @Override
-    public List<SieRecord> getSubrecords() {
-      return subrecords;
-    }
-
-    @Override
-    public String getLabel() {
-      return label;
-    }
-
-    @Override
-    public SieRecordData recordData() {
-      return recorddata;
-    }
-  }
-
   public static SieRecord of(SieFileLine line) {
     return SieRecord.of(line, List.of());
   }
@@ -96,12 +59,21 @@ public abstract class SieRecord {
     if (!matcher.find()) {
       return new InvalidSieRecord(line, subrecs);
     } else {
-      return new ValidSieRecord(
-          line, matcher.group(1), SieRecordData.of(matcher.group(2)), subrecs);
+      var label = matcher.group(1);
+      var recorddata = SieRecordData.of(matcher.group(2));
+      switch (label) {
+        case "KONTO":
+          return new TypeKONTO(line, label, recorddata, subrecs);
+        case "RAR":
+          return new TypeRAR(line, label, recorddata, subrecs);
+        case "IB":
+          return new TypeIB(line, label, recorddata, subrecs);
+        case "RES":
+          return new TypeRES(line, label, recorddata, subrecs);
+        default:
+          return new DefaultSieRecord(line, label, recorddata, subrecs);
+      }
     }
-  }
-
-  private SieRecord() {
   }
 
   public abstract SieFileLine getLine();

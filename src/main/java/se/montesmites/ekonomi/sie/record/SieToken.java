@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.sie.record;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import se.montesmites.ekonomi.model.Currency;
 
 public class SieToken {
 
@@ -23,8 +24,11 @@ public class SieToken {
     return Integer.parseInt(data);
   }
 
-  public double asDouble() {
-    return Double.parseDouble(data);
+  public Currency asCurrency() {
+    var parts = data.split("\\.");
+    var integral = Long.parseLong(parts[0]) * 100;
+    var decimal = parts.length == 1 ? 0 : Long.parseLong(parts[1]);
+    return Currency.of(integral + decimal);
   }
 
   public LocalDate asDate() {

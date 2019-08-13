@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.sie.record.SieRecordData;
 import se.montesmites.ekonomi.sie.record.SieToken;
 
@@ -55,11 +58,12 @@ class SieRecordDataTest {
     assertEquals(exp, act);
   }
 
-  @Test
-  void testAsDouble() {
-    var data = SieRecordData.of("123.45");
-    var exp = List.of(123.45);
-    var act = data.getTokens().stream().map(SieToken::asDouble).collect(toList());
+  @ParameterizedTest
+  @CsvSource({"123,12300", "123.45,12345"})
+  void testAsCurrency(String input, long expected) {
+    var data = SieRecordData.of(input);
+    var exp = List.of(Currency.of(expected));
+    var act = data.getTokens().stream().map(SieToken::asCurrency).collect(toList());
     assertEquals(exp, act);
   }
 
