@@ -9,7 +9,7 @@ public class TypeKONTO extends DefaultSieRecord {
   private final String description;
 
   public TypeKONTO(SieRecord record, String accountId, String description) {
-    super(record.getLine(), record.getLabel(), record.recordData(), record.getSubrecords());
+    super(record.getLine(), record.getLabel(), record.getRecordData(), record.getSubrecords());
     this.accountId = accountId;
     this.description = description;
   }

@@ -41,7 +41,7 @@ public abstract class SieRecord {
     }
 
     @Override
-    public SieRecordData recordData() {
+    public SieRecordData getRecordData() {
       throw new UnsupportedOperationException();
     }
   }
@@ -69,5 +69,5 @@ public abstract class SieRecord {
 
   public abstract String getLabel();
 
-  public abstract SieRecordData recordData();
+  public abstract SieRecordData getRecordData();
 }

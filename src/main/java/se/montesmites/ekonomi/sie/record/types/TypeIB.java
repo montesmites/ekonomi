@@ -11,7 +11,7 @@ public class TypeIB extends DefaultSieRecord {
   private final Currency balance;
 
   public TypeIB(SieRecord record, int yearId, String accountId, Currency balance) {
-    super(record.getLine(), record.getLabel(), record.recordData(), record.getSubrecords());
+    super(record.getLine(), record.getLabel(), record.getRecordData(), record.getSubrecords());
     this.yearId = yearId;
     this.accountId = accountId;
     this.balance = balance;

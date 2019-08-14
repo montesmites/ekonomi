@@ -13,7 +13,7 @@ public class TypeRAR extends DefaultSieRecord {
   private final LocalDate end;
 
   public TypeRAR(SieRecord record, int yearId, LocalDate start, LocalDate end) {
-    super(record.getLine(), record.getLabel(), record.recordData(), record.getSubrecords());
+    super(record.getLine(), record.getLabel(), record.getRecordData(), record.getSubrecords());
     this.yearId = yearId;
     this.year = Year.of(start.getYear());
     this.start = start;

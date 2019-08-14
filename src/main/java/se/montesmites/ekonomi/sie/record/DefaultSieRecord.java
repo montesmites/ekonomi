@@ -34,7 +34,7 @@ public class DefaultSieRecord extends SieRecord {
   }
 
   @Override
-  public SieRecordData recordData() {
+  public SieRecordData getRecordData() {
     return recorddata;
   }
 }
