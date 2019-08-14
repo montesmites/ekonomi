@@ -7,16 +7,24 @@ import java.util.List;
 
 public abstract class SieRecordTokenizer {
 
-  private static boolean isWhiteSpace(char c) {
-    return c == ' ' || c == '\t';
+  private static boolean isWhiteSpace(char current) {
+    return current == ' ' || current == '\t';
   }
 
-  private static boolean isEscape(char c) {
-    return c == '\\';
+  private static boolean isEscape(char current) {
+    return current == '\\';
   }
 
   private static boolean isUnscapedQuote(char previous, char current) {
     return previous != '\\' && current == '"';
+  }
+
+  private static boolean isOpeningCurlyBrace(char current) {
+    return current == '{';
+  }
+
+  private static boolean isClosingCurlyBrace(char current) {
+    return current == '}';
   }
 
   public static SieRecordTokenizer empty() {
@@ -55,6 +63,8 @@ public abstract class SieRecordTokenizer {
         return new DefaultTokenizer(new StringBuilder(), retrieveTokens(), current);
       } else if (isEscape(current)) {
         return this;
+      } else if (isOpeningCurlyBrace(current)) {
+        return new CurlyBracedTokenizer(new StringBuilder(), tokens);
       } else if (isUnscapedQuote(previous, current)) {
         return new QuotedTokenizer(new StringBuilder(), tokens, current);
       } else {
@@ -98,6 +108,36 @@ public abstract class SieRecordTokenizer {
       } else {
         token.append(current);
         return new QuotedTokenizer(token, List.copyOf(tokens), current);
+      }
+    }
+
+    @Override
+    List<SieToken> retrieveTokens() {
+      return List.copyOf(append(tokens, retrieveToken()));
+    }
+
+    private SieToken retrieveToken() {
+      return SieToken.of(token.toString());
+    }
+  }
+
+  private static class CurlyBracedTokenizer extends SieRecordTokenizer {
+
+    private final StringBuilder token;
+    private final List<SieToken> tokens;
+
+    private CurlyBracedTokenizer(StringBuilder token, List<SieToken> tokens) {
+      this.token = token;
+      this.tokens = tokens;
+    }
+
+    @Override
+    SieRecordTokenizer tokenize(char current) {
+      if (isClosingCurlyBrace(current)) {
+        return new DefaultTokenizer(new StringBuilder(), retrieveTokens(), current);
+      } else {
+        token.append(current);
+        return new CurlyBracedTokenizer(token, List.copyOf(tokens));
       }
     }
 

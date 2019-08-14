@@ -10,7 +10,8 @@ public enum SieRecordType {
   KONTO(TypeKONTO::of),
   RAR(TypeRAR::of),
   RES(TypeRES::of),
-  VER(TypeVER::of);
+  VER(TypeVER::of),
+  TRANS(TypeTRANS::of);
 
   public static SieRecord specialize(SieRecord record) {
     return stream(values())

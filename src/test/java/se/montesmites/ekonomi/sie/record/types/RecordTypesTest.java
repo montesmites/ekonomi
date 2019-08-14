@@ -21,7 +21,8 @@ class RecordTypesTest {
         Arguments.of(TypeRAR.class, 2),
         Arguments.of(TypeIB.class, 52),
         Arguments.of(TypeRES.class, 91),
-        Arguments.of(TypeVER.class, 62));
+        Arguments.of(TypeVER.class, 62),
+        Arguments.of(TypeTRANS.class, 218));
   }
 
   private Path pathToSieFile;
@@ -36,7 +37,11 @@ class RecordTypesTest {
   void count(Class<?> clazz, int expectedCount) {
     var reader = new Sie4FileReader();
     var records = reader.read(pathToSieFile);
-    var act = records.stream().filter(clazz::isInstance).count();
+    var act =
+        records.stream()
+            .flatMap(record -> Stream.concat(Stream.of(record), record.getSubrecords().stream()))
+            .filter(clazz::isInstance)
+            .count();
     assertEquals(expectedCount, act);
   }
 }
