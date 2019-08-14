@@ -7,12 +7,19 @@ import se.montesmites.ekonomi.sie.record.SieRecord;
 
 public class TypeRAR extends DefaultSieRecord {
 
+  static TypeRAR of(SieRecord record) {
+    var yearId = record.getRecordData().get(0).asInt();
+    var start = record.getRecordData().get(1).asDate();
+    var end = record.getRecordData().get(2).asDate();
+    return new TypeRAR(record, yearId, start, end);
+  }
+
   private final int yearId;
   private final Year year;
   private final LocalDate start;
   private final LocalDate end;
 
-  public TypeRAR(SieRecord record, int yearId, LocalDate start, LocalDate end) {
+  private TypeRAR(SieRecord record, int yearId, LocalDate start, LocalDate end) {
     super(record.getLine(), record.getLabel(), record.getRecordData(), record.getSubrecords());
     this.yearId = yearId;
     this.year = Year.of(start.getYear());
