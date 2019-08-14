@@ -6,6 +6,17 @@ import se.montesmites.ekonomi.model.Currency;
 
 public class SieToken {
 
+  public static class EmptySieToken extends SieToken {
+
+    private EmptySieToken() {
+      super("");
+    }
+  }
+
+  public static SieToken empty() {
+    return new EmptySieToken();
+  }
+
   public static SieToken of(String data) {
     return new SieToken(data);
   }

@@ -103,11 +103,7 @@ public abstract class SieRecordTokenizer {
 
     @Override
     List<SieToken> retrieveTokens() {
-      if (token.length() > 0) {
-        return List.copyOf(append(tokens, retrieveToken()));
-      } else {
-        return List.copyOf(tokens);
-      }
+      return List.copyOf(append(tokens, retrieveToken()));
     }
 
     private SieToken retrieveToken() {

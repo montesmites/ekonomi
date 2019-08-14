@@ -19,7 +19,11 @@ public class SieRecordData {
   }
 
   public SieToken get(int index) {
-    return tokens.get(index);
+    if (index < tokens.size()) {
+      return tokens.get(index);
+    } else {
+      return SieToken.empty();
+    }
   }
 
   @Override

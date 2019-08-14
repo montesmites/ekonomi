@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.sie;
 
 import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
@@ -51,6 +52,19 @@ class SieRecordDataTest {
   }
 
   @Test
+  void testEmptyFields() {
+    var first = "\"\"";
+    var second = "second";
+    var third = "\"\"";
+    var data = SieRecordData.of(first + " " + second + " " + third);
+
+    var expTokens = Stream.of("", "second", "").map(SieToken::of).collect(toList());
+    var actTokens = data.getTokens();
+
+    assertEquals(expTokens, actTokens);
+  }
+
+  @Test
   void testAsInt() {
     var data = SieRecordData.of("123");
     var exp = List.of(123);
@@ -73,5 +87,16 @@ class SieRecordDataTest {
     var exp = List.of(LocalDate.parse("2019-01-01"));
     var act = data.getTokens().stream().map(SieToken::asDate).collect(toList());
     assertEquals(exp, act);
+  }
+
+  @Test
+  void testAbsentTokens() {
+    var data = SieRecordData.of("A B C");
+    assertAll(
+        () -> assertEquals("A", data.get(0).asString()),
+        () -> assertEquals("B", data.get(1).asString()),
+        () -> assertEquals("C", data.get(2).asString()),
+        () -> assertEquals("", data.get(3).asString()),
+        () -> assertEquals("", data.get(100).asString()));
   }
 }
