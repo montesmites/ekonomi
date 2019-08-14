@@ -4,10 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 import se.montesmites.ekonomi.sie.file.SieFileLine;
-import se.montesmites.ekonomi.sie.record.types.TypeIB;
-import se.montesmites.ekonomi.sie.record.types.TypeKONTO;
-import se.montesmites.ekonomi.sie.record.types.TypeRAR;
-import se.montesmites.ekonomi.sie.record.types.TypeRES;
+import se.montesmites.ekonomi.sie.record.types.SieRecordType;
 
 public abstract class SieRecord {
 
@@ -61,18 +58,8 @@ public abstract class SieRecord {
     } else {
       var label = matcher.group(1);
       var recorddata = SieRecordData.of(matcher.group(2));
-      switch (label) {
-        case "KONTO":
-          return new TypeKONTO(line, label, recorddata, subrecs);
-        case "RAR":
-          return new TypeRAR(line, label, recorddata, subrecs);
-        case "IB":
-          return new TypeIB(line, label, recorddata, subrecs);
-        case "RES":
-          return new TypeRES(line, label, recorddata, subrecs);
-        default:
-          return new DefaultSieRecord(line, label, recorddata, subrecs);
-      }
+      var record = new DefaultSieRecord(line, label, recorddata, subrecs);
+      return SieRecordType.specialize(record);
     }
   }
 
