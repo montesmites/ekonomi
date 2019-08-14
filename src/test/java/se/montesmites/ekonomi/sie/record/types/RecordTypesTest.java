@@ -20,7 +20,8 @@ class RecordTypesTest {
         Arguments.of(TypeKONTO.class, 590),
         Arguments.of(TypeRAR.class, 2),
         Arguments.of(TypeIB.class, 52),
-        Arguments.of(TypeRES.class, 91));
+        Arguments.of(TypeRES.class, 91),
+        Arguments.of(TypeVER.class, 62));
   }
 
   private Path pathToSieFile;

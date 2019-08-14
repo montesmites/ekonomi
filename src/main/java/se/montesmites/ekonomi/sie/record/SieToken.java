@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.sie.record;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import se.montesmites.ekonomi.model.Currency;
 
 public class SieToken {
@@ -10,6 +11,26 @@ public class SieToken {
 
     private EmptySieToken() {
       super("");
+    }
+
+    @Override
+    public Optional<String> asOptionalString() {
+      return Optional.empty();
+    }
+
+    @Override
+    public Optional<Integer> asOptionalInt() {
+      return Optional.empty();
+    }
+
+    @Override
+    public Optional<Currency> asOptionalCurrency() {
+      return Optional.empty();
+    }
+
+    @Override
+    public Optional<LocalDate> asOptionalDate() {
+      return Optional.empty();
     }
   }
 
@@ -31,8 +52,16 @@ public class SieToken {
     return data;
   }
 
+  public Optional<String> asOptionalString() {
+    return Optional.of(asString());
+  }
+
   public int asInt() {
     return Integer.parseInt(data);
+  }
+
+  public Optional<Integer> asOptionalInt() {
+    return Optional.of(asInt());
   }
 
   public Currency asCurrency() {
@@ -42,8 +71,16 @@ public class SieToken {
     return Currency.of(integral + decimal);
   }
 
+  public Optional<Currency> asOptionalCurrency() {
+    return Optional.of(asCurrency());
+  }
+
   public LocalDate asDate() {
     return LocalDate.parse(data, DateTimeFormatter.BASIC_ISO_DATE);
+  }
+
+  public Optional<LocalDate> asOptionalDate() {
+    return Optional.of(asDate());
   }
 
   @Override
