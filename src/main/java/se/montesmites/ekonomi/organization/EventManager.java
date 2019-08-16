@@ -13,8 +13,12 @@ public class EventManager {
 
   private final Map<EventId, Event> eventsByEventId;
 
-  EventManager(Stream<Event> events) {
+  public EventManager(Stream<Event> events) {
     this.eventsByEventId = events.collect(toMap(Event::getEventId, identity()));
+  }
+
+  public Stream<Event> stream() {
+    return eventsByEventId.values().stream();
   }
 
   public Optional<Event> getEvent(EventId eventId) {

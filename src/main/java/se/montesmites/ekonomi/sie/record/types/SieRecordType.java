@@ -11,11 +11,19 @@ public enum SieRecordType {
   RAR(TypeRAR::of),
   RES(TypeRES::of),
   VER(TypeVER::of),
-  TRANS(TypeTRANS::of);
+  TRANS(TypeTRANS::of),
+  OTHER(record -> record);
+
+  public static SieRecordType of(String label) {
+    return stream(SieRecordType.values())
+        .filter(type -> type.getLabel().equals(label))
+        .findAny()
+        .orElse(SieRecordType.OTHER);
+  }
 
   public static SieRecord specialize(SieRecord record) {
     return stream(values())
-        .filter(type -> record.getLabel().equals(type.name()))
+        .filter(type -> record.getLabel().equals(type.getLabel()))
         .findAny()
         .map(type -> type.specializer.apply(record))
         .orElse(record);
@@ -25,5 +33,9 @@ public enum SieRecordType {
 
   SieRecordType(Function<SieRecord, SieRecord> specializer) {
     this.specializer = specializer;
+  }
+
+  public final String getLabel() {
+    return this.name();
   }
 }
