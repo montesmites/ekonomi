@@ -13,7 +13,7 @@ import se.montesmites.ekonomi.sie.file.SieToOrganizationConverter;
 
 class Main {
 
-  public static void main(String[] _args) {
+  public static void main(String[] __) {
     var args =
         "-t Kassaflöde -x D:\\git\\ekonomi\\src\\main\\resources\\se\\montesmites\\ekonomi\\nikka\\nikka-cashflow-report-definition.xml -y 2019 -d C:\\temp\\nikka\\reports\\2019"
             .split(" ");
