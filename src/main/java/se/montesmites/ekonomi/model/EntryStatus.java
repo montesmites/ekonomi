@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +31,18 @@ public class EntryStatus {
 
   private final Status status;
   private final List<EntryEvent> events;
+
+  public EntryStatus(boolean registered, boolean cancelled, boolean amended) {
+    this.status = registered && !cancelled ? Status.ACTIVE : Status.PASSIVE;
+    this.events = new ArrayList<>();
+    this.events.add(EntryEvent.ORIGINAL);
+    if (amended) {
+      this.events.add(EntryEvent.INSERTED);
+    }
+    if (cancelled) {
+      this.events.add(EntryEvent.DELETED);
+    }
+  }
 
   public EntryStatus(Status status, EntryEvent... events) {
     this(status, List.of(events));

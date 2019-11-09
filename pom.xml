@@ -24,6 +24,7 @@
     <jaxb.resources.path>src/main/resources/xsd</jaxb.resources.path>
 
     <cli-parser.version>1.1.2</cli-parser.version>
+    <mssql-jdbc.version>7.4.0.jre11</mssql-jdbc.version>
 
     <jaxb.generated.sources.directory>${project.build.directory}/generated-sources/jaxb
     </jaxb.generated.sources.directory>
@@ -57,7 +58,12 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>${mssql-jdbc.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
