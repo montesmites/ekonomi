@@ -5,7 +5,6 @@ spring:
     username: java
     password: java
   jpa:
-    show-sql: true
     hibernate.dialect: org.hibernate.dialect.SQLServer2012Dialect
 
 ekonomi:
