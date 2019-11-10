@@ -18,10 +18,15 @@ class Main {
         "-t Kassaflöde -x D:\\git\\ekonomi\\src\\main\\resources\\se\\montesmites\\ekonomi\\nikka\\nikka-cashflow-report-definition.xml -y 2019 -d C:\\temp\\nikka\\reports\\2019"
             .split(" ");
     var arguments = new ArgumentCaptor(args);
-    var main = new Main(fromDataPath());
+    var main = new Main();
     // var main = new Main(fromSiePath());
-    var report = main.generateReport(arguments);
-    main.renderToFile(report, arguments.destinationPath());
+    var report =
+        main.generateReport(
+            new DataFetcher(fromDataPath()), arguments.definitionPath(), arguments.year());
+    main.renderToFile(
+        report,
+        ArgumentCaptor.destinationPath(
+            arguments.destinationFolder(), arguments.title(), arguments.year()));
   }
 
   private static Organization fromDataPath() {
@@ -36,19 +41,13 @@ class Main {
     return SieToOrganizationConverter.of().convert(siePath);
   }
 
-  private final DataFetcher dataFetcher;
-
-  Main(Organization organization) {
-    this.dataFetcher = new DataFetcher(organization);
+  Report generateReport(DataFetcher dataFetcher, Path template, java.time.Year year) {
+    return new JaxbReportBuilder(template).report(dataFetcher, year);
   }
 
-  Report generateReport(ArgumentCaptor arguments) {
-    return new JaxbReportBuilder(arguments.definitionPath()).report(dataFetcher, arguments.year());
-  }
-
-  void renderToFile(Report report, Path path) {
-    try (var writer = Files.newBufferedWriter(path)) {
-      Files.createDirectories(path.getParent());
+  void renderToFile(Report report, Path outputPath) {
+    try (var writer = Files.newBufferedWriter(outputPath)) {
+      Files.createDirectories(outputPath.getParent());
       var lines = report.renderWithNoTrailingEmptyRows();
       for (var i = 0; i < lines.size() - 1; i++) {
         writer.append(lines.get(i));

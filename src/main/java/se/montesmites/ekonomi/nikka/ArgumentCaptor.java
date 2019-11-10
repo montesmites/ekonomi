@@ -34,22 +34,22 @@ class ArgumentCaptor {
     return Paths.get(pathToXml);
   }
 
-  private String title() {
+  String title() {
     return title;
   }
 
-  private Path destinationFolder() {
+  Path destinationFolder() {
     return Paths.get(destinationFolder);
   }
 
-  Path destinationPath() {
-    var pathFormat = "%s %s %s.txt";
-    return destinationFolder()
+  static Path destinationPath(Path outputDir, String title, java.time.Year year) {
+    var pathFormat = "%s %s %d.txt";
+    return outputDir
         .resolve(
             String.format(
                 pathFormat,
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HHmmss")),
-                title(),
-                year()));
+                title,
+                year.getValue()));
   }
 }
