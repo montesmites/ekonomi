@@ -38,15 +38,15 @@ class Main {
 
   private final DataFetcher dataFetcher;
 
-  private Main(Organization organization) {
+  Main(Organization organization) {
     this.dataFetcher = new DataFetcher(organization);
   }
 
-  private Report generateReport(ArgumentCaptor arguments) {
+  Report generateReport(ArgumentCaptor arguments) {
     return new JaxbReportBuilder(arguments.definitionPath()).report(dataFetcher, arguments.year());
   }
 
-  private void renderToFile(Report report, Path path) {
+  void renderToFile(Report report, Path path) {
     try (var writer = Files.newBufferedWriter(path)) {
       Files.createDirectories(path.getParent());
       var lines = report.renderWithNoTrailingEmptyRows();

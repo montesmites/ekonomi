@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Entry;
+import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.parser.vismaadmin200.Parser;
 
@@ -34,6 +35,19 @@ public class OrganizationBuilder {
     this.entries = parser.parse(ENTRIES).filter(filter.entryFilter());
     this.years = parser.parse(YEARS).filter(filter.yearFilter());
     this.eventManager = new EventManager(parser.parse(EVENTS).filter(filter.eventFilter()));
+  }
+
+  public OrganizationBuilder(
+      Stream<Year> years,
+      Stream<Account> accounts,
+      Stream<Balance> balances,
+      Stream<Event> events,
+      Stream<Entry> entries) {
+    this.accounts = accounts;
+    this.balances = balances;
+    this.entries = entries;
+    this.years = years;
+    this.eventManager = new EventManager(events);
   }
 
   public EventManager getEventManager() {
