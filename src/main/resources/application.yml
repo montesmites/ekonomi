@@ -8,9 +8,12 @@ spring:
     hibernate.dialect: org.hibernate.dialect.SQLServer2012Dialect
 
 ekonomi:
+  datasource:
+    type: database # database | sie | spcs
+    # sie-input-path: C:/ProgramData/SPCS/SPCS Administration/Företag/nikka/sie/2019-08-18 NIKLAS_K.SE
+    # spcs-input-dir: C:/ProgramData/SPCS/SPCS Administration/Företag/nikka
   report:
-    datasource-type: database
     title: Kassaflöde
-    template-path: D:\git\ekonomi\src\main\resources\se\montesmites\ekonomi\nikka\nikka-cashflow-report-definition.xml
+    template-path: D:/git/ekonomi/src/main/resources/se/montesmites/ekonomi/nikka/nikka-cashflow-report-definition.xml
     fiscal-year: 2019
-    output-dir: C:\temp\nikka\reports\2019
+    output-dir: C:/temp/nikka/reports/2019

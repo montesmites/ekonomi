@@ -1,5 +1,7 @@
 package se.montesmites.ekonomi.datasource;
 
 public enum DatasourceType {
-  DATABASE;
+  DATABASE,
+  SIE,
+  SPCS;
 }
