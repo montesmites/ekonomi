@@ -4,15 +4,15 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import se.montesmites.ekonomi.jpa.DatabaseFetcher;
+import se.montesmites.ekonomi.datasource.DatabaseDataSource;
 
 @Component
 @Profile("!test")
 public class MainRunner implements ApplicationRunner {
 
-  private final DatabaseFetcher databaseFetcher;
+  private final DatabaseDataSource databaseFetcher;
 
-  public MainRunner(DatabaseFetcher databaseFetcher) {
+  public MainRunner(DatabaseDataSource databaseFetcher) {
     this.databaseFetcher = databaseFetcher;
   }
 

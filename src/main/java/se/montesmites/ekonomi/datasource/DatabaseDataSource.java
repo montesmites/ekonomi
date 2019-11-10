@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.jpa;
+package se.montesmites.ekonomi.datasource;
 
 import org.springframework.stereotype.Component;
 import se.montesmites.ekonomi.jpa.model.Bokfaar;
@@ -15,7 +15,7 @@ import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 
 @Component
-public class DatabaseFetcher {
+public class DatabaseDataSource {
 
   private final BokfaarRepository bokfaarRepository;
   private final KontoRepository kontoRepository;
@@ -23,7 +23,7 @@ public class DatabaseFetcher {
   private final VerRepository verRepository;
   private final VerradRepository verradRepository;
 
-  public DatabaseFetcher(
+  public DatabaseDataSource(
       BokfaarRepository bokfaarRepository,
       KontoRepository kontoRepository,
       ReingRepository reingRepository,
