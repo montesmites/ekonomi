@@ -15,7 +15,7 @@ import se.montesmites.ekonomi.organization.Organization;
 import se.montesmites.ekonomi.organization.OrganizationBuilder;
 
 @Component
-public class DatabaseDataSource {
+public class DatabaseDatasource {
 
   private final BokfaarRepository bokfaarRepository;
   private final KontoRepository kontoRepository;
@@ -23,7 +23,7 @@ public class DatabaseDataSource {
   private final VerRepository verRepository;
   private final VerradRepository verradRepository;
 
-  public DatabaseDataSource(
+  public DatabaseDatasource(
       BokfaarRepository bokfaarRepository,
       KontoRepository kontoRepository,
       ReingRepository reingRepository,
