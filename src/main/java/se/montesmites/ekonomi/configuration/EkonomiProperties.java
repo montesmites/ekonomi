@@ -1,8 +1,8 @@
 package se.montesmites.ekonomi.configuration;
 
+import java.nio.file.Path;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import se.montesmites.ekonomi.datasource.DatasourceType;
 
 @Component
 @ConfigurationProperties("ekonomi")
@@ -44,8 +44,34 @@ public class EkonomiProperties {
 
   public static class ReportProperties {
 
+    public static class TemplateProperties {
+
+      private TemplateType type;
+      private String path;
+
+      public TemplateType getType() {
+        return type;
+      }
+
+      public void setType(TemplateType type) {
+        this.type = type;
+      }
+
+      public String getPath() {
+        return path;
+      }
+
+      public void setPath(String path) {
+        this.path = path;
+      }
+
+      public Path asPath() {
+        return type.asPath(path);
+      }
+    }
+
     private String title;
-    private String templatePath;
+    private TemplateProperties template;
     private Integer fiscalYear;
     private String outputDir;
 
@@ -57,12 +83,12 @@ public class EkonomiProperties {
       this.title = title;
     }
 
-    public String getTemplatePath() {
-      return templatePath;
+    public TemplateProperties getTemplate() {
+      return template;
     }
 
-    public void setTemplatePath(String templatePath) {
-      this.templatePath = templatePath;
+    public void setTemplate(TemplateProperties template) {
+      this.template = template;
     }
 
     public Integer getFiscalYear() {
@@ -86,8 +112,7 @@ public class EkonomiProperties {
     return datasource;
   }
 
-  public void setDatasource(
-      DatasourceProperties datasource) {
+  public void setDatasource(DatasourceProperties datasource) {
     this.datasource = datasource;
   }
 

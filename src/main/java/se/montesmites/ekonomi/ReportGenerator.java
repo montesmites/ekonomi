@@ -35,7 +35,7 @@ public class ReportGenerator implements ApplicationRunner {
     renderToFile(
         generateReport(
             dataFetcher(),
-            Paths.get(properties.getReport().getTemplatePath()),
+            properties.getReport().getTemplate().asPath(),
             java.time.Year.of(properties.getReport().getFiscalYear())),
         destinationPath(
             Paths.get(properties.getReport().getOutputDir()),

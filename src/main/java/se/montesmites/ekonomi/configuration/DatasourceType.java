@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.datasource;
+package se.montesmites.ekonomi.configuration;
 
 public enum DatasourceType {
   DATABASE,

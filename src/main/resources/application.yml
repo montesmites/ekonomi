@@ -14,6 +14,8 @@ ekonomi:
     # spcs-input-dir: C:/ProgramData/SPCS/SPCS Administration/Företag/nikka
   report:
     title: Kassaflöde
-    template-path: D:/git/ekonomi/src/main/resources/se/montesmites/ekonomi/nikka/nikka-cashflow-report-definition.xml
     fiscal-year: 2019
     output-dir: C:/temp/nikka/reports/2019
+    template:
+      type: resource # file
+      path: /se/montesmites/ekonomi/nikka/nikka-cashflow-report-definition.xml
