@@ -37,12 +37,10 @@ public class Organization {
       Stream<Entry> entries,
       Stream<Year> years) {
     this.eventManager = eventManager;
-    Collection<Account> accounts1 = accounts.collect(toList());
     this.entries = entries.collect(toList());
     this.years = years.collect(toList());
 
-    this.accountsByAccountId =
-        accounts1.stream().collect(toMap(Account::getAccountId, identity()));
+    this.accountsByAccountId = accounts.collect(toMap(Account::getAccountId, identity()));
     this.balancesByAccountId =
         balances.collect(toList()).stream().collect(toMap(Balance::getAccountId, identity()));
     this.entriesByEventId = this.entries.stream().collect(groupingBy(Entry::getEventId));
