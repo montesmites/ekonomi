@@ -60,8 +60,8 @@ public interface AmountsProvider {
       AmountsFetcher amountsFetcher, Year year, Month month, AccountId accountId) {
     return amountsFetcher
         .fetchAmount(accountId, YearMonth.of(year.getValue(), month))
-        .map(Currency::getAmount)
-        .map(Currency::of)
+        .map(Currency::amount)
+        .map(Currency::new)
         .map(Currency::negate)
         .orElse(Currency.zero());
   }
@@ -121,10 +121,10 @@ public interface AmountsProvider {
             .map(this::getMonthlyAmount)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .mapToLong(Currency::getAmount)
+            .mapToLong(Currency::amount)
             .average()
             .orElse(0);
-    return Optional.of(Currency.of(Math.round(average)));
+    return Optional.of(new Currency(Math.round(average)));
   }
 
   default AmountsProvider self() {

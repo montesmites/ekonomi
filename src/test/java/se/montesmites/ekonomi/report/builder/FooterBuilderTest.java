@@ -42,8 +42,8 @@ class FooterBuilderTest {
 
   @Test
   void aggregateBody() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var accountGroups = List.of(AccountGroup.of("1111", "1111"), AccountGroup.of("2222", "2222"));
     var amountsFetcher =
         AmountsFetcherBuilder.of(

@@ -39,7 +39,7 @@ class OrganizationTest {
     final List<java.time.Year> expYears =
         Stream.of(2012, 2013, 2014, 2015).map(java.time.Year::of).collect(toList());
     final List<java.time.Year> actYears =
-        organization.streamYears().map(Year::getYear).collect(toList());
+        organization.streamYears().map(Year::year).collect(toList());
     assertEquals(expYears, actYears);
   }
 
@@ -57,7 +57,7 @@ class OrganizationTest {
     final Map<String, Long> actCount =
         organization
             .streamEntries()
-            .collect(groupingBy(e -> e.getEventId().getYearId().getId(), counting()));
+            .collect(groupingBy(e -> e.eventId().yearId().id(), counting()));
     assertEquals(expCount.entrySet(), actCount.entrySet());
   }
 
@@ -65,32 +65,32 @@ class OrganizationTest {
   void readYear_byYear_2012() {
     Year year = organization.getYear(java.time.Year.of(2012)).get();
     YearId yearId = new YearId("C");
-    assertEquals(yearId, year.getYearId());
-    assertEquals(LocalDate.parse("2012-01-01"), year.getFrom());
-    assertEquals(LocalDate.parse("2012-12-31"), year.getTo());
+    assertEquals(yearId, year.yearId());
+    assertEquals(LocalDate.parse("2012-01-01"), year.from());
+    assertEquals(LocalDate.parse("2012-12-31"), year.to());
   }
 
   @Test
   void readEvent_byEventId_2012A1() {
-    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
+    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().yearId();
     EventId eventId = new EventId(yearId, 1, new Series("A"));
     Event event = organization.getEvent(eventId).get();
-    assertEquals(eventId, event.getEventId());
-    assertEquals(LocalDate.parse("2012-01-12"), event.getDate());
-    assertEquals("Överföring till sparkonto", event.getDescription());
-    assertEquals(LocalDate.parse("2011-01-31"), event.getRegistrationDate());
+    assertEquals(eventId, event.eventId());
+    assertEquals(LocalDate.parse("2012-01-12"), event.date());
+    assertEquals("Överföring till sparkonto", event.description());
+    assertEquals(LocalDate.parse("2011-01-31"), event.registrationDate());
   }
 
   @Test
   void readEntries_byEventId_2012A1() {
-    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
+    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().yearId();
     EventId eventId = new EventId(yearId, 1, new Series("A"));
     List<Entry> actEntries =
         organization
             .getEntries(eventId)
             .get()
             .stream()
-            .sorted(comparing(entry -> entry.getAccountId().getId()))
+            .sorted(comparing(entry -> entry.accountId().id()))
             .collect(toList());
     List<Entry> expEntries =
         List.of(entry(eventId, 1920, -50000000), entry(eventId, 1940, 50000000));
@@ -99,32 +99,32 @@ class OrganizationTest {
 
   @Test
   void readAccount_byAccountId_20121920() {
-    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
+    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().yearId();
     AccountId accountId = new AccountId(yearId, "1920");
     Account account = organization.getAccount(accountId).get();
-    assertEquals(accountId, account.getAccountId());
-    assertEquals(AccountStatus.OPEN, account.getAccountStatus());
-    assertEquals("Bank, PlusGiro", account.getDescription());
+    assertEquals(accountId, account.accountId());
+    assertEquals(AccountStatus.OPEN, account.accountStatus());
+    assertEquals("Bank, PlusGiro", account.description());
   }
 
   @Test
   void readBalance_byAccountId_20121920() {
-    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().getYearId();
+    YearId yearId = organization.getYear(java.time.Year.of(2012)).get().yearId();
     AccountId accountId = new AccountId(yearId, "1920");
     Balance balance = organization.getBalance(accountId).get();
-    assertEquals(accountId, balance.getAccountId());
-    assertEquals(currency(83340012), balance.getBalance());
+    assertEquals(accountId, balance.accountId());
+    assertEquals(currency(83340012), balance.balance());
   }
 
   private Entry entry(EventId eventId, int account, long amount) {
     return new Entry(
         eventId,
-        new AccountId(eventId.getYearId(), Integer.toString(account)),
+        new AccountId(eventId.yearId(), Integer.toString(account)),
         currency(amount),
         new EntryStatus(EntryStatus.Status.ACTIVE, EntryEvent.ORIGINAL));
   }
 
   private Currency currency(long amount) {
-    return Currency.of(amount);
+    return new Currency(amount);
   }
 }

@@ -48,10 +48,10 @@ class JaxbReportBuilderTest {
   void accountGroupsConstituent() throws Exception {
     var path = PATH_TO_TEST_XML + "01_account-groups.xml";
     var amounts1 =
-        AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of("1111", month -> Optional.of(new Currency(month.ordinal() * 100)));
     var amounts2 =
-        AmountsProvider.of("2222", month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var sum = AmountsProvider.of("", month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of("2222", month -> Optional.of(new Currency(month.ordinal() * 200)));
+    var sum = AmountsProvider.of("", month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -76,14 +76,14 @@ class JaxbReportBuilderTest {
   void subtotalConstituent() throws Exception {
     var path = PATH_TO_TEST_XML + "02_subtotal.xml";
     var amounts1 =
-        AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of("1111", month -> Optional.of(new Currency(month.ordinal() * 100)));
     var amounts2 =
-        AmountsProvider.of("2222", month -> Optional.of(Currency.of(month.ordinal() * 200)));
+        AmountsProvider.of("2222", month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amounts3 =
-        AmountsProvider.of("3333", month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var sum = AmountsProvider.of("", month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of("3333", month -> Optional.of(new Currency(month.ordinal() * 300)));
+    var sum = AmountsProvider.of("", month -> Optional.of(new Currency(month.ordinal() * 300)));
     var subtotal =
-        AmountsProvider.of("SUBTOTAL", month -> Optional.of(Currency.of(month.ordinal() * 600)));
+        AmountsProvider.of("SUBTOTAL", month -> Optional.of(new Currency(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -110,9 +110,9 @@ class JaxbReportBuilderTest {
   void sectionConstituent() throws Exception {
     var path = PATH_TO_TEST_XML + "03_section.xml";
     var amounts1 =
-        AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of("1111", month -> Optional.of(new Currency(month.ordinal() * 100)));
     var subtotal =
-        AmountsProvider.of("SUBTOTAL", month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of("SUBTOTAL", month -> Optional.of(new Currency(month.ordinal() * 100)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), subtotal)))
             .amountsFetcher();
@@ -130,8 +130,8 @@ class JaxbReportBuilderTest {
   void negateAccountGroup() throws Exception {
     var path = PATH_TO_TEST_XML + "04_negate.xml";
     var amounts1 =
-        AmountsProvider.of("1111", month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var sum = AmountsProvider.of("", month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of("1111", month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var sum = AmountsProvider.of("", month -> Optional.of(new Currency(month.ordinal() * 100)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), amounts1)))
             .amountsFetcher();
@@ -152,26 +152,26 @@ class JaxbReportBuilderTest {
   @Test
   void accumulateAccountGroups() throws Exception {
     var path = PATH_TO_TEST_XML + "05_accumulate-account-groups.xml";
-    var amounts1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.getValue() * 100)));
+    var amounts1 = AmountsProvider.of(month -> Optional.of(new Currency(month.getValue() * 100)));
     var accumulation =
         (Row)
             column ->
                 Map.ofEntries(
-                    entry(DESCRIPTION, Currency.of(0).format()),
-                    entry(JANUARY, Currency.of(100).format()),
-                    entry(FEBRUARY, Currency.of(300).format()),
-                    entry(MARCH, Currency.of(600).format()),
-                    entry(APRIL, Currency.of(1000).format()),
-                    entry(MAY, Currency.of(1500).format()),
-                    entry(JUNE, Currency.of(2100).format()),
-                    entry(JULY, Currency.of(2800).format()),
-                    entry(AUGUST, Currency.of(3600).format()),
-                    entry(SEPTEMBER, Currency.of(4500).format()),
-                    entry(OCTOBER, Currency.of(5500).format()),
-                    entry(NOVEMBER, Currency.of(6600).format()),
-                    entry(DECEMBER, Currency.of(7800).format()),
-                    entry(TOTAL, Currency.of(0).format()),
-                    entry(AVERAGE, Currency.of(3033).format()))
+                    entry(DESCRIPTION, new Currency(0).format()),
+                    entry(JANUARY, new Currency(100).format()),
+                    entry(FEBRUARY, new Currency(300).format()),
+                    entry(MARCH, new Currency(600).format()),
+                    entry(APRIL, new Currency(1000).format()),
+                    entry(MAY, new Currency(1500).format()),
+                    entry(JUNE, new Currency(2100).format()),
+                    entry(JULY, new Currency(2800).format()),
+                    entry(AUGUST, new Currency(3600).format()),
+                    entry(SEPTEMBER, new Currency(4500).format()),
+                    entry(OCTOBER, new Currency(5500).format()),
+                    entry(NOVEMBER, new Currency(6600).format()),
+                    entry(DECEMBER, new Currency(7800).format()),
+                    entry(TOTAL, new Currency(0).format()),
+                    entry(AVERAGE, new Currency(3033).format()))
                     .get(column);
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), amounts1)))

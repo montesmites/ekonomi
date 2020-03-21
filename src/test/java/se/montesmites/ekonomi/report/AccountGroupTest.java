@@ -13,7 +13,7 @@ class AccountGroupTest {
   private static final String DESCRIPTION = "description";
   private static final String REGEX = "regex";
   private static final AmountsProvider AMOUNTS_PROVIDER =
-      column -> Optional.of(Currency.of(column.ordinal() * 100));
+      column -> Optional.of(new Currency(column.ordinal() * 100));
 
   @Test
   void of() {

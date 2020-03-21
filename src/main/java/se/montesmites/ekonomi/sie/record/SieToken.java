@@ -68,7 +68,7 @@ public class SieToken {
     var parts = data.split("\\.");
     var integral = Long.parseLong(parts[0]) * 100;
     var decimal = parts.length == 1 ? 0 : Long.parseLong(parts[1]);
-    return Currency.of(integral + (data.trim().startsWith("-") ? -decimal : decimal));
+    return new Currency(integral + (data.trim().startsWith("-") ? -decimal : decimal));
   }
 
   public Optional<Currency> asOptionalCurrency() {

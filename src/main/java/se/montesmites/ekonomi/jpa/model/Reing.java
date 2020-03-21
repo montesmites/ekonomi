@@ -27,6 +27,6 @@ public class Reing {
   private Long ingaendeBalans;
 
   public Balance toBalance() {
-    return new Balance(new AccountId(new YearId(bokfaarId), kontoId), Currency.of(ingaendeBalans));
+    return new Balance(new AccountId(new YearId(bokfaarId), kontoId), new Currency(ingaendeBalans));
   }
 }

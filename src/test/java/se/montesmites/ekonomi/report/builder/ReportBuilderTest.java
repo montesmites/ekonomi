@@ -51,7 +51,7 @@ class ReportBuilderTest {
 
   @Test
   void accountGroups() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), row1)))
             .amountsFetcher();
@@ -80,10 +80,10 @@ class ReportBuilderTest {
     var description2 = "2".repeat(Report.DESCRIPTION_WIDTH - 5);
     var row1 =
         AmountsProvider.of(
-            "1111 " + description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+            "1111 " + description1, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var row2 =
         AmountsProvider.of(
-            "2222 " + description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+            "2222 " + description2, month -> Optional.of(new Currency(month.ordinal() * 200)));
     var accountId1 = new AccountId(yearId, "1111");
     var accountId2 = new AccountId(yearId, "2222");
     var account1 =
@@ -122,7 +122,7 @@ class ReportBuilderTest {
 
   @Test
   void accumulateAccountGroups() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.getValue() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.getValue() * 100)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), row1)))
             .amountsFetcher();
@@ -133,21 +133,21 @@ class ReportBuilderTest {
         (Row)
             column ->
                 Map.ofEntries(
-                    entry(DESCRIPTION, Currency.of(0).format()),
-                    entry(JANUARY, Currency.of(100).format()),
-                    entry(FEBRUARY, Currency.of(300).format()),
-                    entry(MARCH, Currency.of(600).format()),
-                    entry(APRIL, Currency.of(1000).format()),
-                    entry(MAY, Currency.of(1500).format()),
-                    entry(JUNE, Currency.of(2100).format()),
-                    entry(JULY, Currency.of(2800).format()),
-                    entry(AUGUST, Currency.of(3600).format()),
-                    entry(SEPTEMBER, Currency.of(4500).format()),
-                    entry(OCTOBER, Currency.of(5500).format()),
-                    entry(NOVEMBER, Currency.of(6600).format()),
-                    entry(DECEMBER, Currency.of(7800).format()),
-                    entry(TOTAL, Currency.of(0).format()),
-                    entry(AVERAGE, Currency.of(3033).format()))
+                    entry(DESCRIPTION, new Currency(0).format()),
+                    entry(JANUARY, new Currency(100).format()),
+                    entry(FEBRUARY, new Currency(300).format()),
+                    entry(MARCH, new Currency(600).format()),
+                    entry(APRIL, new Currency(1000).format()),
+                    entry(MAY, new Currency(1500).format()),
+                    entry(JUNE, new Currency(2100).format()),
+                    entry(JULY, new Currency(2800).format()),
+                    entry(AUGUST, new Currency(3600).format()),
+                    entry(SEPTEMBER, new Currency(4500).format()),
+                    entry(OCTOBER, new Currency(5500).format()),
+                    entry(NOVEMBER, new Currency(6600).format()),
+                    entry(DECEMBER, new Currency(7800).format()),
+                    entry(TOTAL, new Currency(0).format()),
+                    entry(AVERAGE, new Currency(3033).format()))
                     .get(column);
     var section = Section.of(header, Body.empty(), Footer.of(footer));
     var exp = List.of(section).stream().map(Section::asString).collect(toList());
@@ -163,16 +163,16 @@ class ReportBuilderTest {
 
   @Test
   void tags() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
-    var row4 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 400)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
+    var row3 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 300)));
+    var row4 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 400)));
     var subtotal1 =
-        AmountsProvider.of("subtotal1", month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of("subtotal1", month -> Optional.of(new Currency(month.ordinal() * 300)));
     var subtotal2 =
-        AmountsProvider.of("subtotal2", month -> Optional.of(Currency.of(month.ordinal() * 700)));
+        AmountsProvider.of("subtotal2", month -> Optional.of(new Currency(month.ordinal() * 700)));
     var subtotal3 =
-        AmountsProvider.of("subtotal3", month -> Optional.of(Currency.of(month.ordinal() * 1000)));
+        AmountsProvider.of("subtotal3", month -> Optional.of(new Currency(month.ordinal() * 1000)));
     var tag1 = Tag.of("tag1");
     var tag2 = Tag.of("tag2");
     var amountsFetcher =
@@ -222,8 +222,8 @@ class ReportBuilderTest {
 
   @Test
   void section() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -254,10 +254,10 @@ class ReportBuilderTest {
   @Test
   void subtotal() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -293,8 +293,8 @@ class ReportBuilderTest {
   @Test
   void report() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(

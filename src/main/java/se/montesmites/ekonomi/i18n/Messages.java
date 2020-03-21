@@ -34,8 +34,8 @@ public class Messages {
 
   public static String formatNumber(Currency amount) {
     var numberFormat = NumberFormat.getInstance(LOCALE);
-    numberFormat.setMinimumFractionDigits(amount.getDecimalPlaces());
-    numberFormat.setMaximumFractionDigits(amount.getDecimalPlaces());
+    numberFormat.setMinimumFractionDigits(amount.decimalPlaces());
+    numberFormat.setMaximumFractionDigits(amount.decimalPlaces());
     return numberFormat.format(amount.toDouble());
   }
 }

@@ -68,14 +68,14 @@ class DataFetcherTest {
 
   @Test
   void readAccountAmount_byYearMonth_2012January() {
-    var yearId = organization.getYear(java.time.Year.of(2012)).orElseThrow().getYearId();
+    var yearId = organization.getYear(java.time.Year.of(2012)).orElseThrow().yearId();
     var yearMonth = YearMonth.of(2012, Month.JANUARY);
     var actAmounts =
         fetcher
             .getAccountIdAmountTuples(yearMonth)
             .orElseThrow()
             .stream()
-            .collect(toMap(AccountIdAmountTuple::getAccountId, AccountIdAmountTuple::getAmount));
+            .collect(toMap(AccountIdAmountTuple::accountId, AccountIdAmountTuple::amount));
     var expAmounts = BY_YEARMONTH_201201.getAggregate(yearId);
     mapEqualityAssertion(expAmounts, actAmounts);
   }
@@ -94,7 +94,7 @@ class DataFetcherTest {
         fetcher.getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
     var act = fetcher.fetchAmount(accountId, yearMonth);
     var fmt = "%s (%s)";
-    var msg = String.format(fmt, accountId.getId(), yearMonth);
+    var msg = String.format(fmt, accountId.id(), yearMonth);
     assertEquals(exp, act, msg);
   }
 
@@ -102,7 +102,7 @@ class DataFetcherTest {
     var exp = organization.getBalance(accountId);
     var act = fetcher.fetchBalance(accountId);
     var fmt = "%s";
-    var msg = String.format(fmt, accountId.getId());
+    var msg = String.format(fmt, accountId.id());
     assertEquals(exp, act, msg);
   }
 

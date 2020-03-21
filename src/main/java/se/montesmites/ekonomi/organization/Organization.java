@@ -40,11 +40,11 @@ public class Organization {
     this.entries = entries.collect(toList());
     this.years = years.collect(toList());
 
-    this.accountsByAccountId = accounts.collect(toMap(Account::getAccountId, identity()));
+    this.accountsByAccountId = accounts.collect(toMap(Account::accountId, identity()));
     this.balancesByAccountId =
-        balances.collect(toList()).stream().collect(toMap(Balance::getAccountId, identity()));
-    this.entriesByEventId = this.entries.stream().collect(groupingBy(Entry::getEventId));
-    this.yearsByYear = this.years.stream().collect(toMap(Year::getYear, identity()));
+        balances.collect(toList()).stream().collect(toMap(Balance::accountId, identity()));
+    this.entriesByEventId = this.entries.stream().collect(groupingBy(Entry::eventId));
+    this.yearsByYear = this.years.stream().collect(toMap(Year::year, identity()));
   }
 
   public Stream<Year> streamYears() {

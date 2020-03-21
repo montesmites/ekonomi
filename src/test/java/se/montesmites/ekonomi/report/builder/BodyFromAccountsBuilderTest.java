@@ -33,9 +33,9 @@ class BodyFromAccountsBuilderTest {
     var description1 = "1111";
     var description2 = "2222";
     var row1 =
-        AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of(description1, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var row2 =
-        AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+        AmountsProvider.of(description2, month -> Optional.of(new Currency(month.ordinal() * 200)));
     var accountId1 = new AccountId(yearId, "1111");
     var accountId2 = new AccountId(yearId, "2222");
     var account1 = new Account(accountId1, description1, AccountStatus.OPEN);
@@ -67,10 +67,10 @@ class BodyFromAccountsBuilderTest {
     var description2 = "2222";
     var row1 =
         AmountsProvider.of(
-            description1 + description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+            description1 + description1, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var row2 =
         AmountsProvider.of(
-            description2 + description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+            description2 + description2, month -> Optional.of(new Currency(month.ordinal() * 200)));
     var accountId1 = new AccountId(yearId, "1111");
     var accountId2 = new AccountId(yearId, "2222");
     var account1 = new Account(accountId1, description1, AccountStatus.OPEN);
@@ -81,7 +81,7 @@ class BodyFromAccountsBuilderTest {
     var bodyFromAccountsBuilder =
         BodyFromAccountsBuilder.of(amountsFetcher, year)
             .accounts(List.of(account1, account2))
-            .accountDescriptor(account -> account.getDescription() + account.getDescription());
+            .accountDescriptor(account -> account.description() + account.description());
     var exp =
         List.of(row1, row2)
             .stream()
@@ -104,10 +104,10 @@ class BodyFromAccountsBuilderTest {
     var description2 = "2222";
     var row1 =
         AmountsProvider.of(
-            description1 + description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+            description1 + description1, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var row2 =
         AmountsProvider.of(
-            description2 + description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+            description2 + description2, month -> Optional.of(new Currency(month.ordinal() * 200)));
     var accountId1 = new AccountId(yearId, "1111");
     var accountId2 = new AccountId(yearId, "2222");
     var account1 = new Account(accountId1, description1, AccountStatus.OPEN);
@@ -118,7 +118,7 @@ class BodyFromAccountsBuilderTest {
     var bodyFromAccountsBuilder =
         BodyFromAccountsBuilder.of(amountsFetcher, year)
             .accounts(List.of(account1, account2))
-            .accountDescriptor(account -> account.getDescription() + account.getDescription())
+            .accountDescriptor(account -> account.description() + account.description())
             .amountsProviderProcessor(AmountsProvider::negate);
     var exp =
         List.of(row1.negate(), row2.negate())

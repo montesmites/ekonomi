@@ -30,8 +30,8 @@ class RowTest {
 
   @Test
   void of_function() {
-    var row = Row.of(column -> Currency.of(column.ordinal() * 100).format());
-    var exp = ((Row) column -> Currency.of(column.ordinal() * 100).format()).asExtendedString();
+    var row = Row.of(column -> new Currency(column.ordinal() * 100).format());
+    var exp = ((Row) column -> new Currency(column.ordinal() * 100).format()).asExtendedString();
     var act = row.asExtendedString();
     assertEquals(exp, act);
   }

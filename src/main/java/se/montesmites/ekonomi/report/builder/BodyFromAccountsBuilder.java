@@ -55,7 +55,7 @@ class BodyFromAccountsBuilder {
                 AmountsProvider.of(
                     amountsFetcher,
                     year,
-                    account.getAccountId(),
+                    account.accountId(),
                     accountDescriptor.describe(account),
                     amountsProviderProcessor))
         .collect(toList());

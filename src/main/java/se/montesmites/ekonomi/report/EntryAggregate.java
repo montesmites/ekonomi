@@ -33,11 +33,11 @@ class EntryAggregate {
 
   void accumulate(Entry entry) {
     yearMonthProvider
-        .apply(entry.getEventId())
+        .apply(entry.eventId())
         .ifPresent(
             yearMonth ->
                 aggregate.merge(
-                    new YearMonthAccountIdTuple(yearMonth, entry.getAccountId()),
+                    new YearMonthAccountIdTuple(yearMonth, entry.accountId()),
                     new AmountEntryListTuple(entry),
                     AmountEntryListTuple::merge));
   }

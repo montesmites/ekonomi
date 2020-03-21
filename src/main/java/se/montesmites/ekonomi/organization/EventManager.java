@@ -14,7 +14,7 @@ public class EventManager {
   private final Map<EventId, Event> eventsByEventId;
 
   public EventManager(Stream<Event> events) {
-    this.eventsByEventId = events.collect(toMap(Event::getEventId, identity()));
+    this.eventsByEventId = events.collect(toMap(Event::eventId, identity()));
   }
 
   public Stream<Event> stream() {

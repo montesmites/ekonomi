@@ -58,7 +58,7 @@ public class SieToOrganizationConverter {
                             rar.getStart(),
                             rar.getEnd())))
             .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
-    var currentYearId = yearsMap.get(0).getYearId();
+    var currentYearId = yearsMap.get(0).yearId();
     var accountsMap =
         recordsByLabel.getOrDefault(SieRecordType.KONTO, List.of()).stream()
             .map(record -> (TypeKONTO) record)
@@ -68,14 +68,14 @@ public class SieToOrganizationConverter {
                         new AccountId(currentYearId, konto.getAccountId()),
                         konto.getDescription(),
                         AccountStatus.OPEN))
-            .collect(toMap(account -> account.getAccountId().getId(), account -> account));
+            .collect(toMap(account -> account.accountId().id(), account -> account));
     var balances =
         recordsByLabel.getOrDefault(SieRecordType.IB, List.of()).stream()
             .map(record -> (TypeIB) record)
             .map(
                 ib ->
                     new Balance(
-                        new AccountId(yearsMap.get(ib.getYearId()).getYearId(), ib.getAccountId()),
+                        new AccountId(yearsMap.get(ib.getYearId()).yearId(), ib.getAccountId()),
                         ib.getBalance()))
             .collect(toList());
     var events =

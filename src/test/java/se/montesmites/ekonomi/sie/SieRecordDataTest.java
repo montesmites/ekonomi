@@ -83,7 +83,7 @@ class SieRecordDataTest {
   })
   void testAsCurrency(String input, long expected) {
     var data = SieRecordData.of(input);
-    var exp = List.of(Currency.of(expected));
+    var exp = List.of(new Currency(expected));
     var act = data.getTokens().stream().map(SieToken::asCurrency).collect(toList());
     assertEquals(exp, act);
   }

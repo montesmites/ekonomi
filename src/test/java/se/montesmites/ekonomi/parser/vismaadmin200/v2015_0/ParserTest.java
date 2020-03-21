@@ -42,7 +42,7 @@ class ParserTest {
         parse(BinaryFile_2015_0.ACCOUNTS)
             .collect(
                 Collectors.groupingBy(
-                    account -> account.getAccountId().getYearId().getId(), Collectors.counting()));
+                    account -> account.accountId().yearId().id(), Collectors.counting()));
     assertEquals(expCount.entrySet(), actCount.entrySet());
   }
 
@@ -54,7 +54,7 @@ class ParserTest {
         parse(BinaryFile_2015_0.EVENTS)
             .collect(
                 Collectors.groupingBy(
-                    event -> event.getEventId().getYearId().getId(), Collectors.counting()));
+                    event -> event.eventId().yearId().id(), Collectors.counting()));
     assertEquals(expCount.entrySet(), actCount.entrySet());
   }
 
@@ -66,7 +66,7 @@ class ParserTest {
         parse(BinaryFile_2015_0.ENTRIES)
             .collect(
                 Collectors.groupingBy(
-                    entry -> entry.getEventId().getYearId().getId(), Collectors.counting()));
+                    entry -> entry.eventId().yearId().id(), Collectors.counting()));
     assertEquals(expCount.entrySet(), actCount.entrySet());
   }
 
@@ -78,7 +78,7 @@ class ParserTest {
         parse(BinaryFile_2015_0.BALANCES)
             .collect(
                 Collectors.groupingBy(
-                    balance -> balance.getAccountId().getYearId().getId(), Collectors.counting()));
+                    balance -> balance.accountId().yearId().id(), Collectors.counting()));
     assertEquals(expCount.entrySet(), actCount.entrySet());
   }
 

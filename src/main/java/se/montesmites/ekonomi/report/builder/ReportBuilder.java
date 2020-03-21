@@ -59,7 +59,7 @@ public class ReportBuilder {
     var accounts =
         amountsFetcher
             .streamAccountIds(year, AccountFilterByRegex.of(regex))
-            .sorted(comparing(AccountId::getId))
+            .sorted(comparing(AccountId::id))
             .map(accountsFetcher::getAccount)
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -100,7 +100,7 @@ public class ReportBuilder {
                             accountId ->
                                 amountsFetcher
                                     .fetchBalance(accountId)
-                                    .map(Balance::getBalance)
+                                    .map(Balance::balance)
                                     .orElse(Currency.zero()))
                         .reduce(Currency.zero(), Currency::add))
             .reduce(Currency::add)

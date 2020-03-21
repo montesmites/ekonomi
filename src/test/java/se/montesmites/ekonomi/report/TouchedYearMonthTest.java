@@ -52,8 +52,8 @@ class TouchedYearMonthTest {
     return entry ->
         organizationBuilder
             .getEventManager()
-            .getEvent(entry.getEventId())
-            .map(Event::getDate)
+            .getEvent(entry.eventId())
+            .map(Event::date)
             .filter(date -> date.getYear() == year.getValue())
             .filter(date -> months.contains(date.getMonth()))
             .isPresent();

@@ -46,10 +46,10 @@ class AmountsProviderTest {
 
   @Test
   void of_function() {
-    var row = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
     var exp =
         stream(Month.values())
-            .map(month -> Optional.of(Currency.of(month.ordinal())))
+            .map(month -> Optional.of(new Currency(month.ordinal())))
             .collect(toList());
     var act = stream(Month.values()).map(row::getMonthlyAmount).collect(toList());
     assertEquals(exp, act);
@@ -59,16 +59,16 @@ class AmountsProviderTest {
   void of_map() {
     var amounts =
         Map.ofEntries(
-            entry(JANUARY, Currency.of(100)),
-            entry(FEBRUARY, Currency.of(100)),
-            entry(MARCH, Currency.of(100)));
+            entry(JANUARY, new Currency(100)),
+            entry(FEBRUARY, new Currency(100)),
+            entry(MARCH, new Currency(100)));
     var exp =
         AmountsProvider.of(
             month ->
                 Map.ofEntries(
-                    entry(JANUARY, Optional.of(Currency.of(100))),
-                    entry(FEBRUARY, Optional.of(Currency.of(100))),
-                    entry(MARCH, Optional.of(Currency.of(100))))
+                    entry(JANUARY, Optional.of(new Currency(100))),
+                    entry(FEBRUARY, Optional.of(new Currency(100))),
+                    entry(MARCH, Optional.of(new Currency(100))))
                     .getOrDefault(month, Optional.empty()));
     var act = AmountsProvider.of(amounts);
     assertTrue(act.isEquivalentTo(exp));
@@ -76,8 +76,8 @@ class AmountsProviderTest {
 
   @Test
   void of_amountsFetcher_accountGroup() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -86,7 +86,7 @@ class AmountsProviderTest {
             .amountsFetcher();
     var accountGroup = AccountGroup.of("", "\\d\\d\\d\\d");
     var exp =
-        AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)))
+        AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 300)))
             .asRow()
             .asExtendedString();
     var act = AmountsProvider.of(amountsFetcher, year, accountGroup).asRow().asExtendedString();
@@ -95,8 +95,8 @@ class AmountsProviderTest {
 
   @Test
   void of_account() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -106,18 +106,18 @@ class AmountsProviderTest {
     var account =
         new Account(
             amountsFetcher
-                .streamAccountIds(year, accountId -> accountId.getId().equals("1111"))
+                .streamAccountIds(year, accountId -> accountId.id().equals("1111"))
                 .findFirst()
                 .orElseThrow(),
             "1111",
             AccountStatus.OPEN);
     var exp =
-        AmountsProvider.of(account.getDescription(), row1::getMonthlyAmount)
+        AmountsProvider.of(account.description(), row1::getMonthlyAmount)
             .asRow()
             .asExtendedString();
     var act =
         AmountsProvider.of(
-            amountsFetcher, year, account.getAccountId(), account.getDescription(), x -> x)
+            amountsFetcher, year, account.accountId(), account.description(), x -> x)
             .asRow()
             .asExtendedString();
     assertEquals(exp, act);
@@ -125,22 +125,22 @@ class AmountsProviderTest {
 
   @Test
   void getYearlyTotal() {
-    var row = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
     var sum = stream(Month.values()).mapToInt(Month::ordinal).sum();
-    var exp = Optional.of(Currency.of(sum));
+    var exp = Optional.of(new Currency(sum));
     var act = row.getYearlyTotal();
     assertEquals(exp, act);
   }
 
   @Test
   void getAverage() {
-    var row = AmountsProvider.of(month -> Optional.of(Currency.of((month.ordinal() + 1) * 100)));
+    var row = AmountsProvider.of(month -> Optional.of(new Currency((month.ordinal() + 1) * 100)));
     var avg =
         stream(Month.values())
             .mapToInt(month -> (month.ordinal() + 1) * 100)
             .average()
             .orElseThrow();
-    var exp = Optional.of(Currency.of((int) avg));
+    var exp = Optional.of(new Currency((int) avg));
     var act = row.getAverage();
     assertEquals(exp, act);
   }
@@ -149,11 +149,11 @@ class AmountsProviderTest {
   void getAverage_3months() {
     var amounts =
         Map.ofEntries(
-            entry(JANUARY, Currency.of(100)),
-            entry(FEBRUARY, Currency.of(100)),
-            entry(MARCH, Currency.of(100)));
+            entry(JANUARY, new Currency(100)),
+            entry(FEBRUARY, new Currency(100)),
+            entry(MARCH, new Currency(100)));
     var row = AmountsProvider.of(amounts);
-    var exp = Optional.of(Currency.of(100));
+    var exp = Optional.of(new Currency(100));
     var act = row.getAverage();
     assertEquals(exp, act);
   }
@@ -165,17 +165,17 @@ class AmountsProviderTest {
             month ->
                 month == Month.NOVEMBER || month == Month.DECEMBER
                     ? Optional.empty()
-                    : Optional.of(Currency.of(month.getValue()));
+                    : Optional.of(new Currency(month.getValue()));
     var row = AmountsProvider.of(amounts);
-    var exp = Optional.of(Currency.of(6));
+    var exp = Optional.of(new Currency(6));
     var act = row.getAverage();
     assertEquals(exp, act);
   }
 
   @Test
   void negate() {
-    var neutral = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var negated = AmountsProvider.of(month -> Optional.of(Currency.of(-month.ordinal() * 100)));
+    var neutral = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var negated = AmountsProvider.of(month -> Optional.of(new Currency(-month.ordinal() * 100)));
     var act = neutral.negate();
     assertTrue(act.isEquivalentTo(negated));
   }
@@ -197,21 +197,21 @@ class AmountsProviderTest {
 
   @Test
   void accumulate() {
-    var initialBalance = Currency.of(100);
+    var initialBalance = new Currency(100);
     var expectedAmounts =
         Map.ofEntries(
-            entry(JANUARY, Currency.of(200)),
-            entry(FEBRUARY, Currency.of(400)),
-            entry(MARCH, Currency.of(700)),
-            entry(APRIL, Currency.of(1100)),
-            entry(MAY, Currency.of(1600)),
-            entry(JUNE, Currency.of(2200)),
-            entry(JULY, Currency.of(2900)),
-            entry(AUGUST, Currency.of(3700)),
-            entry(SEPTEMBER, Currency.of(4600)),
-            entry(OCTOBER, Currency.of(5600)),
-            entry(NOVEMBER, Currency.of(6700)),
-            entry(DECEMBER, Currency.of(7900)));
+            entry(JANUARY, new Currency(200)),
+            entry(FEBRUARY, new Currency(400)),
+            entry(MARCH, new Currency(700)),
+            entry(APRIL, new Currency(1100)),
+            entry(MAY, new Currency(1600)),
+            entry(JUNE, new Currency(2200)),
+            entry(JULY, new Currency(2900)),
+            entry(AUGUST, new Currency(3700)),
+            entry(SEPTEMBER, new Currency(4600)),
+            entry(OCTOBER, new Currency(5600)),
+            entry(NOVEMBER, new Currency(6700)),
+            entry(DECEMBER, new Currency(7900)));
     var exp =
         new AmountsProvider() {
           @Override
@@ -229,7 +229,7 @@ class AmountsProviderTest {
             return Optional.empty();
           }
         };
-    var row = AmountsProvider.of(month -> Optional.of(Currency.of((month.ordinal() + 1) * 100)));
+    var row = AmountsProvider.of(month -> Optional.of(new Currency((month.ordinal() + 1) * 100)));
     var act = row.accumulate(initialBalance);
     assertEquals(exp.asRow().asExtendedString(), act.asRow().asExtendedString());
   }

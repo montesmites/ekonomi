@@ -16,12 +16,12 @@ class AggregateTest {
 
   @Test
   void aggregate() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp =
         AmountsProvider.of(
-            month -> Optional.of(Currency.of(month.ordinal() * 100 + month.ordinal())));
+            month -> Optional.of(new Currency(month.ordinal() * 100 + month.ordinal())));
     var act = Aggregate.of(body);
     assertTrue(act.isEquivalentTo(exp));
   }
@@ -31,22 +31,22 @@ class AggregateTest {
     var row1 =
         AmountsProvider.of(
             Map.ofEntries(
-                entry(JANUARY, Currency.of(1000)),
-                entry(FEBRUARY, Currency.of(2000)),
-                entry(MARCH, Currency.of(3000))));
+                entry(JANUARY, new Currency(1000)),
+                entry(FEBRUARY, new Currency(2000)),
+                entry(MARCH, new Currency(3000))));
     var row2 =
         AmountsProvider.of(
             Map.ofEntries(
-                entry(JANUARY, Currency.of(100)),
-                entry(FEBRUARY, Currency.of(200)),
-                entry(MARCH, Currency.of(300))));
+                entry(JANUARY, new Currency(100)),
+                entry(FEBRUARY, new Currency(200)),
+                entry(MARCH, new Currency(300))));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp =
         AmountsProvider.of(
             Map.ofEntries(
-                entry(JANUARY, Currency.of(1100)),
-                entry(FEBRUARY, Currency.of(2200)),
-                entry(MARCH, Currency.of(3300))));
+                entry(JANUARY, new Currency(1100)),
+                entry(FEBRUARY, new Currency(2200)),
+                entry(MARCH, new Currency(3300))));
     var act = Aggregate.of(body);
     assertTrue(act.isEquivalentTo(exp));
   }

@@ -31,11 +31,11 @@ class SubtotalBuilderTest {
   @Test
   void subtotal_amountsProviders() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
+    var row3 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 300)));
     var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 600)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -68,13 +68,13 @@ class SubtotalBuilderTest {
   void subtotal_twoSubtotals() {
     var description1 = "description1";
     var description2 = "description2";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
-    var row3 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 300)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
+    var row3 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 300)));
     var subtotal1 =
-        AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of(description1, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var subtotal2 =
-        AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 600)));
+        AmountsProvider.of(description2, month -> Optional.of(new Currency(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -134,33 +134,33 @@ class SubtotalBuilderTest {
         AmountsProvider.of(
             month ->
                 touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 100))
+                    ? Optional.of(new Currency(month.ordinal() * 100))
                     : Optional.empty());
     var row2 =
         AmountsProvider.of(
             month ->
                 touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 200))
+                    ? Optional.of(new Currency(month.ordinal() * 200))
                     : Optional.empty());
     var row3 =
         AmountsProvider.of(
             month ->
                 touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 300))
+                    ? Optional.of(new Currency(month.ordinal() * 300))
                     : Optional.empty());
     var subtotal1 =
         AmountsProvider.of(
             description1,
             month ->
                 touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 300))
+                    ? Optional.of(new Currency(month.ordinal() * 300))
                     : Optional.empty());
     var subtotal2 =
         AmountsProvider.of(
             description2,
             month ->
                 touchedMonths.contains(month)
-                    ? Optional.of(Currency.of(month.ordinal() * 600))
+                    ? Optional.of(new Currency(month.ordinal() * 600))
                     : Optional.empty());
     var amountsFetcher =
         AmountsFetcherBuilder.of(
@@ -205,8 +205,8 @@ class SubtotalBuilderTest {
   @Test
   void subtotal_noSections() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var subtotal = AmountsProvider.of(description, __ -> Optional.of(Currency.zero()));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
@@ -233,10 +233,10 @@ class SubtotalBuilderTest {
   @Test
   void subtotalForAnyTag_twoSectionsWithSameTag() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -277,10 +277,10 @@ class SubtotalBuilderTest {
   @Test
   void subtotalForAnyTag_twoSectionsWithDifferentTags() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -322,10 +322,10 @@ class SubtotalBuilderTest {
   @Test
   void subtotalForOneTag_twoSectionsWithDifferentTags() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var subtotal =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -367,14 +367,14 @@ class SubtotalBuilderTest {
   @Test
   void subtotalOnceForEachTagAndOnceForBoth_twoSectionsWithDifferentTags() {
     var description = "description";
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var subtotal1 =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var subtotal2 =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 200)));
     var subtotal3 =
-        AmountsProvider.of(description, month -> Optional.of(Currency.of(month.ordinal() * 300)));
+        AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(

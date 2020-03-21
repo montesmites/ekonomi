@@ -53,7 +53,7 @@ public class Verrad {
     return new Entry(
         new EventId(new YearId(bokfaarId), vernr, new Series(verserie)),
         new AccountId(new YearId(bokfaarId), kontoId),
-        Currency.of(belopp),
+        new Currency(belopp),
         new EntryStatus(definitiv, struken, tillagd));
   }
 }

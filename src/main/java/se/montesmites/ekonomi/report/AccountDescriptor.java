@@ -6,7 +6,7 @@ import se.montesmites.ekonomi.model.Account;
 public interface AccountDescriptor {
 
   static AccountDescriptor accountDescription() {
-    return Account::getDescription;
+    return Account::description;
   }
 
   static AccountDescriptor accountIdConcatAccountDescriptionWithMaxLength(int maxLength) {
@@ -14,9 +14,9 @@ public interface AccountDescriptor {
     return new AccountDescriptor() {
       @Override
       public String describe(Account account) {
-        var accountId = account.getAccountId().getId();
+        var accountId = account.accountId().id();
         var delimiter = " ";
-        var description = account.getDescription();
+        var description = account.description();
         var prefix = accountId + delimiter;
         var full = prefix + description;
         var chopAt = Math.min(full.length(), maxLength);

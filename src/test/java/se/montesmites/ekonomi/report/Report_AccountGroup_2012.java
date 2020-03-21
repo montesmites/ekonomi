@@ -31,43 +31,43 @@ public enum Report_AccountGroup_2012 {
   BOKFORT_RESULTAT(
       "Bokfört resultat",
       "([3-7]\\d|8[1-8])\\d\\d",
-      Currency.of(3923589),
-      Currency.of(47083072),
+      new Currency(3923589),
+      new Currency(47083072),
       new EnumMap<>(Month.class) {
         {
-          put(JANUARY, Currency.of(-2866947));
-          put(FEBRUARY, Currency.of(6758901));
-          put(MARCH, Currency.of(14611584));
-          put(APRIL, Currency.of(2150417));
-          put(MAY, Currency.of(-6833003));
-          put(JUNE, Currency.of(30431649));
-          put(JULY, Currency.of(-4877975));
-          put(AUGUST, Currency.of(3810720));
-          put(SEPTEMBER, Currency.of(4316052));
-          put(OCTOBER, Currency.of(-123642));
-          put(NOVEMBER, Currency.of(21238571));
-          put(DECEMBER, Currency.of(-21533255));
+          put(JANUARY, new Currency(-2866947));
+          put(FEBRUARY, new Currency(6758901));
+          put(MARCH, new Currency(14611584));
+          put(APRIL, new Currency(2150417));
+          put(MAY, new Currency(-6833003));
+          put(JUNE, new Currency(30431649));
+          put(JULY, new Currency(-4877975));
+          put(AUGUST, new Currency(3810720));
+          put(SEPTEMBER, new Currency(4316052));
+          put(OCTOBER, new Currency(-123642));
+          put(NOVEMBER, new Currency(21238571));
+          put(DECEMBER, new Currency(-21533255));
         }
       }),
   KORTFRISTIGA_SKULDER(
       "Kortfristiga skulder",
       "2[4-9]\\d\\d",
-      Currency.of(950219),
-      Currency.of(11402633),
+      new Currency(950219),
+      new Currency(11402633),
       new EnumMap<>(Month.class) {
         {
-          put(JANUARY, Currency.of(-1387853));
-          put(FEBRUARY, Currency.of(50442848));
-          put(MARCH, Currency.of(63669735));
-          put(APRIL, Currency.of(-137123271));
-          put(MAY, Currency.of(9537958));
-          put(JUNE, Currency.of(-288127));
-          put(JULY, Currency.of(-10662616));
-          put(AUGUST, Currency.of(14155331));
-          put(SEPTEMBER, Currency.of(-12777139));
-          put(OCTOBER, Currency.of(7434716));
-          put(NOVEMBER, Currency.of(-6669553));
-          put(DECEMBER, Currency.of(35070604));
+          put(JANUARY, new Currency(-1387853));
+          put(FEBRUARY, new Currency(50442848));
+          put(MARCH, new Currency(63669735));
+          put(APRIL, new Currency(-137123271));
+          put(MAY, new Currency(9537958));
+          put(JUNE, new Currency(-288127));
+          put(JULY, new Currency(-10662616));
+          put(AUGUST, new Currency(14155331));
+          put(SEPTEMBER, new Currency(-12777139));
+          put(OCTOBER, new Currency(7434716));
+          put(NOVEMBER, new Currency(-6669553));
+          put(DECEMBER, new Currency(35070604));
         }
       });
 

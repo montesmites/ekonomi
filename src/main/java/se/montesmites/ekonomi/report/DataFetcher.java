@@ -34,7 +34,7 @@ public class DataFetcher implements AccountsFetcher, AmountsFetcher {
   private static EntryCollector entryCollector(Organization organization) {
     return new EntryCollector(
         eventId ->
-            organization.getEvent(eventId).map((Event event) -> toYearMonth(event.getDate())));
+            organization.getEvent(eventId).map((Event event) -> toYearMonth(event.date())));
   }
 
   private static YearMonth toYearMonth(LocalDate date) {
@@ -56,11 +56,11 @@ public class DataFetcher implements AccountsFetcher, AmountsFetcher {
   private Map<java.time.Year, Set<Month>> touchedMonths() {
     return organization
         .streamEntries()
-        .map(Entry::getEventId)
+        .map(Entry::eventId)
         .map(organization::getEvent)
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .map(Event::getDate)
+        .map(Event::date)
         .map(this::entry)
         .collect(groupingBy(Map.Entry::getKey, mapping(Map.Entry::getValue, toSet())));
   }
@@ -88,11 +88,11 @@ public class DataFetcher implements AccountsFetcher, AmountsFetcher {
         .getAggregate()
         .entrySet()
         .stream()
-        .filter(e -> e.getKey().getYearMonth().getYear() == year.getValue())
-        .map(e -> e.getKey().getAccountId())
+        .filter(e -> e.getKey().yearMonth().getYear() == year.getValue())
+        .map(e -> e.getKey().accountId())
         .filter(filter)
         .distinct()
-        .sorted(comparing(AccountId::getId));
+        .sorted(comparing(AccountId::id));
   }
 
   @Override
@@ -108,14 +108,14 @@ public class DataFetcher implements AccountsFetcher, AmountsFetcher {
   Optional<List<AccountIdAmountTuple>> getAccountIdAmountTuples(YearMonth yearMonth) {
     return Optional.of(
         streamEntryAggregateByYearMonth(yearMonth)
-            .map(e -> new AccountIdAmountTuple(e.getKey().getAccountId(), e.getValue().getAmount()))
+            .map(e -> new AccountIdAmountTuple(e.getKey().accountId(), e.getValue().amount()))
             .collect(toList()));
   }
 
   Optional<Map<AccountId, Currency>> getAccountIdAmountMap(YearMonth yearMonth) {
     return Optional.of(
         streamEntryAggregateByYearMonth(yearMonth)
-            .collect(toMap(e -> e.getKey().getAccountId(), e -> e.getValue().getAmount())));
+            .collect(toMap(e -> e.getKey().accountId(), e -> e.getValue().amount())));
   }
 
   private Stream<Map.Entry<YearMonthAccountIdTuple, AmountEntryListTuple>>
@@ -124,7 +124,7 @@ public class DataFetcher implements AccountsFetcher, AmountsFetcher {
         .getAggregate()
         .entrySet()
         .stream()
-        .filter(e -> e.getKey().getYearMonth().equals(yearMonth));
+        .filter(e -> e.getKey().yearMonth().equals(yearMonth));
   }
 
   @Override

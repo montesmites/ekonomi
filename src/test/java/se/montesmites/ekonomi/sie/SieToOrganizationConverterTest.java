@@ -28,22 +28,22 @@ class SieToOrganizationConverterTest {
     var converter = SieToOrganizationConverter.of();
     var organization = converter.convert(pathToSieFile);
     var years =
-        organization.streamYears().collect(toMap(year -> year.getYear().getValue(), year -> year));
+        organization.streamYears().collect(toMap(year -> year.year().getValue(), year -> year));
     var balances =
         organization
             .streamBalances()
-            .collect(groupingBy(balance -> balance.getAccountId().getYearId()));
+            .collect(groupingBy(balance -> balance.accountId().yearId()));
     var accounts = organization.streamAccounts().collect(toList());
     var events = organization.streamEvents().collect(toList());
     var entries = organization.streamEntries().collect(toList());
     assertEquals(2, years.size());
-    assertEquals(26, balances.get(years.get(2014).getYearId()).size());
-    assertEquals(26, balances.get(years.get(2015).getYearId()).size());
+    assertEquals(26, balances.get(years.get(2014).yearId()).size());
+    assertEquals(26, balances.get(years.get(2015).yearId()).size());
     assertEquals(590, accounts.size());
     assertEquals(62, events.size());
     assertEquals(218, entries.size());
     assertEquals(
         Currency.zero(),
-        entries.stream().map(Entry::getAmount).reduce(Currency.zero(), Currency::add));
+        entries.stream().map(Entry::amount).reduce(Currency.zero(), Currency::add));
   }
 }

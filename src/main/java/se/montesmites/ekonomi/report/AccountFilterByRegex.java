@@ -22,6 +22,6 @@ public class AccountFilterByRegex implements Predicate<AccountId> {
 
   @Override
   public boolean test(AccountId accountId) {
-    return pattern.matcher(accountId.getId()).matches();
+    return pattern.matcher(accountId.id()).matches();
   }
 }

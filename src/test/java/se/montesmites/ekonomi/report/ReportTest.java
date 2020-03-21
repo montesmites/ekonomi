@@ -12,7 +12,7 @@ class ReportTest {
   @Test
   void render() {
     var header = Header.of(Row.title("header"));
-    var body = Body.of(AmountsProvider.of(month -> Optional.of(Currency.of(month.getValue()))));
+    var body = Body.of(AmountsProvider.of(month -> Optional.of(new Currency(month.getValue()))));
     var footer = Footer.of(Row.title("footer"));
     var section = Section.of(header, body, footer);
     var report = new Report(() -> Stream.of(section));

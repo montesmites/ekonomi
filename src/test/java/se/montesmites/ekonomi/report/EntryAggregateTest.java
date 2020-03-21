@@ -96,7 +96,7 @@ class EntryAggregateTest {
             .collect(
                 new EntryCollector(
                     eventId ->
-                        eventId.getId() == 1 ? Optional.of(yearMonth1) : Optional.of(yearMonth2)));
+                        eventId.id() == 1 ? Optional.of(yearMonth1) : Optional.of(yearMonth2)));
     final Map<YearMonthAccountIdTuple, AmountEntryListTuple> act = aggregate.getAggregate();
     assertEquals(2, act.size());
     assertEquals(1, sizeOf(act, yearMonth1, accountid1));
@@ -118,7 +118,7 @@ class EntryAggregateTest {
   }
 
   private Currency currency(long amount) {
-    return Currency.of(amount);
+    return new Currency(amount);
   }
 
   private AmountEntryListTuple tuple(
@@ -129,12 +129,12 @@ class EntryAggregateTest {
 
   private int sizeOf(
       Map<YearMonthAccountIdTuple, AmountEntryListTuple> map, YearMonth yearMonth, int accountid) {
-    return tuple(map, yearMonth, accountid).getEntries().size();
+    return tuple(map, yearMonth, accountid).entries().size();
   }
 
   private Currency amountOf(
       Map<YearMonthAccountIdTuple, AmountEntryListTuple> map, YearMonth yearMonth, int accountid) {
-    return tuple(map, yearMonth, accountid).getAmount();
+    return tuple(map, yearMonth, accountid).amount();
   }
 
   private Entry entryOf(
@@ -142,7 +142,7 @@ class EntryAggregateTest {
       YearMonth yearMonth,
       int accountid,
       int entryIndex) {
-    return tuple(map, yearMonth, accountid).getEntries().get(entryIndex);
+    return tuple(map, yearMonth, accountid).entries().get(entryIndex);
   }
 
   private EntryCollector amountCollector(YearMonth yearMonth) {

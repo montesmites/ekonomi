@@ -22,7 +22,7 @@ class BodyTest {
 
   @Test
   void oneRowWithAmounts() {
-    var row = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
+    var row = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
     var exp = Body.of(row);
     var act = Body.of(row);
     assertBodys(exp, act);
@@ -30,8 +30,8 @@ class BodyTest {
 
   @Test
   void twoRowsWithAmounts() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
     var exp = Body.of(() -> Stream.of(row1, row2));
     var act = Body.of(row1).add(row2);
     assertBodys(exp, act);
@@ -39,8 +39,8 @@ class BodyTest {
 
   @Test
   void streamOfRowsWithAmounts() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
     var exp = Body.of(() -> Stream.of(row1, row2));
     var act = Body.of(() -> Stream.of(row1, row2));
     assertBodys(exp, act);
@@ -48,8 +48,8 @@ class BodyTest {
 
   @Test
   void of_list() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
     var exp = List.of(row1, row2);
     var act = Body.of(List.of(row1, row2)).stream().collect(toList());
     assertEquals(exp, act);
@@ -57,8 +57,8 @@ class BodyTest {
 
   @Test
   void negate() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var body = Body.of(() -> Stream.of(row1, row2));
     var exp = Body.of(() -> Stream.of(row1.negate(), row2.negate()));
     var act = body.negate();
@@ -77,8 +77,8 @@ class BodyTest {
 
   @Test
   void asString() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal())));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
     var exp = row1.asRow().asExtendedString() + "\n" + row2.asRow().asExtendedString();
     var act = Body.of(List.of(row1, row2)).asString("\n");
     assertEquals(exp, act);

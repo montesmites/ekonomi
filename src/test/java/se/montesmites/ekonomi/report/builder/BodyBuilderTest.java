@@ -37,9 +37,9 @@ class BodyBuilderTest {
     var accountGroups =
         List.of(AccountGroup.of(description1, "1111"), AccountGroup.of(description2, "2222"));
     var row1 =
-        AmountsProvider.of(description1, month -> Optional.of(Currency.of(month.ordinal() * 100)));
+        AmountsProvider.of(description1, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var row2 =
-        AmountsProvider.of(description2, month -> Optional.of(Currency.of(month.ordinal() * 200)));
+        AmountsProvider.of(description2, month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -56,14 +56,14 @@ class BodyBuilderTest {
   void fromAccounts() {
     var accountId1 = new AccountId(yearId, "1111");
     var accountId2 = new AccountId(yearId, "2222");
-    var account1 = new Account(accountId1, accountId1.getId(), AccountStatus.OPEN);
-    var account2 = new Account(accountId2, accountId2.getId(), AccountStatus.OPEN);
+    var account1 = new Account(accountId1, accountId1.id(), AccountStatus.OPEN);
+    var account2 = new Account(accountId2, accountId2.id(), AccountStatus.OPEN);
     var row1 =
         AmountsProvider.of(
-            account1.getDescription(), month -> Optional.of(Currency.of(month.ordinal() * 100)));
+            account1.description(), month -> Optional.of(new Currency(month.ordinal() * 100)));
     var row2 =
         AmountsProvider.of(
-            account2.getDescription(), month -> Optional.of(Currency.of(month.ordinal() * 200)));
+            account2.description(), month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(accountId1, row1), entry(accountId2, row2)))
             .amountsFetcher();

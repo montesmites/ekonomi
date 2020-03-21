@@ -40,7 +40,7 @@ public class BinaryFile_2015_0_Entries extends BinaryFile_2015_0<Entry> {
   public boolean filter(Record record) {
     if (super.filter(record)) {
       var status = entryStatus(record);
-      return status.isPresent() && status.get().getStatus() == ACTIVE;
+      return status.isPresent() && status.get().status() == ACTIVE;
     } else {
       return false;
     }

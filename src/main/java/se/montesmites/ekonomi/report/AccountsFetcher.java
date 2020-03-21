@@ -17,7 +17,7 @@ public interface AccountsFetcher {
     return accountId ->
         Optional.of(
             new Account(
-                new AccountId(yearId, accountId.getId()), accountId.getId(), AccountStatus.OPEN));
+                new AccountId(yearId, accountId.id()), accountId.id(), AccountStatus.OPEN));
   }
 
   Optional<Account> getAccount(AccountId accountId);

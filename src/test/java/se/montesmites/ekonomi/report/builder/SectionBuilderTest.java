@@ -40,8 +40,8 @@ class SectionBuilderTest {
 
   @Test
   void body() {
-    var row1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var row2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var row1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -63,8 +63,8 @@ class SectionBuilderTest {
 
   @Test
   void footer() {
-    var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var body1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var body2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
             Map.ofEntries(
@@ -85,8 +85,8 @@ class SectionBuilderTest {
   @Test
   void section() {
     var title = Row.title("title");
-    var body1 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 100)));
-    var body2 = AmountsProvider.of(month -> Optional.of(Currency.of(month.ordinal() * 200)));
+    var body1 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 100)));
+    var body2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var expBody = Body.of(List.of(body1, body2));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
