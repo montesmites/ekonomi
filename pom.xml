@@ -14,7 +14,7 @@
   <version>1.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>11</java.version>
+    <java.version>14</java.version>
 
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
 
@@ -27,6 +27,8 @@
 
     <jaxb.generated.sources.directory>${project.build.directory}/generated-sources/jaxb
     </jaxb.generated.sources.directory>
+
+    <argLine>--enable-preview</argLine>
   </properties>
   <dependencies>
     <dependency>
@@ -102,6 +104,16 @@
       <id>jaxb</id>
       <build>
         <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <compilerArgs>--enable-preview</compilerArgs>
+              <release>${java.version}</release>
+              <showDeprecation>true</showDeprecation>
+              <showWarnings>true</showWarnings>
+            </configuration>
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
