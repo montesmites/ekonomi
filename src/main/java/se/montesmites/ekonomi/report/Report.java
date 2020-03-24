@@ -60,15 +60,10 @@ public class Report {
   }
 
   private String formatString(Column column) {
-    switch (column.getColumnType()) {
-      case DESCRIPTION:
-        return "%-" + DESCRIPTION_WIDTH + "s";
-      case TOTAL:
-        return "%16s";
-      case AVERAGE:
-        return "%16s";
-      default:
-        return "%13s";
-    }
+    return switch (column.getColumnType()) {
+      case DESCRIPTION -> "%-" + DESCRIPTION_WIDTH + "s";
+      case TOTAL, AVERAGE -> "%16s";
+      default -> "%13s";
+    };
   }
 }

@@ -39,22 +39,18 @@ public class JaxbReportBuilder {
     var definition = readReportDefinition();
     var reportBuilder = new ReportBuilder(accountsFetcher, amountsFetcher, year);
     for (var constituent : definition.getReport().getReportConstituent()) {
-      if (constituent instanceof AccountGroups) {
-        var accountGroups = (AccountGroups) constituent;
+      if (constituent instanceof AccountGroups accountGroups) {
         reportBuilder.accountGroups(
             accountGroups.getDescription(), convertAccountGroups(accountGroups));
-      } else if (constituent instanceof Subtotal) {
-        var subtotal = (Subtotal) constituent;
+      } else if (constituent instanceof Subtotal subtotal) {
         reportBuilder.subtotal(
             sbttl ->
                 sbttl
                     .description(subtotal.getDescription().toUpperCase())
                     .addenda(convertAddenda(subtotal.getAddenda(), amountsFetcher, year)));
-      } else if (constituent instanceof Section) {
-        var section = (Section) constituent;
+      } else if (constituent instanceof Section section) {
         reportBuilder.section(sectionBuilder -> buildSection(section, sectionBuilder));
-      } else if (constituent instanceof AccumulateAccountGroups) {
-        var accumulation = (AccumulateAccountGroups) constituent;
+      } else if (constituent instanceof AccumulateAccountGroups accumulation) {
         reportBuilder.accumulateAccountGroups(
             accumulation.getDescription(), convertAccountGroups(accumulation.getAccountGroup()));
       }

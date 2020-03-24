@@ -44,20 +44,15 @@ public class ReportGenerator implements ApplicationRunner {
   }
 
   private DataFetcher dataFetcher() {
-    switch (properties.getDatasource().getType()) {
-      case DATABASE:
-        return new DataFetcher(databaseFetcher.fetchOrganization());
-      case SIE:
-        return new DataFetcher(
-            SieToOrganizationConverter.of()
-                .convert(Paths.get(properties.getDatasource().getSieInputPath())));
-      case SPCS:
-        return new DataFetcher(
-            new OrganizationBuilder(Paths.get(properties.getDatasource().getSpcsInputDir()))
-                .build());
-      default:
-        throw new IllegalArgumentException(properties.getDatasource().getType().name());
-    }
+    return switch (properties.getDatasource().getType()) {
+      case DATABASE -> new DataFetcher(databaseFetcher.fetchOrganization());
+      case SIE -> new DataFetcher(
+          SieToOrganizationConverter.of()
+              .convert(Paths.get(properties.getDatasource().getSieInputPath())));
+      case SPCS -> new DataFetcher(
+          new OrganizationBuilder(Paths.get(properties.getDatasource().getSpcsInputDir()))
+              .build());
+    };
   }
 
   private Path destinationPath(Path outputDir, String title, java.time.Year year) {
