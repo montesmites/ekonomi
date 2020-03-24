@@ -34,7 +34,8 @@ public class Report {
 
   public List<String> renderWithNoTrailingEmptyRows() {
     var rows = new LinkedList<>(renderSections());
-    while (rows.peekLast().isEmpty() || rows.peekLast().trim().isEmpty()) {
+    while (rows.peekLast() != null && (rows.peekLast().isEmpty() || rows.peekLast().trim()
+        .isEmpty())) {
       rows.removeLast();
     }
     return List.copyOf(rows);
