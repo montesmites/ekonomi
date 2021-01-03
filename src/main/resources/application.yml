@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://localhost:49865;databaseName=SPCS_Adm_nikka;integratedSecurity=true;sendStringParametersAsUnicode=false;
+    url: jdbc:sqlserver://localhost:49876;databaseName=SPCS_Adm_nikka;integratedSecurity=true;sendStringParametersAsUnicode=false;
     username: java
     password: java
   jpa:
