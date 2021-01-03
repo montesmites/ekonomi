@@ -79,7 +79,7 @@
       <description>Sparande</description>
       <account-group>
         <description>Buffertsparande</description>
-        <regex>1493</regex>
+        <regex>149\d</regex>
       </account-group>
       <account-group>
         <description>Räntesparande och liknande</description>
