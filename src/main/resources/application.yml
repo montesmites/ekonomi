@@ -14,8 +14,8 @@ ekonomi:
     # spcs-input-dir: C:/ProgramData/SPCS/SPCS Administration/Företag/nikka
   report:
     title: Kassaflöde
-    fiscal-year: 2020
-    output-dir: C:/temp/nikka/reports/2020
+    fiscal-year: 2021
+    output-dir: C:/temp/nikka/reports/2021
     template:
       type: resource # file
       path: /se/montesmites/ekonomi/nikka/nikka-cashflow-report-definition.xml
