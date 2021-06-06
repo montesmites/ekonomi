@@ -102,7 +102,7 @@
       </account-group>
       <account-group>
         <description>Långfristigt netto</description>
-        <regex>(8[56]\d\d)|(10\d\d|13[56]\d)</regex>
+        <regex>(8[56]\d\d)|(10\d\d)|(13[1568]\d)</regex>
       </account-group>
       <account-group>
         <description>Finansiellt netto</description>
