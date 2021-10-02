@@ -7,7 +7,7 @@
       <description>Inkomster</description>
       <account-group>
         <description>Löner och arvoden</description>
-        <regex>(30|36)\d\d</regex>
+        <regex>(30\d\d)|(31\d\d)|3950|3990</regex>
       </account-group>
     </account-groups>
     <account-groups>
@@ -94,7 +94,7 @@
       <description>Jämförelsestörande poster</description>
       <account-group>
         <description>Nettoomsättning utom lön etc.</description>
-        <regex>3([1-5]|[7-9])\d\d</regex>
+        <regex>3850|3910|3940</regex>
       </account-group>
       <account-group>
         <description>Kortfristigt netto</description>
