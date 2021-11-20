@@ -94,7 +94,7 @@
       <description>Jämförelsestörande poster</description>
       <account-group>
         <description>Nettoomsättning utom lön etc.</description>
-        <regex>3850|3910|3940</regex>
+        <regex>38\d\d|3910|3940</regex>
       </account-group>
       <account-group>
         <description>Kortfristigt netto</description>
