@@ -137,7 +137,7 @@
       <description>Ack. likvida medel inkl. buffertsparande</description>
       <account-group>
         <description/>
-        <regex>1493|19\d\d</regex>
+        <regex>149\d|19\d\d</regex>
         <negate/>
       </account-group>
     </accumulate-account-groups>
