@@ -1,11 +1,11 @@
 package se.montesmites.ekonomi.jpa.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
 import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Series;
