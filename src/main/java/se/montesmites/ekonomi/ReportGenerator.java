@@ -6,8 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import se.montesmites.ekonomi.configuration.EkonomiProperties;
@@ -20,7 +18,7 @@ import se.montesmites.ekonomi.sie.file.SieToOrganizationConverter;
 
 @Component
 @Profile("!test")
-public class ReportGenerator implements ApplicationRunner {
+public class ReportGenerator {
 
   private final EkonomiProperties properties;
   private final DatabaseDatasource databaseFetcher;
@@ -30,15 +28,10 @@ public class ReportGenerator implements ApplicationRunner {
     this.databaseFetcher = databaseFetcher;
   }
 
-  @Override
-  public void run(ApplicationArguments applicationArguments) {
-    renderToFile(
-        generateReport(
-            dataFetcher(),
-            properties.getReport().getTemplate().asPath(),
+  public void run() {
+    renderToFile(generateReport(dataFetcher(), properties.getReport().getTemplate().asPath(),
             java.time.Year.of(properties.getReport().getFiscalYear())),
-        destinationPath(
-            Paths.get(properties.getReport().getOutputDir()),
+        destinationPath(Paths.get(properties.getReport().getOutputDir()),
             properties.getReport().getTitle(),
             java.time.Year.of(properties.getReport().getFiscalYear())));
   }
