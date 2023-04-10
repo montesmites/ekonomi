@@ -5,9 +5,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import se.montesmites.ekonomi.ReportGenerator;
+import se.montesmites.ekonomi.ui.layout.MainLayout;
 
-@Route("generate-cashflow-report")
-@RouteAlias("")
+@Route(value = "generate-cashflow-report", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
 public class GenerateCashflowReportView extends VerticalLayout {
 
   public GenerateCashflowReportView(ReportGenerator reportGenerator) {
