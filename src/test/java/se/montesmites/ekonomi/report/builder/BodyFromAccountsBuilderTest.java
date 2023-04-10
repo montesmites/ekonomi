@@ -46,14 +46,11 @@ class BodyFromAccountsBuilderTest {
     var bodyFromAccountsBuilder =
         BodyFromAccountsBuilder.of(amountsFetcher, year).accounts(List.of(account1, account2));
     var exp =
-        List.of(row1, row2)
-            .stream()
+        List.of(row1, row2).stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
             .collect(toList());
     var act =
-        bodyFromAccountsBuilder
-            .getAmountsProviders()
-            .stream()
+        bodyFromAccountsBuilder.getAmountsProviders().stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
             .collect(toList());
     assertEquals(exp, act);
@@ -83,14 +80,11 @@ class BodyFromAccountsBuilderTest {
             .accounts(List.of(account1, account2))
             .accountDescriptor(account -> account.description() + account.description());
     var exp =
-        List.of(row1, row2)
-            .stream()
+        List.of(row1, row2).stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
             .collect(toList());
     var act =
-        bodyFromAccountsBuilder
-            .getAmountsProviders()
-            .stream()
+        bodyFromAccountsBuilder.getAmountsProviders().stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
             .collect(toList());
     assertEquals(exp, act);
@@ -121,14 +115,11 @@ class BodyFromAccountsBuilderTest {
             .accountDescriptor(account -> account.description() + account.description())
             .amountsProviderProcessor(AmountsProvider::negate);
     var exp =
-        List.of(row1.negate(), row2.negate())
-            .stream()
+        List.of(row1.negate(), row2.negate()).stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
             .collect(toList());
     var act =
-        bodyFromAccountsBuilder
-            .getAmountsProviders()
-            .stream()
+        bodyFromAccountsBuilder.getAmountsProviders().stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
             .collect(toList());
     assertEquals(exp, act);

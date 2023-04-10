@@ -9,8 +9,7 @@ public class VerradId implements Serializable {
   private Integer vernr;
   private Integer rad;
 
-  public VerradId() {
-  }
+  public VerradId() {}
 
   public VerradId(String bokfaarId, String verserie, Integer vernr, Integer rad) {
     this.bokfaarId = bokfaarId;
@@ -85,11 +84,17 @@ public class VerradId implements Serializable {
 
   @Override
   public String toString() {
-    return "VerradId{" +
-        "bokfaarId='" + bokfaarId + '\'' +
-        ", verserie='" + verserie + '\'' +
-        ", vernr=" + vernr +
-        ", rad=" + rad +
-        '}';
+    return "VerradId{"
+        + "bokfaarId='"
+        + bokfaarId
+        + '\''
+        + ", verserie='"
+        + verserie
+        + '\''
+        + ", vernr="
+        + vernr
+        + ", rad="
+        + rad
+        + '}';
   }
 }

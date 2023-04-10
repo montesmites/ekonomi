@@ -75,11 +75,11 @@ class RowTest {
     var row = Row.descriptionWithMonths(description, SHORT_MONTHS);
     var exp =
         Row.of(
-            column ->
-                column
-                    .getMonth()
-                    .map(Messages::getShortMonth)
-                    .orElse(map.getOrDefault(column, "")))
+                column ->
+                    column
+                        .getMonth()
+                        .map(Messages::getShortMonth)
+                        .orElse(map.getOrDefault(column, "")))
             .asExtendedString();
     var act = row.asExtendedString();
     assertEquals(exp, act);

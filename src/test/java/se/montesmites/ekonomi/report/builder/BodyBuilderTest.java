@@ -42,9 +42,9 @@ class BodyBuilderTest {
         AmountsProvider.of(description2, month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var bodyBuilder = new BodyBuilder(year, amountsFetcher);
     var exp = Body.of(List.of(row1, row2));

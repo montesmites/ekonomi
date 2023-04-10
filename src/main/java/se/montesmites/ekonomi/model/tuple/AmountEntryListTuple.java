@@ -7,7 +7,7 @@ import java.util.List;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
 
-public record AmountEntryListTuple(Currency amount, List<Entry>entries) {
+public record AmountEntryListTuple(Currency amount, List<Entry> entries) {
 
   public AmountEntryListTuple(Entry entry) {
     this(entry.amount(), List.of(entry));

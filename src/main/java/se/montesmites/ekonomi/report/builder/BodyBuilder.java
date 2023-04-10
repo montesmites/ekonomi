@@ -13,6 +13,15 @@ import se.montesmites.ekonomi.report.Body;
 
 public class BodyBuilder {
 
+  private final Year year;
+  private final AmountsFetcher amountsFetcher;
+  private List<AmountsProvider> amountsProviders = new ArrayList<>();
+
+  BodyBuilder(Year year, AmountsFetcher amountsFetcher) {
+    this.year = year;
+    this.amountsFetcher = amountsFetcher;
+  }
+
   public static BodyBuilder empty() {
     return new BodyBuilder(null, null) {
       @Override
@@ -27,19 +36,9 @@ public class BodyBuilder {
     };
   }
 
-  private final Year year;
-  private final AmountsFetcher amountsFetcher;
-  private List<AmountsProvider> amountsProviders = new ArrayList<>();
-
-  BodyBuilder(Year year, AmountsFetcher amountsFetcher) {
-    this.year = year;
-    this.amountsFetcher = amountsFetcher;
-  }
-
   public BodyBuilder accountGroups(List<AccountGroup> accountGroups) {
     this.amountsProviders =
-        accountGroups
-            .stream()
+        accountGroups.stream()
             .map(accountGroup -> AmountsProvider.of(amountsFetcher, year, accountGroup))
             .collect(toList());
     return this;

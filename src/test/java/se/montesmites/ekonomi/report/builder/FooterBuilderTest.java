@@ -47,9 +47,9 @@ class FooterBuilderTest {
     var accountGroups = List.of(AccountGroup.of("1111", "1111"), AccountGroup.of("2222", "2222"));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var bodyBuilder = new BodyBuilder(year, amountsFetcher).accountGroups(accountGroups);
     var footerBuilder = new FooterBuilder(bodyBuilder::body).aggregateBody();

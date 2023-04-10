@@ -14,6 +14,7 @@ import se.montesmites.ekonomi.sie.file.Sie4FileReader;
 class RecordTypesTest {
 
   private static final String PATH_TO_SIE_FILE = "/se/montesmites/ekonomi/sie/OVNINGSB.SE";
+  private Path pathToSieFile;
 
   private static Stream<Arguments> params() {
     return Stream.of(
@@ -24,8 +25,6 @@ class RecordTypesTest {
         Arguments.of(TypeVER.class, 62),
         Arguments.of(TypeTRANS.class, 218));
   }
-
-  private Path pathToSieFile;
 
   @BeforeEach
   void beforeEach() throws Exception {

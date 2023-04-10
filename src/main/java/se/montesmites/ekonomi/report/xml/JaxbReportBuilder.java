@@ -81,9 +81,7 @@ public class JaxbReportBuilder {
       Addenda addenda, AmountsFetcher amountsFetcher, Year year) {
     return addenda == null
         ? List.of()
-        : addenda
-            .getAccountGroup()
-            .stream()
+        : addenda.getAccountGroup().stream()
             .flatMap(__ -> addenda.getAccountGroup().stream())
             .map(
                 accountGroup ->

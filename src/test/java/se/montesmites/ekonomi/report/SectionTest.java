@@ -30,10 +30,10 @@ class SectionTest {
     var footer = Footer.of(Aggregate.of(body).asRow());
     var exp =
         Stream.of(
-            header.stream(),
-            body.stream().map(AmountsProvider::asRow),
-            footer.stream(),
-            Stream.of(Row.empty()))
+                header.stream(),
+                body.stream().map(AmountsProvider::asRow),
+                footer.stream(),
+                Stream.of(Row.empty()))
             .flatMap(row -> row)
             .collect(toList());
     var act = Section.of(header, body, footer).stream().collect(toList());
@@ -44,7 +44,8 @@ class SectionTest {
                 .forEach(
                     i ->
                         assertEquals(
-                            exp.get(i).asExtendedString(), act.get(i).asExtendedString(),
+                            exp.get(i).asExtendedString(),
+                            act.get(i).asExtendedString(),
                             Integer.toString(i))));
   }
 

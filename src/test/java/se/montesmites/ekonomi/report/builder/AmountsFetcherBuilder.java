@@ -20,6 +20,12 @@ import se.montesmites.ekonomi.report.AmountsProvider;
 
 public class AmountsFetcherBuilder {
 
+  private Map<Year, List<AccountId>> accountIds = Map.of();
+  private Map<AccountId, Optional<Balance>> balances = Map.of();
+  private BiFunction<AccountId, YearMonth, Optional<Currency>> amounts =
+      (__, ___) -> Optional.empty();
+  private Map<Year, Set<Month>> touchedMonths = Map.of();
+
   public static AmountsFetcherBuilder empty() {
     return new AmountsFetcherBuilder();
   }
@@ -36,12 +42,6 @@ public class AmountsFetcherBuilder {
                     .map(Currency::negate))
         .touchedMonths(Map.of(year, EnumSet.allOf(Month.class)));
   }
-
-  private Map<Year, List<AccountId>> accountIds = Map.of();
-  private Map<AccountId, Optional<Balance>> balances = Map.of();
-  private BiFunction<AccountId, YearMonth, Optional<Currency>> amounts =
-      (__, ___) -> Optional.empty();
-  private Map<Year, Set<Month>> touchedMonths = Map.of();
 
   private AmountsFetcherBuilder accountIds(Map<Year, List<AccountId>> accountIds) {
     this.accountIds = accountIds;

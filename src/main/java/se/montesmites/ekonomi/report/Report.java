@@ -12,16 +12,15 @@ import java.util.stream.Stream;
 
 public class Report {
 
-  public final static int DESCRIPTION_WIDTH = 31;
-
-  public static Report empty() {
-    return new Report(Stream::empty);
-  }
-
+  public static final int DESCRIPTION_WIDTH = 31;
   private final Supplier<Stream<Section>> sections;
 
   public Report(Supplier<Stream<Section>> sections) {
     this.sections = sections;
+  }
+
+  public static Report empty() {
+    return new Report(Stream::empty);
   }
 
   public Stream<Section> streamSections() {
@@ -34,8 +33,8 @@ public class Report {
 
   public List<String> renderWithNoTrailingEmptyRows() {
     var rows = new LinkedList<>(renderSections());
-    while (rows.peekLast() != null && (rows.peekLast().isEmpty() || rows.peekLast().trim()
-        .isEmpty())) {
+    while (rows.peekLast() != null
+        && (rows.peekLast().isEmpty() || rows.peekLast().trim().isEmpty())) {
       rows.removeLast();
     }
     return List.copyOf(rows);

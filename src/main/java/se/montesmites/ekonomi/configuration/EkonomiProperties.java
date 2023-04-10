@@ -11,6 +11,22 @@ public class EkonomiProperties {
   private DatasourceProperties datasource;
   private ReportProperties report;
 
+  public DatasourceProperties getDatasource() {
+    return datasource;
+  }
+
+  public void setDatasource(DatasourceProperties datasource) {
+    this.datasource = datasource;
+  }
+
+  public ReportProperties getReport() {
+    return report;
+  }
+
+  public void setReport(ReportProperties report) {
+    this.report = report;
+  }
+
   public static class DatasourceProperties {
 
     private DatasourceType type;
@@ -43,32 +59,6 @@ public class EkonomiProperties {
   }
 
   public static class ReportProperties {
-
-    public static class TemplateProperties {
-
-      private TemplateType type;
-      private String path;
-
-      public TemplateType getType() {
-        return type;
-      }
-
-      public void setType(TemplateType type) {
-        this.type = type;
-      }
-
-      public String getPath() {
-        return path;
-      }
-
-      public void setPath(String path) {
-        this.path = path;
-      }
-
-      public Path asPath() {
-        return type.asPath(path);
-      }
-    }
 
     private String title;
     private TemplateProperties template;
@@ -106,21 +96,31 @@ public class EkonomiProperties {
     public void setOutputDir(String outputDir) {
       this.outputDir = outputDir;
     }
-  }
 
-  public DatasourceProperties getDatasource() {
-    return datasource;
-  }
+    public static class TemplateProperties {
 
-  public void setDatasource(DatasourceProperties datasource) {
-    this.datasource = datasource;
-  }
+      private TemplateType type;
+      private String path;
 
-  public ReportProperties getReport() {
-    return report;
-  }
+      public TemplateType getType() {
+        return type;
+      }
 
-  public void setReport(ReportProperties report) {
-    this.report = report;
+      public void setType(TemplateType type) {
+        this.type = type;
+      }
+
+      public String getPath() {
+        return path;
+      }
+
+      public void setPath(String path) {
+        this.path = path;
+      }
+
+      public Path asPath() {
+        return type.asPath(path);
+      }
+    }
   }
 }

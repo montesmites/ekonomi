@@ -77,16 +77,15 @@ public enum EntryAggregateExpectedElements {
     }
   };
 
-  public abstract Map<AccountId, Currency> getAggregate(YearId yearId);
-
   private static AccountIdAmountTuple tuple(YearId yearId, int account, long amount) {
     return new AccountIdAmountTuple(
         new AccountId(yearId, Integer.toString(account)), new Currency(amount));
   }
 
   private static Map<AccountId, Currency> asMap(List<AccountIdAmountTuple> tuples) {
-    return tuples
-        .stream()
+    return tuples.stream()
         .collect(toMap(AccountIdAmountTuple::accountId, AccountIdAmountTuple::amount));
   }
+
+  public abstract Map<AccountId, Currency> getAggregate(YearId yearId);
 }

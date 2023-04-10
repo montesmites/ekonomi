@@ -8,8 +8,7 @@ public class VerId implements Serializable {
   private String verserie;
   private Integer vernr;
 
-  public VerId() {
-  }
+  public VerId() {}
 
   public VerId(String bokfaarId, String verserie, Integer vernr) {
     this.bokfaarId = bokfaarId;

@@ -64,11 +64,9 @@ class ReportBuilderTest {
     var exp = List.of(section).stream().map(Section::asString).collect(toList());
     var act =
         new ReportBuilder(amountsFetcher, year)
-            .accountGroups(title, accountGroups)
-            .getSections()
-            .stream()
-            .map(Section::asString)
-            .collect(toList());
+            .accountGroups(title, accountGroups).getSections().stream()
+                .map(Section::asString)
+                .collect(toList());
     Assertions.assertEquals(exp, act);
   }
 
@@ -112,9 +110,7 @@ class ReportBuilderTest {
     var exp =
         List.of(Section.of(header, body, footer)).stream().map(Section::asString).collect(toList());
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(toList());
     assertEquals(exp, act);
@@ -133,31 +129,29 @@ class ReportBuilderTest {
         (Row)
             column ->
                 Map.ofEntries(
-                    entry(DESCRIPTION, new Currency(0).format()),
-                    entry(JANUARY, new Currency(100).format()),
-                    entry(FEBRUARY, new Currency(300).format()),
-                    entry(MARCH, new Currency(600).format()),
-                    entry(APRIL, new Currency(1000).format()),
-                    entry(MAY, new Currency(1500).format()),
-                    entry(JUNE, new Currency(2100).format()),
-                    entry(JULY, new Currency(2800).format()),
-                    entry(AUGUST, new Currency(3600).format()),
-                    entry(SEPTEMBER, new Currency(4500).format()),
-                    entry(OCTOBER, new Currency(5500).format()),
-                    entry(NOVEMBER, new Currency(6600).format()),
-                    entry(DECEMBER, new Currency(7800).format()),
-                    entry(TOTAL, new Currency(0).format()),
-                    entry(AVERAGE, new Currency(3033).format()))
+                        entry(DESCRIPTION, new Currency(0).format()),
+                        entry(JANUARY, new Currency(100).format()),
+                        entry(FEBRUARY, new Currency(300).format()),
+                        entry(MARCH, new Currency(600).format()),
+                        entry(APRIL, new Currency(1000).format()),
+                        entry(MAY, new Currency(1500).format()),
+                        entry(JUNE, new Currency(2100).format()),
+                        entry(JULY, new Currency(2800).format()),
+                        entry(AUGUST, new Currency(3600).format()),
+                        entry(SEPTEMBER, new Currency(4500).format()),
+                        entry(OCTOBER, new Currency(5500).format()),
+                        entry(NOVEMBER, new Currency(6600).format()),
+                        entry(DECEMBER, new Currency(7800).format()),
+                        entry(TOTAL, new Currency(0).format()),
+                        entry(AVERAGE, new Currency(3033).format()))
                     .get(column);
     var section = Section.of(header, Body.empty(), Footer.of(footer));
     var exp = List.of(section).stream().map(Section::asString).collect(toList());
     var act =
         new ReportBuilder(amountsFetcher, year)
-            .accumulateAccountGroups(title, accountGroups)
-            .getSections()
-            .stream()
-            .map(Section::asString)
-            .collect(toList());
+            .accumulateAccountGroups(title, accountGroups).getSections().stream()
+                .map(Section::asString)
+                .collect(toList());
     assertEquals(exp, act);
   }
 
@@ -177,11 +171,11 @@ class ReportBuilderTest {
     var tag2 = Tag.of("tag2");
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2),
-                entry(new AccountId(yearId, "3333"), row3),
-                entry(new AccountId(yearId, "4444"), row4)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2),
+                    entry(new AccountId(yearId, "3333"), row3),
+                    entry(new AccountId(yearId, "4444"), row4)))
             .amountsFetcher();
     var reportBuilder =
         new ReportBuilder(amountsFetcher, year)
@@ -212,9 +206,7 @@ class ReportBuilderTest {
             Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())).asString("\n"),
             Section.of(Header.empty(), Body.empty(), Footer.of(subtotal3.asRow())).asString("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(toList());
     assertEquals(exp, act);
@@ -226,9 +218,9 @@ class ReportBuilderTest {
     var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var reportBuilder =
         new ReportBuilder(amountsFetcher, year)
@@ -243,9 +235,7 @@ class ReportBuilderTest {
             Section.of(Header.empty(), Body.of(List.of(row1)), Footer.empty()).asString("\n"),
             Section.of(Header.empty(), Body.of(List.of(row2)), Footer.empty()).asString("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(toList());
     assertEquals(exp, act);
@@ -260,9 +250,9 @@ class ReportBuilderTest {
         AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var reportBuilder =
         new ReportBuilder(amountsFetcher, Year.now())
@@ -275,16 +265,14 @@ class ReportBuilderTest {
             .subtotal(sbttl -> sbttl.description(description));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -297,9 +285,9 @@ class ReportBuilderTest {
     var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var reportBuilder =
         new ReportBuilder(amountsFetcher, Year.now())

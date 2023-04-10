@@ -16,13 +16,10 @@ class RecordReader {
   }
 
   Stream<Record> allRecordsAsStream() {
-    return byteChunks()
-        .stream()
+    return byteChunks().stream()
         .map(
             chunk ->
-                this.recordDefinition
-                    .getFields()
-                    .stream()
+                this.recordDefinition.getFields().stream()
                     .reduce(new Record(), (rec, def) -> def.populate(rec, chunk), Record::merge));
   }
 

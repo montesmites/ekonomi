@@ -29,9 +29,13 @@ public class ReportGenerator {
   }
 
   public void run() {
-    renderToFile(generateReport(dataFetcher(), properties.getReport().getTemplate().asPath(),
+    renderToFile(
+        generateReport(
+            dataFetcher(),
+            properties.getReport().getTemplate().asPath(),
             java.time.Year.of(properties.getReport().getFiscalYear())),
-        destinationPath(Paths.get(properties.getReport().getOutputDir()),
+        destinationPath(
+            Paths.get(properties.getReport().getOutputDir()),
             properties.getReport().getTitle(),
             java.time.Year.of(properties.getReport().getFiscalYear())));
   }
@@ -43,8 +47,7 @@ public class ReportGenerator {
           SieToOrganizationConverter.of()
               .convert(Paths.get(properties.getDatasource().getSieInputPath())));
       case SPCS -> new DataFetcher(
-          new OrganizationBuilder(Paths.get(properties.getDatasource().getSpcsInputDir()))
-              .build());
+          new OrganizationBuilder(Paths.get(properties.getDatasource().getSpcsInputDir())).build());
     };
   }
 

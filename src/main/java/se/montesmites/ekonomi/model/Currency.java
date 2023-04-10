@@ -4,8 +4,8 @@ import se.montesmites.ekonomi.i18n.Messages;
 
 public record Currency(long amount) {
 
-  private final static int decimals = 2;
-  private final static double divisor = Math.pow(10, decimals);
+  private static final int decimals = 2;
+  private static final double divisor = Math.pow(10, decimals);
 
   public static Currency zero() {
     return new Currency(0);

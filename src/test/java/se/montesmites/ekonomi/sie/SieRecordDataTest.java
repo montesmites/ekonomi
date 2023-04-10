@@ -74,12 +74,12 @@ class SieRecordDataTest {
 
   @ParameterizedTest
   @CsvSource({
-      "123,12300",
-      "123.45,12345",
-      "-412.50,-41250",
-      "-0.50,-50",
-      "-0.01, -1",
-      "-44199.85, -4419985"
+    "123,12300",
+    "123.45,12345",
+    "-412.50,-41250",
+    "-0.50,-50",
+    "-0.01, -1",
+    "-44199.85, -4419985"
   })
   void testAsCurrency(String input, long expected) {
     var data = SieRecordData.of(input);

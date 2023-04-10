@@ -7,8 +7,7 @@ public class KontoId implements Serializable {
   private String bokfaarId;
   private String kontoId;
 
-  public KontoId() {
-  }
+  public KontoId() {}
 
   public KontoId(String bokfaarId, String kontoId) {
     this.bokfaarId = bokfaarId;
@@ -57,9 +56,6 @@ public class KontoId implements Serializable {
 
   @Override
   public String toString() {
-    return "KontoId{" +
-        "bokfaarId='" + bokfaarId + '\'' +
-        ", kontoId='" + kontoId + '\'' +
-        '}';
+    return "KontoId{" + "bokfaarId='" + bokfaarId + '\'' + ", kontoId='" + kontoId + '\'' + '}';
   }
 }

@@ -12,14 +12,6 @@ import se.montesmites.ekonomi.report.AmountsProvider;
 
 class BodyFromAccountsBuilder {
 
-  static BodyFromAccountsBuilder empty() {
-    return new BodyFromAccountsBuilder(AmountsFetcher.empty(), Year.now());
-  }
-
-  static BodyFromAccountsBuilder of(AmountsFetcher amountsFetcher, Year year) {
-    return new BodyFromAccountsBuilder(amountsFetcher, year);
-  }
-
   private final AmountsFetcher amountsFetcher;
   private final Year year;
   private List<Account> accounts = List.of();
@@ -29,6 +21,14 @@ class BodyFromAccountsBuilder {
   private BodyFromAccountsBuilder(AmountsFetcher amountsFetcher, Year year) {
     this.amountsFetcher = amountsFetcher;
     this.year = year;
+  }
+
+  static BodyFromAccountsBuilder empty() {
+    return new BodyFromAccountsBuilder(AmountsFetcher.empty(), Year.now());
+  }
+
+  static BodyFromAccountsBuilder of(AmountsFetcher amountsFetcher, Year year) {
+    return new BodyFromAccountsBuilder(amountsFetcher, year);
   }
 
   BodyFromAccountsBuilder accounts(List<Account> accounts) {
@@ -48,8 +48,7 @@ class BodyFromAccountsBuilder {
   }
 
   List<AmountsProvider> getAmountsProviders() {
-    return accounts
-        .stream()
+    return accounts.stream()
         .map(
             account ->
                 AmountsProvider.of(

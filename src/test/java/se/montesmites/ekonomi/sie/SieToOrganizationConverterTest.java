@@ -30,9 +30,7 @@ class SieToOrganizationConverterTest {
     var years =
         organization.streamYears().collect(toMap(year -> year.year().getValue(), year -> year));
     var balances =
-        organization
-            .streamBalances()
-            .collect(groupingBy(balance -> balance.accountId().yearId()));
+        organization.streamBalances().collect(groupingBy(balance -> balance.accountId().yearId()));
     var accounts = organization.streamAccounts().collect(toList());
     var events = organization.streamEvents().collect(toList());
     var entries = organization.streamEntries().collect(toList());

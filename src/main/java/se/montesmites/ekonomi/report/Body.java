@@ -43,8 +43,7 @@ public interface Body {
       @Override
       public Optional<Currency> getMonthlyAmount(Month month) {
         var amounts =
-            Body.this
-                .stream()
+            Body.this.stream()
                 .map(row -> row.getMonthlyAmount(month))
                 .filter(Optional::isPresent)
                 .map(Optional::get)

@@ -31,26 +31,23 @@ import se.montesmites.ekonomi.organization.Organization;
 
 public class DataFetcher implements AccountsFetcher, AmountsFetcher {
 
-  private static EntryCollector entryCollector(Organization organization) {
-    return new EntryCollector(
-        eventId ->
-            organization.getEvent(eventId).map((Event event) -> toYearMonth(event.date())));
-  }
-
-  private static YearMonth toYearMonth(LocalDate date) {
-    return YearMonth.of(date.getYear(), date.getMonth());
-  }
-
   private final Organization organization;
-
   private final EntryAggregate entryAggregate;
-
   private final Map<java.time.Year, Set<Month>> touchedMonths;
 
   public DataFetcher(Organization organization) {
     this.organization = organization;
     this.entryAggregate = organization.streamEntries().collect(entryCollector(organization));
     this.touchedMonths = touchedMonths();
+  }
+
+  private static EntryCollector entryCollector(Organization organization) {
+    return new EntryCollector(
+        eventId -> organization.getEvent(eventId).map((Event event) -> toYearMonth(event.date())));
+  }
+
+  private static YearMonth toYearMonth(LocalDate date) {
+    return YearMonth.of(date.getYear(), date.getMonth());
   }
 
   private Map<java.time.Year, Set<Month>> touchedMonths() {
@@ -84,10 +81,7 @@ public class DataFetcher implements AccountsFetcher, AmountsFetcher {
 
   @Override
   public Stream<AccountId> streamAccountIds(java.time.Year year, Predicate<AccountId> filter) {
-    return entryAggregate
-        .getAggregate()
-        .entrySet()
-        .stream()
+    return entryAggregate.getAggregate().entrySet().stream()
         .filter(e -> e.getKey().yearMonth().getYear() == year.getValue())
         .map(e -> e.getKey().accountId())
         .filter(filter)
@@ -120,10 +114,7 @@ public class DataFetcher implements AccountsFetcher, AmountsFetcher {
 
   private Stream<Map.Entry<YearMonthAccountIdTuple, AmountEntryListTuple>>
       streamEntryAggregateByYearMonth(YearMonth yearMonth) {
-    return entryAggregate
-        .getAggregate()
-        .entrySet()
-        .stream()
+    return entryAggregate.getAggregate().entrySet().stream()
         .filter(e -> e.getKey().yearMonth().equals(yearMonth));
   }
 

@@ -44,9 +44,9 @@ class SectionBuilderTest {
     var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var sectionBuilder = new SectionBuilder(year, amountsFetcher);
     var exp = Body.of(List.of(row1, row2)).asString("\n");
@@ -67,9 +67,9 @@ class SectionBuilderTest {
     var body2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), body1),
-                entry(new AccountId(yearId, "2222"), body2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), body1),
+                    entry(new AccountId(yearId, "2222"), body2)))
             .amountsFetcher();
     var sectionBuilder =
         new SectionBuilder(year, amountsFetcher)
@@ -90,9 +90,9 @@ class SectionBuilderTest {
     var expBody = Body.of(List.of(body1, body2));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), body1),
-                entry(new AccountId(yearId, "2222"), body2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), body1),
+                    entry(new AccountId(yearId, "2222"), body2)))
             .amountsFetcher();
     var footer = Footer.of(List.of(Aggregate.of(expBody).asRow()));
     var sectionBuilder = new SectionBuilder(year, amountsFetcher);

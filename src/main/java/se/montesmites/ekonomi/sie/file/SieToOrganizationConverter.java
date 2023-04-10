@@ -33,11 +33,10 @@ import se.montesmites.ekonomi.sie.record.types.TypeVER;
 
 public class SieToOrganizationConverter {
 
+  private SieToOrganizationConverter() {}
+
   public static SieToOrganizationConverter of() {
     return new SieToOrganizationConverter();
-  }
-
-  private SieToOrganizationConverter() {
   }
 
   public Organization convert(Path path) {

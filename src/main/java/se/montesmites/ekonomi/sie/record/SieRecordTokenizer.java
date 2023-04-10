@@ -7,6 +7,8 @@ import java.util.List;
 
 public abstract class SieRecordTokenizer {
 
+  private SieRecordTokenizer() {}
+
   private static boolean isWhiteSpace(char current) {
     return current == ' ' || current == '\t';
   }
@@ -43,6 +45,22 @@ public abstract class SieRecordTokenizer {
 
   public static SieRecordTokenizer of() {
     return new DefaultTokenizer(new StringBuilder(), List.of(), ' ');
+  }
+
+  public final List<SieToken> tokenize(String text) {
+    return text.chars()
+        .mapToObj(ch -> (char) ch)
+        .reduce(SieRecordTokenizer.of(), SieRecordTokenizer::tokenize, SieRecordTokenizer::merge)
+        .retrieveTokens();
+  }
+
+  abstract SieRecordTokenizer tokenize(char current);
+
+  abstract List<SieToken> retrieveTokens();
+
+  private SieRecordTokenizer merge(SieRecordTokenizer that) {
+    return new DefaultTokenizer(
+        new StringBuilder(), concat(this.retrieveTokens(), that.retrieveTokens()), ' ');
   }
 
   private static class DefaultTokenizer extends SieRecordTokenizer {
@@ -149,24 +167,5 @@ public abstract class SieRecordTokenizer {
     private SieToken retrieveToken() {
       return SieToken.of(token.toString());
     }
-  }
-
-  private SieRecordTokenizer() {
-  }
-
-  public final List<SieToken> tokenize(String text) {
-    return text.chars()
-        .mapToObj(ch -> (char) ch)
-        .reduce(SieRecordTokenizer.of(), SieRecordTokenizer::tokenize, SieRecordTokenizer::merge)
-        .retrieveTokens();
-  }
-
-  abstract SieRecordTokenizer tokenize(char current);
-
-  abstract List<SieToken> retrieveTokens();
-
-  private SieRecordTokenizer merge(SieRecordTokenizer that) {
-    return new DefaultTokenizer(
-        new StringBuilder(), concat(this.retrieveTokens(), that.retrieveTokens()), ' ');
   }
 }

@@ -86,10 +86,7 @@ class OrganizationTest {
     YearId yearId = organization.getYear(java.time.Year.of(2012)).get().yearId();
     EventId eventId = new EventId(yearId, 1, new Series("A"));
     List<Entry> actEntries =
-        organization
-            .getEntries(eventId)
-            .get()
-            .stream()
+        organization.getEntries(eventId).get().stream()
             .sorted(comparing(entry -> entry.accountId().id()))
             .collect(toList());
     List<Entry> expEntries =

@@ -51,16 +51,16 @@ class AccountFilterByRegexTest {
             ACCOUNT_ID_3900);
     var act =
         Stream.of(
-            ACCOUNT_ID_3000,
-            ACCOUNT_ID_3100,
-            ACCOUNT_ID_3200,
-            ACCOUNT_ID_3300,
-            ACCOUNT_ID_3400,
-            ACCOUNT_ID_3500,
-            ACCOUNT_ID_3600,
-            ACCOUNT_ID_3700,
-            ACCOUNT_ID_3800,
-            ACCOUNT_ID_3900)
+                ACCOUNT_ID_3000,
+                ACCOUNT_ID_3100,
+                ACCOUNT_ID_3200,
+                ACCOUNT_ID_3300,
+                ACCOUNT_ID_3400,
+                ACCOUNT_ID_3500,
+                ACCOUNT_ID_3600,
+                ACCOUNT_ID_3700,
+                ACCOUNT_ID_3800,
+                ACCOUNT_ID_3900)
             .filter(filter)
             .collect(toSet());
     assertEquals(exp, act);

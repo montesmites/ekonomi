@@ -72,11 +72,28 @@ public enum Report_AccountGroup_2012 {
       });
 
   private static final java.time.Year YEAR = java.time.Year.of(2012);
+  private final String description;
+  private final String regex;
+  private final Map<Month, Currency> expectedAmounts;
+  private final Currency expectedAverage;
+  private final Currency expectedTotal;
+
+  Report_AccountGroup_2012(
+      String description,
+      String regex,
+      Currency expectedAverage,
+      Currency expectedTotal,
+      Map<Month, Currency> expectedAmounts) {
+    this.description = description;
+    this.regex = regex;
+    this.expectedAmounts = expectedAmounts;
+    this.expectedAverage = expectedAverage;
+    this.expectedTotal = expectedTotal;
+  }
 
   public static Stream<AmountsProvider> bodyRowsOf(
       DataFetcher fetcher, List<Report_AccountGroup_2012> groups) {
-    return groups
-        .stream()
+    return groups.stream()
         .map(
             group ->
                 AmountsProvider.of(fetcher, YEAR, AccountGroup.of(group.description, group.regex)));
@@ -86,9 +103,7 @@ public enum Report_AccountGroup_2012 {
       Section section, List<Report_AccountGroup_2012> groups) {
     var exp = groups.stream().map(g -> g.description).collect(toList());
     var act =
-        section
-            .body()
-            .stream()
+        section.body().stream()
             .map(AmountsProvider::asRow)
             .map(row -> row.format(DESCRIPTION))
             .collect(toList());
@@ -104,9 +119,7 @@ public enum Report_AccountGroup_2012 {
   public static void assertMonthlyAmounts(Section section, List<Report_AccountGroup_2012> groups) {
     var expList = groups.stream().map(group -> group.expectedAmounts).collect(toList());
     var actList =
-        section
-            .body()
-            .stream()
+        section.body().stream()
             .map(
                 amountsProvider ->
                     stream(Month.values())
@@ -156,24 +169,5 @@ public enum Report_AccountGroup_2012 {
       var msg = String.format(fmt, description, i);
       assertEquals(exp.get(i), act.get(i).orElseThrow(), msg);
     }
-  }
-
-  private final String description;
-  private final String regex;
-  private final Map<Month, Currency> expectedAmounts;
-  private final Currency expectedAverage;
-  private final Currency expectedTotal;
-
-  Report_AccountGroup_2012(
-      String description,
-      String regex,
-      Currency expectedAverage,
-      Currency expectedTotal,
-      Map<Month, Currency> expectedAmounts) {
-    this.description = description;
-    this.regex = regex;
-    this.expectedAmounts = expectedAmounts;
-    this.expectedAverage = expectedAverage;
-    this.expectedTotal = expectedTotal;
   }
 }

@@ -35,7 +35,11 @@ class AccountGroupTest {
     assertAll(
         () -> assertEquals(DESCRIPTION, group.description()),
         () -> assertEquals(REGEX, group.regex()),
-        () -> assertTrue(group.postProcessor().apply(AMOUNTS_PROVIDER).isEquivalentTo(
-            AMOUNTS_PROVIDER.negate())));
+        () ->
+            assertTrue(
+                group
+                    .postProcessor()
+                    .apply(AMOUNTS_PROVIDER)
+                    .isEquivalentTo(AMOUNTS_PROVIDER.negate())));
   }
 }

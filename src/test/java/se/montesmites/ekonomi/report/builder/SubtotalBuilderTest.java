@@ -38,9 +38,9 @@ class SubtotalBuilderTest {
         AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var reportBuilder =
         new ReportBuilder(amountsFetcher, Year.now())
@@ -50,15 +50,13 @@ class SubtotalBuilderTest {
             .subtotal(sbttl -> sbttl.description(description).addenda(List.of(row2, row3)));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -77,10 +75,10 @@ class SubtotalBuilderTest {
         AmountsProvider.of(description2, month -> Optional.of(new Currency(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2),
-                entry(new AccountId(yearId, "3333"), row3)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2),
+                    entry(new AccountId(yearId, "3333"), row3)))
             .amountsFetcher();
     var reportBuilder =
         new ReportBuilder(amountsFetcher, Year.now())
@@ -97,18 +95,16 @@ class SubtotalBuilderTest {
             .subtotal(sbttl -> sbttl.description(description2));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
-            Section.of(Header.empty(), Body.of(row3), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
+                Section.of(Header.empty(), Body.of(row3), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -164,10 +160,10 @@ class SubtotalBuilderTest {
                     : Optional.empty());
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2),
-                entry(new AccountId(yearId, "3333"), row3)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2),
+                    entry(new AccountId(yearId, "3333"), row3)))
             .touchedMonths(Map.of(year, touchedMonths))
             .amountsFetcher();
     var reportBuilder =
@@ -185,18 +181,16 @@ class SubtotalBuilderTest {
             .subtotal(sbttl -> sbttl.description(description2));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
-            Section.of(Header.empty(), Body.of(row3), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
+                Section.of(Header.empty(), Body.of(row3), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -210,21 +204,18 @@ class SubtotalBuilderTest {
     var subtotal = AmountsProvider.of(description, __ -> Optional.of(Currency.zero()));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var reportBuilder =
         new ReportBuilder(amountsFetcher, year).subtotal(sbttl -> sbttl.description(description));
     var exp =
-        List.of(Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
-            .stream()
+        List.of(Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow()))).stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -239,9 +230,9 @@ class SubtotalBuilderTest {
         AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var tag1 = Tag.of("tag1");
     var reportBuilder =
@@ -259,16 +250,14 @@ class SubtotalBuilderTest {
             .subtotal(sbttl -> sbttl.description(description));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -283,9 +272,9 @@ class SubtotalBuilderTest {
         AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var tag1 = Tag.of("tag1");
     var tag2 = Tag.of("tag2");
@@ -304,16 +293,14 @@ class SubtotalBuilderTest {
             .subtotal(sbttl -> sbttl.description(description));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -328,9 +315,9 @@ class SubtotalBuilderTest {
         AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 100)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var tag1 = Tag.of("tag1");
     var tag2 = Tag.of("tag2");
@@ -349,16 +336,14 @@ class SubtotalBuilderTest {
             .subtotal(sbttl -> sbttl.description(description).tagFilter(TagFilter.isEqualTo(tag1)));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);
@@ -377,9 +362,9 @@ class SubtotalBuilderTest {
         AmountsProvider.of(description, month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var tag1 = Tag.of("tag1");
     var tag2 = Tag.of("tag2");
@@ -403,18 +388,16 @@ class SubtotalBuilderTest {
             .subtotal(sbttl -> sbttl.description(description).tagFilter(TagFilter.isEqualTo(tag3)));
     var exp =
         List.of(
-            Section.of(Header.empty(), Body.of(row1), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
-            Section.of(Header.empty(), Body.of(row2), Footer.empty()),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())),
-            Section.of(Header.empty(), Body.empty(), Footer.of(subtotal3.asRow())))
+                Section.of(Header.empty(), Body.of(row1), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal1.asRow())),
+                Section.of(Header.empty(), Body.of(row2), Footer.empty()),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal2.asRow())),
+                Section.of(Header.empty(), Body.empty(), Footer.of(subtotal3.asRow())))
             .stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     var act =
-        reportBuilder
-            .getSections()
-            .stream()
+        reportBuilder.getSections().stream()
             .map(section -> section.asString("\n"))
             .collect(joining("\n"));
     assertEquals(exp, act);

@@ -21,12 +21,14 @@ public class MainLayout extends AppLayout {
   }
 
   private Tab[] getTabs() {
-    return new Tab[]{createTab(VaadinIcon.PRINT, "Generate cashflow report")};
+    return new Tab[] {createTab(VaadinIcon.PRINT, "Generate cashflow report")};
   }
 
   private Tab createTab(VaadinIcon viewIcon, String viewName) {
     var icon = viewIcon.create();
-    icon.getStyle().set("box-sizing", "border-box").set("margin-inline-end", "var(--lumo-space-m)")
+    icon.getStyle()
+        .set("box-sizing", "border-box")
+        .set("margin-inline-end", "var(--lumo-space-m)")
         .set("padding", "var(--lumo-space-xs)");
 
     var link = new RouterLink();

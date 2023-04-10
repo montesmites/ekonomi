@@ -71,10 +71,7 @@ class DataFetcherTest {
     var yearId = organization.getYear(java.time.Year.of(2012)).orElseThrow().yearId();
     var yearMonth = YearMonth.of(2012, Month.JANUARY);
     var actAmounts =
-        fetcher
-            .getAccountIdAmountTuples(yearMonth)
-            .orElseThrow()
-            .stream()
+        fetcher.getAccountIdAmountTuples(yearMonth).orElseThrow().stream()
             .collect(toMap(AccountIdAmountTuple::accountId, AccountIdAmountTuple::amount));
     var expAmounts = BY_YEARMONTH_201201.getAggregate(yearId);
     mapEqualityAssertion(expAmounts, actAmounts);
@@ -90,8 +87,7 @@ class DataFetcherTest {
   }
 
   private void assertAccountYearMonthAmount(AccountId accountId, YearMonth yearMonth) {
-    var exp =
-        fetcher.getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
+    var exp = fetcher.getAccountIdAmountMap(yearMonth).map(m -> m.get(accountId));
     var act = fetcher.fetchAmount(accountId, yearMonth);
     var fmt = "%s (%s)";
     var msg = String.format(fmt, accountId.id(), yearMonth);

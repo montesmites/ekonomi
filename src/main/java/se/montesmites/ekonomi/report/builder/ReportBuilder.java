@@ -84,14 +84,12 @@ public class ReportBuilder {
     var sectionBuilder = sectionBuilder();
     this.sections.add(sectionBuilder);
     var amountsProviders =
-        accountGroups
-            .stream()
+        accountGroups.stream()
             .map(accountGroup -> AmountsProvider.of(amountsFetcher, year, accountGroup))
             .collect(toList());
     var aggregate = Aggregate.of(amountsProviders);
     var initialBalance =
-        accountGroups
-            .stream()
+        accountGroups.stream()
             .map(
                 accountGroup ->
                     amountsFetcher

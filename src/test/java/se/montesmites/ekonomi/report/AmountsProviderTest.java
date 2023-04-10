@@ -66,9 +66,9 @@ class AmountsProviderTest {
         AmountsProvider.of(
             month ->
                 Map.ofEntries(
-                    entry(JANUARY, Optional.of(new Currency(100))),
-                    entry(FEBRUARY, Optional.of(new Currency(100))),
-                    entry(MARCH, Optional.of(new Currency(100))))
+                        entry(JANUARY, Optional.of(new Currency(100))),
+                        entry(FEBRUARY, Optional.of(new Currency(100))),
+                        entry(MARCH, Optional.of(new Currency(100))))
                     .getOrDefault(month, Optional.empty()));
     var act = AmountsProvider.of(amounts);
     assertTrue(act.isEquivalentTo(exp));
@@ -80,9 +80,9 @@ class AmountsProviderTest {
     var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var accountGroup = AccountGroup.of("", "\\d\\d\\d\\d");
     var exp =
@@ -99,9 +99,9 @@ class AmountsProviderTest {
     var row2 = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal() * 200)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), row1),
-                entry(new AccountId(yearId, "2222"), row2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), row1),
+                    entry(new AccountId(yearId, "2222"), row2)))
             .amountsFetcher();
     var account =
         new Account(
@@ -116,8 +116,7 @@ class AmountsProviderTest {
             .asRow()
             .asExtendedString();
     var act =
-        AmountsProvider.of(
-            amountsFetcher, year, account.accountId(), account.description(), x -> x)
+        AmountsProvider.of(amountsFetcher, year, account.accountId(), account.description(), x -> x)
             .asRow()
             .asExtendedString();
     assertEquals(exp, act);
@@ -187,9 +186,9 @@ class AmountsProviderTest {
     var row = amountsProvider.asRow();
     var exp =
         Row.of(
-            column ->
-                Map.ofEntries(entry(DESCRIPTION, description))
-                    .getOrDefault(column, Currency.zero().format()))
+                column ->
+                    Map.ofEntries(entry(DESCRIPTION, description))
+                        .getOrDefault(column, Currency.zero().format()))
             .asExtendedString();
     var act = row.asExtendedString();
     assertEquals(exp, act);

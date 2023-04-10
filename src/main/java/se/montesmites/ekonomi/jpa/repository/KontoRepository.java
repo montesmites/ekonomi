@@ -6,6 +6,4 @@ import se.montesmites.ekonomi.jpa.model.Konto;
 import se.montesmites.ekonomi.jpa.model.KontoId;
 
 @Repository
-public interface KontoRepository extends JpaRepository<Konto, KontoId> {
-
-}
+public interface KontoRepository extends JpaRepository<Konto, KontoId> {}

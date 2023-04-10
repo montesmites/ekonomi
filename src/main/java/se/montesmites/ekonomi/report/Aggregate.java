@@ -21,14 +21,12 @@ public interface Aggregate {
     return Aggregate.of("", amountsProviders);
   }
 
-  static AmountsProvider of(
-      String description, List<? extends AmountsProvider> amountsProviders) {
+  static AmountsProvider of(String description, List<? extends AmountsProvider> amountsProviders) {
     return new AmountsProvider() {
       @Override
       public Optional<Currency> getMonthlyAmount(Month month) {
         var amounts =
-            amountsProviders
-                .stream()
+            amountsProviders.stream()
                 .map(row -> row.getMonthlyAmount(month))
                 .filter(Optional::isPresent)
                 .map(Optional::get)

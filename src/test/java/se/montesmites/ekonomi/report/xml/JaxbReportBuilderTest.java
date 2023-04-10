@@ -54,9 +54,9 @@ class JaxbReportBuilderTest {
     var sum = AmountsProvider.of("", month -> Optional.of(new Currency(month.ordinal() * 300)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), amounts1),
-                entry(new AccountId(yearId, "2222"), amounts2)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), amounts1),
+                    entry(new AccountId(yearId, "2222"), amounts2)))
             .amountsFetcher();
     var builder = new JaxbReportBuilder(Paths.get(getClass().getResource(path).toURI()));
     var report = builder.report(amountsFetcher, year);
@@ -86,10 +86,10 @@ class JaxbReportBuilderTest {
         AmountsProvider.of("SUBTOTAL", month -> Optional.of(new Currency(month.ordinal() * 600)));
     var amountsFetcher =
         AmountsFetcherBuilder.of(
-            Map.ofEntries(
-                entry(new AccountId(yearId, "1111"), amounts1),
-                entry(new AccountId(yearId, "2222"), amounts2),
-                entry(new AccountId(yearId, "3333"), amounts3)))
+                Map.ofEntries(
+                    entry(new AccountId(yearId, "1111"), amounts1),
+                    entry(new AccountId(yearId, "2222"), amounts2),
+                    entry(new AccountId(yearId, "3333"), amounts3)))
             .amountsFetcher();
     var builder = new JaxbReportBuilder(Paths.get(getClass().getResource(path).toURI()));
     var report = builder.report(amountsFetcher, year);
@@ -157,21 +157,21 @@ class JaxbReportBuilderTest {
         (Row)
             column ->
                 Map.ofEntries(
-                    entry(DESCRIPTION, new Currency(0).format()),
-                    entry(JANUARY, new Currency(100).format()),
-                    entry(FEBRUARY, new Currency(300).format()),
-                    entry(MARCH, new Currency(600).format()),
-                    entry(APRIL, new Currency(1000).format()),
-                    entry(MAY, new Currency(1500).format()),
-                    entry(JUNE, new Currency(2100).format()),
-                    entry(JULY, new Currency(2800).format()),
-                    entry(AUGUST, new Currency(3600).format()),
-                    entry(SEPTEMBER, new Currency(4500).format()),
-                    entry(OCTOBER, new Currency(5500).format()),
-                    entry(NOVEMBER, new Currency(6600).format()),
-                    entry(DECEMBER, new Currency(7800).format()),
-                    entry(TOTAL, new Currency(0).format()),
-                    entry(AVERAGE, new Currency(3033).format()))
+                        entry(DESCRIPTION, new Currency(0).format()),
+                        entry(JANUARY, new Currency(100).format()),
+                        entry(FEBRUARY, new Currency(300).format()),
+                        entry(MARCH, new Currency(600).format()),
+                        entry(APRIL, new Currency(1000).format()),
+                        entry(MAY, new Currency(1500).format()),
+                        entry(JUNE, new Currency(2100).format()),
+                        entry(JULY, new Currency(2800).format()),
+                        entry(AUGUST, new Currency(3600).format()),
+                        entry(SEPTEMBER, new Currency(4500).format()),
+                        entry(OCTOBER, new Currency(5500).format()),
+                        entry(NOVEMBER, new Currency(6600).format()),
+                        entry(DECEMBER, new Currency(7800).format()),
+                        entry(TOTAL, new Currency(0).format()),
+                        entry(AVERAGE, new Currency(3033).format()))
                     .get(column);
     var amountsFetcher =
         AmountsFetcherBuilder.of(Map.ofEntries(entry(new AccountId(yearId, "1111"), amounts1)))

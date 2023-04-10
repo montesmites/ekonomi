@@ -39,26 +39,24 @@ public class SubtotalBuilder {
   public SubtotalBuilder section(SectionBuilder sectionBuilder) {
     var aggregates =
         Stream.concat(
-            this.sections
-                .stream()
-                .filter(section -> tagFilter.test(section.getTags()))
-                .map(SectionBuilder::getBodyBuilder)
-                .map(BodyBuilder::body)
-                .map(Aggregate::of),
-            Stream.of(Aggregate.of(this.amountsProviders)))
+                this.sections.stream()
+                    .filter(section -> tagFilter.test(section.getTags()))
+                    .map(SectionBuilder::getBodyBuilder)
+                    .map(BodyBuilder::body)
+                    .map(Aggregate::of),
+                Stream.of(Aggregate.of(this.amountsProviders)))
             .collect(toList());
     sectionBuilder.footer(
         footer ->
             footer.add(
                 AmountsProvider.of(
-                    this.description,
-                    month ->
-                        aggregates
-                            .stream()
-                            .map(amountsProvider -> amountsProvider.getMonthlyAmount(month))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .reduce(Currency::add))
+                        this.description,
+                        month ->
+                            aggregates.stream()
+                                .map(amountsProvider -> amountsProvider.getMonthlyAmount(month))
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .reduce(Currency::add))
                     .asRow()));
     return this;
   }
