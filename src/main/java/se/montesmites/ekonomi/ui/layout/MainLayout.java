@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.ui.layout;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
@@ -7,6 +8,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.RouterLink;
+import se.montesmites.ekonomi.ui.view.ChartOfAccountsView;
 import se.montesmites.ekonomi.ui.view.GenerateCashflowReportView;
 
 public class MainLayout extends AppLayout {
@@ -21,10 +23,13 @@ public class MainLayout extends AppLayout {
   }
 
   private Tab[] getTabs() {
-    return new Tab[] {createTab(VaadinIcon.PRINT, "Generate cashflow report")};
+    return new Tab[] {
+      createTab(VaadinIcon.PRINT, "Generate cashflow report", GenerateCashflowReportView.class),
+      createTab(VaadinIcon.TABLE, "Chart of accounts", ChartOfAccountsView.class)
+    };
   }
 
-  private Tab createTab(VaadinIcon viewIcon, String viewName) {
+  private Tab createTab(VaadinIcon viewIcon, String viewName, Class<? extends Component> target) {
     var icon = viewIcon.create();
     icon.getStyle()
         .set("box-sizing", "border-box")
@@ -33,7 +38,7 @@ public class MainLayout extends AppLayout {
 
     var link = new RouterLink();
     link.add(icon, new Span(viewName));
-    link.setRoute(GenerateCashflowReportView.class);
+    link.setRoute(target);
 
     return new Tab(link);
   }
