@@ -8,15 +8,17 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.router.RouterLink;
+import se.montesmites.ekonomi.i18n.Dictionary;
+import se.montesmites.ekonomi.i18n.Translator;
 import se.montesmites.ekonomi.ui.view.ChartOfAccountsView;
 import se.montesmites.ekonomi.ui.view.GenerateCashflowReportView;
 
-public class MainLayout extends AppLayout {
+public class MainLayout extends AppLayout implements Translator {
 
   public MainLayout() {
     var toggle = new DrawerToggle();
 
-    var title = new H1("Accounting");
+    var title = new H1(t(Dictionary.ACCOUNTING));
 
     addToDrawer(getTabs());
     addToNavbar(toggle, title);
@@ -24,8 +26,11 @@ public class MainLayout extends AppLayout {
 
   private Tab[] getTabs() {
     return new Tab[] {
-      createTab(VaadinIcon.PRINT, "Generate cashflow report", GenerateCashflowReportView.class),
-      createTab(VaadinIcon.TABLE, "Chart of accounts", ChartOfAccountsView.class)
+      createTab(
+          VaadinIcon.PRINT,
+          t(Dictionary.GENERATE_CASHFLOW_REPORT),
+          GenerateCashflowReportView.class),
+      createTab(VaadinIcon.TABLE, t(Dictionary.CHART_OF_ACCOUNTS), ChartOfAccountsView.class)
     };
   }
 
