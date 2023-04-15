@@ -19,15 +19,21 @@ import java.util.List;
 import java.util.Optional;
 import se.montesmites.ekonomi.i18n.Dictionary;
 import se.montesmites.ekonomi.i18n.Translator;
+import se.montesmites.ekonomi.service.FiscalYearService;
+import se.montesmites.ekonomi.ui.component.FiscalYearSelector;
 import se.montesmites.ekonomi.ui.view.ChartOfAccountsView;
 import se.montesmites.ekonomi.ui.view.GenerateCashflowReportView;
 
 public class MainLayout extends AppLayout implements Translator {
 
+  private final FiscalYearService fiscalYearService;
+
   private final H1 title;
   private final Tabs menu;
 
-  public MainLayout() {
+  public MainLayout(FiscalYearService fiscalYearService) {
+    this.fiscalYearService = fiscalYearService;
+
     this.title = createTitle();
     this.menu = createMenu();
 
@@ -54,7 +60,7 @@ public class MainLayout extends AppLayout implements Translator {
     header.addClassNames("py-0", "px-m");
 
     header.expand(this.title);
-    header.add(new DrawerToggle(), this.title);
+    header.add(new DrawerToggle(), this.title, new FiscalYearSelector(this.fiscalYearService));
     header.setAlignItems(FlexComponent.Alignment.BASELINE);
 
     return header;
