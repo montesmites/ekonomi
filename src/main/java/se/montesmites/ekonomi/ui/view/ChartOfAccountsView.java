@@ -8,6 +8,7 @@ import se.montesmites.ekonomi.i18n.Dictionary;
 import se.montesmites.ekonomi.i18n.Translator;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.service.ChartOfAccountsService;
+import se.montesmites.ekonomi.session.SessionAccessor;
 import se.montesmites.ekonomi.ui.layout.MainLayout;
 
 @Route(value = ChartOfAccountsView.ROUTE, layout = MainLayout.class)
@@ -15,14 +16,18 @@ public class ChartOfAccountsView extends VerticalLayout implements Translator, H
 
   public static final String ROUTE = "chart-of-accounts";
 
-  public ChartOfAccountsView(ChartOfAccountsService chartOfAccountsService) {
+  public ChartOfAccountsView(
+      ChartOfAccountsService chartOfAccountsService, SessionAccessor sessionAccessor) {
     var grid = new Grid<>(Account.class);
 
     grid.addColumn(Account::accountId);
     grid.addColumn(Account::description);
     grid.addColumn(Account::accountStatus);
 
-    grid.setItems(chartOfAccountsService.findAll());
+    sessionAccessor
+        .fiscalYear()
+        .ifPresent(
+            fiscalYear -> grid.setItems(chartOfAccountsService.findAllByFiscalYear(fiscalYear)));
 
     this.add(grid);
   }
