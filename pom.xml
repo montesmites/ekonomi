@@ -74,9 +74,9 @@
       <groupId>org.springframework.boot</groupId>
     </dependency>
     <dependency>
-      <artifactId>mssql-jdbc</artifactId>
-      <groupId>com.microsoft.sqlserver</groupId>
-      <version>${mssql-jdbc.version}</version>
+      <artifactId>postgresql</artifactId>
+      <groupId>org.postgresql</groupId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -145,7 +145,6 @@
 
     <javax.jaxb.impl.version>2.3.2</javax.jaxb.impl.version>
     <javax.jaxb.version>2.3.0</javax.jaxb.version>
-    <mssql-jdbc.version>7.4.0.jre11</mssql-jdbc.version>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 

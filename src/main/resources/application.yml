@@ -1,11 +1,9 @@
 spring:
   datasource:
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://localhost:49876;databaseName=SPCS_Adm_nikka;integratedSecurity=true;sendStringParametersAsUnicode=false;
-    username: java
-    password: java
-  jpa:
-    hibernate.dialect: org.hibernate.dialect.SQLServer2012Dialect
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/accounting
+    username: postgres
+    password: postgres
 
 ekonomi:
   datasource:
