@@ -24,6 +24,7 @@ import se.montesmites.ekonomi.session.SessionAccessor;
 import se.montesmites.ekonomi.ui.component.FiscalYearSelector;
 import se.montesmites.ekonomi.ui.view.ChartOfAccountsView;
 import se.montesmites.ekonomi.ui.view.GenerateCashflowReportView;
+import se.montesmites.ekonomi.ui.view.JournalView;
 
 public class MainLayout extends AppLayout implements Translator {
 
@@ -94,7 +95,8 @@ public class MainLayout extends AppLayout implements Translator {
             GenerateCashflowReportView.class,
             VaadinIcon.PRINT),
         new NavigationTarget(
-            t(Dictionary.CHART_OF_ACCOUNTS), ChartOfAccountsView.class, VaadinIcon.TABLE));
+            t(Dictionary.CHART_OF_ACCOUNTS), ChartOfAccountsView.class, VaadinIcon.TABLE),
+        new NavigationTarget(t(Dictionary.JOURNAL), JournalView.class, VaadinIcon.TABLE));
   }
 
   private Tab[] createMenuItems() {

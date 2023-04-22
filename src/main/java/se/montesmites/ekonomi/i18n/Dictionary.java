@@ -8,6 +8,7 @@ public final class Dictionary {
       TranslationType.canonical("Fiscal year", "Räkenskapsår");
   public static final TranslationType GENERATE_CASHFLOW_REPORT =
       TranslationType.canonical("Generate cashflow report", "Skapa kassaflödesrapport");
+  public static final TranslationType JOURNAL = TranslationType.canonical("Journal", "Grundbok");
 
   private Dictionary() {}
 }
