@@ -2,6 +2,8 @@ package se.montesmites.ekonomi.i18n;
 
 public final class Dictionary {
 
+  public static final TranslationType ACCOUNT = TranslationType.canonical("Account", "Konto");
+  public static final TranslationType AMOUNT = TranslationType.canonical("Amount", "Belopp");
   public static final TranslationType CHART_OF_ACCOUNTS =
       TranslationType.canonical("Chart of accounts", "Kontoplan");
   public static final TranslationType DATE = TranslationType.canonical("Date", "Datum");
