@@ -17,3 +17,7 @@ ekonomi:
     template:
       type: resource # file
       path: /se/montesmites/ekonomi/nikka/nikka-cashflow-report-definition.xml
+logging:
+  level:
+    sql: debug
+    org.hibernate.orm.jdbc.bind: trace

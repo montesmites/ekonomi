@@ -4,6 +4,11 @@ public final class Dictionary {
 
   public static final TranslationType CHART_OF_ACCOUNTS =
       TranslationType.canonical("Chart of accounts", "Kontoplan");
+  public static final TranslationType DATE = TranslationType.canonical("Date", "Datum");
+  public static final TranslationType DESCRIPTION =
+      TranslationType.canonical("Description", "Beskrivning");
+  public static final TranslationType EVENT_ID =
+      TranslationType.canonical("Event id", "Händelse-id");
   public static final TranslationType FISCAL_YEAR =
       TranslationType.canonical("Fiscal year", "Räkenskapsår");
   public static final TranslationType GENERATE_CASHFLOW_REPORT =

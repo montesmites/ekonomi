@@ -16,6 +16,10 @@ import se.montesmites.ekonomi.model.YearId;
 @IdClass(VerId.class)
 public class Ver {
 
+  public static final String EVENT_ID_PROPERTY_NAME = "vernr";
+  public static final String DATE_PROPERTY_NAME = "transaktionsdatum";
+  public static final String DESCRIPTION_PROPERTY_NAME = "beskrivning";
+
   @Id
   @Column(name = "AAR_ID")
   private String bokfaarId;
