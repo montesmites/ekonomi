@@ -3,10 +3,11 @@ package se.montesmites.ekonomi.i18n;
 public final class Dictionary {
 
   public static final TranslationType ACCOUNT = TranslationType.canonical("Account", "Konto");
-  public static final TranslationType AMOUNT = TranslationType.canonical("Amount", "Belopp");
   public static final TranslationType CHART_OF_ACCOUNTS =
       TranslationType.canonical("Chart of accounts", "Kontoplan");
+  public static final TranslationType CREDIT = TranslationType.canonical("Credit", "Kredit");
   public static final TranslationType DATE = TranslationType.canonical("Date", "Datum");
+  public static final TranslationType DEBIT = TranslationType.canonical("Debit", "Debit");
   public static final TranslationType DESCRIPTION =
       TranslationType.canonical("Description", "Beskrivning");
   public static final TranslationType EVENT_ID =

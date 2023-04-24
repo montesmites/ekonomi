@@ -1,5 +1,6 @@
 package se.montesmites.ekonomi.service;
 
+import java.util.List;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,6 @@ import se.montesmites.ekonomi.jpa.repository.VerRepository;
 import se.montesmites.ekonomi.jpa.repository.VerradRepository;
 import se.montesmites.ekonomi.model.Entry;
 import se.montesmites.ekonomi.model.Event;
-import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Year;
 
 @Service
@@ -30,12 +30,8 @@ public class JournalEndpoint {
         .map(Ver::toEvent);
   }
 
-  public int countVerradByEventId(EventId eventId) {
-    return this.verradRepository.countByBokfaarIdAndVerserieAndVernr(
-        eventId.yearId().id(), eventId.series().series(), eventId.id());
-  }
-
-  public Stream<Entry> findVerradByEventId(EventId eventId) {
+  public List<Entry> findVerradByEvent(Event event) {
+    var eventId = event.eventId();
     return this.verradRepository
         .findByBokfaarIdAndVerserieAndVernr(
             eventId.yearId().id(),
@@ -43,6 +39,7 @@ public class JournalEndpoint {
             eventId.id(),
             Sort.by("kontoId", "rad"))
         .stream()
-        .map(Verrad::toEntry);
+        .map(Verrad::toEntry)
+        .toList();
   }
 }
