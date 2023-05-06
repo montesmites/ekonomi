@@ -1,0 +1,70 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+  <changeSet author="2023-05-06 (generated)" id="1683376900684-1">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="bokfaar"/>
+      </not>
+    </preConditions>
+    <createTable tableName="bokfaar">
+      <column name="aar_id" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="bokfaar_pkey"/>
+      </column>
+      <column name="boerjan" type="date"/>
+      <column name="slut" type="date"/>
+    </createTable>
+    <createTable tableName="konto">
+      <column name="aar_id" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="konto_pkey"/>
+      </column>
+      <column name="konto" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="konto_pkey"/>
+      </column>
+      <column name="txt" type="VARCHAR(255)"/>
+      <column name="ej_aktivt" type="BOOLEAN"/>
+    </createTable>
+    <createTable tableName="reing">
+      <column name="id" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="reing_pkey"/>
+      </column>
+      <column name="aar_id" type="VARCHAR(255)"/>
+      <column name="ing_bal" type="BIGINT"/>
+      <column name="konto" type="VARCHAR(255)"/>
+    </createTable>
+    <createTable tableName="ver">
+      <column name="aar_id" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="ver_pkey"/>
+      </column>
+      <column name="ver_nr" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="ver_pkey"/>
+      </column>
+      <column name="ver_serie" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="ver_pkey"/>
+      </column>
+      <column name="txt" type="VARCHAR(255)"/>
+      <column name="rdatum" type="date"/>
+      <column name="tdatum" type="date"/>
+    </createTable>
+    <createTable tableName="verrad">
+      <column name="aar_id" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="verrad_pkey"/>
+      </column>
+      <column name="rad" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="verrad_pkey"/>
+      </column>
+      <column name="ver_nr" type="INTEGER">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="verrad_pkey"/>
+      </column>
+      <column name="ver_serie" type="VARCHAR(255)">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="verrad_pkey"/>
+      </column>
+      <column name="belopp" type="BIGINT"/>
+      <column name="definitiv" type="BOOLEAN"/>
+      <column name="konto" type="VARCHAR(255)"/>
+      <column name="struken" type="BOOLEAN"/>
+      <column name="tillagd" type="BOOLEAN"/>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>

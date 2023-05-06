@@ -4,6 +4,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/accounting
     username: postgres
     password: postgres
+  liquibase:
+    change-log: classpath:db-changelog/db-changelog.xml
 
 ekonomi:
   datasource:

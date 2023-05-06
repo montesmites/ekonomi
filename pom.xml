@@ -82,6 +82,10 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+    </dependency>
+    <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
       <exclusions>
         <exclusion>
@@ -121,6 +125,18 @@
         </executions>
         <groupId>com.vaadin</groupId>
         <version>${vaadin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <configuration>
+          <driver>org.postgresql.Driver</driver>
+          <url>jdbc:postgresql://localhost:5432/accounting</url>
+          <username>postgres</username>
+          <password>postgres</password>
+          <outputChangeLogFile>target/liquibase-outputChangeLog.xml
+          </outputChangeLogFile>
+        </configuration>
       </plugin>
     </plugins>
   </build>
