@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.ui.view;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
@@ -39,7 +40,10 @@ public class JournalView extends VerticalLayout implements Translator, HasDynami
 
   private Grid<Event> gridOfEvents(Year fiscalYear) {
     var grid = new Grid<>(Event.class, false);
+
+    grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
     grid.setMultiSort(true);
+
     var eventIdColumn =
         grid.addColumn(event -> event.eventId().id())
             .setHeader(t(Dictionary.EVENT_ID))
@@ -84,7 +88,12 @@ public class JournalView extends VerticalLayout implements Translator, HasDynami
 
     EntryGrid(JournalEndpoint journalEndpoint) {
       super(Entry.class, false);
+
       this.journalEndpoint = journalEndpoint;
+
+      this.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COMPACT);
+      this.setAllRowsVisible(true);
+
       addColumn(entry -> entry.accountId().id()).setHeader(t(Dictionary.ACCOUNT));
       addColumn(entry -> entry.amount().amount() >= 0 ? entry.amount().format() : null)
           .setHeader(t(Dictionary.DEBIT));
