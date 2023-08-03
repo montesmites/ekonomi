@@ -86,14 +86,13 @@
       <artifactId>liquibase-core</artifactId>
     </dependency>
     <dependency>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>junit-vintage-engine</artifactId>
-          <groupId>org.junit.vintage</groupId>
-        </exclusion>
-      </exclusions>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

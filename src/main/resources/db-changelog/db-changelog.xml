@@ -67,4 +67,90 @@
       <column name="tillagd" type="BOOLEAN"/>
     </createTable>
   </changeSet>
+  <changeSet id="migrate-legacy-db-schema" author="migrate-legacy-db-schema">
+    <createSequence sequenceName="fiscal_year_seq"/>
+    <createSequence sequenceName="account_seq"/>
+    <createSequence sequenceName="balance_seq"/>
+    <createSequence sequenceName="event_seq"/>
+    <createSequence sequenceName="entry_seq"/>
+    <createTable tableName="fiscal_year">
+      <column name="fiscal_year_id" type="bigint">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="fiscal_calendar_year" type="int">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="account">
+      <column name="account_id" type="bigint">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="fiscal_year_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="qualifier" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+      <column name="active" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="balance">
+      <column name="balance_id" type="bigint">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="account_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="balance" type="numeric(20,2)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="event">
+      <column name="event_id" type="bigint">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="fiscal_year_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="event_date" type="date">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="varchar">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <createTable tableName="entry">
+      <column name="entry_id" type="bigint">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="event_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="account_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="amount" type="numeric(20,2)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint baseTableName="account" baseColumnNames="fiscal_year_id"
+      constraintName="account_fiscal_year_id"
+      referencedTableName="fiscal_year" referencedColumnNames="fiscal_year_id"/>
+    <addForeignKeyConstraint baseTableName="balance" baseColumnNames="account_id"
+      constraintName="balance_account_id"
+      referencedTableName="account" referencedColumnNames="account_id"/>
+    <addForeignKeyConstraint baseTableName="event" baseColumnNames="fiscal_year_id"
+      constraintName="event_fiscal_year_id"
+      referencedTableName="fiscal_year" referencedColumnNames="fiscal_year_id"/>
+    <addForeignKeyConstraint baseTableName="entry" baseColumnNames="event_id"
+      constraintName="entry_event_id"
+      referencedTableName="event" referencedColumnNames="event_id"/>
+    <addForeignKeyConstraint baseTableName="entry" baseColumnNames="account_id"
+      constraintName="entry_account_id"
+      referencedTableName="account" referencedColumnNames="account_id"/>
+  </changeSet>
 </databaseChangeLog>
