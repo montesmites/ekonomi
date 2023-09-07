@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.model.Entry;
@@ -16,6 +18,8 @@ import se.montesmites.ekonomi.model.YearId;
 @Entity
 @Table(name = "VERRAD")
 @IdClass(VerradId.class)
+@Getter
+@Accessors(fluent = true)
 public class Verrad {
 
   @Id
@@ -52,6 +56,7 @@ public class Verrad {
   public Entry toEntry() {
     return new Entry(
         new EventId(new YearId(bokfaarId), vernr, new Series(verserie)),
+        rad,
         new AccountId(new YearId(bokfaarId), kontoId),
         new Currency(belopp),
         new EntryStatus(definitiv, struken, tillagd));

@@ -49,7 +49,8 @@ public class RepositoryTest {
 
   @Test
   void eventTest() {
-    var expected = List.of(eventRepository.save(event(year(2023), LocalDate.now(), "description")));
+    var expected =
+        List.of(eventRepository.save(event(year(2023), 1, LocalDate.now(), "description")));
     var actual = eventRepository.findAll();
 
     assertEquals(expected, actual);
@@ -61,7 +62,8 @@ public class RepositoryTest {
         List.of(
             entryRepository.save(
                 entry(
-                    event(year(2023), LocalDate.now(), "description"),
+                    event(year(2023), 1, LocalDate.now(), "description"),
+                    1,
                     account(year(2023), "1234", "one-two-three-four"),
                     BigDecimal.ONE)));
     var actual = entryRepository.findAll();
@@ -81,11 +83,13 @@ public class RepositoryTest {
     return balanceRepository.save(new BalanceEntity(null, account, balance));
   }
 
-  private EventEntity event(FiscalYearEntity year, LocalDate eventDate, String description) {
-    return eventRepository.save(new EventEntity(null, year, eventDate, description));
+  private EventEntity event(
+      FiscalYearEntity year, Integer eventNo, LocalDate eventDate, String description) {
+    return eventRepository.save(new EventEntity(null, year, eventNo, eventDate, description));
   }
 
-  private EntryEntity entry(EventEntity event, AccountEntity account, BigDecimal amount) {
-    return entryRepository.save(new EntryEntity(null, event, account, amount));
+  private EntryEntity entry(
+      EventEntity event, Integer rowNo, AccountEntity account, BigDecimal amount) {
+    return entryRepository.save(new EntryEntity(null, event, rowNo, account, amount));
   }
 }

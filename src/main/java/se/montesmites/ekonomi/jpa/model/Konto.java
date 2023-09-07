@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.AccountStatus;
@@ -13,6 +15,8 @@ import se.montesmites.ekonomi.model.YearId;
 @Entity
 @Table(name = "KONTO")
 @IdClass(KontoId.class)
+@Getter
+@Accessors(fluent = true)
 public class Konto {
 
   @Id

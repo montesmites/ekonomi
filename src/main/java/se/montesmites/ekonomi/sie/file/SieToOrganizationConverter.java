@@ -2,10 +2,10 @@ package se.montesmites.ekonomi.sie.file;
 
 import static java.util.Map.entry;
 import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -76,37 +76,42 @@ public class SieToOrganizationConverter {
                     new Balance(
                         new AccountId(yearsMap.get(ib.getYearId()).yearId(), ib.getAccountId()),
                         ib.getBalance()))
-            .collect(toList());
+            .toList();
     var events =
         recordsByLabel.getOrDefault(SieRecordType.VER, List.of()).stream()
             .map(record -> (TypeVER) record)
             .map(
-                ver ->
-                    entry(
-                        new Event(
-                            new EventId(
+                ver -> {
+                  var entries = new ArrayList<Entry>();
+                  var tally = 0;
+                  for (var sieRecord : ver.getSubrecords()) {
+                        switch (sieRecord) {
+                          case TypeTRANS trans -> entries.add(
+                              new Entry(
+                                new EventId(
                                 currentYearId,
                                 ver.getEventId().orElseThrow(),
                                 new Series(ver.getSeries().orElseThrow())),
-                            ver.getDate(),
-                            ver.getDescription(),
-                            ver.getRegistrationDate().orElse(ver.getDate())),
-                        ver.getSubrecords().stream()
-                            .filter(record -> record instanceof TypeTRANS)
-                            .map(record -> (TypeTRANS) record)
-                            .map(
-                                trans ->
-                                    new Entry(
-                                        new EventId(
-                                            currentYearId,
-                                            ver.getEventId().orElseThrow(),
-                                            new Series(ver.getSeries().orElseThrow())),
-                                        new AccountId(currentYearId, trans.getAccountId()),
-                                        trans.getAmount(),
-                                        new EntryStatus(Status.ACTIVE, EntryEvent.ORIGINAL)))
-                            .collect(toList())))
+                                tally++,
+                                new AccountId(currentYearId, trans.getAccountId()),
+                                trans.getAmount(),
+                                new EntryStatus(Status.ACTIVE, EntryEvent.ORIGINAL)));
+                          case null, default -> {}
+                        };
+                  }
+                  return entry(
+                      new Event(
+                          new EventId(
+                              currentYearId,
+                              ver.getEventId().orElseThrow(),
+                              new Series(ver.getSeries().orElseThrow())),
+                          ver.getDate(),
+                          ver.getDescription(),
+                          ver.getRegistrationDate().orElse(ver.getDate())),
+                      entries);
+                })
             .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
-    var entries = events.values().stream().flatMap(Collection::stream).collect(toList());
+    var entries = events.values().stream().flatMap(Collection::stream).toList();
     return new Organization(
         new EventManager(events.keySet().stream()),
         accountsMap.values().stream(),

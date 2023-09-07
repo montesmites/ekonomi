@@ -116,6 +116,9 @@
       <column name="fiscal_year_id" type="bigint">
         <constraints nullable="false"/>
       </column>
+      <column name="event_no" type="integer">
+        <constraints nullable="false"/>
+      </column>
       <column name="event_date" type="date">
         <constraints nullable="false"/>
       </column>
@@ -128,6 +131,9 @@
         <constraints primaryKey="true"/>
       </column>
       <column name="event_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="row_no" type="integer">
         <constraints nullable="false"/>
       </column>
       <column name="account_id" type="bigint">

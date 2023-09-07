@@ -31,6 +31,9 @@ public class EventEntity {
   @JoinColumn(name = "fiscal_year_id")
   private FiscalYearEntity fiscalYear;
 
+  @Column(name = "event_no")
+  private Integer eventNo;
+
   @Column(name = "event_date")
   private LocalDate date;
 

@@ -116,6 +116,7 @@ class OrganizationTest {
   private Entry entry(EventId eventId, int account, long amount) {
     return new Entry(
         eventId,
+        -1,
         new AccountId(eventId.yearId(), Integer.toString(account)),
         currency(amount),
         new EntryStatus(EntryStatus.Status.ACTIVE, EntryEvent.ORIGINAL));

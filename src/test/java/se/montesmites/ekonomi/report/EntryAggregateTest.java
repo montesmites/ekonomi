@@ -114,7 +114,7 @@ class EntryAggregateTest {
   private Entry entry(int eventid, int accountid, long amount) {
     final EventId eventId = new EventId(yearId, eventid, series);
     final EntryStatus status = new EntryStatus(EntryStatus.Status.ACTIVE);
-    return new Entry(eventId, accountId(accountid), currency(amount), status);
+    return new Entry(eventId, -1, accountId(accountid), currency(amount), status);
   }
 
   private Currency currency(long amount) {

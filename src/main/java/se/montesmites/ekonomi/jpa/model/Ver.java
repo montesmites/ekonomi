@@ -6,6 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import se.montesmites.ekonomi.model.Event;
 import se.montesmites.ekonomi.model.EventId;
 import se.montesmites.ekonomi.model.Series;
@@ -14,6 +16,8 @@ import se.montesmites.ekonomi.model.YearId;
 @Entity
 @Table(name = "VER")
 @IdClass(VerId.class)
+@Getter
+@Accessors(fluent = true)
 public class Ver {
 
   public static final String EVENT_ID_PROPERTY_NAME = "vernr";

@@ -31,6 +31,9 @@ public class EntryEntity {
   @JoinColumn(name = "event_id")
   private EventEntity event;
 
+  @Column(name = "row_no")
+  private Integer rowNo;
+
   @ManyToOne
   @JoinColumn(name = "account_id")
   private AccountEntity account;

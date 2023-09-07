@@ -59,7 +59,7 @@ public class BinaryFile_2015_0_Entries extends BinaryFile_2015_0<Entry> {
     var accountid = new AccountId(yearid, ACCOUNT.extract(record));
     var status = entryStatus(record).get();
     var amount = AMOUNT.extract(record);
-    return new Entry(eventid, accountid, amount, status);
+    return new Entry(eventid, -1, accountid, amount, status);
   }
 
   private Optional<EntryStatus> entryStatus(Record record) {
