@@ -1,5 +1,3 @@
 package se.montesmites.ekonomi.model;
 
-public record Balance(AccountId accountId, Currency balance) {
-
-}
+public record Balance(AccountId accountId, Currency balance) {}

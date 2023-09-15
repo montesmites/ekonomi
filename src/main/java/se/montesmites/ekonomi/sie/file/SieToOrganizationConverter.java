@@ -85,19 +85,19 @@ public class SieToOrganizationConverter {
                   var entries = new ArrayList<Entry>();
                   var tally = 0;
                   for (var sieRecord : ver.getSubrecords()) {
-                        switch (sieRecord) {
-                          case TypeTRANS trans -> entries.add(
-                              new Entry(
-                                new EventId(
-                                currentYearId,
-                                ver.getEventId().orElseThrow(),
-                                new Series(ver.getSeries().orElseThrow())),
-                                tally++,
-                                new AccountId(currentYearId, trans.getAccountId()),
-                                trans.getAmount(),
-                                new EntryStatus(Status.ACTIVE, EntryEvent.ORIGINAL)));
-                          case null, default -> {}
-                        };
+                    switch (sieRecord) {
+                      case TypeTRANS trans -> entries.add(
+                          new Entry(
+                              new EventId(
+                                  currentYearId,
+                                  ver.getEventId().orElseThrow(),
+                                  new Series(ver.getSeries().orElseThrow())),
+                              tally++,
+                              new AccountId(currentYearId, trans.getAccountId()),
+                              trans.getAmount(),
+                              new EntryStatus(Status.ACTIVE, EntryEvent.ORIGINAL)));
+                      default -> {}
+                    }
                   }
                   return entry(
                       new Event(
