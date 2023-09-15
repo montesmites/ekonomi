@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Year;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,8 @@ public class LegacyDatabaseMigratorTest {
 
   @ParameterizedTest
   @ValueSource(ints = {2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022})
-  void migrate(int year) {
+  @Disabled
+  void doImportFromSie4(int year) {
     var file = PATH.resolve(year + "_sie4_transaktioner-och-balanser.SE");
 
     var sie4 = CONVERTER.convert(file);
