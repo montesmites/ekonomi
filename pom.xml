@@ -24,6 +24,8 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+    <spotless.version>2.39.0</spotless.version>
+
     <vaadin.version>24.0.3</vaadin.version>
   </properties>
   <dependencyManagement>
@@ -99,6 +101,16 @@
   <build>
     <defaultGoal>spring-boot:run</defaultGoal>
     <plugins>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless.version}</version>
+        <configuration>
+          <java>
+            <googleJavaFormat/>
+          </java>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
