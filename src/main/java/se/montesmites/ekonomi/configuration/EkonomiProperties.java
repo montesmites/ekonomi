@@ -1,63 +1,40 @@
 package se.montesmites.ekonomi.configuration;
 
 import java.nio.file.Path;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties("ekonomi")
+@Getter
+@Setter
 public class EkonomiProperties {
 
+  private BackupProperties backup;
   private DatasourceProperties datasource;
   private ReportProperties report;
 
-  public DatasourceProperties getDatasource() {
-    return datasource;
+  @Getter
+  @Setter
+  public static class BackupProperties {
+
+    private String postgresPath;
+    private String destinationPath;
   }
 
-  public void setDatasource(DatasourceProperties datasource) {
-    this.datasource = datasource;
-  }
-
-  public ReportProperties getReport() {
-    return report;
-  }
-
-  public void setReport(ReportProperties report) {
-    this.report = report;
-  }
-
+  @Getter
+  @Setter
   public static class DatasourceProperties {
 
     private DatasourceType type;
     private String sieInputPath;
     private String spcsInputDir;
-
-    public DatasourceType getType() {
-      return type;
-    }
-
-    public void setType(DatasourceType type) {
-      this.type = type;
-    }
-
-    public String getSieInputPath() {
-      return sieInputPath;
-    }
-
-    public void setSieInputPath(String sieInputPath) {
-      this.sieInputPath = sieInputPath;
-    }
-
-    public String getSpcsInputDir() {
-      return spcsInputDir;
-    }
-
-    public void setSpcsInputDir(String spcsInputDir) {
-      this.spcsInputDir = spcsInputDir;
-    }
   }
 
+  @Getter
+  @Setter
   public static class ReportProperties {
 
     private String title;
@@ -65,58 +42,12 @@ public class EkonomiProperties {
     private Integer fiscalYear;
     private String outputDir;
 
-    public String getTitle() {
-      return title;
-    }
-
-    public void setTitle(String title) {
-      this.title = title;
-    }
-
-    public TemplateProperties getTemplate() {
-      return template;
-    }
-
-    public void setTemplate(TemplateProperties template) {
-      this.template = template;
-    }
-
-    public Integer getFiscalYear() {
-      return fiscalYear;
-    }
-
-    public void setFiscalYear(Integer fiscalYear) {
-      this.fiscalYear = fiscalYear;
-    }
-
-    public String getOutputDir() {
-      return outputDir;
-    }
-
-    public void setOutputDir(String outputDir) {
-      this.outputDir = outputDir;
-    }
-
+    @Getter
+    @Setter
     public static class TemplateProperties {
 
       private TemplateType type;
       private String path;
-
-      public TemplateType getType() {
-        return type;
-      }
-
-      public void setType(TemplateType type) {
-        this.type = type;
-      }
-
-      public String getPath() {
-        return path;
-      }
-
-      public void setPath(String path) {
-        this.path = path;
-      }
 
       public Path asPath() {
         return type.asPath(path);

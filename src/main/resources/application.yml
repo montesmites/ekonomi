@@ -8,6 +8,9 @@ spring:
     change-log: classpath:db-changelog/db-changelog.xml
 
 ekonomi:
+  backup:
+    postgres-path: C:/temp/ekonomi-bkp
+    destination-path: C:/Users/nikka/Documents/google-drive/ekonomi-bkp
   datasource:
     type: database # database | sie | spcs
     # sie-input-path: C:/ProgramData/SPCS/SPCS Administration/Företag/nikka/sie/2019-08-18 NIKLAS_K.SE
