@@ -12,12 +12,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "account")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Accessors(fluent = true)
 public class AccountEntity {
 
   @Id
