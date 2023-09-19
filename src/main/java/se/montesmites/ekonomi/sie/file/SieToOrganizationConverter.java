@@ -71,6 +71,7 @@ public class SieToOrganizationConverter {
     var balances =
         recordsByLabel.getOrDefault(SieRecordType.IB, List.of()).stream()
             .map(record -> (TypeIB) record)
+            .filter(ib -> ib.getYearId() == 0)
             .map(
                 ib ->
                     new Balance(

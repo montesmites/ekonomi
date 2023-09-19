@@ -111,6 +111,30 @@ public class LegacyDatabaseMigratorTest {
         .forEach(__ -> {});
   }
 
+  @ParameterizedTest
+  @ValueSource(ints = {2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022})
+  @Disabled
+  void importSie4BalancesOnly(int year) {
+    var file = PATH.resolve(year + "_sie4_transaktioner-och-balanser.SE");
+
+    var sie4 = CONVERTER.convert(file);
+
+    var accounts =
+        accountRepository.findAllByFiscalYearCalendarYear(Year.of(year)).stream()
+            .collect(toMap(AccountEntity::qualifier, account -> account));
+
+    sie4.streamBalances()
+        .sorted(comparing(balance -> balance.accountId().id()))
+        .map(
+            balance ->
+                balanceRepository.save(
+                    new BalanceEntity(
+                        null,
+                        accounts.get(balance.accountId().id()),
+                        longToBigDecimal(balance.balance().amount()))))
+        .forEach(__ -> {});
+  }
+
   private BigDecimal longToBigDecimal(Long amount) {
     return amount == null ? null : BigDecimal.valueOf(amount, 2);
   }
