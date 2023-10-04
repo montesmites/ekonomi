@@ -1,10 +1,9 @@
 package se.montesmites.ekonomi.report.builder;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.model.Currency;
 import se.montesmites.ekonomi.report.Aggregate;
 import se.montesmites.ekonomi.report.AmountsProvider;
@@ -45,7 +44,7 @@ public class SubtotalBuilder {
                     .map(BodyBuilder::body)
                     .map(Aggregate::of),
                 Stream.of(Aggregate.of(this.amountsProviders)))
-            .collect(toList());
+            .toList();
     sectionBuilder.footer(
         footer ->
             footer.add(
@@ -56,7 +55,9 @@ public class SubtotalBuilder {
                                 .map(amountsProvider -> amountsProvider.getMonthlyAmount(month))
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
-                                .reduce(Currency::add))
+                                .reduce(Amount::add)
+                                .map(Amount::amount)
+                                .map(Currency::from))
                     .asRow()));
     return this;
   }

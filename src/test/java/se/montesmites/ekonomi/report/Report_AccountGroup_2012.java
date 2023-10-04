@@ -13,7 +13,6 @@ import static java.time.Month.NOVEMBER;
 import static java.time.Month.OCTOBER;
 import static java.time.Month.SEPTEMBER;
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
@@ -101,12 +100,12 @@ public enum Report_AccountGroup_2012 {
 
   public static void assertBodyRowDescriptions(
       Section section, List<Report_AccountGroup_2012> groups) {
-    var exp = groups.stream().map(g -> g.description).collect(toList());
+    var exp = groups.stream().map(g -> g.description).toList();
     var act =
         section.body().stream()
             .map(AmountsProvider::asRow)
             .map(row -> row.format(DESCRIPTION))
-            .collect(toList());
+            .toList();
     assertEquals(exp.size(), act.size());
     for (var i = 0; i < exp.size(); i++) {
       var fmt = "%s at %d";
@@ -117,7 +116,7 @@ public enum Report_AccountGroup_2012 {
   }
 
   public static void assertMonthlyAmounts(Section section, List<Report_AccountGroup_2012> groups) {
-    var expList = groups.stream().map(group -> group.expectedAmounts).collect(toList());
+    var expList = groups.stream().map(group -> group.expectedAmounts).toList();
     var actList =
         section.body().stream()
             .map(
@@ -128,7 +127,7 @@ public enum Report_AccountGroup_2012 {
                                 new AbstractMap.SimpleEntry<>(
                                     col, amountsProvider.getMonthlyAmount(col)))
                         .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)))
-            .collect(toList());
+            .toList();
     assertEquals(expList.size(), actList.size());
     for (var i = 0; i < expList.size(); i++) {
       var ix = i;
@@ -140,7 +139,7 @@ public enum Report_AccountGroup_2012 {
           .forEach(
               month ->
                   assertEquals(
-                      Optional.of(exp.get(month)),
+                      Optional.of(exp.get(month)).map(Currency::toAmount),
                       act.get(month),
                       String.format(fmt, description, month.name(), ix)));
     }
@@ -148,26 +147,26 @@ public enum Report_AccountGroup_2012 {
 
   public static void assertExpectedAverages(
       Section section, List<Report_AccountGroup_2012> groups) {
-    var exp = groups.stream().map(g -> g.expectedAverage).collect(toList());
-    var act = section.body().stream().map(AmountsProvider::getAverage).collect(toList());
+    var exp = groups.stream().map(g -> g.expectedAverage).toList();
+    var act = section.body().stream().map(AmountsProvider::getAverage).toList();
     assertEquals(exp.size(), act.size());
     for (var i = 0; i < exp.size(); i++) {
       var fmt = "%s at %d";
       var description = section.header().stream().findFirst().orElseThrow().format(DESCRIPTION);
       var msg = String.format(fmt, description, i);
-      assertEquals(exp.get(i), act.get(i).orElseThrow(), msg);
+      assertEquals(exp.get(i).toAmount(), act.get(i).orElseThrow(), msg);
     }
   }
 
   public static void assertExpectedTotals(Section section, List<Report_AccountGroup_2012> groups) {
-    var exp = groups.stream().map(g -> g.expectedTotal).collect(toList());
-    var act = section.body().stream().map(AmountsProvider::getYearlyTotal).collect(toList());
+    var exp = groups.stream().map(g -> g.expectedTotal).toList();
+    var act = section.body().stream().map(AmountsProvider::getYearlyTotal).toList();
     assertEquals(exp.size(), act.size());
     for (var i = 0; i < exp.size(); i++) {
       var fmt = "%s at %d";
       var description = section.header().stream().findFirst().orElseThrow().format(DESCRIPTION);
       var msg = String.format(fmt, description, i);
-      assertEquals(exp.get(i), act.get(i).orElseThrow(), msg);
+      assertEquals(exp.get(i).toAmount(), act.get(i).orElseThrow(), msg);
     }
   }
 }

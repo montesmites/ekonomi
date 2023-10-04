@@ -5,6 +5,7 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.model.Currency;
 
 public class Messages {
@@ -37,5 +38,12 @@ public class Messages {
     numberFormat.setMinimumFractionDigits(amount.decimalPlaces());
     numberFormat.setMaximumFractionDigits(amount.decimalPlaces());
     return numberFormat.format(amount.toDouble());
+  }
+
+  public static String formatNumber(Amount amount) {
+    var numberFormat = NumberFormat.getInstance(LOCALE);
+    numberFormat.setMinimumFractionDigits(Amount.NUMBER_OF_DECIMALS);
+    numberFormat.setMaximumFractionDigits(Amount.NUMBER_OF_DECIMALS);
+    return numberFormat.format(amount.amount());
   }
 }

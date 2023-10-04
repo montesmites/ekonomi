@@ -1,13 +1,13 @@
 package se.montesmites.ekonomi.report.builder;
 
 import static java.util.Map.entry;
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Year;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
@@ -46,13 +46,13 @@ class BodyFromAccountsBuilderTest {
     var bodyFromAccountsBuilder =
         BodyFromAccountsBuilder.of(amountsFetcher, year).accounts(List.of(account1, account2));
     var exp =
-        List.of(row1, row2).stream()
+        Stream.of(row1, row2)
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
-            .collect(toList());
+            .toList();
     var act =
         bodyFromAccountsBuilder.getAmountsProviders().stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
-            .collect(toList());
+            .toList();
     assertEquals(exp, act);
   }
 
@@ -80,13 +80,13 @@ class BodyFromAccountsBuilderTest {
             .accounts(List.of(account1, account2))
             .accountDescriptor(account -> account.description() + account.description());
     var exp =
-        List.of(row1, row2).stream()
+        Stream.of(row1, row2)
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
-            .collect(toList());
+            .toList();
     var act =
         bodyFromAccountsBuilder.getAmountsProviders().stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
-            .collect(toList());
+            .toList();
     assertEquals(exp, act);
   }
 
@@ -115,13 +115,13 @@ class BodyFromAccountsBuilderTest {
             .accountDescriptor(account -> account.description() + account.description())
             .amountsProviderProcessor(AmountsProvider::negate);
     var exp =
-        List.of(row1.negate(), row2.negate()).stream()
+        Stream.of(row1.negate(), row2.negate())
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
-            .collect(toList());
+            .toList();
     var act =
         bodyFromAccountsBuilder.getAmountsProviders().stream()
             .map(amountsProvider -> amountsProvider.asRow().asExtendedString())
-            .collect(toList());
+            .toList();
     assertEquals(exp, act);
   }
 }

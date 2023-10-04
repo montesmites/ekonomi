@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.db.model.Amount;
 
 public interface Body {
 
@@ -41,14 +41,14 @@ public interface Body {
   default AmountsProvider aggregate(String description) {
     return new AmountsProvider() {
       @Override
-      public Optional<Currency> getMonthlyAmount(Month month) {
+      public Optional<Amount> getMonthlyAmount(Month month) {
         var amounts =
             Body.this.stream()
                 .map(row -> row.getMonthlyAmount(month))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toList());
-        var sum = amounts.stream().reduce(Currency.zero(), Currency::add);
+                .toList();
+        var sum = amounts.stream().reduce(Amount.ZERO, Amount::add);
         return amounts.isEmpty() ? Optional.empty() : Optional.of(sum);
       }
 

@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
@@ -39,7 +40,9 @@ public class AmountsFetcherBuilder {
                 amountsProviders
                     .getOrDefault(accountId, AmountsProvider.empty())
                     .getMonthlyAmount(yearMonth.getMonth())
-                    .map(Currency::negate))
+                    .map(Amount::negate)
+                    .map(Amount::amount)
+                    .map(Currency::from))
         .touchedMonths(Map.of(year, EnumSet.allOf(Month.class)));
   }
 

@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import static java.util.Arrays.stream;
 import static java.util.Map.entry;
+import static java.util.stream.Collectors.toMap;
 import static se.montesmites.ekonomi.report.Column.AVERAGE;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
 import static se.montesmites.ekonomi.report.Column.TOTAL;
@@ -15,6 +16,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Currency;
 
@@ -22,7 +25,7 @@ import se.montesmites.ekonomi.model.Currency;
 public interface AmountsProvider {
 
   static AmountsProvider empty() {
-    return column -> Optional.of(Currency.zero());
+    return column -> Optional.of(Amount.ZERO);
   }
 
   static AmountsProvider of(AmountsFetcher amountsFetcher, Year year, AccountGroup accountGroup) {
@@ -67,18 +70,18 @@ public interface AmountsProvider {
   }
 
   static AmountsProvider of(Function<Month, Optional<Currency>> amounts) {
-    return amounts::apply;
+    return month -> amounts.apply(month).map(Currency::toAmount);
   }
 
   static AmountsProvider of(Map<Month, Currency> amounts) {
-    return month -> Optional.ofNullable(amounts.get(month));
+    return month -> Optional.ofNullable(amounts.get(month)).map(Currency::toAmount);
   }
 
   static AmountsProvider of(String description, Function<Month, Optional<Currency>> amounts) {
     return new AmountsProvider() {
       @Override
-      public Optional<Currency> getMonthlyAmount(Month month) {
-        return amounts.apply(month);
+      public Optional<Amount> getMonthlyAmount(Month month) {
+        return amounts.apply(month).map(Currency::toAmount);
       }
 
       @Override
@@ -92,39 +95,42 @@ public interface AmountsProvider {
     var map =
         Map.ofEntries(
             entry(DESCRIPTION, formatDescription()),
-            entry(TOTAL, getYearlyTotal().orElse(Currency.zero()).format()),
-            entry(AVERAGE, getAverage().orElse(Currency.zero()).format()));
+            entry(TOTAL, getYearlyTotal().orElse(Amount.ZERO).format()),
+            entry(AVERAGE, getAverage().orElse(Amount.ZERO).format()));
     return column ->
         map.getOrDefault(
-            column,
-            column.getMonth().flatMap(this::getMonthlyAmount).orElse(Currency.zero()).format());
+            column, column.getMonth().flatMap(this::getMonthlyAmount).orElse(Amount.ZERO).format());
   }
 
   default String formatDescription() {
     return "";
   }
 
-  Optional<Currency> getMonthlyAmount(Month month);
+  Optional<Amount> getMonthlyAmount(Month month);
 
-  default Optional<Currency> getYearlyTotal() {
+  default Optional<Amount> getYearlyTotal() {
     return Optional.of(
         stream(Month.values())
             .map(this::getMonthlyAmount)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .reduce(Currency.zero(), Currency::add));
+            .reduce(Amount.ZERO, Amount::add));
   }
 
-  default Optional<Currency> getAverage() {
-    var average =
-        stream(Month.values())
-            .map(this::getMonthlyAmount)
+  default Optional<Amount> getAverage() {
+    record MonthAndAmount(Month month, Optional<Amount> amount) {}
+    var amounts =
+        Stream.of(Month.values())
+            .map(month -> new MonthAndAmount(month, this.getMonthlyAmount(month)))
+            .collect(toMap(MonthAndAmount::month, MonthAndAmount::amount));
+    var sum =
+        amounts.values().stream()
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .mapToLong(Currency::amount)
-            .average()
-            .orElse(0);
-    return Optional.of(new Currency(Math.round(average)));
+            .reduce(Amount.ZERO, Amount::add);
+    var count = amounts.values().stream().filter(Optional::isPresent).count();
+    var average = count == 0 ? Amount.ZERO : sum.divide(Amount.of(count));
+    return Optional.of(average);
   }
 
   default AmountsProvider self() {
@@ -133,19 +139,19 @@ public interface AmountsProvider {
 
   default AmountsProvider negate() {
     var base = this;
-    return column -> base.getMonthlyAmount(column).map(Currency::negate);
+    return column -> base.getMonthlyAmount(column).map(Amount::negate);
   }
 
   default AmountsProvider accumulate(Currency initialBalance) {
     var amounts = doAccumulate(initialBalance);
     return new AmountsProvider() {
       @Override
-      public Optional<Currency> getMonthlyAmount(Month month) {
-        return Optional.ofNullable(amounts.get(month));
+      public Optional<Amount> getMonthlyAmount(Month month) {
+        return Optional.ofNullable(amounts.get(month)).map(Currency::toAmount);
       }
 
       @Override
-      public Optional<Currency> getYearlyTotal() {
+      public Optional<Amount> getYearlyTotal() {
         return Optional.empty();
       }
 
@@ -176,7 +182,11 @@ public interface AmountsProvider {
             (accumulator, month) ->
                 amounts.merge(
                     month,
-                    accumulator.add(base.getMonthlyAmount(month).orElse(Currency.zero())),
+                    accumulator.add(
+                        base.getMonthlyAmount(month)
+                            .map(Amount::amount)
+                            .map(Currency::from)
+                            .orElse(Currency.zero())),
                     Currency::add),
             Currency::add);
     return Map.copyOf(amounts);

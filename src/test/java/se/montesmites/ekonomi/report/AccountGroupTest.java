@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.db.model.Amount;
 
 class AccountGroupTest {
 
   private static final String DESCRIPTION = "description";
   private static final String REGEX = "regex";
   private static final AmountsProvider AMOUNTS_PROVIDER =
-      column -> Optional.of(new Currency(column.ordinal() * 100));
+      column -> Optional.of(Amount.of(column.ordinal() * 100));
 
   @Test
   void of() {

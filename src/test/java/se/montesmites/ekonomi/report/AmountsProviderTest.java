@@ -14,7 +14,6 @@ import static java.time.Month.OCTOBER;
 import static java.time.Month.SEPTEMBER;
 import static java.util.Arrays.stream;
 import static java.util.Map.entry;
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.montesmites.ekonomi.report.Column.DESCRIPTION;
@@ -25,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import org.junit.jupiter.api.Test;
+import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.AccountStatus;
@@ -49,9 +49,9 @@ class AmountsProviderTest {
     var row = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
     var exp =
         stream(Month.values())
-            .map(month -> Optional.of(new Currency(month.ordinal())))
-            .collect(toList());
-    var act = stream(Month.values()).map(row::getMonthlyAmount).collect(toList());
+            .map(month -> Optional.of(new Currency(month.ordinal()).toAmount()))
+            .toList();
+    var act = stream(Month.values()).map(row::getMonthlyAmount).toList();
     assertEquals(exp, act);
   }
 
@@ -112,7 +112,9 @@ class AmountsProviderTest {
             "1111",
             AccountStatus.OPEN);
     var exp =
-        AmountsProvider.of(account.description(), row1::getMonthlyAmount)
+        AmountsProvider.of(
+                account.description(),
+                month -> row1.getMonthlyAmount(month).map(Amount::amount).map(Currency::from))
             .asRow()
             .asExtendedString();
     var act =
@@ -126,7 +128,7 @@ class AmountsProviderTest {
   void getYearlyTotal() {
     var row = AmountsProvider.of(month -> Optional.of(new Currency(month.ordinal())));
     var sum = stream(Month.values()).mapToInt(Month::ordinal).sum();
-    var exp = Optional.of(new Currency(sum));
+    var exp = Optional.of(new Currency(sum)).map(Currency::toAmount);
     var act = row.getYearlyTotal();
     assertEquals(exp, act);
   }
@@ -139,7 +141,7 @@ class AmountsProviderTest {
             .mapToInt(month -> (month.ordinal() + 1) * 100)
             .average()
             .orElseThrow();
-    var exp = Optional.of(new Currency((int) avg));
+    var exp = Optional.of(new Currency((int) avg)).map(Currency::toAmount);
     var act = row.getAverage();
     assertEquals(exp, act);
   }
@@ -154,7 +156,7 @@ class AmountsProviderTest {
     var row = AmountsProvider.of(amounts);
     var exp = Optional.of(new Currency(100));
     var act = row.getAverage();
-    assertEquals(exp, act);
+    assertEquals(exp.map(Currency::toAmount), act);
   }
 
   @Test
@@ -168,7 +170,7 @@ class AmountsProviderTest {
     var row = AmountsProvider.of(amounts);
     var exp = Optional.of(new Currency(6));
     var act = row.getAverage();
-    assertEquals(exp, act);
+    assertEquals(exp.map(Currency::toAmount), act);
   }
 
   @Test
@@ -214,8 +216,8 @@ class AmountsProviderTest {
     var exp =
         new AmountsProvider() {
           @Override
-          public Optional<Currency> getMonthlyAmount(Month month) {
-            return Optional.of(expectedAmounts.get(month));
+          public Optional<Amount> getMonthlyAmount(Month month) {
+            return Optional.of(expectedAmounts.get(month)).map(Currency::toAmount);
           }
 
           @Override
@@ -224,7 +226,7 @@ class AmountsProviderTest {
           }
 
           @Override
-          public Optional<Currency> getYearlyTotal() {
+          public Optional<Amount> getYearlyTotal() {
             return Optional.empty();
           }
         };

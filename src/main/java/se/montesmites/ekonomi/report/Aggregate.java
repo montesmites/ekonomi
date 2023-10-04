@@ -1,11 +1,9 @@
 package se.montesmites.ekonomi.report;
 
-import static java.util.stream.Collectors.toList;
-
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
-import se.montesmites.ekonomi.model.Currency;
+import se.montesmites.ekonomi.db.model.Amount;
 
 public interface Aggregate {
 
@@ -24,14 +22,14 @@ public interface Aggregate {
   static AmountsProvider of(String description, List<? extends AmountsProvider> amountsProviders) {
     return new AmountsProvider() {
       @Override
-      public Optional<Currency> getMonthlyAmount(Month month) {
+      public Optional<Amount> getMonthlyAmount(Month month) {
         var amounts =
             amountsProviders.stream()
                 .map(row -> row.getMonthlyAmount(month))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toList());
-        var sum = amounts.stream().reduce(Currency.zero(), Currency::add);
+                .toList();
+        var sum = amounts.stream().reduce(Amount.ZERO, Amount::add);
         return amounts.isEmpty() ? Optional.empty() : Optional.of(sum);
       }
 

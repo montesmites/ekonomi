@@ -60,9 +60,11 @@ public interface Row {
   }
 
   default String asExtendedString() {
-    return Column.stream()
-        .map(column -> column.name() + " = " + this.format(column))
-        .collect(joining(", ", "{", "}"));
+    var extendedString =
+        Column.stream()
+            .map(column -> column.name() + " = " + this.format(column))
+            .collect(joining(", ", "{", "}"));
+    return extendedString;
   }
 
   default String asFormattedString() {

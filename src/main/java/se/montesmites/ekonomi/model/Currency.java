@@ -1,6 +1,7 @@
 package se.montesmites.ekonomi.model;
 
 import java.math.BigDecimal;
+import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.i18n.Messages;
 
 public record Currency(long amount) {
@@ -13,7 +14,7 @@ public record Currency(long amount) {
   }
 
   public static Currency from(BigDecimal amount) {
-    return new Currency(amount.longValue());
+    return new Currency(amount.multiply(BigDecimal.valueOf(100)).longValue());
   }
 
   public Currency add(Currency that) {
@@ -34,5 +35,13 @@ public record Currency(long amount) {
 
   public Currency negate() {
     return new Currency(-this.amount);
+  }
+
+  private BigDecimal toBigDecimal() {
+    return BigDecimal.valueOf(this.amount(), decimals);
+  }
+
+  public Amount toAmount() {
+    return new Amount(this.toBigDecimal());
   }
 }
