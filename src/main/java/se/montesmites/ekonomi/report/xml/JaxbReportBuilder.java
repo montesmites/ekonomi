@@ -19,6 +19,7 @@ import se.montesmites.ekonomi.report.AccountsFetcher;
 import se.montesmites.ekonomi.report.AmountsFetcher;
 import se.montesmites.ekonomi.report.AmountsProvider;
 import se.montesmites.ekonomi.report.Report;
+import se.montesmites.ekonomi.report.ReportDataFetcher;
 import se.montesmites.ekonomi.report.builder.BodyBuilder;
 import se.montesmites.ekonomi.report.builder.ReportBuilder;
 import se.montesmites.ekonomi.report.builder.SectionBuilder;
@@ -29,6 +30,10 @@ public class JaxbReportBuilder {
 
   public JaxbReportBuilder(Path pathToXmlDefinition) {
     this.pathToXmlDefinition = pathToXmlDefinition;
+  }
+
+  public Report report(ReportDataFetcher reportDataFetcher, Year year) {
+    return report(reportDataFetcher.toAmountsFetcher(), year);
   }
 
   public Report report(AmountsFetcher amountsFetcher, Year year) {

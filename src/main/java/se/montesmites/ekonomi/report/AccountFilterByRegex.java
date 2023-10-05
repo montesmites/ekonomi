@@ -2,6 +2,7 @@ package se.montesmites.ekonomi.report;
 
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import se.montesmites.ekonomi.db.model.AccountQualifier;
 import se.montesmites.ekonomi.model.AccountId;
 
 public class AccountFilterByRegex implements Predicate<AccountId> {
@@ -22,6 +23,14 @@ public class AccountFilterByRegex implements Predicate<AccountId> {
 
   @Override
   public boolean test(AccountId accountId) {
-    return pattern.matcher(accountId.id()).matches();
+    return this.test(accountId.id());
+  }
+
+  private boolean test(String accountQualifier) {
+    return pattern.matcher(accountQualifier).matches();
+  }
+
+  public Predicate<AccountQualifier> toAccountQualifierPredicate() {
+    return accountQualifier -> this.test(accountQualifier.qualifier());
   }
 }

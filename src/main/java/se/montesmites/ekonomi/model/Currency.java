@@ -13,6 +13,10 @@ public record Currency(long amount) {
     return new Currency(0);
   }
 
+  public static Currency from(Amount amount) {
+    return Currency.from(amount.amount());
+  }
+
   public static Currency from(BigDecimal amount) {
     return new Currency(amount.multiply(BigDecimal.valueOf(100)).longValue());
   }
