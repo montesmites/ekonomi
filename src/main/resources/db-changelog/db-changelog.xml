@@ -159,4 +159,11 @@
       constraintName="entry_account_id"
       referencedTableName="account" referencedColumnNames="account_id"/>
   </changeSet>
+  <changeSet id="remove-legacy-database-tables" author="remove-legacy-database-tables">
+    <dropTable tableName="bokfaar"/>
+    <dropTable tableName="konto"/>
+    <dropTable tableName="reing"/>
+    <dropTable tableName="ver"/>
+    <dropTable tableName="verrad"/>
+  </changeSet>
 </databaseChangeLog>
