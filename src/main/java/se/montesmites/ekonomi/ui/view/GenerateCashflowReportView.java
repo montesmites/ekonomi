@@ -19,7 +19,8 @@ public class GenerateCashflowReportView extends VerticalLayout
 
   public GenerateCashflowReportView(ReportGenerator reportGenerator) {
     var generateCashflowReportButton = new Button(t(Dictionary.GENERATE_CASHFLOW_REPORT));
-    generateCashflowReportButton.addClickListener(click -> reportGenerator.run());
+    generateCashflowReportButton.addClickListener(
+        click -> reportGenerator.generateReportAndRenderToFile());
 
     add(generateCashflowReportButton);
   }

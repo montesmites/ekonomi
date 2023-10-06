@@ -2,8 +2,10 @@ package se.montesmites.ekonomi.report;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
@@ -40,8 +42,23 @@ public class Report {
     return List.copyOf(rows);
   }
 
+  public void renderToFile(Report report, Path outputPath) {
+    try (var writer = Files.newBufferedWriter(outputPath)) {
+      Files.createDirectories(outputPath.getParent());
+      var lines = report.renderWithNoTrailingEmptyRows();
+      for (var i = 0; i < lines.size() - 1; i++) {
+        writer.append(lines.get(i));
+        writer.newLine();
+      }
+      writer.append(lines.get(lines.size() - 1));
+      writer.flush();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private List<String> renderSections() {
-    return streamSections().flatMap(streamSectionRows()).collect(toList());
+    return streamSections().flatMap(streamSectionRows()).toList();
   }
 
   private Function<Section, Stream<? extends String>> streamSectionRows() {
