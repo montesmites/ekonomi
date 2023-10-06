@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.function.UnaryOperator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import se.montesmites.ekonomi.model.Year;
+import se.montesmites.ekonomi.db.FiscalYearData;
 
 @Component
 @AllArgsConstructor
@@ -41,7 +41,7 @@ public class SessionAccessor {
     return this.save(mutator.apply(sessionData));
   }
 
-  public Optional<Year> fiscalYear() {
+  public Optional<FiscalYearData> fiscalYear() {
     return this.sessionData().flatMap(SessionData::fiscalYear);
   }
 }

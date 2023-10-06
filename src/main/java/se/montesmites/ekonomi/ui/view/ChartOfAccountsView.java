@@ -4,9 +4,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
+import se.montesmites.ekonomi.db.AccountWithQualifierAndName;
 import se.montesmites.ekonomi.i18n.Dictionary;
 import se.montesmites.ekonomi.i18n.Translator;
-import se.montesmites.ekonomi.model.Account;
 import se.montesmites.ekonomi.service.ChartOfAccountsService;
 import se.montesmites.ekonomi.session.SessionAccessor;
 import se.montesmites.ekonomi.ui.layout.MainLayout;
@@ -18,16 +18,17 @@ public class ChartOfAccountsView extends VerticalLayout implements Translator, H
 
   public ChartOfAccountsView(
       ChartOfAccountsService chartOfAccountsService, SessionAccessor sessionAccessor) {
-    var grid = new Grid<>(Account.class);
+    var grid = new Grid<>(AccountWithQualifierAndName.class);
 
-    grid.addColumn(Account::accountId);
-    grid.addColumn(Account::description);
-    grid.addColumn(Account::accountStatus);
+    grid.addColumn(AccountWithQualifierAndName::qualifier);
+    grid.addColumn(AccountWithQualifierAndName::name);
 
     sessionAccessor
         .fiscalYear()
         .ifPresent(
-            fiscalYear -> grid.setItems(chartOfAccountsService.findAllByFiscalYear(fiscalYear)));
+            fiscalYear ->
+                grid.setItems(
+                    chartOfAccountsService.findAllByFiscalYear(fiscalYear.calendarYear())));
 
     this.add(grid);
   }

@@ -21,6 +21,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class EventEntity {
 
+  public static final String EVENT_ID_PROPERTY_NAME = "eventId";
+  public static final String DATE_PROPERTY_NAME = "date";
+  public static final String DESCRIPTION_PROPERTY_NAME = "description";
+
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_generator")
   @SequenceGenerator(name = "event_generator", sequenceName = "event_seq", allocationSize = 1)

@@ -1,22 +1,21 @@
 package se.montesmites.ekonomi.service;
 
+import java.time.Year;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import se.montesmites.ekonomi.jpa.model.Konto;
-import se.montesmites.ekonomi.jpa.repository.KontoRepository;
-import se.montesmites.ekonomi.model.Account;
-import se.montesmites.ekonomi.model.Year;
+import se.montesmites.ekonomi.db.AccountRepository;
+import se.montesmites.ekonomi.db.AccountWithQualifierAndName;
 
 @Service
 @RequiredArgsConstructor
 public class ChartOfAccountsService {
 
-  private final KontoRepository kontoRepository;
+  private final AccountRepository accountRepository;
 
-  public List<Account> findAllByFiscalYear(Year year) {
-    return this.kontoRepository.findAllByBokfaarId(year.yearId().id()).stream()
-        .map(Konto::toAccount)
+  public List<AccountWithQualifierAndName> findAllByFiscalYear(Year year) {
+    return this.accountRepository.findAllByFiscalYearCalendarYear(year).stream()
+        .map(account -> new AccountWithQualifierAndName(account.qualifier(), account.name()))
         .toList();
   }
 }

@@ -10,13 +10,14 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import java.math.BigDecimal;
 import java.util.stream.Stream;
+import se.montesmites.ekonomi.db.EntryData;
+import se.montesmites.ekonomi.db.EventData;
+import se.montesmites.ekonomi.db.EventEntity;
+import se.montesmites.ekonomi.db.FiscalYearData;
 import se.montesmites.ekonomi.i18n.Dictionary;
 import se.montesmites.ekonomi.i18n.Translator;
-import se.montesmites.ekonomi.jpa.model.Ver;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.Event;
-import se.montesmites.ekonomi.model.Year;
 import se.montesmites.ekonomi.service.JournalEndpoint;
 import se.montesmites.ekonomi.session.SessionAccessor;
 import se.montesmites.ekonomi.ui.layout.MainLayout;
@@ -38,25 +39,25 @@ public class JournalView extends VerticalLayout implements Translator, HasDynami
     return t(Dictionary.JOURNAL);
   }
 
-  private Grid<Event> gridOfEvents(Year fiscalYear) {
-    var grid = new Grid<>(Event.class, false);
+  private Grid<EventData> gridOfEvents(FiscalYearData fiscalYear) {
+    var grid = new Grid<>(EventData.class, false);
 
     grid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
     grid.setMultiSort(true);
 
     var eventIdColumn =
-        grid.addColumn(event -> event.eventId().id())
+        grid.addColumn(EventData::eventId)
             .setHeader(t(Dictionary.EVENT_ID))
-            .setKey(Ver.EVENT_ID_PROPERTY_NAME)
+            .setKey(EventEntity.EVENT_ID_PROPERTY_NAME)
             .setSortable(true);
     var dateColumn =
-        grid.addColumn(Event::date)
+        grid.addColumn(EventData::date)
             .setHeader(t(Dictionary.DATE))
-            .setKey(Ver.DATE_PROPERTY_NAME)
+            .setKey(EventEntity.DATE_PROPERTY_NAME)
             .setSortable(true);
-    grid.addColumn(Event::description)
+    grid.addColumn(EventData::description)
         .setHeader(t(Dictionary.DESCRIPTION))
-        .setKey(Ver.DESCRIPTION_PROPERTY_NAME)
+        .setKey(EventEntity.DESCRIPTION_PROPERTY_NAME)
         .setSortable(true);
     grid.setItemDetailsRenderer(entriesRenderer());
 
@@ -64,13 +65,13 @@ public class JournalView extends VerticalLayout implements Translator, HasDynami
     grid.setDataProvider(
         new AbstractBackEndDataProvider<>() {
           @Override
-          protected Stream<Event> fetchFromBackEnd(Query<Event, Object> query) {
+          protected Stream<EventData> fetchFromBackEnd(Query<EventData, Object> query) {
             return journalEndpoint.findPageOfEventsByFiscalYear(
                 fiscalYear, VaadinSpringDataHelpers.toSpringPageRequest(query));
           }
 
           @Override
-          protected int sizeInBackEnd(Query<Event, Object> query) {
+          protected int sizeInBackEnd(Query<EventData, Object> query) {
             return journalEndpoint.countEventsByFiscalYear(fiscalYear);
           }
         });
@@ -78,31 +79,39 @@ public class JournalView extends VerticalLayout implements Translator, HasDynami
     return grid;
   }
 
-  private ComponentRenderer<EntryGrid, Event> entriesRenderer() {
+  private ComponentRenderer<EntryGrid, EventData> entriesRenderer() {
     return new ComponentRenderer<>(() -> new EntryGrid(journalEndpoint), EntryGrid::setEntries);
   }
 
-  private static final class EntryGrid extends Grid<Entry> implements Translator {
+  private static final class EntryGrid extends Grid<EntryData> implements Translator {
 
     private final JournalEndpoint journalEndpoint;
 
     EntryGrid(JournalEndpoint journalEndpoint) {
-      super(Entry.class, false);
+      super(EntryData.class, false);
 
       this.journalEndpoint = journalEndpoint;
 
       this.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COMPACT);
       this.setAllRowsVisible(true);
 
-      addColumn(entry -> entry.accountId().id()).setHeader(t(Dictionary.ACCOUNT));
-      addColumn(entry -> entry.amount().amount() >= 0 ? entry.amount().format() : null)
+      addColumn(EntryData::accountId).setHeader(t(Dictionary.ACCOUNT));
+      addColumn(
+              entry ->
+                  entry.amount().amount().compareTo(BigDecimal.ZERO) >= 0
+                      ? entry.amount().format()
+                      : null)
           .setHeader(t(Dictionary.DEBIT));
-      addColumn(entry -> entry.amount().amount() < 0 ? entry.amount().format() : null)
+      addColumn(
+              entry ->
+                  entry.amount().amount().compareTo(BigDecimal.ZERO) < 0
+                      ? entry.amount().format()
+                      : null)
           .setHeader(t(Dictionary.CREDIT));
     }
 
-    void setEntries(Event event) {
-      var entries = journalEndpoint.findVerradByEvent(event);
+    void setEntries(EventData event) {
+      var entries = journalEndpoint.findEntriesByEventId(event.eventId());
       setItems(entries);
     }
   }

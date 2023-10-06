@@ -6,40 +6,49 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import se.montesmites.ekonomi.jpa.model.Ver;
-import se.montesmites.ekonomi.jpa.model.Verrad;
-import se.montesmites.ekonomi.jpa.repository.VerRepository;
-import se.montesmites.ekonomi.jpa.repository.VerradRepository;
-import se.montesmites.ekonomi.model.Entry;
-import se.montesmites.ekonomi.model.Event;
-import se.montesmites.ekonomi.model.Year;
+import se.montesmites.ekonomi.db.EntryData;
+import se.montesmites.ekonomi.db.EntryRepository;
+import se.montesmites.ekonomi.db.EventData;
+import se.montesmites.ekonomi.db.EventRepository;
+import se.montesmites.ekonomi.db.FiscalYearData;
+import se.montesmites.ekonomi.db.model.Amount;
 
 @Service
 @AllArgsConstructor
 public class JournalEndpoint {
 
-  private final VerRepository verRepository;
-  private final VerradRepository verradRepository;
+  private final EventRepository eventRepository;
+  private final EntryRepository entryRepository;
 
-  public int countEventsByFiscalYear(Year year) {
-    return this.verRepository.countByBokfaarId(year.yearId().id());
+  public int countEventsByFiscalYear(FiscalYearData fiscalYear) {
+    return this.eventRepository.countByFiscalYearCalendarYear(fiscalYear.calendarYear());
   }
 
-  public Stream<Event> findPageOfEventsByFiscalYear(Year year, Pageable pageable) {
-    return this.verRepository.findAllByBokfaarId(year.yearId().id(), pageable).stream()
-        .map(Ver::toEvent);
-  }
-
-  public List<Entry> findVerradByEvent(Event event) {
-    var eventId = event.eventId();
-    return this.verradRepository
-        .findByBokfaarIdAndVerserieAndVernr(
-            eventId.yearId().id(),
-            eventId.series().series(),
-            eventId.id(),
-            Sort.by("kontoId", "rad"))
+  public Stream<EventData> findPageOfEventsByFiscalYear(
+      FiscalYearData fiscalYear, Pageable pageable) {
+    return this.eventRepository
+        .findAllByFiscalYearCalendarYear(fiscalYear.calendarYear(), pageable)
         .stream()
-        .map(Verrad::toEntry)
+        .map(
+            event ->
+                new EventData(
+                    event.getEventId(),
+                    event.getFiscalYear().getFiscalYearId(),
+                    event.getEventNo(),
+                    event.getDate(),
+                    event.getDescription()));
+  }
+
+  public List<EntryData> findEntriesByEventId(Long eventId) {
+    return this.entryRepository.findByEventEventId(eventId, Sort.by("account.name", "rad")).stream()
+        .map(
+            entry ->
+                new EntryData(
+                    entry.getEntryId(),
+                    entry.getEvent().getEventId(),
+                    entry.getRowNo(),
+                    entry.getAccount().accountId(),
+                    new Amount(entry.getAmount())))
         .toList();
   }
 }

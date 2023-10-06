@@ -3,17 +3,18 @@ package se.montesmites.ekonomi.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import se.montesmites.ekonomi.jpa.model.Bokfaar;
-import se.montesmites.ekonomi.jpa.repository.BokfaarRepository;
-import se.montesmites.ekonomi.model.Year;
+import se.montesmites.ekonomi.db.FiscalYearData;
+import se.montesmites.ekonomi.db.FiscalYearRepository;
 
 @Service
 @RequiredArgsConstructor
 public class FiscalYearService {
 
-  private final BokfaarRepository bokfaarRepository;
+  private final FiscalYearRepository fiscalYearRepository;
 
-  public List<Year> findAll() {
-    return this.bokfaarRepository.findAll().stream().map(Bokfaar::toYear).toList();
+  public List<FiscalYearData> findAll() {
+    return this.fiscalYearRepository.findAll().stream()
+        .map(year -> new FiscalYearData(year.getFiscalYearId(), year.getCalendarYear()))
+        .toList();
   }
 }
