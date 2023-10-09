@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.ui.view;
+package se.montesmites.ekonomi.ui.view.journal;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
@@ -16,9 +16,9 @@ import se.montesmites.ekonomi.db.EntryData;
 import se.montesmites.ekonomi.db.EventData;
 import se.montesmites.ekonomi.db.EventEntity;
 import se.montesmites.ekonomi.db.FiscalYearData;
+import se.montesmites.ekonomi.endpoint.journal.JournalEndpoint;
 import se.montesmites.ekonomi.i18n.Dictionary;
 import se.montesmites.ekonomi.i18n.Translator;
-import se.montesmites.ekonomi.service.JournalEndpoint;
 import se.montesmites.ekonomi.session.SessionAccessor;
 import se.montesmites.ekonomi.ui.layout.MainLayout;
 

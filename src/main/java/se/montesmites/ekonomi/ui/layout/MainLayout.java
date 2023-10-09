@@ -24,7 +24,7 @@ import se.montesmites.ekonomi.session.SessionAccessor;
 import se.montesmites.ekonomi.ui.component.FiscalYearSelector;
 import se.montesmites.ekonomi.ui.view.ChartOfAccountsView;
 import se.montesmites.ekonomi.ui.view.GenerateCashflowReportView;
-import se.montesmites.ekonomi.ui.view.JournalView;
+import se.montesmites.ekonomi.ui.view.journal.JournalView;
 
 public class MainLayout extends AppLayout implements Translator {
 

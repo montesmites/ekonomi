@@ -1,4 +1,4 @@
-package se.montesmites.ekonomi.service;
+package se.montesmites.ekonomi.endpoint.journal;
 
 import java.util.List;
 import java.util.stream.Stream;
