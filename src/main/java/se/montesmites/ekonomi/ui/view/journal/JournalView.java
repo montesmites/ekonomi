@@ -6,13 +6,10 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
-import java.math.BigDecimal;
 import java.util.stream.Stream;
-import se.montesmites.ekonomi.db.EntryData;
 import se.montesmites.ekonomi.db.EventData;
 import se.montesmites.ekonomi.db.EventEntity;
 import se.montesmites.ekonomi.db.FiscalYearData;
@@ -21,6 +18,7 @@ import se.montesmites.ekonomi.i18n.Dictionary;
 import se.montesmites.ekonomi.i18n.Translator;
 import se.montesmites.ekonomi.session.SessionAccessor;
 import se.montesmites.ekonomi.ui.layout.MainLayout;
+import se.montesmites.ekonomi.ui.view.event.EventView;
 
 @Route(value = JournalView.ROUTE, layout = MainLayout.class)
 public class JournalView extends VerticalLayout implements Translator, HasDynamicTitle {
@@ -59,7 +57,11 @@ public class JournalView extends VerticalLayout implements Translator, HasDynami
         .setHeader(t(Dictionary.DESCRIPTION))
         .setKey(EventEntity.DESCRIPTION_PROPERTY_NAME)
         .setSortable(true);
-    grid.setItemDetailsRenderer(entriesRenderer());
+    grid.addItemClickListener(
+        eventDataItemClickEvent -> {
+          var event = eventDataItemClickEvent.getItem();
+          getUI().ifPresent(ui -> ui.navigate(EventView.class, event.eventId()));
+        });
 
     grid.sort(GridSortOrder.asc(dateColumn).thenAsc(eventIdColumn).build());
     grid.setDataProvider(
@@ -77,42 +79,5 @@ public class JournalView extends VerticalLayout implements Translator, HasDynami
         });
 
     return grid;
-  }
-
-  private ComponentRenderer<EntryGrid, EventData> entriesRenderer() {
-    return new ComponentRenderer<>(() -> new EntryGrid(journalEndpoint), EntryGrid::setEntries);
-  }
-
-  private static final class EntryGrid extends Grid<EntryData> implements Translator {
-
-    private final JournalEndpoint journalEndpoint;
-
-    EntryGrid(JournalEndpoint journalEndpoint) {
-      super(EntryData.class, false);
-
-      this.journalEndpoint = journalEndpoint;
-
-      this.addThemeVariants(GridVariant.LUMO_ROW_STRIPES, GridVariant.LUMO_COMPACT);
-      this.setAllRowsVisible(true);
-
-      addColumn(EntryData::accountId).setHeader(t(Dictionary.ACCOUNT));
-      addColumn(
-              entry ->
-                  entry.amount().amount().compareTo(BigDecimal.ZERO) >= 0
-                      ? entry.amount().format()
-                      : null)
-          .setHeader(t(Dictionary.DEBIT));
-      addColumn(
-              entry ->
-                  entry.amount().amount().compareTo(BigDecimal.ZERO) < 0
-                      ? entry.amount().format()
-                      : null)
-          .setHeader(t(Dictionary.CREDIT));
-    }
-
-    void setEntries(EventData event) {
-      var entries = journalEndpoint.findEntriesByEventId(event.eventId());
-      setItems(entries);
-    }
   }
 }
