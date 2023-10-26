@@ -1,6 +1,8 @@
 package se.montesmites.ekonomi.ui.view.event;
 
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -41,25 +43,60 @@ public class EventView extends VerticalLayout
     date.setLabel(t(Dictionary.DATE));
     description.setLabel(t(Dictionary.DESCRIPTION));
 
+    eventId.setEnabled(false);
+    fiscalYearId.setEnabled(false);
+    eventNo.setEnabled(false);
+    date.setEnabled(false);
+    description.setEnabled(false);
+
     var eventLayout = new VerticalLayout(eventId, fiscalYearId, eventNo, date, description);
 
     eventLayout.setSizeUndefined();
     entryGrid.setSizeUndefined();
 
-    var layout = new HorizontalLayout();
-    layout.setPadding(false);
-    layout.setMargin(false);
-    layout.add(eventLayout, entryGrid);
-    layout.setFlexGrow(0.0, eventLayout);
-    layout.setFlexGrow(1.0, entryGrid);
-    layout.setWidthFull();
+    var dataLayout = new HorizontalLayout();
+    dataLayout.setPadding(false);
+    dataLayout.setMargin(false);
+    dataLayout.add(eventLayout, entryGrid);
+    dataLayout.setFlexGrow(0.0, eventLayout);
+    dataLayout.setFlexGrow(1.0, entryGrid);
+    dataLayout.setWidthFull();
 
-    add(layout);
+    var buttonLayout = new HorizontalLayout();
+    var editButton = new Button(t(Dictionary.EDIT));
+    editButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    var cancelButton = new Button(t(Dictionary.CANCEL));
+    cancelButton.setEnabled(false);
+    editButton.addClickListener(
+        __ -> {
+          eventNo.setEnabled(true);
+          date.setEnabled(true);
+          description.setEnabled(true);
+          editButton.setText(t(Dictionary.SAVE));
+          cancelButton.setEnabled(true);
+        });
+    cancelButton.addClickListener(
+        __ -> {
+          fetchEventId(this.eventIdParam);
+          eventNo.setEnabled(false);
+          date.setEnabled(false);
+          description.setEnabled(false);
+          editButton.setText(t(Dictionary.EDIT));
+          cancelButton.setEnabled(false);
+        });
+
+    buttonLayout.add(editButton, cancelButton);
+
+    add(dataLayout, buttonLayout);
   }
 
   @Override
   protected void onAttach(AttachEvent attachEvent) {
-    var maybeEvent = eventViewEndpoint.findByEventId(this.eventIdParam);
+    fetchEventId(this.eventIdParam);
+  }
+
+  private void fetchEventId(Long eventId) {
+    var maybeEvent = eventViewEndpoint.findByEventId(eventId);
     maybeEvent.ifPresent(
         event -> {
           this.eventId.setValue(String.valueOf(event.eventId()));

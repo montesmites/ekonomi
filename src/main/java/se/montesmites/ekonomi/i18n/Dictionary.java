@@ -5,6 +5,7 @@ public final class Dictionary {
   public static final TranslationType ACCOUNT_QUALIFIER =
       TranslationType.canonical("Account", "Konto");
   public static final TranslationType ACCOUNT_NAME = TranslationType.canonical("Name", "Benämning");
+  public static final TranslationType CANCEL = TranslationType.canonical("Cancel", "Avbryt");
   public static final TranslationType CHART_OF_ACCOUNTS =
       TranslationType.canonical("Chart of accounts", "Kontoplan");
   public static final TranslationType CREDIT = TranslationType.canonical("Credit", "Kredit");
@@ -12,6 +13,7 @@ public final class Dictionary {
   public static final TranslationType DEBIT = TranslationType.canonical("Debit", "Debet");
   public static final TranslationType DESCRIPTION =
       TranslationType.canonical("Description", "Beskrivning");
+  public static final TranslationType EDIT = TranslationType.canonical("Edit", "Ändra");
   public static final TranslationType EVENT =
       TranslationType.canonical("Business Event", "Affärshändelse");
   public static final TranslationType EVENT_ID =
@@ -25,6 +27,7 @@ public final class Dictionary {
   public static final TranslationType GENERATE_CASHFLOW_REPORT =
       TranslationType.canonical("Generate cashflow report", "Skapa kassaflödesrapport");
   public static final TranslationType JOURNAL = TranslationType.canonical("Journal", "Grundbok");
+  public static final TranslationType SAVE = TranslationType.canonical("Save", "Spara");
 
   private Dictionary() {}
 }
