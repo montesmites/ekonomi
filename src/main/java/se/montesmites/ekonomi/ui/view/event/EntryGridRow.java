@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.db.model.EntryDataAndAccountQualifierAndName;
+import se.montesmites.ekonomi.ui.model.DebitCreditAmount;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -21,12 +21,12 @@ public class EntryGridRow {
   private Long eventId;
   private Integer rowNo;
   private Long accountId;
-  private Amount amount;
+  private DebitCreditAmount amount;
   private String qualifier;
   private String name;
 
   public static EntryGridRow empty() {
-    return new EntryGridRow();
+    return new EntryGridRow().amount(DebitCreditAmount.empty());
   }
 
   public static EntryGridRow from(
@@ -37,7 +37,7 @@ public class EntryGridRow {
         entryDataAndAccountQualifierAndName.entryData().eventId(),
         entryDataAndAccountQualifierAndName.entryData().rowNo(),
         entryDataAndAccountQualifierAndName.entryData().accountId(),
-        entryDataAndAccountQualifierAndName.entryData().amount(),
+        DebitCreditAmount.from(entryDataAndAccountQualifierAndName.entryData().amount()),
         entryDataAndAccountQualifierAndName.accountQualifierAndName().qualifier().qualifier(),
         entryDataAndAccountQualifierAndName.accountQualifierAndName().name());
   }

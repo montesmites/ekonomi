@@ -1,9 +1,13 @@
 package se.montesmites.ekonomi.i18n;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.model.Currency;
@@ -40,10 +44,36 @@ public class Messages {
     return numberFormat.format(amount.toDouble());
   }
 
-  public static String formatNumber(Amount amount) {
+  public static NumberFormat numberFormat() {
     var numberFormat = NumberFormat.getInstance(LOCALE);
     numberFormat.setMinimumFractionDigits(Amount.NUMBER_OF_DECIMALS);
     numberFormat.setMaximumFractionDigits(Amount.NUMBER_OF_DECIMALS);
-    return numberFormat.format(amount.amount());
+    return numberFormat;
+  }
+
+  public static String formatNumber(Amount amount) {
+    return numberFormat().format(amount.amount());
+  }
+
+  public static Optional<Amount> parseAmount(String text) {
+    try {
+      if (text != null && numberFormat() instanceof DecimalFormat decimalFormat) {
+        var minusSign = decimalFormat.getDecimalFormatSymbols().getMinusSign();
+        var washedText = text.replace('-', minusSign);
+        var number = numberFormat().parse(washedText);
+        var amount =
+            number instanceof Byte
+                    || number instanceof Short
+                    || number instanceof Integer
+                    || number instanceof Long
+                ? BigDecimal.valueOf(number.longValue())
+                : BigDecimal.valueOf(number.doubleValue());
+        return Optional.of(new Amount(amount));
+      } else {
+        return Optional.empty();
+      }
+    } catch (ParseException e) {
+      return Optional.empty();
+    }
   }
 }

@@ -14,14 +14,14 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
-import java.math.BigDecimal;
 import java.util.Optional;
 import se.montesmites.ekonomi.db.EventData;
 import se.montesmites.ekonomi.db.model.Amount;
-import se.montesmites.ekonomi.db.model.Amount.Sign;
 import se.montesmites.ekonomi.endpoint.event.EventViewEndpoint;
 import se.montesmites.ekonomi.i18n.Dictionary;
 import se.montesmites.ekonomi.i18n.Translator;
+import se.montesmites.ekonomi.ui.model.DebitCreditAmount;
+import se.montesmites.ekonomi.ui.model.DebitCreditAmount.Side;
 
 public class EntryGrid extends VerticalLayout implements Translator {
 
@@ -83,24 +83,12 @@ public class EntryGrid extends VerticalLayout implements Translator {
         .setFlexGrow(1)
         .setEditorComponent(editorAccountName);
     this.grid
-        .addColumn(
-            row ->
-                row != null
-                        && row.amount() != null
-                        && row.amount().amount().compareTo(BigDecimal.ZERO) >= 0
-                    ? row.amount().format()
-                    : null)
+        .addColumn(row -> row.amount().format(Side.DEBIT).orElse(null))
         .setHeader(t(Dictionary.DEBIT))
         .setFlexGrow(0)
         .setEditorComponent(editorDebit);
     this.grid
-        .addColumn(
-            row ->
-                row != null
-                        && row.amount() != null
-                        && row.amount().amount().compareTo(BigDecimal.ZERO) < 0
-                    ? row.amount().negate().format()
-                    : null)
+        .addColumn(row -> row.amount().format(Side.CREDIT).orElse(null))
         .setHeader(t(Dictionary.CREDIT))
         .setFlexGrow(0)
         .setEditorComponent(editorCredit);
@@ -109,20 +97,36 @@ public class EntryGrid extends VerticalLayout implements Translator {
     this.editor = this.grid.getEditor();
     editor.setBinder(binder);
     editor.setBuffered(true);
-    editor.addSaveListener(__ -> {});
 
     binder.forField(editorAccountQualifier).bind(EntryGridRow::qualifier, EntryGridRow::qualifier);
     binder.forField(editorAccountName).bind(EntryGridRow::name, EntryGridRow::name);
+
     binder
         .forField(editorDebit)
+        .withValidator(
+            debit -> debit.isBlank() || Amount.parse(debit).isPresent(),
+            t(Dictionary.VALIDATION_ERROR_INCORRECT_AMOUNT))
         .bind(
-            row -> row.amount().sign() == Sign.NEGATIVE ? null : row.amount().format(),
-            (row, debit) -> row.amount(new Amount(new BigDecimal(debit))));
+            row -> row.amount().format(Side.DEBIT).orElse(null),
+            (row, debit) -> {
+              var incumbent = row.amount();
+              var newAmount = DebitCreditAmount.parse(Side.DEBIT, debit);
+              var finalRowAmount = incumbent.merge(newAmount);
+              row.amount(finalRowAmount);
+            });
     binder
         .forField(editorCredit)
+        .withValidator(
+            credit -> credit.isBlank() || Amount.parse(credit).isPresent(),
+            t(Dictionary.VALIDATION_ERROR_INCORRECT_AMOUNT))
         .bind(
-            row -> row.amount().sign() == Sign.NEGATIVE ? row.amount().negate().format() : null,
-            (row, credit) -> row.amount(new Amount(new BigDecimal(credit)).negate()));
+            row -> row.amount().format(Side.CREDIT).orElse(null),
+            (row, credit) -> {
+              var incumbent = row.amount();
+              var newAmount = DebitCreditAmount.parse(Side.CREDIT, credit);
+              var finalRowAmount = incumbent.merge(newAmount);
+              row.amount(finalRowAmount);
+            });
 
     this.grid.addCellFocusListener(
         entryGridDataCellFocusEvent -> {

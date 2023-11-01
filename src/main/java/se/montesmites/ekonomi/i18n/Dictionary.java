@@ -28,6 +28,8 @@ public final class Dictionary {
       TranslationType.canonical("Generate cashflow report", "Skapa kassaflödesrapport");
   public static final TranslationType JOURNAL = TranslationType.canonical("Journal", "Grundbok");
   public static final TranslationType SAVE = TranslationType.canonical("Save", "Spara");
+  public static final TranslationType VALIDATION_ERROR_INCORRECT_AMOUNT =
+      TranslationType.canonical("Incorrect amount", "Felaktigt belopp");
 
   private Dictionary() {}
 }
