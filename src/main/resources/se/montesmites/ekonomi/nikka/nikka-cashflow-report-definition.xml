@@ -38,7 +38,7 @@
       </account-group>
       <account-group>
         <description>Boende diverse</description>
-        <regex>5060|5[458]\d\d</regex>
+        <regex>5060|5099|5[458]\d\d</regex>
       </account-group>
     </account-groups>
     <account-groups>
@@ -69,7 +69,7 @@
       </account-group>
       <account-group>
         <description>Övrigt</description>
-        <regex>(4[89]|[67]\d)\d\d</regex>
+        <regex>(4[89]|[6]\d)\d\d</regex>
       </account-group>
     </account-groups>
     <subtotal>

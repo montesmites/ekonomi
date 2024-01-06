@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import se.montesmites.ekonomi.db.model.AccountQualifier;
 import se.montesmites.ekonomi.db.model.AccountQualifierAndName;
 import se.montesmites.ekonomi.db.model.Amount;
 import se.montesmites.ekonomi.jpa.migration.MonthlyAccountSum;
+import se.montesmites.ekonomi.report.DataFetcher;
 import se.montesmites.ekonomi.report.ReportDataFetcher;
 import se.montesmites.ekonomi.report.data.MonthlyAccountSumRepository;
 import se.montesmites.ekonomi.report.xml.JaxbReportBuilder;
@@ -42,11 +44,11 @@ public class ReportGenerator {
   private final BalanceRepository balanceRepository;
   private final MonthlyAccountSumRepository monthlyAccountSumRepository;
 
-  public void generateReportAndRenderToFile() {
+  public void generateReportAndRenderToFile(Function<Year, DataFetcher> dataFetcherFactory) {
     var calendarYear = properties.getReport().getFiscalYear();
     var report =
         new JaxbReportBuilder(properties.getReport().getTemplate().asPath())
-            .report(reportDataFetcher(Year.of(calendarYear)), Year.of(calendarYear));
+            .report(dataFetcherFactory.apply(Year.of(calendarYear)), Year.of(calendarYear));
     report.renderToFile(
         report,
         outputPath(

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import lombok.extern.slf4j.Slf4j;
 import se.montesmites.ekonomi.model.AccountId;
 import se.montesmites.ekonomi.model.Balance;
 import se.montesmites.ekonomi.model.Currency;
@@ -23,6 +24,7 @@ import se.montesmites.ekonomi.report.Report;
 import se.montesmites.ekonomi.report.Section;
 import se.montesmites.ekonomi.report.Tag;
 
+@Slf4j
 public class ReportBuilder {
 
   private final AccountsFetcher accountsFetcher;

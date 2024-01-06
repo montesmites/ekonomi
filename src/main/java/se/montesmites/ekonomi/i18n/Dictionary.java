@@ -27,7 +27,14 @@ public final class Dictionary {
   public static final TranslationType GENERATE_CASHFLOW_REPORT =
       TranslationType.canonical("Generate cashflow report", "Skapa kassaflödesrapport");
   public static final TranslationType JOURNAL = TranslationType.canonical("Journal", "Grundbok");
+  public static final TranslationType OUTPUT_PATH =
+      TranslationType.canonical("Output path", "Utdatasökväg");
   public static final TranslationType SAVE = TranslationType.canonical("Save", "Spara");
+  public static final TranslationType SIE_PATH =
+      TranslationType.canonical("SIE path", "SIE-sökväg");
+  public static final TranslationType TEMPLATE_PATH =
+      TranslationType.canonical("Template path", "Mallsökväg");
+  public static final TranslationType TITLE = TranslationType.canonical("Title", "Titel");
   public static final TranslationType VALIDATION_ERROR_INCORRECT_AMOUNT =
       TranslationType.canonical("Incorrect amount", "Felaktigt belopp");
 
